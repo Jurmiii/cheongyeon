@@ -1,0 +1,71 @@
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  
+    white-space: nowrap;
+  
+    border-radius: 4px;
+  
+    padding: 10px;
+  
+    @extend .ft-14b;
+  }
+  
+  /* 예약확정 */
+  .badge--confirmed {
+    color: var(--han50);
+    background: var(--deep500);
+  }
+  
+  /* 진행중 */
+  .badge--progress {
+    color: var(--han50);
+    background: var(--deep600);
+  }
+  
+  /* 예약확정 (비활성) */
+  .badge--disabled {
+    color: var(--ink300);
+    background: var(--ink100);
+  }
+  
+  /* 마감임박 */
+  .badge--deadline {
+    color: var(--han50);
+    background: var(--danger);
+  }
+  
+  /* 신규, 추천 */
+  .badge--new {
+    color: var(--ink500);
+    background: var(--moon500);
+  }
+  
+  /* BEST */
+  .badge--best {
+    color: var(--han50);
+    background: var(--ink500);
+  }
+  
+  /* 원데이 클래스 */
+  .badge--oneday {
+    color: var(--han50);
+    background: var(--plum500);
+  }
+  
+  /* 티 가이드 */
+  .badge--guide {
+    color: var(--ink500);
+    background: var(--han200);
+  }
+  
+  /* D-Day */
+  .badge--dday {
+    color: var(--ink500);
+    background: var(--moon100);
+  
+    border-radius: 50px;
+  
+    padding: 12px;
+  }
