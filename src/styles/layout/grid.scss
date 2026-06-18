@@ -1,177 +1,71 @@
-// Grid
-
 .grid {
-    display: grid;
-    gap: var(--grid-gap);
-  
-    grid-template-columns: repeat(var(--grid-columns),
-        minmax(0, 1fr));
+  display: grid;
+  gap: var(--card-grid-gap);
+  grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+}
+
+.grid-2,
+.grid-3,
+.grid-4 {
+  display: grid;
+  gap: var(--card-grid-gap);
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@for $i from 1 through 12 {
+  .col-#{$i} {
+    grid-column: span #{$i};
   }
-  
-  .grid-2 {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--grid-gap);
+}
+
+:root {
+  --container-desktop: 1440px;
+  --container-tablet: 640px;
+  --container-mobile: 370px;
+  --grid-columns: 12;
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --grid-columns: 8;
   }
-  
-  .grid-3 {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--grid-gap);
-  }
-  
-  .grid-4 {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--grid-gap);
-  }
-  
-  // col system
-  
-  .col-1 {
-    grid-column: span 1;
-  }
-  
-  .col-2 {
-    grid-column: span 2;
-  }
-  
-  .col-3 {
-    grid-column: span 3;
-  }
-  
-  .col-4 {
-    grid-column: span 4;
-  }
-  
-  .col-5 {
-    grid-column: span 5;
-  }
-  
-  .col-6 {
-    grid-column: span 6;
-  }
-  
-  .col-7 {
-    grid-column: span 7;
-  }
-  
-  .col-8 {
+
+  .ta-col-8 {
     grid-column: span 8;
   }
-  
-  .col-9 {
-    grid-column: span 9;
+
+  .ta-col-4 {
+    grid-column: span 4;
   }
-  
-  .col-10 {
-    grid-column: span 10;
-  }
-  
-  .col-11 {
-    grid-column: span 11;
-  }
-  
-  .col-12 {
-    grid-column: span 12;
-  }
-  
-  @media (max-width: 1024px) {
-    .ta-col-8 {
-      grid-column: span 8;
-    }
-  
-    .ta-col-4 {
-      grid-column: span 4;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .mo-col-6 {
-      grid-column: span 6;
-    }
-  
-    .mo-col-3 {
-      grid-column: span 3;
-    }
-  
-    .grid-2,
-    .grid-3,
-    .grid-4 {
-      grid-template-columns: 1fr;
-    }
-  }
-  
-  
-  // PC, TA, MO Layout
-  
+}
+
+@media (max-width: 768px) {
   :root {
-    /* Container */
-    --container-desktop: 1440px;
-    --container-tablet: 640px;
-    --container-mobile: 370px;
-  
-    /* Grid */
-    --grid-columns: 12;
-    --grid-gap: 24px;
+    --grid-columns: 6;
   }
-  
-  /* Tablet */
-  @media (max-width: 1024px) {
-    :root {
-      --grid-columns: 8;
-      --grid-gap: 24px;
-    }
+
+  .mo-col-6 {
+    grid-column: span 6;
   }
-  
-  /* Mobile */
-  @media (max-width: 768px) {
-    :root {
-      --grid-columns: 6;
-      --grid-gap: 16px;
-    }
+
+  .mo-col-3 {
+    grid-column: span 3;
   }
-  
-  
-  
-  // PC, TA, MO 섹션 스페이싱
-  
-  :root {
-    /* Section */
-    --section-padding: 7.5rem; /* 120px */
-  
-    /* Section Header */
-    --section-header-gap: 3rem; /* 48px */
-  
-    /* Grid */
-    --grid-gap: 1.5rem; /* 24px */
-  
-    /* Paragraph */
-    --paragraph-gap: 1.5rem; /* 24px */
+
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
   }
-  
-  /* Tablet */
-  @media (max-width: 1024px) {
-    :root {
-      --section-padding: 6rem; /* 96px */
-  
-      --section-header-gap: 2.5rem; /* 40px */
-  
-      --grid-gap: 1.5rem; /* 24px */
-  
-      --paragraph-gap: 1rem; /* 16px */
-    }
-  }
-  
-  /* Mobile */
-  @media (max-width: 768px) {
-    :root {
-      --section-padding: 4rem; /* 64px */
-  
-      --section-header-gap: 2rem; /* 32px */
-  
-      --grid-gap: 1rem; /* 16px */
-  
-      --paragraph-gap: 1rem; /* 16px */
-    }
-  }
+}

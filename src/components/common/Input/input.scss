@@ -1,0 +1,38 @@
+.cy-input {
+  width: var(--input-width);
+  height: var(--input-height);
+  padding: var(--input-padding-block) var(--input-padding-inline);
+  border: calc(var(--space-1) / 8) solid var(--han500);
+  border-radius: var(--radius-input);
+  color: var(--ink200);
+  background: var(--white);
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+
+  &::placeholder {
+    color: var(--ink200);
+  }
+
+  &:focus {
+    border-width: calc(var(--space-1) / 4);
+    border-color: var(--deep500);
+    color: var(--ink500);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.cy-input--filled {
+  border-color: var(--han500);
+  color: var(--ink500);
+}
+
+.cy-input--error {
+  border-width: calc(var(--space-1) / 4);
+  border-color: var(--danger);
+  color: var(--ink500);
+}

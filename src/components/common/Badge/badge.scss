@@ -1,0 +1,56 @@
+.cy-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--badge-padding);
+  border-radius: var(--radius-badge);
+  white-space: nowrap;
+}
+
+.cy-badge--confirmed {
+  color: var(--han50);
+  background: var(--deep500);
+}
+
+.cy-badge--progress {
+  color: var(--han50);
+  background: var(--deep600);
+}
+
+.cy-badge--disabled {
+  color: var(--ink300);
+  background: var(--ink100);
+}
+
+.cy-badge--deadline {
+  color: var(--han50);
+  background: var(--danger);
+}
+
+.cy-badge--new,
+.cy-badge--recommend {
+  color: var(--ink500);
+  background: var(--moon500);
+}
+
+.cy-badge--best {
+  color: var(--han50);
+  background: var(--ink500);
+}
+
+.cy-badge--oneday {
+  color: var(--han50);
+  background: var(--plum500);
+}
+
+.cy-badge--guide {
+  color: var(--ink500);
+  background: var(--han200);
+}
+
+.cy-badge--dday {
+  color: var(--ink500);
+  background: var(--moon100);
+  padding: var(--badge-dday-padding);
+  border-radius: var(--radius-full);
+}

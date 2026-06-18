@@ -1,0 +1,95 @@
+$colors: (
+  "han50": var(--han50),
+  "han100": var(--han100),
+  "han200": var(--han200),
+  "han300": var(--han300),
+  "han400": var(--han400),
+  "han500": var(--han500),
+  "ink50": var(--ink50),
+  "ink100": var(--ink100),
+  "ink200": var(--ink200),
+  "ink300": var(--ink300),
+  "ink400": var(--ink400),
+  "ink500": var(--ink500),
+  "moon100": var(--moon100),
+  "moon200": var(--moon200),
+  "moon300": var(--moon300),
+  "moon400": var(--moon400),
+  "moon500": var(--moon500),
+  "moon600": var(--moon600),
+  "deep50": var(--deep50),
+  "deep100": var(--deep100),
+  "deep200": var(--deep200),
+  "deep300": var(--deep300),
+  "deep400": var(--deep400),
+  "deep500": var(--deep500),
+  "deep600": var(--deep600),
+  "deep700": var(--deep700),
+  "plum50": var(--plum50),
+  "plum100": var(--plum100),
+  "plum200": var(--plum200),
+  "plum300": var(--plum300),
+  "plum400": var(--plum400),
+  "plum500": var(--plum500),
+  "plum600": var(--plum600),
+  "plum700": var(--plum700),
+  "danger": var(--danger),
+  "success": var(--success),
+  "warning": var(--warning),
+  "info": var(--info),
+  "white": var(--white),
+);
+
+$radii: (
+  "xs": var(--radius-xs),
+  "sm": var(--radius-sm),
+  "md": var(--radius-md),
+  "lg": var(--radius-lg),
+  "full": var(--radius-full),
+);
+
+@each $name, $value in $colors {
+  .color-#{$name} {
+    color: $value;
+  }
+
+  .bg-#{$name} {
+    background-color: $value;
+  }
+
+  .border-#{$name} {
+    border-color: $value;
+  }
+}
+
+@for $i from 1 through 11 {
+  .space-top-#{$i} {
+    margin-top: var(--space-#{$i});
+  }
+
+  .space-bottom-#{$i} {
+    margin-bottom: var(--space-#{$i});
+  }
+
+  .space-left-#{$i} {
+    margin-left: var(--space-#{$i});
+  }
+
+  .space-right-#{$i} {
+    margin-right: var(--space-#{$i});
+  }
+
+  .padding-#{$i} {
+    padding: var(--space-#{$i});
+  }
+
+  .gap-#{$i} {
+    gap: var(--space-#{$i});
+  }
+}
+
+@each $name, $value in $radii {
+  .radius-#{$name} {
+    border-radius: $value;
+  }
+}

@@ -1,0 +1,38 @@
+.event-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(var(--space-1) + var(--space-1) / 4);
+  width: 342px;
+  min-height: 321px;
+  padding: calc(var(--space-2) + var(--space-1) / 2);
+  border-radius: calc(var(--space-2) + var(--space-1) / 2);
+  background: var(--deep500);
+  color: var(--han50);
+  overflow: hidden;
+}
+
+.event-card__subtitle {
+  color: var(--moon500);
+}
+
+.event-card__description,
+.event-card__date {
+  color: var(--han200);
+}
+
+.event-card .cy-button {
+  margin-block-start: auto;
+}
+
+.event-card .cy-button__icon {
+  width: var(--space-3);
+  height: var(--space-3);
+}
+
+@media (max-width: 768px) {
+  .event-card {
+    width: 100%;
+    max-width: 342px;
+  }
+}

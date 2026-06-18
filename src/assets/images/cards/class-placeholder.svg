@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="342" height="207" viewBox="0 0 342 207" role="img" aria-labelledby="title">
+  <title id="title">Class card placeholder</title>
+  <rect width="342" height="207" fill="var(--han100)"/>
+  <circle cx="171" cy="104" r="54" fill="var(--deep50)"/>
+  <path d="M117 126c26-46 82-46 108 0" fill="none" stroke="var(--deep500)" stroke-width="8" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="342" height="160" viewBox="0 0 342 160" role="img" aria-labelledby="title">
+  <title id="title">Event card placeholder</title>
+  <rect width="342" height="160" fill="var(--plum50)"/>
+  <circle cx="111" cy="80" r="42" fill="var(--plum500)"/>
+  <circle cx="231" cy="80" r="42" fill="var(--moon500)"/>
+</svg>

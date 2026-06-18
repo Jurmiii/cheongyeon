@@ -1,0 +1,73 @@
+:root {
+  --font-display: "GapyeongHanseokbongBigBrush", serif;
+  --font-headline: "MaruBuri", serif;
+  --font-body: "NanumSquareNeo", sans-serif;
+  --font-primary: var(--font-body);
+}
+
+@mixin font-token($family, $size, $weight, $line-height) {
+  font-family: $family;
+  font-size: $size;
+  font-weight: $weight;
+  line-height: $line-height;
+}
+
+.ft-96r {
+  @include font-token(var(--font-display), 6rem, 400, 7.5rem);
+}
+
+.ft-64r {
+  @include font-token(var(--font-headline), 4rem, 300, 4.5rem);
+}
+
+.ft-48b {
+  @include font-token(var(--font-headline), 3rem, 700, 4rem);
+}
+
+.ft-36b {
+  @include font-token(var(--font-headline), 2.25rem, 700, 3.25rem);
+}
+
+.ft-36r {
+  @include font-token(var(--font-headline), 2.25rem, 600, 3.25rem);
+}
+
+.ft-28b {
+  @include font-token(var(--font-headline), 1.75rem, 700, 2.5rem);
+}
+
+.ft-28r {
+  @include font-token(var(--font-headline), 1.75rem, 600, 2.5rem);
+}
+
+.ft-22b {
+  @include font-token(var(--font-body), 1.375rem, 500, 2.25rem);
+}
+
+.ft-22r {
+  @include font-token(var(--font-body), 1.375rem, 400, 2.25rem);
+}
+
+.ft-18b {
+  @include font-token(var(--font-body), 1.125rem, 600, 1.875rem);
+}
+
+.ft-18r {
+  @include font-token(var(--font-body), 1.125rem, 500, 1.875rem);
+}
+
+.ft-16b {
+  @include font-token(var(--font-body), 1rem, 600, 1.625rem);
+}
+
+.ft-16r {
+  @include font-token(var(--font-body), 1rem, 500, 1.625rem);
+}
+
+.ft-14b {
+  @include font-token(var(--font-body), 0.875rem, 500, 1.375rem);
+}
+
+.ft-14r {
+  @include font-token(var(--font-body), 0.875rem, 500, 1.375rem);
+}

@@ -1,0 +1,28 @@
+.card-demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-title-gap);
+}
+
+.card-demo__grid {
+  display: grid;
+  gap: var(--card-grid-gap);
+}
+
+.card-demo__grid--classes,
+.card-demo__grid--contents,
+.card-demo__grid--events {
+  grid-template-columns: repeat(2, max-content);
+}
+
+.card-demo__grid--reservations {
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 768px) {
+  .card-demo__grid--classes,
+  .card-demo__grid--contents,
+  .card-demo__grid--events {
+    grid-template-columns: 1fr;
+  }
+}

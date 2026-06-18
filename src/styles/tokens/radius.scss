@@ -1,0 +1,15 @@
+:root {
+  --radius-1: 0.25rem;
+  --radius-2: 0.5rem;
+  --radius-3: 0.75rem;
+  --radius-4: 1rem;
+  --radius-full: 99rem;
+  --radius-xs: var(--radius-1);
+  --radius-sm: var(--radius-2);
+  --radius-md: var(--radius-3);
+  --radius-lg: var(--radius-4);
+
+  --radius-badge: var(--radius-1);
+  --radius-button: var(--radius-2);
+  --radius-input: var(--radius-2);
+}

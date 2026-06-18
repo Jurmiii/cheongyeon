@@ -1,0 +1,45 @@
+:root {
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 2.5rem;
+  --space-6: 3rem;
+  --space-7: 4rem;
+  --space-8: 4.5rem;
+  --space-9: 5rem;
+  --space-10: 6rem;
+  --space-11: 7.5rem;
+
+  --section-padding: var(--space-11);
+  --section-title-gap: var(--space-6);
+  --card-grid-gap: var(--space-3);
+  --paragraph-gap: var(--space-3);
+  --badge-padding: 0.625rem;
+  --badge-dday-padding: 0.75rem;
+  --button-padding-block: 0.75rem;
+  --button-padding-inline: var(--space-3);
+  --input-width: 20.9375rem;
+  --input-height: 3rem;
+  --input-padding-block: 0.8125rem;
+  --input-padding-inline: 1.875rem;
+  --icon-size-sm: 1.125rem;
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --section-padding: var(--space-10);
+    --section-title-gap: var(--space-5);
+    --card-grid-gap: var(--space-3);
+    --paragraph-gap: var(--space-2);
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --section-padding: var(--space-7);
+    --section-title-gap: var(--space-4);
+    --card-grid-gap: var(--space-2);
+    --paragraph-gap: var(--space-2);
+  }
+}

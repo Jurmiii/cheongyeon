@@ -1,0 +1,12 @@
+.cy-section {
+  padding-block: var(--section-padding);
+}
+
+.cy-section__header {
+  margin-bottom: var(--section-title-gap);
+}
+
+.cy-section__content {
+  display: grid;
+  gap: var(--paragraph-gap);
+}

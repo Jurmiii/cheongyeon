@@ -1,18 +1,18 @@
-.container {
+.cy-container {
   width: 100%;
   max-width: var(--container-desktop);
-  margin: 0 auto;
+  margin-inline: auto;
   padding-inline: var(--space-3);
 }
 
 @media (max-width: 1024px) {
-  .container {
+  .cy-container {
     max-width: var(--container-tablet);
   }
 }
 
 @media (max-width: 768px) {
-  .container {
+  .cy-container {
     max-width: var(--container-mobile);
     padding-inline: var(--space-2);
   }

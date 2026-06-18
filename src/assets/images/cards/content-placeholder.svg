@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="342" height="227" viewBox="0 0 342 227" role="img" aria-labelledby="title">
+  <title id="title">Content card placeholder</title>
+  <rect width="342" height="227" fill="var(--han200)"/>
+  <rect x="72" y="58" width="198" height="111" rx="24" fill="var(--plum200)"/>
+  <path d="M104 138h134" stroke="var(--plum500)" stroke-width="8" stroke-linecap="round"/>
+</svg>
