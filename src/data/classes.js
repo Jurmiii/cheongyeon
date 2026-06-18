@@ -20,7 +20,7 @@ export const classes = [
     duration: "120분",
     capacity: "6명",
     price: "68,000원",
-    badge: "추천",
+    badge: "신규, 추천",
     badgeVariant: "recommend",
     buttonLabel: "예약하기",
     image: classImage,

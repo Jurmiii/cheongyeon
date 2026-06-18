@@ -1,27 +1,35 @@
 .cy-input {
+  box-sizing: border-box;
   width: var(--input-width);
   height: var(--input-height);
   padding: var(--input-padding-block) var(--input-padding-inline);
   border: calc(var(--space-1) / 8) solid var(--han500);
   border-radius: var(--radius-input);
   color: var(--ink200);
+  caret-color: var(--ink500);
   background: var(--white);
-  transition:
-    border-color 0.2s ease,
-    color 0.2s ease;
 
   &::placeholder {
     color: var(--ink200);
   }
 
   &:focus {
-    border-width: calc(var(--space-1) / 4);
-    border-color: var(--deep500);
+    outline: none;
+    box-shadow: none;
+  }
+
+  &:focus::placeholder {
+    color: transparent;
+  }
+
+  &:not(:placeholder-shown):not(:disabled) {
     color: var(--ink500);
   }
 
   &:disabled {
-    opacity: 0.5;
+    border-color: var(--han300);
+    color: var(--ink200);
+    background: var(--han200);
     cursor: not-allowed;
   }
 }
@@ -35,4 +43,16 @@
   border-width: calc(var(--space-1) / 4);
   border-color: var(--danger);
   color: var(--ink500);
+}
+
+.cy-input--success {
+  border-width: calc(var(--space-1) / 4);
+  border-color: var(--success);
+  color: var(--ink500);
+}
+
+.cy-input--disabled {
+  border-color: var(--han300);
+  color: var(--ink200);
+  background: var(--han200);
 }

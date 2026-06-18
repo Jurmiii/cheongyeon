@@ -3,13 +3,13 @@ import contentImage from "../assets/images/cards/content-placeholder.svg";
 export const contents = [
   {
     id: 1,
-    title: "계절에 맞는 차 고르는 법",
-    description: "몸의 리듬과 계절감에 맞춰 차를 선택하는 기준을 소개합니다.",
-    date: "2026.06.18",
-    viewCount: "조회 128",
-    badge: "티 가이드",
-    badgeVariant: "guide",
-    detailLabel: "자세히 보기",
+    category: "TEA GUIDE",
+    title: "여름에 마시면 좋은 차 5가지",
+    description: "자연의 색과 향을 느끼며\n나만의 차 시간을 가져보세요.",
+    date: "2026.08.20",
+    viewCount: "조회 1,245",
+    badge: "신규 클래스",
+    badgeVariant: "recommend",
     image: contentImage,
   },
   {
@@ -18,9 +18,8 @@ export const contents = [
     description: "입문자가 부담 없이 시작할 수 있는 기본 다구 구성을 정리했습니다.",
     date: "2026.06.20",
     viewCount: "조회 96",
-    badge: "신규",
-    badgeVariant: "new",
-    detailLabel: "자세히 보기",
+    badge: "신규, 추천",
+    badgeVariant: "recommend",
     image: contentImage,
   },
 ];

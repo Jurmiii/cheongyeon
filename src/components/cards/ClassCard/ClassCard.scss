@@ -1,17 +1,18 @@
+@use "../../../styles/abstracts/breakpoints" as *;
+
 .class-card {
-  width: 362px;
-  min-height: 493px;
-  padding: calc(var(--space-1) + var(--space-1) / 4);
+  width: 21.375rem;
+  min-height: 30.25rem;
   border-radius: calc(var(--space-2) + var(--space-1) / 2);
-  background: var(--white);
+  background: var(--han50);
   color: var(--ink500);
   overflow: hidden;
 }
 
 .class-card__image-wrap {
-  width: 342px;
-  height: 207px;
-  border-radius: calc(var(--space-2) + var(--space-1) / 2);
+  width: 21.375rem;
+  height: 12.9375rem;
+  border-radius: calc(var(--space-2) + var(--space-1) / 2) calc(var(--space-2) + var(--space-1) / 2) 0 0;
   overflow: hidden;
 }
 
@@ -26,7 +27,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: calc(var(--space-1) + var(--space-1) / 4);
-  padding-block-start: calc(var(--space-1) + var(--space-1) / 4);
+  padding: calc(var(--space-2) + var(--space-2) / 4);
 }
 
 .class-card__description {
@@ -46,15 +47,24 @@
   gap: var(--space-1);
 }
 
+.class-card__meta-item i,
 .class-card__meta-item svg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: var(--space-3);
   height: var(--space-3);
+  font-size: var(--space-3);
 }
 
-@media (max-width: 768px) {
+.class-card__body .cy-button {
+  width: 100%;
+}
+
+@media (max-width: $tablet) {
   .class-card {
     width: 100%;
-    max-width: 362px;
+    max-width: 21.375rem;
   }
 
   .class-card__image-wrap {

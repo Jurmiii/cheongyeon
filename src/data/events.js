@@ -3,13 +3,13 @@ import eventImage from "../assets/images/cards/event-placeholder.svg";
 export const events = [
   {
     id: 1,
-    badge: "마감임박",
-    badgeVariant: "deadline",
-    subTitle: "여름 다회",
-    title: "초여름 차 시음회",
-    description: "청연이 고른 계절 차와 다식을 함께 나누는 특별 행사입니다.",
-    date: "2026.07.01 - 2026.07.07",
-    buttonLabel: "클래스 더보기",
+    badge: "진행중",
+    badgeVariant: "progress",
+    subTitle: "여름 맞이 특별 이벤트",
+    title: "차 한 잔의 여름",
+    description: "청량한 여름, 소중한 사람과 함께\n차 한 잔의 여유를 나누세요.",
+    date: "2026.07.01 ~ 2026.08.30",
+    buttonLabel: "이벤트 자세기 보기",
     image: eventImage,
   },
   {
@@ -20,7 +20,7 @@ export const events = [
     title: "정기 클래스 얼리버드",
     description: "정기 수업을 먼저 예약하는 회원에게 특별 혜택을 제공합니다.",
     date: "2026.07.10 - 2026.07.31",
-    buttonLabel: "클래스 더보기",
+    buttonLabel: "이벤트 자세히 보기",
     image: eventImage,
   },
 ];

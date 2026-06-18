@@ -2,7 +2,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--badge-padding);
+  padding: 0.3125rem 0.625rem;
   border-radius: var(--radius-badge);
   white-space: nowrap;
 }
@@ -27,7 +27,6 @@
   background: var(--danger);
 }
 
-.cy-badge--new,
 .cy-badge--recommend {
   color: var(--ink500);
   background: var(--moon500);
@@ -48,9 +47,11 @@
   background: var(--han200);
 }
 
-.cy-badge--dday {
+.cy-badge--d7 {
   color: var(--ink500);
   background: var(--moon100);
-  padding: var(--badge-dday-padding);
-  border-radius: var(--radius-full);
+  width: 5rem;
+  height: 2rem;
+  padding: 0.75rem;
+  border-radius: 3.125rem;
 }

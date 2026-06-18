@@ -18,20 +18,7 @@
   }
 }
 
-.cy-button__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--icon-size-sm);
-  height: var(--icon-size-sm);
-}
-
-.cy-button--full {
-  width: 100%;
-}
-
-.cy-button--payment,
-.cy-button--primary-deep {
+.cy-button--payment {
   color: var(--white);
   background: var(--deep500);
 
@@ -40,7 +27,7 @@
   }
 
   &:active:not(:disabled) {
-    background: var(--deep700);
+    background: var(--deep600);
   }
 
   &:disabled {
@@ -48,12 +35,15 @@
   }
 }
 
-.cy-button--secondary-deep {
+.cy-button--reservationEdit {
   color: var(--deep500);
   border-color: var(--deep500);
+  padding: var(--button-padding-block) var(--button-padding-inline);
+  border-radius: var(--radius-button);
+  background: transparent;
 
   &:hover:not(:disabled) {
-    color: var(--white);
+    color: var(--deep600);
     border-color: var(--deep600);
     background: var(--deep50);
   }
@@ -67,28 +57,25 @@
   &:disabled {
     color: var(--deep300);
     border-color: var(--deep200);
+    background: transparent;
   }
 }
 
-.cy-button--text-deep {
-  color: var(--deep500);
+.cy-button--cancel {
+  color: var(--ink500);
+  border-color: var(--ink200);
+  background: transparent;
 
   &:hover:not(:disabled) {
-    color: var(--deep600);
-    background: var(--deep50);
-  }
-
-  &:active:not(:disabled) {
-    color: var(--deep600);
-    background: var(--deep100);
+    background: var(--ink50);
   }
 
   &:disabled {
-    color: var(--deep300);
+    color: var(--ink200);
   }
 }
 
-.cy-button--primary-plum {
+.cy-button--reservation {
   color: var(--white);
   background: var(--plum500);
 
@@ -96,29 +83,18 @@
     background: var(--plum600);
   }
 
-  &:active:not(:disabled) {
-    background: var(--plum700);
-  }
-
   &:disabled {
     background: var(--plum200);
   }
 }
 
-.cy-button--secondary-plum {
+.cy-button--favorite {
   color: var(--plum500);
   border-color: var(--plum500);
+  background: transparent;
 
   &:hover:not(:disabled) {
-    color: var(--white);
-    border-color: var(--plum600);
     background: var(--plum50);
-  }
-
-  &:active:not(:disabled) {
-    color: var(--plum600);
-    border-color: var(--plum600);
-    background: var(--plum100);
   }
 
   &:disabled {
@@ -127,17 +103,13 @@
   }
 }
 
-.cy-button--text-plum {
+.cy-button--detail {
   color: var(--plum500);
+  background: transparent;
 
   &:hover:not(:disabled) {
     color: var(--plum600);
     background: var(--plum50);
-  }
-
-  &:active:not(:disabled) {
-    color: var(--plum600);
-    background: var(--plum100);
   }
 
   &:disabled {
@@ -145,33 +117,34 @@
   }
 }
 
-.cy-button--more {
+.cy-button--classMore {
   color: var(--white);
   border-color: var(--white);
+  gap: var(--space-1);
+  padding: var(--button-padding-block) var(--button-padding-inline);
+  border-radius: var(--radius-button);
+  background: transparent;
 
   &:hover:not(:disabled) {
     color: var(--han50);
     border-color: transparent;
     background: var(--deep500);
   }
+
+  i {
+    width: calc(var(--space-2) + var(--space-1) / 4);
+    height: calc(var(--space-2) + var(--space-1) / 4);
+    font-size: calc(var(--space-2) + var(--space-1) / 4);
+    line-height: 1;
+  }
 }
 
 .cy-button--kakao {
   color: var(--ink400);
-  background: var(--color-kakao);
-
-  &:hover:not(:disabled),
-  &:active:not(:disabled) {
-    background: var(--color-kakao);
-  }
+  background: var(--kakao);
 }
 
 .cy-button--naver {
-  color: var(--ink500);
-  background: var(--color-naver);
-
-  &:hover:not(:disabled),
-  &:active:not(:disabled) {
-    background: var(--color-naver);
-  }
+  color: var(--white);
+  background: var(--naver);
 }

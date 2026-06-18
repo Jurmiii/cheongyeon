@@ -1,38 +1,53 @@
+@use "../../../styles/abstracts/breakpoints" as *;
+
 .event-card {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: calc(var(--space-1) + var(--space-1) / 4);
-  width: 342px;
-  min-height: 321px;
+  width: 21.375rem;
+  min-height: 20.0625rem;
   padding: calc(var(--space-2) + var(--space-1) / 2);
   border-radius: calc(var(--space-2) + var(--space-1) / 2);
-  background: var(--deep500);
-  color: var(--han50);
+  background: var(--han50);
+  color: var(--ink500);
   overflow: hidden;
 }
 
 .event-card__subtitle {
-  color: var(--moon500);
+  color: var(--ink400);
+}
+
+.event-card__title {
+  color: var(--ink500);
 }
 
 .event-card__description,
 .event-card__date {
-  color: var(--han200);
+  color: var(--ink400);
+}
+
+.event-card__description {
+  white-space: pre-line;
 }
 
 .event-card .cy-button {
   margin-block-start: auto;
+  width: 100%;
+  color: var(--ink400);
+  border-color: var(--ink400);
 }
 
-.event-card .cy-button__icon {
+.event-card .cy-button i {
   width: var(--space-3);
   height: var(--space-3);
+  color: var(--ink400);
+  font-size: var(--space-3);
 }
 
-@media (max-width: 768px) {
+@media (max-width: $tablet) {
   .event-card {
     width: 100%;
-    max-width: 342px;
+    max-width: 21.375rem;
   }
 }

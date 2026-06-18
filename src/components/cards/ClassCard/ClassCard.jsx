@@ -62,7 +62,7 @@ export default function ClassCard({
             <span className="class-card__meta-label">{price}</span>
           </li>
         </ul>
-        <Button variant="primary-plum">{buttonLabel}</Button>
+        <Button variant="reservation">{buttonLabel}</Button>
       </div>
     </article>
   );

@@ -1,32 +1,51 @@
+@use "../../../styles/abstracts/breakpoints" as *;
+
 .reservation-card {
-  display: grid;
-  grid-template-columns: 356px minmax(0, 1fr);
-  width: 708px;
-  min-height: 356px;
+  position: relative;
+  box-sizing: border-box;
+  width: 44.25rem;
+  height: 22.25rem;
+  padding: 1.25rem;
   border-radius: calc(var(--space-2) + var(--space-1) / 2);
-  background: var(--white);
+  background: var(--han50);
   color: var(--ink500);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .reservation-card__image-wrap {
-  width: 356px;
-  height: 100%;
-  min-height: 356px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 22.875rem;
+  height: 22.25rem;
+  border-radius: calc(var(--space-2) + var(--space-1) / 2) 0 0 calc(var(--space-2) + var(--space-1) / 2);
   overflow: hidden;
 }
 
 .reservation-card__image {
-  width: 100%;
-  height: 100%;
+  display: block;
+  width: 22.25rem;
+  height: 22.875rem;
   object-fit: cover;
 }
 
 .reservation-card__body {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--space-1) + var(--space-1) / 4);
-  padding: calc(var(--space-2) + var(--space-1) / 2);
+  align-items: flex-start;
+  box-sizing: border-box;
+  width: calc(100% - 22.25rem);
+  height: 100%;
+  margin-left: 22.25rem;
+  padding: 0;
+  overflow: hidden;
+}
+
+.reservation-card__body .cy-button {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  padding-block: 0;
 }
 
 .reservation-card__heading {
@@ -36,42 +55,56 @@
   gap: calc(var(--space-1) + var(--space-1) / 4);
 }
 
-.reservation-card__details {
+.reservation-card__info {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--space-2) + var(--space-1) / 2);
+  gap: 1.25rem;
+  margin-top: 1.25rem;
 }
 
-.reservation-card__detail {
-  display: grid;
-  grid-template-columns: var(--space-3) max-content minmax(0, 1fr);
+.reservation-card__info-item {
+  display: flex;
   align-items: center;
+  color: var(--ink500);
   gap: var(--space-1);
-  color: var(--ink400);
 }
 
-.reservation-card__detail svg {
+.reservation-card__info-item i,
+.reservation-card__won-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: var(--space-3);
   height: var(--space-3);
-  color: var(--deep500);
-}
-
-.reservation-card__detail dt {
-  color: var(--ink300);
-}
-
-.reservation-card__detail dd {
   color: var(--ink500);
+  font-size: var(--space-3);
 }
 
-@media (max-width: 768px) {
+.reservation-card__won-icon {
+  border: calc(var(--space-1) / 8) solid currentColor;
+  border-radius: 50%;
+}
+
+.reservation-card__won-icon::before {
+  content: "₩";
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.reservation-card__info + .cy-button {
+  margin-top: 0.625rem;
+}
+
+@media (max-width: $tablet) {
   .reservation-card {
-    grid-template-columns: 1fr;
     width: 100%;
-    max-width: 356px;
+    max-width: 22.25rem;
+    height: auto;
   }
 
-  .reservation-card__image-wrap {
+  .reservation-card__body {
     width: 100%;
+    height: auto;
+    margin-left: 0;
   }
 }

@@ -19,7 +19,7 @@ html {
 }
 
 body {
-  min-width: 320px;
+  min-width: 20rem;
   line-height: 1.5;
   word-break: keep-all;
   overflow-wrap: break-word;
@@ -91,13 +91,12 @@ textarea {
   resize: none;
 }
 
-input:focus-visible,
 textarea:focus-visible,
 select:focus-visible,
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--deep500);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--deep500);
+  outline-offset: 0.125rem;
 }
 
 table {

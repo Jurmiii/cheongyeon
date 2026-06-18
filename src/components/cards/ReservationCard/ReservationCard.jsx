@@ -1,20 +1,14 @@
 import { Badge, Button } from "../../common";
 import "./ReservationCard.scss";
 
-function DetailIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="2" />
-      <path d="M12 8v4l3 2" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-    </svg>
-  );
-}
-
 export default function ReservationCard({
   status,
   badgeVariant,
   title,
-  details,
+  schedule,
+  reserverInfo,
+  price,
+  location,
   buttonLabel,
   image,
 }) {
@@ -28,16 +22,25 @@ export default function ReservationCard({
           <Badge variant={badgeVariant}>{status}</Badge>
           <h3 className="reservation-card__title ft-22b">{title}</h3>
         </div>
-        <dl className="reservation-card__details">
-          {details.map((item) => (
-            <div className="reservation-card__detail ft-16r" key={item.id}>
-              <DetailIcon />
-              <dt>{item.label}</dt>
-              <dd>{item.value}</dd>
-            </div>
-          ))}
-        </dl>
-        <Button variant="secondary-deep">{buttonLabel}</Button>
+        <div className="reservation-card__info">
+          <p className="reservation-card__info-item ft-16r">
+            <i className="fa-regular fa-calendar" aria-hidden="true" />
+            <span>{schedule}</span>
+          </p>
+          <p className="reservation-card__info-item ft-16r">
+            <i className="fa-light fa-user" aria-hidden="true" />
+            <span>{reserverInfo}</span>
+          </p>
+          <p className="reservation-card__info-item ft-16r">
+            <span className="reservation-card__won-icon" aria-hidden="true" />
+            <span>{price}</span>
+          </p>
+          <p className="reservation-card__info-item ft-16r">
+            <i className="fa-regular fa-location-dot" aria-hidden="true" />
+            <span>{location}</span>
+          </p>
+        </div>
+        <Button variant="reservationEdit">{buttonLabel}</Button>
       </div>
     </article>
   );

@@ -5,12 +5,11 @@ export type BadgeVariant =
   | "progress"
   | "disabled"
   | "deadline"
-  | "new"
   | "recommend"
   | "best"
   | "oneday"
   | "guide"
-  | "dday";
+  | "d7";
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   variant: BadgeVariant;
