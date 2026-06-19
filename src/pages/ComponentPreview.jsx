@@ -1,9 +1,10 @@
-import { Badge, Button, Input } from "../components/common";
+import { Badge, Button, Calendar, Header, Input, MainContentBox, ReservationInfoEdit, TeaClassContentBox } from "../components/common";
 import {
   ClassCard,
   ContentCard,
   EventCard,
   ReservationCard,
+  SeasonClassCard,
 } from "../components/cards";
 import { classes } from "../data/classes";
 import { contents } from "../data/contents";
@@ -103,6 +104,11 @@ const buttons = [
 export default function ComponentPreview() {
   return (
     <main className="component-preview">
+      <section className="component-preview__section component-preview__section--header">
+        <h2 className="ft-28b">Header</h2>
+        <Header />
+      </section>
+
       <section className="component-preview__section">
         <h2 className="ft-28b">Typography</h2>
         <div className="component-preview__stack">
@@ -170,12 +176,33 @@ export default function ComponentPreview() {
           <ContentCard {...contents[0]} />
           <ReservationCard {...reservations[0]} />
           <EventCard {...events[0]} />
+          <SeasonClassCard />
         </div>
       </section>
 
       <section className="component-preview__section component-preview__section--login">
         <h2 className="ft-28b">Login</h2>
         <Login />
+      </section>
+
+      <section className="component-preview__section">
+        <h2 className="ft-28b">Calendar</h2>
+        <Calendar />
+      </section>
+
+      <section className="component-preview__section">
+        <h2 className="ft-28b">Main Content Box</h2>
+        <MainContentBox />
+      </section>
+
+      <section className="component-preview__section">
+        <h2 className="ft-28b">Tea Class Content Box</h2>
+        <TeaClassContentBox />
+      </section>
+
+      <section className="component-preview__section">
+        <h2 className="ft-28b">Reservation Info Edit</h2>
+        <ReservationInfoEdit />
       </section>
     </main>
   );

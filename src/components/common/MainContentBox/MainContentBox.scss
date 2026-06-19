@@ -1,0 +1,18 @@
+.main-content-box {
+  width: 37.9375rem;
+  height: 41rem;
+}
+
+.main-content-box__image {
+  width: 37.9375rem;
+  height: 33.9375rem;
+  background: var(--ink500);
+}
+
+.main-content-box__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-3);
+  background: transparent;
+}
