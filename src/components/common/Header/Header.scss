@@ -3,14 +3,12 @@
   z-index: 10;
   width: 1920px;
   height: 89.99px;
-  overflow: hidden;
-  background: var(--han50);
+  overflow: visible;
+  background: transparent;
   color: var(--ink500);
-  transition: height 0.24s ease;
-}
-
-.site-header.han50 {
-  background: var(--han50);
+  transition:
+    height 0.24s ease,
+    background-color 0.24s ease;
 }
 
 .site-header .ink500 {
@@ -19,6 +17,7 @@
 
 .site-header--open {
   height: 379px;
+  background: var(--han50);
 }
 
 .site-header__inner {
@@ -42,6 +41,13 @@
   height: 100%;
 }
 
+.site-header__interactive {
+  display: flex;
+  align-self: flex-start;
+  align-items: flex-start;
+  height: 379px;
+}
+
 .site-header__gnb {
   display: flex;
   align-items: center;
@@ -55,7 +61,7 @@
   align-items: center;
   gap: 77px;
   height: 89.99px;
-  margin-left: 77px;
+  margin-left: 133px;
 }
 
 .site-header__menu-item {
@@ -71,13 +77,25 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   color: var(--ink500);
   text-decoration: none;
 }
 
 .site-header__action-link {
-  min-width: 24px;
+  min-width: 0;
   height: 24px;
+  cursor: pointer;
+}
+
+.site-header__user-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.site-header__angle-icon {
+  width: 16px;
+  height: 16px;
 }
 
 .site-header__dropdown-line {
@@ -88,6 +106,7 @@
   height: 1px;
   background: var(--ink500);
   opacity: 0;
+  z-index: 2;
   transform: translateX(-50%);
   transition: opacity 0.16s ease;
 }
@@ -109,6 +128,23 @@
     transform 0.18s ease;
 }
 
+.site-header__menu-item--action .site-header__submenu {
+  top: 89.99px;
+  width: 135px;
+  min-width: 135px;
+  gap: 24px;
+  justify-content: center;
+  background: var(--han50);
+}
+
+.site-header__menu-item--user .site-header__submenu {
+  height: 214px;
+}
+
+.site-header__menu-item--language .site-header__submenu {
+  height: 105px;
+}
+
 .site-header__submenu-link {
   display: inline-flex;
   align-items: center;
@@ -118,12 +154,12 @@
   text-decoration: none;
 }
 
-.site-header--open .site-header__dropdown-line,
-.site-header--open .site-header__submenu {
+.site-header__menu-item--active .site-header__dropdown-line,
+.site-header__menu-item--active .site-header__submenu {
   opacity: 1;
   pointer-events: auto;
 }
 
-.site-header--open .site-header__submenu {
+.site-header__menu-item--active .site-header__submenu {
   transform: translateX(-50%) translateY(0);
 }

@@ -1,4 +1,4 @@
-import { Badge, Button, Calendar, Header, Input, MainContentBox, ReservationInfoEdit, TeaClassContentBox } from "../components/common";
+import { Badge, Button, Calendar, Footer, Header, Input, MainContentBox, ReservationInfoEdit, TeaClassContentBox } from "../components/common";
 import {
   ClassCard,
   ContentCard,
@@ -107,6 +107,11 @@ export default function ComponentPreview() {
       <section className="component-preview__section component-preview__section--header">
         <h2 className="ft-28b">Header</h2>
         <Header />
+      </section>
+
+      <section className="component-preview__section component-preview__section--full">
+        <h2 className="ft-28b">Footer</h2>
+        <Footer />
       </section>
 
       <section className="component-preview__section">

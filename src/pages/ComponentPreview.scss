@@ -4,8 +4,11 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-7);
+  width: 1920px;
+  min-width: 1920px;
   min-height: 100svh;
-  padding: var(--space-7);
+  margin-inline: auto;
+  padding: var(--space-7) 0;
   background: var(--han100);
   color: var(--ink500);
 }
@@ -15,6 +18,19 @@
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-3);
+  width: 1440px;
+  margin-inline: auto;
+}
+
+.component-preview__section--header,
+.component-preview__section--full {
+  width: 1920px;
+}
+
+.component-preview__section--header > h2,
+.component-preview__section--full > h2 {
+  width: 1440px;
+  margin-inline: auto;
 }
 
 .component-preview__stack {
@@ -68,7 +84,17 @@
 
 @media (max-width: $tablet) {
   .component-preview {
+    width: 100%;
+    min-width: 0;
     padding: var(--space-3);
+  }
+
+  .component-preview__section,
+  .component-preview__section--header,
+  .component-preview__section--full,
+  .component-preview__section--header > h2,
+  .component-preview__section--full > h2 {
+    width: 100%;
   }
 
   .component-preview__colors {
