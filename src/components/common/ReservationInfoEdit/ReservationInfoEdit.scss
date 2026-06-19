@@ -1,10 +1,12 @@
 .reservation-info-edit {
-  width: 547px;
-  height: 610px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 34.1875rem;
+  height: 38.125rem;
   padding: calc(var(--space-7) - var(--space-1) / 2) var(--space-5);
   border-radius: var(--radius-lg);
   background: var(--white);
-  box-sizing: border-box;
 }
 
 .reservation-info-edit__header {
@@ -15,6 +17,7 @@
 
 .reservation-info-edit__form {
   display: flex;
+  flex: 1;
   flex-direction: column;
   margin-top: var(--space-4);
 }
@@ -62,13 +65,13 @@
   display: inline-flex;
   align-items: center;
   align-self: center;
-  gap: var(--space-1);
+  justify-content: center;
   width: fit-content;
   margin-top: var(--space-3);
+  gap: var(--space-1);
 }
 
 .reservation-info-edit__notice-icon {
-  flex: 0 0 auto;
   width: var(--space-1);
   height: calc(var(--space-1) + var(--space-1) / 4);
 }

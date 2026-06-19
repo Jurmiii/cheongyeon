@@ -1,4 +1,4 @@
-import { Badge, Button, Calendar, Input, MainContentBox, ReservationInfoEdit, TeaClassContentBox } from "../components/common";
+import { Badge, Button, Calendar, Header, Input, MainContentBox, ReservationInfoEdit, TeaClassContentBox } from "../components/common";
 import {
   ClassCard,
   ContentCard,
@@ -104,6 +104,11 @@ const buttons = [
 export default function ComponentPreview() {
   return (
     <main className="component-preview">
+      <section className="component-preview__section component-preview__section--header">
+        <h2 className="ft-28b">Header</h2>
+        <Header />
+      </section>
+
       <section className="component-preview__section">
         <h2 className="ft-28b">Typography</h2>
         <div className="component-preview__stack">

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Button from "../../common/Button";
+import { Button } from "../../common";
 import "./SeasonClassCard.scss";
 
 function ClockIcon() {
@@ -30,7 +30,7 @@ function WonIcon() {
 }
 
 export default function SeasonClassCard() {
-  const [isButtonHovered, setIsButtonHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <article className="season-class-card">
@@ -38,7 +38,6 @@ export default function SeasonClassCard() {
         <div className="season-class-card__image" aria-hidden="true" />
         <span className="season-class-card__badge ft-14b han200">시즌한정</span>
       </div>
-
       <div className="season-class-card__body">
         <h3 className="season-class-card__title ft-22b ink500">여름 다도클래스</h3>
         <p className="season-class-card__description ft-18r ink400">
@@ -53,20 +52,20 @@ export default function SeasonClassCard() {
           </li>
           <li className="season-class-card__meta-item">
             <UserIcon />
-            <span>8명</span>
+            <span>최대 6명</span>
           </li>
           <li className="season-class-card__meta-item">
             <WonIcon />
-            <span>70,000원</span>
+            <span>70,000</span>
           </li>
         </ul>
         <Button
           className="season-class-card__button"
           variant="classMore"
-          onMouseEnter={() => setIsButtonHovered(true)}
-          onMouseLeave={() => setIsButtonHovered(false)}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
-          {isButtonHovered ? "선택완료" : "선택하기"}
+          {isHovered ? "선택완료" : "선택하기"}
         </Button>
       </div>
     </article>

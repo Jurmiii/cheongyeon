@@ -1,77 +1,76 @@
 .calendar {
-  width: 708px;
-  height: 502px;
-  padding: 16px;
   box-sizing: border-box;
+  width: 46.875rem;
+  height: 31.375rem;
+  padding: var(--space-4) var(--space-5) var(--space-2);
+  border-radius: var(--radius-lg);
   background: var(--white);
   color: var(--ink500);
 }
 
-.calendar__header {
-  display: grid;
-  grid-template-columns: 24px 1fr 24px;
-  align-items: center;
-  width: 644px;
+.calendar__header,
+.calendar__weekdays {
+  width: 40.25rem;
   margin-inline: auto;
-  column-gap: 248.5px;
 }
 
-.calendar__title {
-  text-align: center;
+.calendar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
 }
 
 .calendar__nav {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  color: var(--ink500);
+  width: var(--space-4);
+  height: var(--space-4);
+  border: 0;
+  color: var(--ink400);
+  background: transparent;
+  cursor: pointer;
 }
 
-.calendar__nav svg {
-  width: 24px;
-  height: 24px;
+.calendar__weekdays,
+.calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
 .calendar__weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  width: 644px;
-  margin-inline: auto;
-  column-gap: 91px;
-  margin-top: 16px;
+  margin-bottom: var(--space-2);
 }
 
 .calendar__weekday {
-  display: inline-flex;
-  justify-content: center;
-  min-width: 14px;
+  text-align: center;
+  color: var(--ink300);
 }
 
-.calendar__body {
-  display: flex;
-  flex-direction: column;
-  row-gap: 16px;
-  margin-top: 16px;
+.calendar__grid {
+  gap: var(--space-2) 0;
 }
 
-.calendar__week {
-  display: grid;
-  grid-template-columns: repeat(7, 50px);
-  column-gap: 54.34px;
-}
-
-.calendar__date {
+.calendar__day {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 50px;
-  height: 50px;
-  border-radius: 999px;
+  width: var(--space-5);
+  height: var(--space-5);
+  margin-inline: auto;
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--ink500);
+  background: transparent;
+  cursor: pointer;
 }
 
-.calendar__date--selected {
-  background: var(--ink500);
-  color: var(--white);
+.calendar__day:disabled {
+  cursor: default;
+}
+
+.calendar__day--selected {
+  color: var(--han50);
+  background: var(--deep500);
 }
