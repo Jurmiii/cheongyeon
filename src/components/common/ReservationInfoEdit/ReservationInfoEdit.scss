@@ -1,0 +1,74 @@
+.reservation-info-edit {
+  width: 547px;
+  height: 610px;
+  padding: calc(var(--space-7) - var(--space-1) / 2) var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  box-sizing: border-box;
+}
+
+.reservation-info-edit__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.reservation-info-edit__form {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-4);
+}
+
+.reservation-info-edit__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.reservation-info-edit__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.reservation-info-edit__label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.reservation-info-edit__required {
+  width: var(--space-1);
+  height: var(--space-1);
+  color: var(--danger);
+}
+
+.reservation-info-edit__field .cy-input {
+  width: 100%;
+}
+
+.reservation-info-edit__actions {
+  display: flex;
+  width: 100%;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.reservation-info-edit__actions .cy-button {
+  flex: 1;
+}
+
+.reservation-info-edit__notice {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: var(--space-1);
+  width: fit-content;
+  margin-top: var(--space-3);
+}
+
+.reservation-info-edit__notice-icon {
+  flex: 0 0 auto;
+  width: var(--space-1);
+  height: calc(var(--space-1) + var(--space-1) / 4);
+}
