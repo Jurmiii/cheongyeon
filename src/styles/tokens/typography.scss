@@ -17,7 +17,11 @@
 }
 
 .ft-64r {
-  @include font-token(var(--font-headline), 4rem, 300, 4.5rem);
+  @include font-token(var(--font-headline), 4rem, 400, 4.5rem);
+}
+
+.ft-64b  {
+  @include font-token(var(--font-headline), 4rem, 700, 4.5rem);
 }
 
 .ft-48b {
@@ -29,7 +33,7 @@
 }
 
 .ft-36r {
-  @include font-token(var(--font-headline), 2.25rem, 600, 3.25rem);
+  @include font-token(var(--font-headline), 2.25rem, 400, 3.25rem);
 }
 
 .ft-28b {
@@ -37,7 +41,7 @@
 }
 
 .ft-28r {
-  @include font-token(var(--font-headline), 1.75rem, 600, 2.5rem);
+  @include font-token(var(--font-headline), 1.75rem, 400, 2.5rem);
 }
 
 .ft-22b {
@@ -49,19 +53,19 @@
 }
 
 .ft-18b {
-  @include font-token(var(--font-body), 1.125rem, 600, 1.875rem);
-}
-
-.ft-18r {
   @include font-token(var(--font-body), 1.125rem, 500, 1.875rem);
 }
 
+.ft-18r {
+  @include font-token(var(--font-body), 1.125rem, 400, 1.875rem);
+}
+
 .ft-16b {
-  @include font-token(var(--font-body), 1rem, 600, 1.625rem);
+  @include font-token(var(--font-body), 1rem, 500, 1.625rem);
 }
 
 .ft-16r {
-  @include font-token(var(--font-body), 1rem, 500, 1.625rem);
+  @include font-token(var(--font-body), 1rem, 400, 1.625rem);
 }
 
 .ft-14b {
@@ -69,5 +73,5 @@
 }
 
 .ft-14r {
-  @include font-token(var(--font-body), 0.875rem, 500, 1.375rem);
+  @include font-token(var(--font-body), 0.875rem, 400, 1.375rem);
 }

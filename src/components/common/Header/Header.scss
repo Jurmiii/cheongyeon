@@ -1,8 +1,10 @@
 .site-header {
   position: relative;
   z-index: 10;
+  box-sizing: border-box;
   width: 100%;
   height: 89.99px;
+  padding-top: 1.625rem;
   overflow: visible;
   background: transparent;
   color: var(--ink500);
@@ -76,17 +78,21 @@
 
 .site-header__interactive {
   display: flex;
+  flex: 1;
   align-self: flex-start;
   align-items: flex-start;
   height: 379px;
 }
 
 .site-header__gnb {
+  position: absolute;
+  left: 50%;
   display: flex;
   align-items: center;
   gap: 86px;
   height: 89.99px;
-  margin-left: 154px;
+  margin-left: 0;
+  transform: translateX(-50%);
 }
 
 .site-header__actions {
@@ -94,7 +100,7 @@
   align-items: center;
   gap: 77px;
   height: 89.99px;
-  margin-left: 133px;
+  margin-left: auto;
 }
 
 .site-header__menu-item {
@@ -116,6 +122,7 @@
 }
 
 .site-header__action-link {
+  gap: 1.8125rem;
   min-width: 0;
   height: 24px;
   cursor: pointer;
