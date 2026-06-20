@@ -11,7 +11,9 @@ export type BadgeVariant =
   | "guide"
   | "d7";
 
+export type BadgeAlias = "ba1" | "ba2" | "ba3" | "ba4" | "ba5" | "ba6" | "ba7" | "ba8" | "ba9";
+
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
-  variant: BadgeVariant;
+  variant: BadgeVariant | BadgeAlias;
   children?: ReactNode;
 }

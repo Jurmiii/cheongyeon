@@ -1,10 +1,6 @@
-import { Badge, Button, Calendar, Footer, Header, Input, MainContentBox, ReservationInfoEdit, TeaClassContentBox } from "../components/common";
+import { Badge, Button, Calendar, ContentBox, Footer, Header, Input, ReservationInfoEdit } from "../components/common";
 import {
-  ClassCard,
-  ContentCard,
-  EventCard,
-  ReservationCard,
-  SeasonClassCard,
+  Card,
 } from "../components/cards";
 import { classes } from "../data/classes";
 import { contents } from "../data/contents";
@@ -78,27 +74,53 @@ const colors = [
 ];
 
 const badges = [
-  ["confirmed", "예약확정"],
-  ["progress", "진행중"],
-  ["disabled", "예약확정"],
-  ["deadline", "마감임박"],
-  ["recommend", "신규, 추천"],
-  ["best", "BEST"],
-  ["oneday", "원데이 클래스"],
-  ["guide", "티 가이드"],
-  ["d7", "D-7"],
+  { alias: "ba1", variant: "confirmed", text: "예약확정" },
+  { alias: "ba2", variant: "progress", text: "진행중" },
+  { alias: "ba3", variant: "disabled", text: "예약확정" },
+  { alias: "ba4", variant: "deadline", text: "마감임박" },
+  { alias: "ba5", variant: "recommend", text: "신규, 추천" },
+  { alias: "ba6", variant: "best", text: "BEST" },
+  { alias: "ba7", variant: "oneday", text: "원데이 클래스" },
+  { alias: "ba8", variant: "guide", text: "티 가이드" },
+  { alias: "ba9", variant: "d7", text: "D-7" },
 ];
 
 const buttons = [
-  ["payment", "결제하기"],
-  ["reservationEdit", "예약변경"],
-  ["cancel", "취소"],
-  ["reservation", "예약하기"],
-  ["favorite", "관심등록"],
-  ["detail", "자세히"],
-  ["classMore", "이벤트 자세히 보기"],
-  ["kakao", "카카오로 시작하기"],
-  ["naver", "네이버로 시작하기"],
+  { alias: "btn1", variant: "payment", text: "결제하기" },
+  { alias: "btn2", variant: "reservationEdit", text: "예약변경" },
+  { alias: "btn3", variant: "cancel", text: "취소" },
+  { alias: "btn4", variant: "reservation", text: "예약하기" },
+  { alias: "btn5", variant: "favorite", text: "관심등록" },
+  { alias: "btn6", variant: "detail", text: "자세히" },
+  { alias: "btn7", variant: "classMore", text: "이벤트 자세히 보기" },
+  { alias: "btn8", variant: "kakao", text: "카카오로 시작하기" },
+  { alias: "btn9", variant: "naver", text: "네이버로 시작하기" },
+];
+
+const inputs = [
+  { alias: "in1", state: "default", placeholder: "아이디를 입력하세요" },
+  { alias: "in1", state: "default", placeholder: "비밀번호를 입력하세요" },
+  { alias: "in1", state: "default", placeholder: "이름을 입력하세요" },
+  { alias: "in1", state: "default", placeholder: "전화번호를 입력하세요" },
+  { alias: "in1", state: "default", placeholder: "이메일을 입력하세요" },
+];
+
+const inputSamples = [
+  { alias: "in3", state: "error", placeholder: "이름을 입력하세요", value: "이" },
+  { alias: "in4", state: "success", placeholder: "전화번호를 입력하세요", value: "01012345678" },
+];
+
+const cards = [
+  { alias: "card1", component: "ClassCard", props: classes[0] },
+  { alias: "card2", component: "ContentCard", props: contents[0] },
+  { alias: "card3", component: "ReservationCard", props: reservations[0] },
+  { alias: "card4", component: "EventCard", props: events[0] },
+  { alias: "card5", component: "SeasonClassCard", props: {} },
+];
+
+const contentBoxes = [
+  { alias: "content1", component: "MainContentBox" },
+  { alias: "content2", component: "TeaClassContentBox" },
 ];
 
 export default function ComponentPreview() {
@@ -140,10 +162,13 @@ export default function ComponentPreview() {
       <section className="component-preview__section">
         <h2 className="ft-28b">Badges</h2>
         <div className="component-preview__row">
-          {badges.map(([variant, text]) => (
-            <Badge variant={variant} key={variant}>
-              {text}
-            </Badge>
+          {badges.map(({ alias, variant, text }) => (
+            <div className="component-preview__item" key={alias}>
+              <Badge variant={alias}>{text}</Badge>
+              <p className="component-preview__alias ft-14r">
+                {alias} / {variant}
+              </p>
+            </div>
           ))}
         </div>
       </section>
@@ -151,10 +176,13 @@ export default function ComponentPreview() {
       <section className="component-preview__section">
         <h2 className="ft-28b">Buttons</h2>
         <div className="component-preview__row">
-          {buttons.map(([variant, text]) => (
-            <Button variant={variant} key={variant}>
-              {text}
-            </Button>
+          {buttons.map(({ alias, variant, text }) => (
+            <div className="component-preview__item" key={alias}>
+              <Button variant={alias}>{text}</Button>
+              <p className="component-preview__alias ft-14r">
+                {alias} / {variant}
+              </p>
+            </div>
           ))}
         </div>
       </section>
@@ -162,26 +190,38 @@ export default function ComponentPreview() {
       <section className="component-preview__section">
         <h2 className="ft-28b">Inputs</h2>
         <div className="component-preview__row">
-          <Input state="default" placeholder="아이디를 입력하세요" />
-          <Input state="default" placeholder="비밀번호를 입력하세요" />
-          <Input state="default" placeholder="이름을 입력하세요" />
-          <Input state="default" placeholder="전화번호를 입력하세요" />
-          <Input state="default" placeholder="이메일을 입력하세요" />
+          {inputs.map(({ alias, state, placeholder }) => (
+            <div className="component-preview__item" key={placeholder}>
+              <Input state={alias} placeholder={placeholder} />
+              <p className="component-preview__alias ft-14r">
+                {alias} / {state}
+              </p>
+            </div>
+          ))}
         </div>
         <div className="component-preview__row">
-          <Input state="error" defaultValue="이" placeholder="이름을 입력하세요" readOnly />
-          <Input state="success" defaultValue="01012345678" placeholder="전화번호를 입력하세요" readOnly />
+          {inputSamples.map(({ alias, state, placeholder, value }) => (
+            <div className="component-preview__item" key={alias}>
+              <Input state={alias} defaultValue={value} placeholder={placeholder} readOnly />
+              <p className="component-preview__alias ft-14r">
+                {alias} / {state}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 
       <section className="component-preview__section">
         <h2 className="ft-28b">Cards</h2>
         <div className="component-preview__cards">
-          <ClassCard {...classes[0]} />
-          <ContentCard {...contents[0]} />
-          <ReservationCard {...reservations[0]} />
-          <EventCard {...events[0]} />
-          <SeasonClassCard />
+          {cards.map(({ alias, component, props }) => (
+            <div className="component-preview__item" key={alias}>
+              <Card name={alias} {...props} />
+              <p className="component-preview__alias ft-14r">
+                {alias} / {component}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -196,13 +236,17 @@ export default function ComponentPreview() {
       </section>
 
       <section className="component-preview__section">
-        <h2 className="ft-28b">Main Content Box</h2>
-        <MainContentBox />
-      </section>
-
-      <section className="component-preview__section">
-        <h2 className="ft-28b">Tea Class Content Box</h2>
-        <TeaClassContentBox />
+        <h2 className="ft-28b">Content Boxes</h2>
+        <div className="component-preview__content-boxes">
+          {contentBoxes.map(({ alias, component }) => (
+            <div className="component-preview__item" key={alias}>
+              <ContentBox name={alias} />
+              <p className="component-preview__alias ft-14r">
+                {alias} / {component}
+              </p>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className="component-preview__section">

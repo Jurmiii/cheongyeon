@@ -1,3 +1,5 @@
+export { default as Card } from "./Card";
+export { cardAliases } from "./Card";
 export { default as ClassCard } from "./ClassCard/ClassCard";
 export { default as ContentCard } from "./ContentCard/ContentCard";
 export { default as ReservationCard } from "./ReservationCard/ReservationCard";

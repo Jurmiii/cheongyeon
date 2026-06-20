@@ -52,10 +52,27 @@
   gap: var(--space-2);
 }
 
+.component-preview__item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+}
+
+.component-preview__alias {
+  color: var(--ink300);
+}
+
 .component-preview__cards {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.component-preview__content-boxes {
+  display: flex;
+  flex-direction: column;
   gap: var(--space-3);
 }
 
