@@ -34,6 +34,10 @@
 
 .login-card__logo {
   display: block;
+  width: 10.0625rem;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 161 / 82;
   margin-bottom: var(--space-2);
 }
 

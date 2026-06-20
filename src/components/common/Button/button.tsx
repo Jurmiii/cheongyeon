@@ -1,5 +1,6 @@
 import "./button.scss";
 
+import Icon from "../Icon";
 import type { ButtonProps } from "./button.types";
 
 export default function Button({
@@ -18,7 +19,7 @@ export default function Button({
     <button className={classes} type={type} {...props}>
       {children}
       {variant === "classMore" && (
-        <i className="fa-regular fa-angle-right" aria-hidden="true" />
+        <Icon name="angle-right" />
       )}
     </button>
   );

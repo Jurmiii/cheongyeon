@@ -1,22 +1,12 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendar, faClock, faCreditCard, faUser } from "@fortawesome/free-solid-svg-icons";
-import { Badge, Button } from "../index";
+import { Badge, Button, Icon } from "../index";
+import type { IconName } from "../index";
 import "./TeaClassContentBox.scss";
 
-function WonIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M5 8l3 10 4-10 4 10 3-10" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-      <path d="M4 12h16M4 15h16" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
-    </svg>
-  );
-}
-
-const metaItems = [
-  { icon: faCalendar, label: "날짜 / 2026.06.15 (월)" },
-  { icon: faClock, label: "시간 / 10:00" },
-  { icon: faUser, label: "인원 / 1명" },
-  { icon: faCreditCard, label: "결제 금액 /", price: "70,000" },
+const metaItems: Array<{ icon: IconName; label: string; price?: string }> = [
+  { icon: "calendar", label: "날짜 / 2026.06.15 (월)" },
+  { icon: "clock", label: "시간 / 10:00" },
+  { icon: "user", label: "인원 / 1명" },
+  { icon: "credit-card", label: "결제 금액 /", price: "70,000" },
 ];
 
 export default function TeaClassContentBox() {
@@ -38,11 +28,11 @@ export default function TeaClassContentBox() {
             <ul className="tea-class-content-box__meta ft-14r">
               {metaItems.map((item) => (
                 <li className="tea-class-content-box__meta-item" key={item.label}>
-                  <FontAwesomeIcon className="tea-class-content-box__meta-icon ink400" icon={item.icon} />
+                  <Icon className="tea-class-content-box__meta-icon ink400" name={item.icon} />
                   <span className="ink500">{item.label}</span>
                   {item.price && (
                     <span className="tea-class-content-box__price ink500">
-                      <WonIcon />
+                      <Icon name="won-circle" />
                       {item.price}
                     </span>
                   )}

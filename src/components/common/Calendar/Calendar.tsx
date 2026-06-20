@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import Icon from "../Icon";
 import "./Calendar.scss";
 
 const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
@@ -40,13 +39,13 @@ export default function Calendar() {
     <section className="calendar" aria-label="예약 날짜 선택">
       <header className="calendar__header">
         <button className="calendar__nav" type="button" aria-label="이전 달" onClick={() => moveMonth(-1)}>
-          <FontAwesomeIcon icon={faChevronLeft} />
+          <Icon name="chevron-left" />
         </button>
         <h3 className="calendar__title ft-22b">
           {year}.{String(month + 1).padStart(2, "0")}
         </h3>
         <button className="calendar__nav" type="button" aria-label="다음 달" onClick={() => moveMonth(1)}>
-          <FontAwesomeIcon icon={faChevronRight} />
+          <Icon name="chevron-right" />
         </button>
       </header>
       <div className="calendar__weekdays">

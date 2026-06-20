@@ -5,6 +5,8 @@ export type { ButtonProps, ButtonVariant } from "./Button";
 export { default as Calendar } from "./Calendar/Calendar";
 export { default as Footer } from "./Footer/Footer";
 export { default as Header } from "./Header/Header";
+export { default as Icon } from "./Icon";
+export type { IconName } from "./Icon";
 export { default as Input } from "./Input";
 export type { InputProps, InputState } from "./Input";
 export { default as MainContentBox } from "./MainContentBox/MainContentBox";

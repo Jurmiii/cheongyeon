@@ -1,4 +1,4 @@
-import { Badge, Button } from "../../common";
+import { Badge, Button, Icon } from "../../common";
 import "./ReservationCard.scss";
 
 export default function ReservationCard({
@@ -24,19 +24,19 @@ export default function ReservationCard({
         </div>
         <div className="reservation-card__info">
           <p className="reservation-card__info-item ft-16r">
-            <i className="fa-regular fa-calendar" aria-hidden="true" />
+            <Icon name="calendar" />
             <span>{schedule}</span>
           </p>
           <p className="reservation-card__info-item ft-16r">
-            <i className="fa-light fa-user" aria-hidden="true" />
+            <Icon name="user" />
             <span>{reserverInfo}</span>
           </p>
           <p className="reservation-card__info-item ft-16r">
-            <span className="reservation-card__won-icon" aria-hidden="true" />
+            <Icon name="won-circle" />
             <span>{price}</span>
           </p>
           <p className="reservation-card__info-item ft-16r">
-            <i className="fa-regular fa-location-dot" aria-hidden="true" />
+            <Icon name="location-dot" />
             <span>{location}</span>
           </p>
         </div>

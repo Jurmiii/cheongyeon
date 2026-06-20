@@ -1,4 +1,4 @@
-import { Badge } from "../../common";
+import { Badge, Icon } from "../../common";
 import "./ContentCard.scss";
 
 export default function ContentCard({
@@ -24,7 +24,7 @@ export default function ContentCard({
         <div className="content-card__footer ft-14r">
           <span>{date}</span>
           <span>{viewCount}</span>
-          <i className="fa-regular fa-angle-right" aria-hidden="true" />
+          <Icon name="angle-right" />
         </div>
       </div>
     </article>

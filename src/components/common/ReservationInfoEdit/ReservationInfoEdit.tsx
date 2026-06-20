@@ -1,6 +1,4 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStarOfLife } from "@fortawesome/free-solid-svg-icons";
-import { Button, Input } from "../index";
+import { Button, Icon, Input } from "../index";
 import "./ReservationInfoEdit.scss";
 
 const fields = [
@@ -36,7 +34,7 @@ export default function ReservationInfoEdit() {
           </Button>
         </div>
         <p className="reservation-info-edit__notice ft-14r ink300">
-          <FontAwesomeIcon className="reservation-info-edit__notice-icon ink500" icon={faStarOfLife} />
+          <Icon className="reservation-info-edit__notice-icon ink500" name="star-of-life" />
           마이페이지 &gt; 회원정보에서도 수정할 수 있습니다.
         </p>
       </form>

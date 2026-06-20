@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
-import { faUser as faRegularUser } from "@fortawesome/free-regular-svg-icons";
 import logo from "../../../assets/images/svg/logo.svg";
+import Icon from "../Icon";
 import "./Header.scss";
 
 type ActiveDropdown = "gnb" | "user" | "language" | null;
@@ -96,11 +94,11 @@ export default function Header() {
                   aria-expanded={activeDropdown === menu.id}
                 >
                   {menu.id === "user" ? (
-                    <FontAwesomeIcon className="site-header__user-icon" icon={faRegularUser} aria-label="사용자 메뉴" />
+                    <Icon className="site-header__user-icon" name="user" aria-label="사용자 메뉴" />
                   ) : (
                     menu.label
                   )}
-                  <FontAwesomeIcon className="site-header__angle-icon" icon={faAngleDown} aria-hidden="true" />
+                  <Icon className="site-header__angle-icon" name="angle-down" />
                 </button>
                 <span className="site-header__dropdown-line" aria-hidden="true" />
                 <ul className="site-header__submenu" aria-hidden={activeDropdown !== menu.id}>

@@ -69,8 +69,7 @@
   gap: var(--space-1);
 }
 
-.reservation-card__info-item i,
-.reservation-card__won-icon {
+.reservation-card__info-item .cy-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -78,17 +77,6 @@
   height: var(--space-3);
   color: var(--ink500);
   font-size: var(--space-3);
-}
-
-.reservation-card__won-icon {
-  border: calc(var(--space-1) / 8) solid currentColor;
-  border-radius: 50%;
-}
-
-.reservation-card__won-icon::before {
-  content: "₩";
-  font-size: 0.75rem;
-  line-height: 1;
 }
 
 .reservation-card__info + .cy-button {
