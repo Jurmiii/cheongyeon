@@ -140,9 +140,10 @@ export default function ComponentPreview() {
         <h2 className="ft-28b">Typography</h2>
         <div className="component-preview__stack">
           {typography.map((item) => (
-            <p className={item} key={item}>
-              {item} 청연에 오신 것을 환영합니다.
-            </p>
+            <div className="component-preview__item component-preview__type-item" key={item}>
+              <p className={item}>청연에 오신 것을 환영합니다.</p>
+              <p className="component-preview__alias ft-14r">{item}</p>
+            </div>
           ))}
         </div>
       </section>

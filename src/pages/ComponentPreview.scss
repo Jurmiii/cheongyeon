@@ -9,7 +9,7 @@
   min-height: 100svh;
   margin-inline: auto;
   padding: var(--space-7) 0;
-  background: var(--han100);
+  background: var(--han300);
   color: var(--ink500);
 }
 
@@ -61,6 +61,16 @@
 
 .component-preview__alias {
   color: var(--ink300);
+}
+
+.component-preview__type-item {
+  width: 100%;
+  padding-bottom: var(--space-2);
+  border-bottom: calc(var(--space-1) / 8) solid var(--han500);
+}
+
+.component-preview__type-item + .component-preview__type-item {
+  margin-top: var(--space-2);
 }
 
 .component-preview__cards {
