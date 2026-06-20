@@ -34,7 +34,11 @@ export default function Header() {
   const isGnbOpen = activeDropdown === "gnb";
 
   return (
-    <header className={["site-header", isGnbOpen && "site-header--open"].filter(Boolean).join(" ")}>
+    <header
+      className={["site-header", isGnbOpen && "site-header--open"].filter(Boolean).join(" ")}
+      onMouseLeave={() => setActiveDropdown(null)}
+    >
+      <div className="site-header__overlay" aria-hidden="true" />
       <div className="site-header__inner">
         <h1 className="site-header__logo">
           <a href="/" aria-label="청연 홈">
@@ -47,7 +51,6 @@ export default function Header() {
             className="site-header__gnb"
             aria-label="주요 메뉴"
             onMouseEnter={() => setActiveDropdown("gnb")}
-            onMouseLeave={() => setActiveDropdown(null)}
           >
             {gnbMenus.map((menu) => (
               <div

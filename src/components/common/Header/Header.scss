@@ -1,14 +1,27 @@
 .site-header {
   position: relative;
   z-index: 10;
-  width: 1920px;
+  width: 100%;
   height: 89.99px;
   overflow: visible;
   background: transparent;
   color: var(--ink500);
   transition:
-    height 0.24s ease,
     background-color 0.24s ease;
+}
+
+.site-header::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 379px;
+  background: var(--han50);
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.24s ease;
 }
 
 .site-header .ink500 {
@@ -16,14 +29,34 @@
 }
 
 .site-header--open {
+  background: transparent;
+}
+
+.site-header--open::before {
+  opacity: 1;
+}
+
+.site-header__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
   height: 379px;
-  background: var(--han50);
+  pointer-events: none;
+}
+
+.site-header--open .site-header__overlay {
+  pointer-events: auto;
 }
 
 .site-header__inner {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
-  width: 1440px;
+  width: 100%;
+  max-width: 1440px;
   height: 89.99px;
   margin-inline: auto;
 }
