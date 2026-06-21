@@ -121,6 +121,8 @@ const cards = [
 const contentBoxes = [
   { alias: "content1", component: "MainContentBox" },
   { alias: "content2", component: "TeaClassContentBox" },
+  { alias: "content3", component: "ProductContentBox" },
+  { alias: "content4", component: "ReviewContentBox" },
 ];
 
 export default function ComponentPreview() {
@@ -226,9 +228,15 @@ export default function ComponentPreview() {
         </div>
       </section>
 
-      <section className="component-preview__section component-preview__section--login">
-        <h2 className="ft-28b">Login</h2>
-        <Login />
+      <section className="component-preview__section component-preview__section--login-reservation">
+        <div className="component-preview__preview-panel component-preview__section--login">
+          <h2 className="ft-28b">Login</h2>
+          <Login />
+        </div>
+        <div className="component-preview__preview-panel">
+          <h2 className="ft-28b">Reservation Info Edit</h2>
+          <ReservationInfoEdit />
+        </div>
       </section>
 
       <section className="component-preview__section">
@@ -239,7 +247,7 @@ export default function ComponentPreview() {
       <section className="component-preview__section">
         <h2 className="ft-28b">Content Boxes</h2>
         <div className="component-preview__content-boxes">
-          {contentBoxes.map(({ alias, component }) => (
+          {contentBoxes.slice(0, 2).map(({ alias, component }) => (
             <div className="component-preview__item" key={alias}>
               <ContentBox name={alias} />
               <p className="component-preview__alias ft-14r">
@@ -247,12 +255,17 @@ export default function ComponentPreview() {
               </p>
             </div>
           ))}
+          <div className="component-preview__content-boxes-row">
+            {contentBoxes.slice(2).map(({ alias, component }) => (
+              <div className="component-preview__item" key={alias}>
+                <ContentBox name={alias} />
+                <p className="component-preview__alias ft-14r">
+                  {alias} / {component}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
-      </section>
-
-      <section className="component-preview__section">
-        <h2 className="ft-28b">Reservation Info Edit</h2>
-        <ReservationInfoEdit />
       </section>
     </main>
   );

@@ -13,5 +13,7 @@ export type { IconName } from "./Icon";
 export { default as Input } from "./Input";
 export type { InputAlias, InputProps, InputState } from "./Input";
 export { default as MainContentBox } from "./MainContentBox/MainContentBox";
+export { default as ProductContentBox } from "./ProductContentBox";
 export { default as ReservationInfoEdit } from "./ReservationInfoEdit/ReservationInfoEdit";
+export { default as ReviewContentBox } from "./ReviewContentBox";
 export { default as TeaClassContentBox } from "./TeaClassContentBox/TeaClassContentBox";
