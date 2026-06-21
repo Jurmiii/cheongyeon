@@ -1,5 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import ComponentPreview from './pages/MainPage'
+import ComponentPreview from './pages/ComponentPreview'
 import MainPage from './pages/MainPage'
 
 function App() {
