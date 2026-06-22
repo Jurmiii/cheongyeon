@@ -3,15 +3,16 @@ import logo from "../../../assets/images/svg/logo.svg";
 import Icon from "../Icon";
 import "./Header.scss";
 
-type ActiveDropdown = "gnb" | "user" | "language" | null;
+type ActiveDropdown = "gnb" | null;
 
 interface HeaderMenuItem {
   label: string;
   children: string[];
 }
 
-interface HeaderActionItem extends HeaderMenuItem {
-  id: Exclude<ActiveDropdown, "gnb" | null>;
+interface HeaderActionItem {
+  id: "user" | "language";
+  label: string;
 }
 
 const gnbMenus: HeaderMenuItem[] = [
@@ -23,8 +24,8 @@ const gnbMenus: HeaderMenuItem[] = [
 ];
 
 const actionMenus: HeaderActionItem[] = [
-  { id: "user", label: "user", children: ["로그인", "회원가입", "마이페이지"] },
-  { id: "language", label: "KR", children: ["EN"] },
+  { id: "user", label: "user" },
+  { id: "language", label: "KR" },
 ];
 
 export default function Header() {
@@ -82,34 +83,20 @@ export default function Header() {
                   "site-header__menu-item",
                   "site-header__menu-item--action",
                   `site-header__menu-item--${menu.id}`,
-                  activeDropdown === menu.id && "site-header__menu-item--active",
                 ].filter(Boolean).join(" ")}
                 key={menu.id}
-                onMouseEnter={() => setActiveDropdown(menu.id)}
-                onMouseLeave={() => setActiveDropdown(null)}
               >
                 <button
                   className="site-header__menu-link site-header__action-link ft-18b ink500"
                   type="button"
-                  aria-expanded={activeDropdown === menu.id}
+                  aria-label={menu.id === "user" ? "사용자 메뉴" : "언어 선택"}
                 >
                   {menu.id === "user" ? (
                     <Icon className="site-header__user-icon" name="user" aria-label="사용자 메뉴" />
                   ) : (
                     menu.label
                   )}
-                  <Icon className="site-header__angle-icon" name="angle-down" />
                 </button>
-                <span className="site-header__dropdown-line" aria-hidden="true" />
-                <ul className="site-header__submenu" aria-hidden={activeDropdown !== menu.id}>
-                  {menu.children.map((child) => (
-                    <li key={child}>
-                      <a className="site-header__submenu-link ft-18b ink500" href={`#${child}`}>
-                        {child}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
               </div>
             ))}
           </div>
