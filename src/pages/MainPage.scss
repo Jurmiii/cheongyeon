@@ -188,25 +188,35 @@
   background: transparent;
   overflow: hidden;
 
+  &::after {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    z-index: 4;
+    width: 4000%;
+    height: 100%;
+    background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/204808/ink-transition-sprite.png");
+    background-size: 100% 100%;
+    content: "";
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-1.25%);
+  }
+
   > img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     opacity: 0;
-    -webkit-mask-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/204808/ink-transition-sprite.png");
-    -webkit-mask-position: 100% 0%;
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: 4000% 100%;
-    mask-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/204808/ink-transition-sprite.png");
-    mask-position: 100% 0%;
-    mask-repeat: no-repeat;
-    mask-size: 4000% 100%;
   }
 
   &.is-active {
     > img {
       opacity: 1;
-      animation: ink-mask-animation 1.6s steps(39) 0.12s forwards;
+    }
+
+    &::after {
+      animation: ink-transition-center-out 2s steps(39) 0.5s forwards;
     }
   }
 }
@@ -431,15 +441,30 @@
   height: 1.75rem;
 }
 
-@keyframes ink-mask-animation {
+.main-sec3__line4 {
+  position: absolute;
+  top: 155.7rem;
+  left: 50.9375rem;
+  z-index: 1;
+  display: block;
+  width: 28.875rem;
+  height: 23.4375rem;
+}
+
+@keyframes ink-transition-center-out {
   0% {
-    -webkit-mask-position: 100% 0%;
-    mask-position: 100% 0%;
+    opacity: 1;
+    transform: translateX(-1.25%);
+  }
+
+  99% {
+    opacity: 1;
+    transform: translateX(-98.75%);
   }
 
   100% {
-    -webkit-mask-position: 0% 0%;
-    mask-position: 0% 0%;
+    opacity: 0;
+    transform: translateX(-98.75%);
   }
 }
 
@@ -692,6 +717,11 @@
   --main-sec6-media-height: clamp(31.604rem, 45.1563vw, 54.1875rem);
   --main-sec6-media-half-width: clamp(15rem, 21.4323vw, 25.71875rem);
   --main-sec6-media-half-height: clamp(15.802rem, 22.57815vw, 27.09375rem);
+  --main-sec6-pot-width: 51.4375rem;
+  --main-sec6-pot-height: 58.875rem;
+  --main-sec6-pot-half-width: 25.71875rem;
+  --main-sec6-pot-half-height: 29.4375rem;
+  --main-sec6-pot-bottom-gap: 4.5625rem;
   --main-sec6-orbit-radius: 58.75rem;
   background: var(--white);
 }
@@ -821,7 +851,7 @@
 
 .main-sec6__orbit {
   position: absolute;
-  top: calc(100% + var(--main-sec6-media-half-height));
+  top: calc(100% - var(--main-sec6-pot-bottom-gap) - var(--main-sec6-pot-half-height) + var(--main-sec6-orbit-radius));
   left: 50%;
   z-index: 2;
   width: calc(var(--main-sec6-orbit-radius) * 2);
@@ -836,13 +866,13 @@
   top: 50%;
   left: 50%;
   display: flex;
-  width: var(--main-sec6-media-width);
-  aspect-ratio: 823 / 867;
-  height: var(--main-sec6-media-height);
+  width: var(--main-sec6-pot-width);
+  height: var(--main-sec6-pot-height);
   align-items: center;
   justify-content: center;
-  margin-top: calc(-1 * var(--main-sec6-media-half-height));
-  margin-left: calc(-1 * var(--main-sec6-media-half-width));
+  flex-shrink: 0;
+  margin-top: calc(-1 * var(--main-sec6-pot-half-height));
+  margin-left: calc(-1 * var(--main-sec6-pot-half-width));
   transform-origin: center;
 }
 
@@ -866,6 +896,7 @@
   display: block;
   width: 100%;
   height: 100%;
+  flex-shrink: 0;
   object-fit: contain;
 }
 
