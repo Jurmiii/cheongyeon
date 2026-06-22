@@ -48,6 +48,7 @@ import fallPot from "../assets/images/svg/fall-pot.svg";
 import line1 from "../assets/images/svg/line1.svg";
 import line2 from "../assets/images/svg/line2.svg";
 import line3 from "../assets/images/svg/line3.svg";
+import line4 from "../assets/images/svg/line4.svg";
 import mark from "../assets/images/svg/mark.svg";
 import springBg2 from "../assets/images/svg/spring-bg2.svg";
 import springPot from "../assets/images/svg/spring-pot.svg";
@@ -895,6 +896,7 @@ export default function MainPage() {
             <img className="main-sec3__winter-symbol-black" src={symbolBlack} alt="" aria-hidden="true" />
           </div>
         </div>
+        <img className="main-sec3__line4" src={line4} alt="" aria-hidden="true" />
       </section>
       <section className="main-sec4" ref={sec4Ref} style={{ backgroundImage: `url(${mainBg3})` }} aria-label="클래스 소개">
         <div className="main-sec4__viewport">

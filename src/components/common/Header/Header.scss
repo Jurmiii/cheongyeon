@@ -122,7 +122,6 @@
 }
 
 .site-header__action-link {
-  gap: 1.8125rem;
   min-width: 0;
   height: 24px;
   cursor: pointer;
@@ -131,11 +130,6 @@
 .site-header__user-icon {
   width: 24px;
   height: 24px;
-}
-
-.site-header__angle-icon {
-  width: 16px;
-  height: 16px;
 }
 
 .site-header__dropdown-line {
@@ -166,23 +160,6 @@
   transition:
     opacity 0.18s ease,
     transform 0.18s ease;
-}
-
-.site-header__menu-item--action .site-header__submenu {
-  top: 89.99px;
-  width: 135px;
-  min-width: 135px;
-  gap: 24px;
-  justify-content: center;
-  background: var(--han50);
-}
-
-.site-header__menu-item--user .site-header__submenu {
-  height: 214px;
-}
-
-.site-header__menu-item--language .site-header__submenu {
-  height: 105px;
 }
 
 .site-header__submenu-link {
