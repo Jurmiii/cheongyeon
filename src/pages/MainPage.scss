@@ -77,10 +77,11 @@
 
 .main-sec1__progress-line {
   display: block;
-  width: 8.0625rem;
+  width: 2.6875rem;
   height: 0.0625rem;
   margin-inline: var(--space-1);
   background: currentColor;
+  transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .main-sec2 {
@@ -718,9 +719,9 @@
   --main-sec6-media-half-width: clamp(15rem, 21.4323vw, 25.71875rem);
   --main-sec6-media-half-height: clamp(15.802rem, 22.57815vw, 27.09375rem);
   --main-sec6-pot-width: 51.4375rem;
-  --main-sec6-pot-height: 58.875rem;
+  --main-sec6-pot-height: 54.1875rem;
   --main-sec6-pot-half-width: 25.71875rem;
-  --main-sec6-pot-half-height: 29.4375rem;
+  --main-sec6-pot-half-height: 27.09375rem;
   --main-sec6-pot-bottom-gap: 4.5625rem;
   --main-sec6-orbit-radius: 58.75rem;
   background: var(--white);
@@ -954,19 +955,6 @@
   filter: grayscale(0);
 }
 
-.main-sec7__panel::before {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: rgba(0, 0, 0, 0.5);
-  content: "";
-  transition: all 0.5s ease;
-}
-
-.main-sec7__panel:hover::before {
-  opacity: 0;
-}
-
 .main-sec7__content {
   position: relative;
   z-index: 1;
@@ -995,6 +983,16 @@
 
 .main-sec7__button {
   margin-top: 1rem;
+  opacity: 0;
+  transform: translateY(0.5rem);
+  pointer-events: none;
+  transition: all 0.5s ease;
+}
+
+.main-sec7__panel:hover .main-sec7__button {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .main-sec7__button.cy-button--classMore {
@@ -1008,6 +1006,13 @@
   max-width: 100%;
   height: 29.375rem;
   overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.main-sec8--dragging {
+  cursor: grabbing;
 }
 
 .main-sec8 .white {
@@ -1021,16 +1026,12 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  opacity: 0;
-  transform: scale(1.02);
-  transition:
-    opacity 0.55s ease,
-    transform 0.45s ease;
+  opacity: 1;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.main-sec8__slide.is-active {
-  opacity: 1;
-  transform: scale(1);
+.main-sec8--dragging .main-sec8__slide {
+  transition: none;
 }
 
 .main-sec8__grid {
@@ -1129,7 +1130,7 @@
   position: absolute;
   top: 7.5rem;
   right: 0;
-  left: calc((100% - 90rem) / 2 + 30rem);
+  left: calc((100% - 90rem) / 2 + 37.5rem);
 }
 
 .main-sec9__carousel-viewport {

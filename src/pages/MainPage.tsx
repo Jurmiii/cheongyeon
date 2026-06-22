@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent, type TouchEvent } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import mainBg1 from "../assets/images/bg/main-bg1.png";
@@ -344,6 +344,9 @@ export default function MainPage() {
   });
   const [activeSec6Index, setActiveSec6Index] = useState<number>(0);
   const [activeSec8Index, setActiveSec8Index] = useState<number>(0);
+  const [sec8DragOffset, setSec8DragOffset] = useState<number>(0);
+  const [isSec8Dragging, setIsSec8Dragging] = useState<boolean>(false);
+  const [sec8AutoPlayResetKey, setSec8AutoPlayResetKey] = useState<number>(0);
   const sec4Ref = useRef<HTMLElement | null>(null);
   const sec4TrackRef = useRef<HTMLDivElement | null>(null);
   const sec5ProductGroupRef = useRef<HTMLDivElement | null>(null);
@@ -356,6 +359,8 @@ export default function MainPage() {
   const sec9StartTimeRef = useRef<number>(0);
   const sec9PausedRef = useRef<boolean>(false);
   const sec9PauseStartedRef = useRef<number>(0);
+  const sec8DragStartXRef = useRef<number>(0);
+  const sec8LatestDragXRef = useRef<number>(0);
   const sec6Ref = useRef<HTMLElement | null>(null);
   const sec6OrbitRef = useRef<HTMLDivElement | null>(null);
   const seasonImageRefs = useRef<Record<SeasonKey, HTMLDivElement | null>>({
@@ -375,6 +380,77 @@ export default function MainPage() {
 
   const getSeasonImageClassName = (season: SeasonKey, className: string) =>
     ["main-sec3__ink-image", className, activeSeasons[season] && "is-active"].filter(Boolean).join(" ");
+
+  const getSec8SlideOffset = (index: number) => {
+    const slideCount = mainEventSlides.length;
+    let offset = index - activeSec8Index;
+
+    if (offset > slideCount / 2) {
+      offset -= slideCount;
+    }
+
+    if (offset < -slideCount / 2) {
+      offset += slideCount;
+    }
+
+    return offset;
+  };
+
+  const moveSec8Slide = (direction: 1 | -1) => {
+    setActiveSec8Index((currentIndex) => (currentIndex + direction + mainEventSlides.length) % mainEventSlides.length);
+    setSec8AutoPlayResetKey((currentKey) => currentKey + 1);
+  };
+
+  const startSec8Drag = (clientX: number) => {
+    sec8DragStartXRef.current = clientX;
+    sec8LatestDragXRef.current = clientX;
+    setIsSec8Dragging(true);
+    setSec8DragOffset(0);
+  };
+
+  const moveSec8Drag = (clientX: number) => {
+    if (!isSec8Dragging) {
+      return;
+    }
+
+    sec8LatestDragXRef.current = clientX;
+    setSec8DragOffset(clientX - sec8DragStartXRef.current);
+  };
+
+  const endSec8Drag = () => {
+    if (!isSec8Dragging) {
+      return;
+    }
+
+    const deltaX = sec8LatestDragXRef.current - sec8DragStartXRef.current;
+    const dragThreshold = 100;
+
+    setIsSec8Dragging(false);
+    setSec8DragOffset(0);
+
+    if (Math.abs(deltaX) < dragThreshold) {
+      setSec8AutoPlayResetKey((currentKey) => currentKey + 1);
+      return;
+    }
+
+    moveSec8Slide(deltaX < 0 ? 1 : -1);
+  };
+
+  const handleSec8MouseDown = (event: MouseEvent<HTMLElement>) => {
+    startSec8Drag(event.clientX);
+  };
+
+  const handleSec8MouseMove = (event: MouseEvent<HTMLElement>) => {
+    moveSec8Drag(event.clientX);
+  };
+
+  const handleSec8TouchStart = (event: TouchEvent<HTMLElement>) => {
+    startSec8Drag(event.touches[0].clientX);
+  };
+
+  const handleSec8TouchMove = (event: TouchEvent<HTMLElement>) => {
+    moveSec8Drag(event.touches[0].clientX);
+  };
 
   const pauseSec5Carousel = () => {
     if (sec5PausedRef.current) {
@@ -423,6 +499,10 @@ export default function MainPage() {
   }, []);
 
   useEffect(() => {
+    if (isSec8Dragging) {
+      return;
+    }
+
     const timerId = window.setInterval(() => {
       setActiveSec8Index((currentIndex) => (currentIndex + 1) % mainEventSlides.length);
     }, sec8SlideInterval);
@@ -430,7 +510,7 @@ export default function MainPage() {
     return () => {
       window.clearInterval(timerId);
     };
-  }, []);
+  }, [isSec8Dragging, sec8AutoPlayResetKey]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -685,48 +765,51 @@ export default function MainPage() {
         return;
       }
 
-      const rotationDelay = 0.18;
-      const rotationProgressRange = 1 - rotationDelay;
+      const centerLabelProgress = [0, 0.303, 0.606, 0.909];
+      const getNearestCenterIndex = (progress: number) =>
+        centerLabelProgress.reduce((nearestIndex, labelProgress, index) => (
+          Math.abs(progress - labelProgress) < Math.abs(progress - centerLabelProgress[nearestIndex])
+            ? index
+            : nearestIndex
+        ), 0);
+      const holdDuration = 0.18;
+      const rotateDuration = 0.42;
 
       const timeline = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=4200",
-          scrub: 1,
+          end: "+=2100",
+          scrub: 0.08,
           pin: true,
           anticipatePin: 1,
           snap: {
-            snapTo: (value) => {
-              if (value < rotationDelay) {
-                return 0;
-              }
-
-              const adjustedProgress = (value - rotationDelay) / rotationProgressRange;
-              const snappedProgress = Math.round(adjustedProgress * (mainSeasonTeaSlides.length - 1)) / (mainSeasonTeaSlides.length - 1);
-
-              return rotationDelay + snappedProgress * rotationProgressRange;
-            },
-            duration: 0.18,
-            ease: "power3.out",
+            snapTo: "labelsDirectional",
+            delay: 0,
+            duration: { min: 0.08, max: 0.16 },
+            ease: "power4.out",
+            inertia: false,
           },
           onUpdate: (self) => {
-            const adjustedProgress = Math.min(Math.max((self.progress - rotationDelay) / rotationProgressRange, 0), 1);
-            const nextIndex = Math.min(
-              mainSeasonTeaSlides.length - 1,
-              Math.max(0, Math.round(adjustedProgress * (mainSeasonTeaSlides.length - 1))),
-            );
+            const nextIndex = getNearestCenterIndex(self.progress);
 
             setActiveSec6Index((currentIndex) => (currentIndex === nextIndex ? currentIndex : nextIndex));
           },
         },
       });
 
-      timeline.to(orbit, {
-        rotate: -270,
-        ease: "none",
-        duration: rotationProgressRange,
-      }, rotationDelay);
+      timeline
+        .addLabel("spring")
+        .to({}, { duration: holdDuration })
+        .to(orbit, { rotate: -90, ease: "power2.inOut", duration: rotateDuration })
+        .addLabel("summer")
+        .to({}, { duration: holdDuration })
+        .to(orbit, { rotate: -180, ease: "power2.inOut", duration: rotateDuration })
+        .addLabel("fall")
+        .to({}, { duration: holdDuration })
+        .to(orbit, { rotate: -270, ease: "power2.inOut", duration: rotateDuration })
+        .addLabel("winter")
+        .to({}, { duration: holdDuration });
     }, sec6Ref);
 
     return () => {
@@ -766,7 +849,11 @@ export default function MainPage() {
             </p>
             <div className="main-sec1__progress" aria-label={`${currentPage} / 03`}>
               <span className="ft-18r ink500">{currentPage}</span>
-              <span className="main-sec1__progress-line ink500" aria-hidden="true" />
+              <span
+                className="main-sec1__progress-line ink500"
+                style={{ width: `${(activeSlideIndex + 1) * 2.6875}rem` }}
+                aria-hidden="true"
+              />
               <span className="ft-18r ink500">03</span>
             </div>
           </div>
@@ -1029,6 +1116,9 @@ export default function MainPage() {
               <br />
               만나보세요.
             </p>
+            <Button className="main-sec7__button" variant="btn7">
+              차점보기
+            </Button>
           </div>
         </article>
         <article className="main-sec7__panel" style={{ backgroundImage: `url(${rightImage})` }}>
@@ -1047,12 +1137,25 @@ export default function MainPage() {
           </div>
         </article>
       </section>
-      <section className="main-sec8" aria-label="청연 이벤트">
+      <section
+        className={["main-sec8", isSec8Dragging && "main-sec8--dragging"].filter(Boolean).join(" ")}
+        aria-label="청연 이벤트"
+        onMouseDown={handleSec8MouseDown}
+        onMouseMove={handleSec8MouseMove}
+        onMouseUp={endSec8Drag}
+        onMouseLeave={endSec8Drag}
+        onTouchStart={handleSec8TouchStart}
+        onTouchMove={handleSec8TouchMove}
+        onTouchEnd={endSec8Drag}
+      >
         {mainEventSlides.map((slide, index) => (
           <div
-            className={["main-sec8__slide", index === activeSec8Index && "is-active"].filter(Boolean).join(" ")}
+            className="main-sec8__slide"
             key={slide.id}
-            style={{ backgroundImage: `url(${slide.image})` }}
+            style={{
+              backgroundImage: `url(${slide.image})`,
+              transform: `translateX(calc(${getSec8SlideOffset(index) * 100}% + ${sec8DragOffset}px))`,
+            }}
             aria-hidden={index !== activeSec8Index}
           />
         ))}
