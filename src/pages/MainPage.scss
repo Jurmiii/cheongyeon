@@ -452,6 +452,24 @@
   height: 23.4375rem;
 }
 
+.main-sec3__line-svg {
+  transform-origin: 50% 0%;
+  pointer-events: none;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    transform-origin: 50% 0%;
+  }
+}
+
+.main-sec3__draw-mask-rect {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+}
+
 @keyframes ink-transition-center-out {
   0% {
     opacity: 1;

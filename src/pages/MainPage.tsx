@@ -1,54 +1,54 @@
 import { useEffect, useRef, useState, type MouseEvent, type TouchEvent } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import mainBg1 from "../assets/images/bg/main-bg1.png";
-import mainBg2 from "../assets/images/bg/main-bg2.png";
-import mainBg3 from "../assets/images/bg/main-bg3.png";
-import mainCtaBg from "../assets/images/bg/main-cta-bg.png";
-import mainKv1 from "../assets/images/bg/main-kv1.png";
-import mainKv2 from "../assets/images/bg/main-kv2.png";
-import mainKv3 from "../assets/images/bg/main-kv3.png";
-import eventBanner1 from "../assets/images/bg/event-banner1.png";
-import eventBanner2 from "../assets/images/bg/event-banner2.png";
-import eventBanner3 from "../assets/images/bg/event-banner3.png";
-import eventBanner4 from "../assets/images/bg/event-banner4.png";
-import eventBanner5 from "../assets/images/bg/event-banner5.png";
-import eventBanner6 from "../assets/images/bg/event-banner6.png";
-import fallBg from "../assets/images/bg/fall-bg.png";
-import leftImage from "../assets/images/content-img/left.png";
-import class1 from "../assets/images/content-img/class1.png";
-import class2 from "../assets/images/content-img/class2.png";
-import class3 from "../assets/images/content-img/class3.png";
-import class4 from "../assets/images/content-img/class4.png";
-import fall from "../assets/images/content-img/fall.png";
-import rightImage from "../assets/images/content-img/right.png";
-import spring from "../assets/images/content-img/spring.png";
-import springBg from "../assets/images/bg/spring-bg.png";
-import summer from "../assets/images/content-img/summer.png";
-import summerBg from "../assets/images/bg/summer-bg.png";
-import tea1 from "../assets/images/content-img/tea1.png";
-import tea2 from "../assets/images/content-img/tea2.png";
-import tea3 from "../assets/images/content-img/tea3.png";
-import tea4 from "../assets/images/content-img/tea4.png";
-import tea5 from "../assets/images/content-img/tea5.png";
-import winter from "../assets/images/content-img/winter.png";
-import winterBg from "../assets/images/bg/winter-bg.png";
+import mainBg1 from "../assets/images/bg/main-bg1.webp";
+import mainBg2 from "../assets/images/bg/main-bg2.webp";
+import mainBg3 from "../assets/images/bg/main-bg3.webp";
+import mainCtaBg from "../assets/images/bg/main-cta-bg.webp";
+import mainKv1 from "../assets/images/bg/main-kv1.webp";
+import mainKv2 from "../assets/images/bg/main-kv2.webp";
+import mainKv3 from "../assets/images/bg/main-kv3.webp";
+import eventBanner1 from "../assets/images/bg/event-banner1.webp";
+import eventBanner2 from "../assets/images/bg/event-banner2.webp";
+import eventBanner3 from "../assets/images/bg/event-banner3.webp";
+import eventBanner4 from "../assets/images/bg/event-banner4.webp";
+import eventBanner5 from "../assets/images/bg/event-banner5.webp";
+import eventBanner6 from "../assets/images/bg/event-banner6.webp";
+import fallBg from "../assets/images/bg/fall-bg.webp";
+import leftImage from "../assets/images/content-img/left.webp";
+import class1 from "../assets/images/content-img/class1.webp";
+import class2 from "../assets/images/content-img/class2.webp";
+import class3 from "../assets/images/content-img/class3.webp";
+import class4 from "../assets/images/content-img/class4.webp";
+import fall from "../assets/images/content-img/fall.webp";
+import rightImage from "../assets/images/content-img/right.webp";
+import spring from "../assets/images/content-img/spring.webp";
+import springBg from "../assets/images/bg/spring-bg.webp";
+import summer from "../assets/images/content-img/summer.webp";
+import summerBg from "../assets/images/bg/summer-bg.webp";
+import tea1 from "../assets/images/content-img/tea1.webp";
+import tea2 from "../assets/images/content-img/tea2.webp";
+import tea3 from "../assets/images/content-img/tea3.webp";
+import tea4 from "../assets/images/content-img/tea4.webp";
+import tea5 from "../assets/images/content-img/tea5.webp";
+import winter from "../assets/images/content-img/winter.webp";
+import winterBg from "../assets/images/bg/winter-bg.webp";
 import kvTitle from "../assets/images/svg/kv-title.svg";
 import centerLine from "../assets/images/svg/center-line.svg";
 import chajeomIcon from "../assets/images/svg/chajeom-icon.svg";
-import dado1 from "../assets/images/content-img/dado1.png";
-import dado2 from "../assets/images/content-img/dado2.png";
-import dado3 from "../assets/images/content-img/dado3.png";
-import dado4 from "../assets/images/content-img/dado4.png";
-import dado5 from "../assets/images/content-img/dado5.png";
-import dado6 from "../assets/images/content-img/dado6.png";
+import dado1 from "../assets/images/content-img/dado1.webp";
+import dado2 from "../assets/images/content-img/dado2.webp";
+import dado3 from "../assets/images/content-img/dado3.webp";
+import dado4 from "../assets/images/content-img/dado4.webp";
+import dado5 from "../assets/images/content-img/dado5.webp";
+import dado6 from "../assets/images/content-img/dado6.webp";
 import dasilIcon from "../assets/images/svg/dasil-icon.svg";
 import fallBg2 from "../assets/images/svg/fall-bg2.svg";
 import fallPot from "../assets/images/svg/fall-pot.svg";
-import line1 from "../assets/images/svg/line1.svg";
-import line2 from "../assets/images/svg/line2.svg";
-import line3 from "../assets/images/svg/line3.svg";
-import line4 from "../assets/images/svg/line4.svg";
+import line1Raw from "../assets/images/svg/line1.svg?raw";
+import line2Raw from "../assets/images/svg/line2.svg?raw";
+import line3Raw from "../assets/images/svg/line3.svg?raw";
+import line4Raw from "../assets/images/svg/line4.svg?raw";
 import mark from "../assets/images/svg/mark.svg";
 import springBg2 from "../assets/images/svg/spring-bg2.svg";
 import springPot from "../assets/images/svg/spring-pot.svg";
@@ -331,6 +331,62 @@ function ReviewCard({ review }: { review: MainReview }) {
   );
 }
 
+function getSvgViewBox(svgOpenTag: string) {
+  const viewBox = svgOpenTag.match(/\sviewBox="([^"]+)"/)?.[1]?.split(/\s+/).map(Number);
+
+  if (viewBox?.length === 4 && viewBox.every((value) => !Number.isNaN(value))) {
+    const [x, y, width, height] = viewBox;
+
+    return { x, y, width, height };
+  }
+
+  const width = Number(svgOpenTag.match(/\swidth="([^"]+)"/)?.[1] ?? 0);
+  const height = Number(svgOpenTag.match(/\sheight="([^"]+)"/)?.[1] ?? 0);
+
+  return { x: 0, y: 0, width, height };
+}
+
+function getDrawLineSvg(svgSource: string, maskId: string) {
+  const svgOpenMatch = svgSource.match(/<svg\b[^>]*>/);
+
+  if (!svgOpenMatch) {
+    return svgSource;
+  }
+
+  const svgOpenTag = svgOpenMatch[0];
+  const viewBox = getSvgViewBox(svgOpenTag);
+  const revealMask = `<defs><mask id="${maskId}" maskUnits="userSpaceOnUse"><rect class="main-sec3__draw-mask-rect" data-reveal-height="${viewBox.height}" x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.width}" height="0" fill="#fff" /></mask></defs><g mask="url(#${maskId})">`;
+  const svgWithAttributes = svgSource.replace(
+    svgOpenTag,
+    svgOpenTag.replace("<svg", '<svg class="main-sec3__line-inner" aria-hidden="true" focusable="false"'),
+  );
+
+  return svgWithAttributes
+    .replace(
+      svgOpenTag.replace("<svg", '<svg class="main-sec3__line-inner" aria-hidden="true" focusable="false"'),
+      `${svgOpenTag.replace("<svg", '<svg class="main-sec3__line-inner" aria-hidden="true" focusable="false"')}${revealMask}`,
+    )
+    .replace(/<\/svg>\s*$/, "</g></svg>");
+}
+
+function DrawLineSvg({
+  className,
+  maskId,
+  svgSource,
+}: {
+  className: string;
+  maskId: string;
+  svgSource: string;
+}) {
+  return (
+    <span
+      className={`${className} main-sec3__line-svg`}
+      aria-hidden="true"
+      dangerouslySetInnerHTML={{ __html: getDrawLineSvg(svgSource, maskId) }}
+    />
+  );
+}
+
 export default function MainPage() {
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
   const [activeSeasons, setActiveSeasons] = useState<Record<SeasonKey, boolean>>(initialActiveSeasons);
@@ -361,6 +417,7 @@ export default function MainPage() {
   const sec9PauseStartedRef = useRef<number>(0);
   const sec8DragStartXRef = useRef<number>(0);
   const sec8LatestDragXRef = useRef<number>(0);
+  const sec3Ref = useRef<HTMLElement | null>(null);
   const sec6Ref = useRef<HTMLElement | null>(null);
   const sec6OrbitRef = useRef<HTMLDivElement | null>(null);
   const seasonImageRefs = useRef<Record<SeasonKey, HTMLDivElement | null>>({
@@ -550,6 +607,53 @@ export default function MainPage() {
 
     return () => {
       observer.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const context = gsap.context(() => {
+      const section = sec3Ref.current;
+
+      if (!section) {
+        return;
+      }
+
+      const maskRects = gsap.utils.toArray<SVGRectElement>(".main-sec3__draw-mask-rect", section);
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top 72%",
+          end: "bottom 38%",
+          scrub: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      maskRects.forEach((rect, index) => {
+        const revealHeight = Number(rect.dataset.revealHeight ?? 0);
+        const startAt = index * 0.18;
+
+        gsap.set(rect, {
+          attr: { height: 0 },
+          transformOrigin: "50% 0%",
+        });
+
+        timeline.to(
+          rect,
+          {
+            attr: { height: revealHeight },
+            ease: "none",
+            duration: 1,
+          },
+          startAt,
+        );
+      });
+    }, sec3Ref);
+
+    return () => {
+      context.revert();
     };
   }, []);
 
@@ -880,7 +984,12 @@ export default function MainPage() {
           </div>
         </div>
       </section>
-      <section className="main-sec3" style={{ backgroundImage: `url(${mainBg2})` }} aria-label="사계절 다도 원데이 클래스">
+      <section
+        className="main-sec3"
+        ref={sec3Ref}
+        style={{ backgroundImage: `url(${mainBg2})` }}
+        aria-label="사계절 다도 원데이 클래스"
+      >
         <div className="main-sec3__grid">
           <div className="main-sec3__intro">
             <h2 className="ft-64b ink500">
@@ -907,7 +1016,11 @@ export default function MainPage() {
             </p>
           </div>
           <div className="main-sec3__spring-composition">
-            <img className="main-sec3__spring-line" src={line1} alt="" aria-hidden="true" />
+            <DrawLineSvg
+              className="main-sec3__spring-line"
+              maskId="main-sec3-line1-mask"
+              svgSource={line1Raw}
+            />
             <img className="main-sec3__spring-symbol-black" src={symbolBlack} alt="" aria-hidden="true" />
             <div
               className={getSeasonImageClassName("spring", "main-sec3__spring-ink")}
@@ -937,7 +1050,11 @@ export default function MainPage() {
               <img className="main-sec3__summer-image" src={summer} alt="" aria-hidden="true" />
             </div>
             <img className="main-sec3__summer-symbol-black" src={symbolBlack} alt="" aria-hidden="true" />
-            <img className="main-sec3__summer-line" src={line2} alt="" aria-hidden="true" />
+            <DrawLineSvg
+              className="main-sec3__summer-line"
+              maskId="main-sec3-line2-mask"
+              svgSource={line2Raw}
+            />
           </div>
         </div>
         <div className="main-sec3__fall">
@@ -951,7 +1068,11 @@ export default function MainPage() {
             </p>
           </div>
           <div className="main-sec3__fall-composition">
-            <img className="main-sec3__fall-line" src={line3} alt="" aria-hidden="true" />
+            <DrawLineSvg
+              className="main-sec3__fall-line"
+              maskId="main-sec3-line3-mask"
+              svgSource={line3Raw}
+            />
             <img className="main-sec3__fall-symbol-black" src={symbolBlack} alt="" aria-hidden="true" />
             <div
               className={getSeasonImageClassName("fall", "main-sec3__fall-ink")}
@@ -983,7 +1104,11 @@ export default function MainPage() {
             <img className="main-sec3__winter-symbol-black" src={symbolBlack} alt="" aria-hidden="true" />
           </div>
         </div>
-        <img className="main-sec3__line4" src={line4} alt="" aria-hidden="true" />
+        <DrawLineSvg
+          className="main-sec3__line4"
+          maskId="main-sec3-line4-mask"
+          svgSource={line4Raw}
+        />
       </section>
       <section className="main-sec4" ref={sec4Ref} style={{ backgroundImage: `url(${mainBg3})` }} aria-label="클래스 소개">
         <div className="main-sec4__viewport">

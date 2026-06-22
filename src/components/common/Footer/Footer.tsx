@@ -1,4 +1,4 @@
-import footerBg from "../../../assets/images/bg/footer-bg.png";
+import footerBg from "../../../assets/images/bg/footer-bg.webp";
 import githubIcon from "../../../assets/images/svg/github.svg";
 import kakaoIcon from "../../../assets/images/svg/kakao.svg";
 import logoWhite from "../../../assets/images/svg/logo-white.svg";
