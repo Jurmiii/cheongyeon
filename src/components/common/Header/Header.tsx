@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import logo from "../../../assets/images/svg/logo.svg";
 import Icon from "../Icon";
 import "./Header.scss";
@@ -27,6 +28,11 @@ const actionMenus: HeaderActionItem[] = [
   { id: "user", label: "user" },
   { id: "language", label: "KR" },
 ];
+
+const submenuHrefs: Record<string, string> = {
+  예약하기: "/reservation",
+  공지사항: "/event/notice",
+};
 
 export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState<ActiveDropdown>(null);
@@ -64,13 +70,23 @@ export default function Header() {
                 </a>
                 <span className="site-header__dropdown-line" aria-hidden="true" />
                 <ul className="site-header__submenu" aria-hidden={activeDropdown !== "gnb"}>
-                  {menu.children.map((child) => (
-                    <li key={child}>
-                      <a className="site-header__submenu-link ft-18b ink500" href={`#${child}`}>
-                        {child}
-                      </a>
-                    </li>
-                  ))}
+                  {menu.children.map((child) => {
+                    const href = submenuHrefs[child];
+
+                    return (
+                      <li key={child}>
+                        {href ? (
+                          <Link className="site-header__submenu-link ft-18b ink500" to={href}>
+                            {child}
+                          </Link>
+                        ) : (
+                          <a className="site-header__submenu-link ft-18b ink500" href={`#${child}`}>
+                            {child}
+                          </a>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             ))}
