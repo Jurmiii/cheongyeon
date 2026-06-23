@@ -30,6 +30,7 @@ const actionMenus: HeaderActionItem[] = [
 ];
 
 const submenuHrefs: Record<string, string> = {
+  "브랜드 스토리": "/brand/story",
   예약하기: "/reservation",
   공지사항: "/event/notice",
 };

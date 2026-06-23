@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import footerBg from "../../../assets/images/00header-footer/footer-bg.webp";
 import githubIcon from "../../../assets/images/00header-footer/github.svg";
 import kakaoIcon from "../../../assets/images/00header-footer/kakao.svg";
@@ -6,7 +7,7 @@ import naverIcon from "../../../assets/images/00header-footer/naver.svg";
 import "./Footer.scss";
 
 const footerLinks = [
-  { label: "브랜드 소개", href: "#brand" },
+  { label: "브랜드 소개", href: "/brand/story" },
   { label: "제품 소개", href: "#product" },
   { label: "다도 클래스", href: "#class" },
   { label: "예약", href: "#reservation" },
@@ -34,11 +35,17 @@ export default function Footer() {
           </div>
 
           <nav className="site-footer__nav" aria-label="푸터 메뉴">
-            {footerLinks.map((link) => (
-              <a className="site-footer__nav-link ft-18r text-white" href={link.href} key={link.label}>
-                {link.label}
-              </a>
-            ))}
+            {footerLinks.map((link) =>
+              link.href.startsWith("/") ? (
+                <Link className="site-footer__nav-link ft-18r text-white" to={link.href} key={link.label}>
+                  {link.label}
+                </Link>
+              ) : (
+                <a className="site-footer__nav-link ft-18r text-white" href={link.href} key={link.label}>
+                  {link.label}
+                </a>
+              ),
+            )}
           </nav>
         </div>
 
