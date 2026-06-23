@@ -44,20 +44,20 @@ import dado5 from "../assets/images/content-img/dado5.webp";
 import dado6 from "../assets/images/content-img/dado6.webp";
 import dasilIcon from "../assets/images/svg/dasil-icon.svg";
 import fallBg2 from "../assets/images/svg/fall-bg2.svg";
-import fallPot from "../assets/images/svg/fall-pot.svg";
+import fallPot from "../assets/images/svg/fall-tea.png";
 import line1Raw from "../assets/images/svg/line1.svg?raw";
 import line2Raw from "../assets/images/svg/line2.svg?raw";
 import line3Raw from "../assets/images/svg/line3.svg?raw";
 import line4Raw from "../assets/images/svg/line4.svg?raw";
 import mark from "../assets/images/svg/mark.svg";
 import springBg2 from "../assets/images/svg/spring-bg2.svg";
-import springPot from "../assets/images/svg/spring-pot.svg";
+import springPot from "../assets/images/svg/spring-tea.png";
 import symbolBlack from "../assets/images/svg/symbol-black.svg";
 import symbol1 from "../assets/images/svg/symbol1.svg";
 import summerBg2 from "../assets/images/svg/summer-bg2.svg";
-import summerPot from "../assets/images/svg/summer-pot.svg";
+import summerPot from "../assets/images/svg/summer-tea.png";
 import winterBg2 from "../assets/images/svg/winter-bg2.svg";
-import winterPot from "../assets/images/svg/winter-pot.svg";
+import winterPot from "../assets/images/svg/winter-tea.png";
 import { Button, Footer, Header } from "../components/common";
 import "./MainPage.scss";
 
@@ -286,6 +286,7 @@ const slideInterval = 5000;
 const sec5CarouselDuration = 24000;
 const sec9CarouselDuration = 24000;
 const sec8SlideInterval = 5000;
+const carouselGroupGapRem = 1.5;
 const initialActiveSeasons: Record<SeasonKey, boolean> = {
   spring: false,
   summer: false,
@@ -346,7 +347,9 @@ function getSvgViewBox(svgOpenTag: string) {
   return { x: 0, y: 0, width, height };
 }
 
-function getDrawLineSvg(svgSource: string, maskId: string) {
+type DrawLineDirection = "vertical" | "horizontal";
+
+function getDrawLineSvg(svgSource: string, maskId: string, direction: DrawLineDirection) {
   const svgOpenMatch = svgSource.match(/<svg\b[^>]*>/);
 
   if (!svgOpenMatch) {
@@ -355,7 +358,9 @@ function getDrawLineSvg(svgSource: string, maskId: string) {
 
   const svgOpenTag = svgOpenMatch[0];
   const viewBox = getSvgViewBox(svgOpenTag);
-  const revealMask = `<defs><mask id="${maskId}" maskUnits="userSpaceOnUse"><rect class="main-sec3__draw-mask-rect" data-reveal-height="${viewBox.height}" x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.width}" height="0" fill="#fff" /></mask></defs><g mask="url(#${maskId})">`;
+  const revealMask = direction === "horizontal"
+    ? `<defs><mask id="${maskId}" maskUnits="userSpaceOnUse"><rect class="main-sec3__draw-mask-rect" data-draw-direction="${direction}" data-reveal-width="${viewBox.width}" x="${viewBox.x}" y="${viewBox.y}" width="0" height="${viewBox.height}" fill="#fff" /></mask></defs><g mask="url(#${maskId})">`
+    : `<defs><mask id="${maskId}" maskUnits="userSpaceOnUse"><rect class="main-sec3__draw-mask-rect" data-draw-direction="${direction}" data-reveal-height="${viewBox.height}" x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.width}" height="0" fill="#fff" /></mask></defs><g mask="url(#${maskId})">`;
   const svgWithAttributes = svgSource.replace(
     svgOpenTag,
     svgOpenTag.replace("<svg", '<svg class="main-sec3__line-inner" aria-hidden="true" focusable="false"'),
@@ -371,10 +376,12 @@ function getDrawLineSvg(svgSource: string, maskId: string) {
 
 function DrawLineSvg({
   className,
+  direction = "vertical",
   maskId,
   svgSource,
 }: {
   className: string;
+  direction?: DrawLineDirection;
   maskId: string;
   svgSource: string;
 }) {
@@ -382,7 +389,7 @@ function DrawLineSvg({
     <span
       className={`${className} main-sec3__line-svg`}
       aria-hidden="true"
-      dangerouslySetInnerHTML={{ __html: getDrawLineSvg(svgSource, maskId) }}
+      dangerouslySetInnerHTML={{ __html: getDrawLineSvg(svgSource, maskId, direction) }}
     />
   );
 }
@@ -403,6 +410,8 @@ export default function MainPage() {
   const [sec8DragOffset, setSec8DragOffset] = useState<number>(0);
   const [isSec8Dragging, setIsSec8Dragging] = useState<boolean>(false);
   const [sec8AutoPlayResetKey, setSec8AutoPlayResetKey] = useState<number>(0);
+  const [isSec5Dragging, setIsSec5Dragging] = useState<boolean>(false);
+  const [isSec9Dragging, setIsSec9Dragging] = useState<boolean>(false);
   const sec4Ref = useRef<HTMLElement | null>(null);
   const sec4TrackRef = useRef<HTMLDivElement | null>(null);
   const sec5ProductGroupRef = useRef<HTMLDivElement | null>(null);
@@ -410,11 +419,15 @@ export default function MainPage() {
   const sec5StartTimeRef = useRef<number>(0);
   const sec5PausedRef = useRef<boolean>(false);
   const sec5PauseStartedRef = useRef<number>(0);
+  const sec5DragStartXRef = useRef<number>(0);
+  const sec5DragStartProgressRef = useRef<number>(0);
   const sec9ReviewGroupRef = useRef<HTMLDivElement | null>(null);
   const sec9AnimationFrameRef = useRef<number>(0);
   const sec9StartTimeRef = useRef<number>(0);
   const sec9PausedRef = useRef<boolean>(false);
   const sec9PauseStartedRef = useRef<number>(0);
+  const sec9DragStartXRef = useRef<number>(0);
+  const sec9DragStartProgressRef = useRef<number>(0);
   const sec8DragStartXRef = useRef<number>(0);
   const sec8LatestDragXRef = useRef<number>(0);
   const sec3Ref = useRef<HTMLElement | null>(null);
@@ -509,6 +522,58 @@ export default function MainPage() {
     moveSec8Drag(event.touches[0].clientX);
   };
 
+  const getRootFontSize = () => parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+  const getSec5LoopWidth = () => {
+    if (!sec5ProductGroupRef.current) {
+      return 0;
+    }
+
+    return sec5ProductGroupRef.current.offsetWidth + carouselGroupGapRem * getRootFontSize();
+  };
+
+  const getSec9LoopWidth = () => {
+    if (!sec9ReviewGroupRef.current) {
+      return 0;
+    }
+
+    return sec9ReviewGroupRef.current.offsetWidth + carouselGroupGapRem * getRootFontSize();
+  };
+
+  const getWrappedProgress = (progress: number) => ((progress % 1) + 1) % 1;
+
+  const syncSec5Carousel = (progress: number) => {
+    const now = performance.now();
+    const nextProgress = getWrappedProgress(progress);
+    const loopWidth = getSec5LoopWidth();
+
+    setSec5Carousel({
+      progress: nextProgress,
+      translate: nextProgress * loopWidth,
+    });
+    sec5StartTimeRef.current = now - nextProgress * sec5CarouselDuration;
+
+    if (sec5PausedRef.current) {
+      sec5PauseStartedRef.current = now;
+    }
+  };
+
+  const syncSec9Carousel = (progress: number) => {
+    const now = performance.now();
+    const nextProgress = getWrappedProgress(progress);
+    const loopWidth = getSec9LoopWidth();
+
+    setSec9Carousel({
+      progress: nextProgress,
+      translate: nextProgress * loopWidth,
+    });
+    sec9StartTimeRef.current = now - nextProgress * sec9CarouselDuration;
+
+    if (sec9PausedRef.current) {
+      sec9PauseStartedRef.current = now;
+    }
+  };
+
   const pauseSec5Carousel = () => {
     if (sec5PausedRef.current) {
       return;
@@ -543,6 +608,86 @@ export default function MainPage() {
 
     sec9StartTimeRef.current += performance.now() - sec9PauseStartedRef.current;
     sec9PausedRef.current = false;
+  };
+
+  const startSec5CarouselDrag = (clientX: number) => {
+    pauseSec5Carousel();
+    sec5DragStartXRef.current = clientX;
+    sec5DragStartProgressRef.current = sec5Carousel.progress;
+    setIsSec5Dragging(true);
+  };
+
+  const moveSec5CarouselDrag = (clientX: number) => {
+    if (!isSec5Dragging) {
+      return;
+    }
+
+    const loopWidth = getSec5LoopWidth();
+
+    if (loopWidth <= 0) {
+      return;
+    }
+
+    syncSec5Carousel(sec5DragStartProgressRef.current - (clientX - sec5DragStartXRef.current) / loopWidth);
+  };
+
+  const endSec5CarouselDrag = () => {
+    if (!isSec5Dragging) {
+      return;
+    }
+
+    setIsSec5Dragging(false);
+    resumeSec5Carousel();
+  };
+
+  const startSec9CarouselDrag = (clientX: number) => {
+    pauseSec9Carousel();
+    sec9DragStartXRef.current = clientX;
+    sec9DragStartProgressRef.current = sec9Carousel.progress;
+    setIsSec9Dragging(true);
+  };
+
+  const moveSec9CarouselDrag = (clientX: number) => {
+    if (!isSec9Dragging) {
+      return;
+    }
+
+    const loopWidth = getSec9LoopWidth();
+
+    if (loopWidth <= 0) {
+      return;
+    }
+
+    syncSec9Carousel(sec9DragStartProgressRef.current - (clientX - sec9DragStartXRef.current) / loopWidth);
+  };
+
+  const endSec9CarouselDrag = () => {
+    if (!isSec9Dragging) {
+      return;
+    }
+
+    setIsSec9Dragging(false);
+    resumeSec9Carousel();
+  };
+
+  const syncSec5ProgressFromBar = (clientX: number, element: HTMLElement) => {
+    const rect = element.getBoundingClientRect();
+
+    if (rect.width <= 0) {
+      return;
+    }
+
+    syncSec5Carousel(Math.min(Math.max((clientX - rect.left) / rect.width, 0), 0.999));
+  };
+
+  const syncSec9ProgressFromBar = (clientX: number, element: HTMLElement) => {
+    const rect = element.getBoundingClientRect();
+
+    if (rect.width <= 0) {
+      return;
+    }
+
+    syncSec9Carousel(Math.min(Math.max((clientX - rect.left) / rect.width, 0), 0.999));
   };
 
   useEffect(() => {
@@ -596,7 +741,7 @@ export default function MainPage() {
           observer.unobserve(entry.target);
         });
       },
-      { threshold: 0.1 },
+      { threshold: 0.6 },
     );
 
     Object.values(seasonImageRefs.current).forEach((node) => {
@@ -621,33 +766,32 @@ export default function MainPage() {
       }
 
       const maskRects = gsap.utils.toArray<SVGRectElement>(".main-sec3__draw-mask-rect", section);
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top 72%",
-          end: "bottom 38%",
-          scrub: 1,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      maskRects.forEach((rect, index) => {
+      maskRects.forEach((rect) => {
+        const drawDirection = rect.dataset.drawDirection as DrawLineDirection | undefined;
         const revealHeight = Number(rect.dataset.revealHeight ?? 0);
-        const startAt = index * 0.18;
+        const revealWidth = Number(rect.dataset.revealWidth ?? 0);
+        const isHorizontal = drawDirection === "horizontal";
+        const lineElement = rect.closest(".main-sec3__line-svg");
 
         gsap.set(rect, {
-          attr: { height: 0 },
-          transformOrigin: "50% 0%",
+          attr: isHorizontal ? { width: 0 } : { height: 0 },
+          transformOrigin: isHorizontal ? "0% 50%" : "50% 0%",
         });
 
-        timeline.to(
+        gsap.to(
           rect,
           {
-            attr: { height: revealHeight },
+            attr: isHorizontal ? { width: revealWidth } : { height: revealHeight },
             ease: "none",
-            duration: 1,
+            duration: 0.22,
+            scrollTrigger: {
+              trigger: lineElement ?? section,
+              start: "top 78%",
+              end: isHorizontal ? "top 58%" : "bottom 58%",
+              scrub: 0.45,
+              invalidateOnRefresh: true,
+            },
           },
-          startAt,
         );
       });
     }, sec3Ref);
@@ -690,22 +834,18 @@ export default function MainPage() {
 
       gsap.set(lines, {
         x: "26.25rem",
-        y: "17.5rem",
-        autoAlpha: 0,
+        autoAlpha: 1,
       });
       gsap.set(lines[0], {
         x: 0,
-        y: 0,
         autoAlpha: 1,
       });
       gsap.set(cards, {
         x: "26.25rem",
-        y: "17.5rem",
         opacity: 0,
       });
       gsap.set(cards[0], {
         x: 0,
-        y: 0,
         opacity: 1,
       });
 
@@ -747,21 +887,8 @@ export default function MainPage() {
         }
 
         const matchingLine = lines[index];
-        const previousLine = lines[index - 1];
         const setStartAt = anticipationStart + 0.12 + (index - 1) * 0.42;
         const movingSet = matchingLine ? [matchingLine, card] : [card];
-
-        if (previousLine) {
-          setTimeline.to(
-            previousLine,
-            {
-              autoAlpha: 0,
-              ease: "power2.out",
-              duration: 0.12,
-            },
-            setStartAt,
-          );
-        }
 
         setTimeline.to(
           movingSet,
@@ -769,21 +896,18 @@ export default function MainPage() {
             keyframes: [
               {
                 x: "22rem",
-                y: "4.25rem",
                 autoAlpha: 1,
                 ease: "power3.out",
                 duration: 0.16,
               },
               {
                 x: "11rem",
-                y: "1.25rem",
                 autoAlpha: 1,
                 ease: "power2.out",
                 duration: 0.12,
               },
               {
                 x: 0,
-                y: 0,
                 autoAlpha: 1,
                 ease: "expo.out",
                 duration: 0.18,
@@ -809,8 +933,7 @@ export default function MainPage() {
       }
 
       if (!sec5PausedRef.current && sec5ProductGroupRef.current) {
-        const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
-        const loopWidth = sec5ProductGroupRef.current.offsetWidth + 1.5 * rootFontSize;
+        const loopWidth = getSec5LoopWidth();
         const elapsed = (timestamp - sec5StartTimeRef.current) % sec5CarouselDuration;
         const progress = elapsed / sec5CarouselDuration;
 
@@ -837,8 +960,7 @@ export default function MainPage() {
       }
 
       if (!sec9PausedRef.current && sec9ReviewGroupRef.current) {
-        const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
-        const loopWidth = sec9ReviewGroupRef.current.offsetWidth + 1.5 * rootFontSize;
+        const loopWidth = getSec9LoopWidth();
         const elapsed = (timestamp - sec9StartTimeRef.current) % sec9CarouselDuration;
         const progress = elapsed / sec9CarouselDuration;
 
@@ -952,13 +1074,17 @@ export default function MainPage() {
               프리미엄 티 익스피리언스
             </p>
             <div className="main-sec1__progress" aria-label={`${currentPage} / 03`}>
-              <span className="ft-18r ink500">{currentPage}</span>
+              <span className="main-sec1__progress-number ft-18r ink500">{currentPage}</span>
               <span
                 className="main-sec1__progress-line ink500"
-                style={{ width: `${(activeSlideIndex + 1) * 2.6875}rem` }}
                 aria-hidden="true"
-              />
-              <span className="ft-18r ink500">03</span>
+              >
+                <span
+                  className="main-sec1__progress-line-fill"
+                  style={{ width: `${((activeSlideIndex + 1) / mainKvSlides.length) * 100}%` }}
+                />
+              </span>
+              <span className="main-sec1__progress-number main-sec1__progress-number--end ft-18r ink500">03</span>
             </div>
           </div>
         </div>
@@ -1052,6 +1178,7 @@ export default function MainPage() {
             <img className="main-sec3__summer-symbol-black" src={symbolBlack} alt="" aria-hidden="true" />
             <DrawLineSvg
               className="main-sec3__summer-line"
+              direction="horizontal"
               maskId="main-sec3-line2-mask"
               svgSource={line2Raw}
             />
@@ -1158,7 +1285,23 @@ export default function MainPage() {
             청연의 제품 보기
           </Button>
         </div>
-        <div className="main-sec5__carousel" onMouseEnter={pauseSec5Carousel} onMouseLeave={resumeSec5Carousel}>
+        <div
+          className={["main-sec5__carousel", isSec5Dragging && "main-sec5__carousel--dragging"].filter(Boolean).join(" ")}
+          onMouseEnter={pauseSec5Carousel}
+          onMouseLeave={() => {
+            endSec5CarouselDrag();
+            resumeSec5Carousel();
+          }}
+          onMouseDown={(event) => {
+            event.preventDefault();
+            startSec5CarouselDrag(event.clientX);
+          }}
+          onMouseMove={(event) => moveSec5CarouselDrag(event.clientX)}
+          onMouseUp={endSec5CarouselDrag}
+          onTouchStart={(event) => startSec5CarouselDrag(event.touches[0].clientX)}
+          onTouchMove={(event) => moveSec5CarouselDrag(event.touches[0].clientX)}
+          onTouchEnd={endSec5CarouselDrag}
+        >
           <div className="main-sec5__carousel-viewport">
             <div className="main-sec5__carousel-track" style={{ transform: `translate3d(-${sec5Carousel.translate}px, 0, 0)` }}>
               <div className="main-sec5__product-group" ref={sec5ProductGroupRef}>
@@ -1173,8 +1316,58 @@ export default function MainPage() {
               </div>
             </div>
           </div>
-          <div className="main-sec5__progress" aria-hidden="true">
-            <span className="main-sec5__progress-fill" style={{ width: `${sec5Carousel.progress * 100}%` }} />
+          <div
+            className="main-sec5__progress"
+            role="slider"
+            aria-label="제품 슬라이드 위치"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(sec5Carousel.progress * 100)}
+            tabIndex={0}
+            onMouseDown={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              pauseSec5Carousel();
+              syncSec5ProgressFromBar(event.clientX, event.currentTarget);
+              setIsSec5Dragging(true);
+            }}
+            onMouseMove={(event) => {
+              event.stopPropagation();
+              if (isSec5Dragging) {
+                syncSec5ProgressFromBar(event.clientX, event.currentTarget);
+              }
+            }}
+            onMouseUp={(event) => {
+              event.stopPropagation();
+              endSec5CarouselDrag();
+            }}
+            onMouseLeave={(event) => {
+              event.stopPropagation();
+              endSec5CarouselDrag();
+            }}
+            onTouchStart={(event) => {
+              event.stopPropagation();
+              pauseSec5Carousel();
+              syncSec5ProgressFromBar(event.touches[0].clientX, event.currentTarget);
+              setIsSec5Dragging(true);
+            }}
+            onTouchMove={(event) => {
+              event.stopPropagation();
+              syncSec5ProgressFromBar(event.touches[0].clientX, event.currentTarget);
+            }}
+            onTouchEnd={(event) => {
+              event.stopPropagation();
+              endSec5CarouselDrag();
+            }}
+          >
+            <span
+              className="main-sec5__progress-thumb"
+              style={{
+                width: `${100 / mainProducts.length}%`,
+                transform: `translateX(${sec5Carousel.progress * (mainProducts.length - 1) * 100}%)`,
+              }}
+              aria-hidden="true"
+            />
           </div>
         </div>
       </section>
@@ -1322,7 +1515,23 @@ export default function MainPage() {
             일상 속 작은 여백으로 남은 이야기들
           </p>
         </div>
-        <div className="main-sec9__carousel" onMouseEnter={pauseSec9Carousel} onMouseLeave={resumeSec9Carousel}>
+        <div
+          className={["main-sec9__carousel", isSec9Dragging && "main-sec9__carousel--dragging"].filter(Boolean).join(" ")}
+          onMouseEnter={pauseSec9Carousel}
+          onMouseLeave={() => {
+            endSec9CarouselDrag();
+            resumeSec9Carousel();
+          }}
+          onMouseDown={(event) => {
+            event.preventDefault();
+            startSec9CarouselDrag(event.clientX);
+          }}
+          onMouseMove={(event) => moveSec9CarouselDrag(event.clientX)}
+          onMouseUp={endSec9CarouselDrag}
+          onTouchStart={(event) => startSec9CarouselDrag(event.touches[0].clientX)}
+          onTouchMove={(event) => moveSec9CarouselDrag(event.touches[0].clientX)}
+          onTouchEnd={endSec9CarouselDrag}
+        >
           <div className="main-sec9__carousel-viewport">
             <div className="main-sec9__carousel-track" style={{ transform: `translate3d(-${sec9Carousel.translate}px, 0, 0)` }}>
               <div className="main-sec9__review-group" ref={sec9ReviewGroupRef}>
@@ -1337,8 +1546,58 @@ export default function MainPage() {
               </div>
             </div>
           </div>
-          <div className="main-sec9__progress" aria-hidden="true">
-            <span className="main-sec9__progress-fill" style={{ width: `${sec9Carousel.progress * 100}%` }} />
+          <div
+            className="main-sec9__progress"
+            role="slider"
+            aria-label="리뷰 슬라이드 위치"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(sec9Carousel.progress * 100)}
+            tabIndex={0}
+            onMouseDown={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              pauseSec9Carousel();
+              syncSec9ProgressFromBar(event.clientX, event.currentTarget);
+              setIsSec9Dragging(true);
+            }}
+            onMouseMove={(event) => {
+              event.stopPropagation();
+              if (isSec9Dragging) {
+                syncSec9ProgressFromBar(event.clientX, event.currentTarget);
+              }
+            }}
+            onMouseUp={(event) => {
+              event.stopPropagation();
+              endSec9CarouselDrag();
+            }}
+            onMouseLeave={(event) => {
+              event.stopPropagation();
+              endSec9CarouselDrag();
+            }}
+            onTouchStart={(event) => {
+              event.stopPropagation();
+              pauseSec9Carousel();
+              syncSec9ProgressFromBar(event.touches[0].clientX, event.currentTarget);
+              setIsSec9Dragging(true);
+            }}
+            onTouchMove={(event) => {
+              event.stopPropagation();
+              syncSec9ProgressFromBar(event.touches[0].clientX, event.currentTarget);
+            }}
+            onTouchEnd={(event) => {
+              event.stopPropagation();
+              endSec9CarouselDrag();
+            }}
+          >
+            <span
+              className="main-sec9__progress-thumb"
+              style={{
+                width: `${100 / mainReviews.length}%`,
+                transform: `translateX(${sec9Carousel.progress * (mainReviews.length - 1) * 100}%)`,
+              }}
+              aria-hidden="true"
+            />
           </div>
         </div>
       </section>
