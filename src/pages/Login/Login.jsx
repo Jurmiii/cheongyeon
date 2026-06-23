@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Button, Input } from "../../components/common";
+import { useAuth } from "../../contexts/AuthContext";
+import { TEMP_LOGIN_ID, TEMP_LOGIN_PASSWORD, validateTempLogin } from "../../data/tempLoginCredentials";
 import logo from "../../assets/images/00header-footer/logo.svg";
 import "./Login.scss";
 
