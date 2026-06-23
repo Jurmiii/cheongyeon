@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "../../../assets/images/00header-footer/logo.svg";
 import { useAuth } from "../../../contexts/AuthContext";
+import logo from "../../../assets/images/00header-footer/logo.svg";
 import Icon from "../Icon";
 import "./Header.scss";
 
@@ -31,6 +31,7 @@ const actionMenus: HeaderActionItem[] = [
 ];
 
 const submenuHrefs: Record<string, string> = {
+  "계절의 차": "/product/season-tea",
   예약하기: "/reservation",
   공지사항: "/event/notice",
 };
