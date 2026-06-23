@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import subSymbol from "../../assets/images/svg/subsymbol.svg";
 
@@ -45,7 +45,8 @@ function parseNoticeDate(date: string) {
 
 
 function NoticePage() {
-
+  const location = useLocation();
+  const noticeListRef = useRef<HTMLElement>(null);
   const [activeCategory, setActiveCategory] = useState<NoticeCategory>("전체");
 
   const [activePage, setActivePage] = useState(1);
@@ -124,6 +125,50 @@ function NoticePage() {
 
 
 
+  useEffect(() => {
+
+    if (location.hash === "#notice-list") {
+
+      requestAnimationFrame(() => {
+
+        noticeListRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      });
+
+    }
+
+  }, [location]);
+
+
+
+  const scrollToNoticeListTop = () => {
+
+    noticeListRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  };
+
+
+
+  const handlePageChange = (pageNumber: number) => {
+
+    if (pageNumber === activePage) {
+
+      return;
+
+    }
+
+    setActivePage(pageNumber);
+
+    requestAnimationFrame(() => {
+
+      scrollToNoticeListTop();
+
+    });
+
+  };
+
+
+
   const handleCategoryChange = (category: NoticeCategory) => {
 
     setActiveCategory(category);
@@ -186,7 +231,7 @@ function NoticePage() {
 
       </section>
 
-      <section className="notice-content" aria-label="공지 목록">
+      <section className="notice-content" id="notice-list" ref={noticeListRef} aria-label="공지 목록">
 
         <div className="notice-content__grid">
 
@@ -376,7 +421,7 @@ function NoticePage() {
 
                 disabled={activePage === 1}
 
-                onClick={() => setActivePage((page) => Math.max(1, page - 1))}
+                onClick={() => handlePageChange(Math.max(1, activePage - 1))}
 
               >
 
@@ -410,7 +455,7 @@ function NoticePage() {
 
                       aria-current={pageNumber === activePage ? "page" : undefined}
 
-                      onClick={() => setActivePage(pageNumber)}
+                      onClick={() => handlePageChange(pageNumber)}
 
                     >
 
@@ -434,7 +479,7 @@ function NoticePage() {
 
                 disabled={activePage === totalPages}
 
-                onClick={() => setActivePage((page) => Math.min(totalPages, page + 1))}
+                onClick={() => handlePageChange(Math.min(totalPages, activePage + 1))}
 
               >
 

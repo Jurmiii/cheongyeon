@@ -35,7 +35,7 @@ function NoticeDetailPage() {
             <div className="notice-detail__divider" aria-hidden="true" />
           </div>
           <div className="notice-detail__actions">
-            <Link className="notice-detail__back-link" to="/event/notice">
+            <Link className="notice-detail__back-link" to="/event/notice#notice-list">
               <Button className="notice-detail__back-button" variant="btn1">
                 목록으로
               </Button>
