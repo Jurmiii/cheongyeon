@@ -1,5 +1,5 @@
 import { Button, Input } from "../../components/common";
-import logo from "../../assets/images/svg/logo.svg";
+import logo from "../../assets/images/00header-footer/logo.svg";
 import "./Login.scss";
 
 export default function Login() {

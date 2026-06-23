@@ -1,7 +1,7 @@
-import classIntro31 from "../assets/images/content-img/class-introduction-3-1.webp";
-import classIntro32 from "../assets/images/content-img/class-introduction-3-2.webp";
-import classIntro33 from "../assets/images/content-img/class-introduction-3-3.webp";
-import classIntro34 from "../assets/images/content-img/class-introduction-3-4.webp";
+import classIntro31 from "../assets/images/08class/class-introduction-3-1.webp";
+import classIntro32 from "../assets/images/08class/class-introduction-3-2.webp";
+import classIntro33 from "../assets/images/08class/class-introduction-3-3.webp";
+import classIntro34 from "../assets/images/08class/class-introduction-3-4.webp";
 
 export type ClassIntroductionSlideKey = "basic" | "aged" | "blending" | "private";
 

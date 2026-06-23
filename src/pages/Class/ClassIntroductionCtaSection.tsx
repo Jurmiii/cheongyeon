@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import classIntroCtaBg from "../../assets/images/bg/class-introduction-6-bg.webp";
+import classIntroCtaBg from "../../assets/images/08class/class-introduction-6-bg.webp";
 import "./ClassIntroductionCtaSection.scss";
 
 function ClassIntroductionCtaSection() {

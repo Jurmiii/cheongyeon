@@ -1,4 +1,4 @@
-import tea1 from "../../../assets/images/content-img/tea1.webp";
+import tea1 from "../../../assets/images/01main/tea1.webp";
 import "./ProductContentBox.scss";
 
 export default function ProductContentBox() {

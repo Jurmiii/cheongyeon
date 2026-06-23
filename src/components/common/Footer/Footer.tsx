@@ -1,8 +1,8 @@
-import footerBg from "../../../assets/images/bg/footer-bg.webp";
-import githubIcon from "../../../assets/images/svg/github.svg";
-import kakaoIcon from "../../../assets/images/svg/kakao.svg";
-import logoWhite from "../../../assets/images/svg/logo-white.svg";
-import naverIcon from "../../../assets/images/svg/naver.svg";
+import footerBg from "../../../assets/images/00header-footer/footer-bg.webp";
+import githubIcon from "../../../assets/images/00header-footer/github.svg";
+import kakaoIcon from "../../../assets/images/00header-footer/kakao.svg";
+import logoWhite from "../../../assets/images/00header-footer/logo-white.svg";
+import naverIcon from "../../../assets/images/00header-footer/naver.svg";
 import "./Footer.scss";
 
 const footerLinks = [

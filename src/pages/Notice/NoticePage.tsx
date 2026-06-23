@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Link, useLocation } from "react-router-dom";
 
-import subSymbol from "../../assets/images/svg/subsymbol.svg";
+import subSymbol from "../../assets/images/01main/subsymbol.svg";
 
 import { Badge, Footer, Header, Icon } from "../../components/common";
 

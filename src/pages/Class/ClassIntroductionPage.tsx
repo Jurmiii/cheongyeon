@@ -1,6 +1,6 @@
 import { Header } from "../../components/common";
-import subSymbol from "../../assets/images/svg/subsymbol.svg";
-import classIntroImage from "../../assets/images/content-img/class-introduction-2-1.webp";
+import subSymbol from "../../assets/images/01main/subsymbol.svg";
+import classIntroImage from "../../assets/images/08class/class-introduction-2-1.webp";
 import ClassIntroductionScrollSection from "./ClassIntroductionScrollSection";
 import ClassIntroductionCarouselSection from "./ClassIntroductionCarouselSection";
 import ClassIntroductionCtaSection from "./ClassIntroductionCtaSection";

@@ -1,4 +1,4 @@
-import dado1 from "../../../assets/images/content-img/dado1.webp";
+import dado1 from "../../../assets/images/01main/dado1.webp";
 import "./ReviewContentBox.scss";
 
 export default function ReviewContentBox() {
