@@ -736,11 +736,10 @@
   --main-sec6-media-height: clamp(31.604rem, 45.1563vw, 54.1875rem);
   --main-sec6-media-half-width: clamp(15rem, 21.4323vw, 25.71875rem);
   --main-sec6-media-half-height: clamp(15.802rem, 22.57815vw, 27.09375rem);
-  --main-sec6-pot-width: 51.4375rem;
-  --main-sec6-pot-height: 54.1875rem;
-  --main-sec6-pot-half-width: 25.71875rem;
-  --main-sec6-pot-half-height: 27.09375rem;
-  --main-sec6-pot-bottom-gap: 4.5625rem;
+  --main-sec6-pot-width: 30rem;
+  --main-sec6-pot-height: 27.4375rem;
+  --main-sec6-pot-half-width: 15rem;
+  --main-sec6-pot-half-height: 13.71875rem;
   --main-sec6-orbit-radius: 58.75rem;
   background: var(--white);
 }
@@ -870,7 +869,7 @@
 
 .main-sec6__orbit {
   position: absolute;
-  top: calc(100% - var(--main-sec6-pot-bottom-gap) - var(--main-sec6-pot-half-height) + var(--main-sec6-orbit-radius));
+  top: calc(50% + var(--main-sec6-orbit-radius));
   left: 50%;
   z-index: 2;
   width: calc(var(--main-sec6-orbit-radius) * 2);

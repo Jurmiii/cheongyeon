@@ -5,7 +5,8 @@ import { useAuth } from "../../../contexts/AuthContext";
 import Icon from "../Icon";
 import "./Header.scss";
 
-type ActiveDropdown = "gnb" | null;
+type ActiveDropdown = "gnb" | "user" | "language" | null;
+type HeaderLanguage = "KO" | "EN";
 
 interface HeaderMenuItem {
   label: string;
@@ -27,7 +28,7 @@ const gnbMenus: HeaderMenuItem[] = [
 
 const actionMenus: HeaderActionItem[] = [
   { id: "user", label: "user" },
-  { id: "language", label: "KR" },
+  { id: "language", label: "KO" },
 ];
 
 const submenuHrefs: Record<string, string> = {
@@ -38,7 +39,12 @@ const submenuHrefs: Record<string, string> = {
 export default function Header() {
   const { isLoggedIn, loginId, logout } = useAuth();
   const [activeDropdown, setActiveDropdown] = useState<ActiveDropdown>(null);
+  const [selectedLanguage, setSelectedLanguage] = useState<HeaderLanguage>("KO");
   const isGnbOpen = activeDropdown === "gnb";
+  const nextLanguage: HeaderLanguage = selectedLanguage === "KO" ? "EN" : "KO";
+  const handleActionClick = (dropdown: ActiveDropdown) => {
+    setActiveDropdown(dropdown);
+  };
 
   return (
     <header
@@ -101,37 +107,79 @@ export default function Header() {
                   "site-header__menu-item",
                   "site-header__menu-item--action",
                   `site-header__menu-item--${menu.id}`,
+                  activeDropdown === menu.id && "site-header__menu-item--active",
                 ].filter(Boolean).join(" ")}
                 key={menu.id}
+                onMouseEnter={() => setActiveDropdown(menu.id)}
               >
                 {menu.id === "user" ? (
-                  isLoggedIn ? (
-                    <button
-                      className="site-header__menu-link site-header__action-link ft-18b ink500"
-                      type="button"
-                      aria-label={`${loginId}님 로그아웃`}
-                      onClick={logout}
-                    >
-                      <Icon className="site-header__user-icon" name="user" aria-hidden="true" />
-                      <span className="site-header__user-name ft-14r">{loginId}</span>
-                    </button>
-                  ) : (
-                    <Link
-                      className="site-header__menu-link site-header__action-link ft-18b ink500"
-                      to="/login"
-                      aria-label="로그인"
-                    >
-                      <Icon className="site-header__user-icon" name="user" aria-label="로그인" />
-                    </Link>
-                  )
+                  <>
+                  <button
+                    className="site-header__menu-link site-header__action-link ft-18b ink500"
+                    type="button"
+                    aria-label="사용자 메뉴"
+                    aria-expanded={activeDropdown === "user"}
+                    onClick={() => handleActionClick("user")}
+                  >
+                    <Icon className="site-header__user-icon" name="user" aria-hidden="true" />
+                    {isLoggedIn ? <span className="site-header__user-name ft-14r">{loginId}</span> : null}
+                    <Icon className="site-header__angle-icon" name="angle-down" aria-hidden="true" />
+                  </button>
+                  <span className="site-header__dropdown-line" aria-hidden="true" />
+                  <ul className="site-header__action-dropdown site-header__action-dropdown--user" aria-hidden={activeDropdown !== "user"}>
+                    <li>
+                      {isLoggedIn ? (
+                        <button
+                          className="site-header__action-dropdown-link ft-16b ink500"
+                          type="button"
+                          onClick={() => {
+                            logout();
+                            setActiveDropdown(null);
+                          }}
+                        >
+                          로그아웃
+                        </button>
+                      ) : (
+                        <Link className="site-header__action-dropdown-link ft-16b ink500" to="/login">
+                          로그인
+                        </Link>
+                      )}
+                    </li>
+                    <li>
+                      <a className="site-header__action-dropdown-link ft-16b ink500" href="#mypage">
+                        마이페이지
+                      </a>
+                    </li>
+                  </ul>
+                  </>
                 ) : (
+                  <>
                   <button
                     className="site-header__menu-link site-header__action-link ft-18b ink500"
                     type="button"
                     aria-label="언어 선택"
+                    aria-expanded={activeDropdown === "language"}
+                    onClick={() => handleActionClick("language")}
                   >
-                    {menu.label}
+                    {selectedLanguage}
+                    <Icon className="site-header__angle-icon" name="angle-down" aria-hidden="true" />
                   </button>
+                  <span className="site-header__dropdown-line" aria-hidden="true" />
+                  <ul className="site-header__action-dropdown site-header__action-dropdown--language" aria-hidden={activeDropdown !== "language"}>
+                    <li>
+                      <button
+                        className="site-header__action-dropdown-link ft-16b ink500"
+                        type="button"
+                        onClick={() => {
+                          setSelectedLanguage(nextLanguage);
+                          setActiveDropdown(null);
+                        }}
+                      >
+                        {nextLanguage}
+                      </button>
+                    </li>
+                  </ul>
+                  </>
                 )}
               </div>
             ))}
