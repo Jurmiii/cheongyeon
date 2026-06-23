@@ -1,8 +1,9 @@
-import { Header } from "../../components/common";
+import { Footer, Header } from "../../components/common";
 import subSymbol from "../../assets/images/01main/subsymbol.svg";
 import classIntroImage from "../../assets/images/08class/class-introduction-2-1.webp";
 import ClassIntroductionScrollSection from "./ClassIntroductionScrollSection";
 import ClassIntroductionCarouselSection from "./ClassIntroductionCarouselSection";
+import ClassIntroductionReviewSection from "./ClassIntroductionReviewSection";
 import ClassIntroductionCtaSection from "./ClassIntroductionCtaSection";
 import "./ClassIntroductionPage.scss";
 
@@ -57,6 +58,10 @@ function ClassIntroductionPage() {
       <ClassIntroductionCarouselSection />
 
       <ClassIntroductionCtaSection />
+
+      <ClassIntroductionReviewSection />
+
+      <Footer />
     </main>
   );
 }

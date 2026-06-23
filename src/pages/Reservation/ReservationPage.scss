@@ -587,6 +587,33 @@
   cursor: pointer;
 }
 
+.reservation-payment__errors {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  border: calc(var(--space-1) / 8) solid var(--danger);
+  border-radius: 0.5rem;
+  background: rgb(176 70 60 / 6%);
+}
+
+.reservation-payment__errors-title {
+  margin: 0 0 0.75rem;
+  color: var(--danger);
+}
+
+.reservation-payment__errors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin: 0;
+  padding-left: 1.125rem;
+  color: var(--danger);
+
+  li {
+    margin: 0;
+  }
+}
+
 .reservation-payment__checkbox {
   width: 1.875rem;
   height: 1.875rem;

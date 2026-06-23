@@ -36,14 +36,14 @@ function isPastDate(date: Date, today: Date) {
   return startOfDay(date).getTime() < startOfDay(today).getTime();
 }
 
-function getInitialSelectedDate(today: Date) {
-  return startOfDay(today);
+interface ReservationCalendarProps {
+  selectedDate: Date;
+  onSelectedDateChange: (date: Date) => void;
 }
 
-export default function ReservationCalendar() {
+export default function ReservationCalendar({ selectedDate, onSelectedDateChange }: ReservationCalendarProps) {
   const today = useMemo(() => startOfDay(new Date()), []);
   const [currentDate, setCurrentDate] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
-  const [selectedDate, setSelectedDate] = useState(() => getInitialSelectedDate(today));
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -64,7 +64,7 @@ export default function ReservationCalendar() {
       return;
     }
 
-    setSelectedDate(startOfDay(date));
+    onSelectedDateChange(startOfDay(date));
   };
 
   return (
@@ -124,3 +124,5 @@ export default function ReservationCalendar() {
     </section>
   );
 }
+
+export { startOfDay };
