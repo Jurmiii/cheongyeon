@@ -12,20 +12,24 @@ function ClassIntroductionScrollSection() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
+    const section = sectionRef.current;
+
+    if (!section) {
+      return;
+    }
+
+    const images = imageRefs.current.filter(Boolean) as HTMLImageElement[];
+    const panels = panelRefs.current.filter(Boolean) as HTMLDivElement[];
+
+    if (images.length === 0 || panels.length === 0) {
+      return;
+    }
+
+    const refreshScroll = () => {
+      ScrollTrigger.refresh();
+    };
+
     const context = gsap.context(() => {
-      const section = sectionRef.current;
-
-      if (!section) {
-        return;
-      }
-
-      const images = imageRefs.current.filter(Boolean) as HTMLImageElement[];
-      const panels = panelRefs.current.filter(Boolean) as HTMLDivElement[];
-
-      if (images.length === 0 || panels.length === 0) {
-        return;
-      }
-
       const slideCount = classIntroductionSlides.length;
       const labelProgress = Array.from({ length: slideCount }, (_, index) => index / (slideCount - 1));
       const getNearestIndex = (progress: number) =>
@@ -49,10 +53,12 @@ function ClassIntroductionScrollSection() {
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=2400",
+          end: () => `+=${Math.max(Math.round(window.innerHeight * 2.75), 2400)}`,
           scrub: 0.08,
           pin: true,
+          pinSpacing: true,
           anticipatePin: 1,
+          invalidateOnRefresh: true,
           snap: {
             snapTo: "labelsDirectional",
             delay: 0,
@@ -123,13 +129,27 @@ function ClassIntroductionScrollSection() {
       }
     }, sectionRef);
 
+    images.forEach((image) => {
+      if (image.complete) {
+        return;
+      }
+
+      image.addEventListener("load", refreshScroll, { once: true });
+    });
+
+    requestAnimationFrame(refreshScroll);
+    window.addEventListener("load", refreshScroll);
+    window.addEventListener("resize", refreshScroll);
+
     return () => {
+      window.removeEventListener("load", refreshScroll);
+      window.removeEventListener("resize", refreshScroll);
       context.revert();
     };
   }, []);
 
   return (
-    <section className="class-intro-scroll" ref={sectionRef} aria-label="클래스 소개">
+    <section className="class-intro-scroll" ref={sectionRef} aria-label="클래스 유형">
       <div className="class-intro-scroll__grid">
         <div className="class-intro-scroll__stage">
           <div className="class-intro-scroll__media" aria-live="polite">

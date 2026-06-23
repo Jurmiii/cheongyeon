@@ -121,7 +121,7 @@ function NoticePage() {
 
     setListAnimationKey((key) => key + 1);
 
-  }, [activeCategory, activePage, sortOrder]);
+  }, [activeCategory, sortOrder]);
 
 
 
@@ -141,14 +141,6 @@ function NoticePage() {
 
 
 
-  const scrollToNoticeListTop = () => {
-
-    noticeListRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-
-  };
-
-
-
   const handlePageChange = (pageNumber: number) => {
 
     if (pageNumber === activePage) {
@@ -158,12 +150,6 @@ function NoticePage() {
     }
 
     setActivePage(pageNumber);
-
-    requestAnimationFrame(() => {
-
-      scrollToNoticeListTop();
-
-    });
 
   };
 
