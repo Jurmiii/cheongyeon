@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 
 import { Button, Footer, Header, Icon, Input } from "../../components/common";
-import ReservationCalendar from "./ReservationCalendar";
+import ReservationCalendar, { startOfDay } from "./ReservationCalendar";
+import ReservationCompleteModal from "./ReservationCompleteModal";
 import {
   RESERVATION_CLASSES_PER_PAGE,
   cardCompanies,
@@ -21,10 +22,23 @@ type PaymentMethod = "card" | "easy";
 
 type PaymentDropdown = "cardCompany" | "installment" | null;
 
+function normalizePhone(value: string) {
+  return value.replace(/\D/g, "");
+}
+
+function isValidPhone(value: string) {
+  const digits = normalizePhone(value);
+  return digits.length >= 10 && digits.length <= 11;
+}
+
 function ReservationPage() {
+  const today = useMemo(() => startOfDay(new Date()), []);
   const [selectedBranch, setSelectedBranch] = useState<ReservationBranch>(reservationBranches[0]);
+  const [reservationName, setReservationName] = useState("");
+  const [reservationPhone, setReservationPhone] = useState("");
   const [selectedClassId, setSelectedClassId] = useState<number>(reservationClasses[0].id);
   const [classPage, setClassPage] = useState(1);
+  const [selectedDate, setSelectedDate] = useState(() => today);
   const [selectedTime, setSelectedTime] = useState<ReservationTimeSlot>(reservationTimeSlots[0]);
   const [guestCount, setGuestCount] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
@@ -33,6 +47,8 @@ function ReservationPage() {
   const [openPaymentDropdown, setOpenPaymentDropdown] = useState<PaymentDropdown>(null);
   const [savePaymentMethod, setSavePaymentMethod] = useState(false);
   const [isNoticeOpen, setIsNoticeOpen] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
 
   const totalClassPages = Math.ceil(reservationClasses.length / RESERVATION_CLASSES_PER_PAGE);
 
@@ -56,11 +72,65 @@ function ReservationPage() {
   const handleCardCompanySelect = (company: CardCompany) => {
     setSelectedCardCompany(company);
     setOpenPaymentDropdown(null);
+    setValidationErrors([]);
   };
 
   const handleInstallmentSelect = (plan: InstallmentPlan) => {
     setSelectedInstallment(plan);
     setOpenPaymentDropdown(null);
+  };
+
+  const validateReservation = () => {
+    const errors: string[] = [];
+
+    if (!selectedBranch) {
+      errors.push("지점을 선택해주세요.");
+    }
+
+    if (!reservationName.trim()) {
+      errors.push("예약자명을 입력해주세요.");
+    }
+
+    if (!reservationPhone.trim()) {
+      errors.push("연락처를 입력해주세요.");
+    } else if (!isValidPhone(reservationPhone)) {
+      errors.push("연락처를 올바른 형식으로 입력해주세요.");
+    }
+
+    if (!reservationClasses.some((classItem) => classItem.id === selectedClassId)) {
+      errors.push("클래스를 선택해주세요.");
+    }
+
+    if (!selectedDate || startOfDay(selectedDate).getTime() < today.getTime()) {
+      errors.push("날짜를 선택해주세요.");
+    }
+
+    if (!selectedTime) {
+      errors.push("시간을 선택해주세요.");
+    }
+
+    if (guestCount < 1 || guestCount > 4) {
+      errors.push("인원은 1명에서 4명 사이로 선택해주세요.");
+    }
+
+    if (paymentMethod === "card" && !selectedCardCompany) {
+      errors.push("카드사를 선택해주세요.");
+    }
+
+    return errors;
+  };
+
+  const handleReservationSubmit = () => {
+    const errors = validateReservation();
+
+    if (errors.length > 0) {
+      setValidationErrors(errors);
+      setIsCompleteModalOpen(false);
+      return;
+    }
+
+    setValidationErrors([]);
+    setIsCompleteModalOpen(true);
   };
 
   const cardCompanyLabel = selectedCardCompany ?? "카드사를 선택해주세요";
@@ -99,7 +169,10 @@ function ReservationPage() {
                   type="button"
                   role="radio"
                   aria-checked={branch === selectedBranch}
-                  onClick={() => setSelectedBranch(branch)}
+                  onClick={() => {
+                    setSelectedBranch(branch);
+                    setValidationErrors([]);
+                  }}
                 >
                   {branch}
                 </button>
@@ -112,13 +185,32 @@ function ReservationPage() {
               <label className="reservation-form__label ft-18b ink500" htmlFor="reservation-name">
                 * 예약자명
               </label>
-              <Input id="reservation-name" state="in1" placeholder="이름을 입력하세요" />
+              <Input
+                id="reservation-name"
+                state="in1"
+                placeholder="이름을 입력하세요"
+                value={reservationName}
+                onChange={(event) => {
+                  setReservationName(event.target.value);
+                  setValidationErrors([]);
+                }}
+              />
             </div>
             <div className="reservation-form__field">
               <label className="reservation-form__label ft-18b ink500" htmlFor="reservation-phone">
                 * 연락처
               </label>
-              <Input id="reservation-phone" state="in1" placeholder="휴대폰 번호를 입력하세요" type="tel" />
+              <Input
+                id="reservation-phone"
+                state="in1"
+                placeholder="휴대폰 번호를 입력하세요"
+                type="tel"
+                value={reservationPhone}
+                onChange={(event) => {
+                  setReservationPhone(event.target.value);
+                  setValidationErrors([]);
+                }}
+              />
             </div>
           </div>
         </div>
@@ -175,7 +267,10 @@ function ReservationPage() {
                         .join(" ")}
                       type="button"
                       aria-pressed={isSelected}
-                      onClick={() => setSelectedClassId(classItem.id)}
+                      onClick={() => {
+                        setSelectedClassId(classItem.id);
+                        setValidationErrors([]);
+                      }}
                     >
                       {isSelected ? "선택됨" : "선택하기"}
                     </button>
@@ -215,7 +310,13 @@ function ReservationPage() {
           <div className="reservation-schedule__calendar-wrap">
             <h2 className="reservation-form__label ft-18b ink500">* 날짜 선택</h2>
             <div className="reservation-schedule__calendar">
-              <ReservationCalendar />
+              <ReservationCalendar
+                selectedDate={selectedDate}
+                onSelectedDateChange={(date) => {
+                  setSelectedDate(date);
+                  setValidationErrors([]);
+                }}
+              />
             </div>
           </div>
           <div className="reservation-schedule__options">
@@ -236,7 +337,10 @@ function ReservationPage() {
                     type="button"
                     role="radio"
                     aria-checked={time === selectedTime}
-                    onClick={() => setSelectedTime(time)}
+                    onClick={() => {
+                      setSelectedTime(time);
+                      setValidationErrors([]);
+                    }}
                   >
                     {time}
                   </button>
@@ -418,11 +522,26 @@ function ReservationPage() {
             />
             선택한 결제 수단을 다음에도 사용
           </label>
+          {validationErrors.length > 0 && (
+            <div className="reservation-payment__errors" role="alert" aria-live="polite">
+              <p className="reservation-payment__errors-title ft-18b">아래 항목을 확인해주세요.</p>
+              <ul className="reservation-payment__errors-list ft-16r">
+                {validationErrors.map((error) => (
+                  <li key={error}>{error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
           <div className="reservation-payment__actions">
             <Button className="reservation-payment__action reservation-payment__action--edit" variant="btn2">
               예약변경
             </Button>
-            <Button className="reservation-payment__action reservation-payment__action--submit" variant="btn1">
+            <Button
+              className="reservation-payment__action reservation-payment__action--submit"
+              variant="btn1"
+              type="button"
+              onClick={handleReservationSubmit}
+            >
               예약하기
             </Button>
           </div>
@@ -464,6 +583,11 @@ function ReservationPage() {
           </div>
         </div>
       </section>
+
+      <ReservationCompleteModal
+        isOpen={isCompleteModalOpen}
+        onClose={() => setIsCompleteModalOpen(false)}
+      />
 
       <Footer />
     </main>
