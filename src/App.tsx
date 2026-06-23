@@ -5,7 +5,6 @@ import MainPage from './pages/MainPage'
 import ReservationPage from './pages/Reservation/ReservationPage'
 import NoticeDetailPage from './pages/Notice/NoticeDetailPage'
 import NoticePage from './pages/Notice/NoticePage'
-import BrandStoryPage from './pages/BrandStory'
 
 function App() {
   return (
@@ -15,7 +14,6 @@ function App() {
         <Route path="/preview" element={<ComponentPreview />} />
         <Route path="/class/introduction" element={<ClassIntroductionPage />} />
         <Route path="/reservation" element={<ReservationPage />} />
-        <Route path="/brand/story" element={<BrandStoryPage />} />
         <Route path="/event/notice" element={<NoticePage />} />
         <Route path="/event/notice/:noticeId" element={<NoticeDetailPage />} />
         <Route path="*" element={<Navigate to="/preview" replace />} />
