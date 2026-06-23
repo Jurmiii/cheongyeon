@@ -1,0 +1,180 @@
+/* Figma 1449:346 — 1920×900 */
+.class-intro-carousel {
+  width: 120rem;
+  max-width: 100%;
+  min-height: 56.25rem;
+  padding: 7.5rem 15rem 8.25rem;
+  background: var(--han50);
+}
+
+.class-intro-carousel__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 3.75rem;
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+}
+
+.class-intro-carousel__title {
+  margin: 0;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+.class-intro-carousel__track {
+  display: flex;
+  gap: 1.3125rem;
+  align-items: stretch;
+  width: 100%;
+  max-width: 89.4375rem;
+  height: 34.5rem;
+  margin-inline: auto;
+}
+
+.class-intro-carousel__card {
+  position: relative;
+  flex: 0 0 13.6875rem;
+  width: 13.6875rem;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0;
+  cursor: default;
+  transform: scale(1);
+  transform-origin: center center;
+  transition:
+    flex 0.45s ease,
+    width 0.45s ease,
+    transform 0.45s ease;
+
+  &--active {
+    flex: 0 0 44.4375rem;
+    width: 44.4375rem;
+    transform: scale(1);
+  }
+
+  &--inactive {
+    flex: 0 0 13.6875rem;
+    width: 13.6875rem;
+    transform: scale(0.92);
+  }
+}
+
+.class-intro-carousel__media {
+  position: absolute;
+  inset: 0;
+  background: var(--han300);
+}
+
+.class-intro-carousel__video-slot {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgb(217 217 217 / 36%) 0%, rgb(35 35 35 / 28%) 100%);
+}
+
+.class-intro-carousel__content {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem;
+  pointer-events: none;
+}
+
+.class-intro-carousel__card-title {
+  margin: 0;
+}
+
+.class-intro-carousel__card-description {
+  max-height: 0;
+  margin: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height 0.35s ease,
+    opacity 0.35s ease;
+
+  span {
+    display: block;
+    white-space: nowrap;
+  }
+}
+
+.class-intro-carousel__card--active {
+  .class-intro-carousel__content {
+    align-items: flex-start;
+    max-width: none;
+    padding: 0 0 2.375rem 2rem;
+  }
+
+  .class-intro-carousel__card-description {
+    max-height: 6.75rem;
+    opacity: 1;
+  }
+}
+
+.class-intro-carousel__card:not(.class-intro-carousel__card--active) {
+  .class-intro-carousel__content {
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 2.375rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 90rem) {
+  .class-intro-carousel {
+    padding-inline: 1.5rem;
+  }
+
+  .class-intro-carousel__track {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 64rem) {
+  .class-intro-carousel {
+    min-height: auto;
+    padding-block: 3rem;
+  }
+
+  .class-intro-carousel__track {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .class-intro-carousel__card,
+  .class-intro-carousel__card--active,
+  .class-intro-carousel__card--inactive {
+    flex: none;
+    width: 100%;
+    height: 13.75rem;
+    transform: none;
+  }
+
+  .class-intro-carousel__card--active {
+    height: 21.5rem;
+  }
+
+  .class-intro-carousel__card:not(.class-intro-carousel__card--active) .class-intro-carousel__content {
+    align-items: flex-start;
+    padding: 0 0 1.5rem 1.5rem;
+    text-align: left;
+  }
+
+  .class-intro-carousel__card--active .class-intro-carousel__card-description {
+    max-height: 5rem;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .class-intro-carousel__card,
+  .class-intro-carousel__card-description {
+    transition: none;
+  }
+}

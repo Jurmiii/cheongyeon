@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 
-import { Button, Calendar, Footer, Header, Icon, Input } from "../../components/common";
+import { Button, Footer, Header, Icon, Input } from "../../components/common";
+import ReservationCalendar from "./ReservationCalendar";
 import {
   RESERVATION_CLASSES_PER_PAGE,
   cardCompanies,
@@ -144,8 +145,12 @@ function ReservationPage() {
                     <span className="reservation-class-card__badge ft-14b han200">{classItem.badge}</span>
                   </div>
                   <div className="reservation-class-card__body">
-                    <h3 className="reservation-class-card__title ft-22b ink500">{classItem.title}</h3>
-                    <p className="reservation-class-card__description ft-18r ink400">{classItem.description}</p>
+                    <h3 className="reservation-class-card__title ft-22b ink400">{classItem.title}</h3>
+                    <div className="reservation-class-card__description ft-18r ink400">
+                      {classItem.description.split("\n").map((line, lineIndex) => (
+                        <p key={`${classItem.id}-${lineIndex}`}>{line}</p>
+                      ))}
+                    </div>
                     <ul className="reservation-class-card__meta ft-16r ink400">
                       <li>
                         <Icon name="clock" aria-hidden="true" />
@@ -210,7 +215,7 @@ function ReservationPage() {
           <div className="reservation-schedule__calendar-wrap">
             <h2 className="reservation-form__label ft-18b ink500">* 날짜 선택</h2>
             <div className="reservation-schedule__calendar">
-              <Calendar />
+              <ReservationCalendar />
             </div>
           </div>
           <div className="reservation-schedule__options">
@@ -273,7 +278,6 @@ function ReservationPage() {
           <textarea
             className="reservation-request__textarea ft-22r"
             placeholder="특이사항이나 요청사항이 있으시면 입력해주세요."
-            rows={5}
           />
         </div>
       </section>
@@ -429,8 +433,12 @@ function ReservationPage() {
               aria-expanded={isNoticeOpen}
               onClick={() => setIsNoticeOpen((open) => !open)}
             >
-              <Icon className="reservation-notice__asterisk ink500" name="star-of-life" aria-hidden="true" />
-              <span className="reservation-notice__toggle-text ft-22b ink500">예약 전 꼭 확인해주세요</span>
+              <span className="reservation-notice__toggle-head">
+                <span className="reservation-notice__asterisk ft-22b ink500" aria-hidden="true">
+                  *
+                </span>
+                <span className="reservation-notice__toggle-text ft-22b ink500">예약 전 꼭 확인해주세요</span>
+              </span>
               <Icon
                 className={["reservation-notice__chevron", isNoticeOpen && "reservation-notice__chevron--open"]
                   .filter(Boolean)
@@ -443,7 +451,7 @@ function ReservationPage() {
               <div className="reservation-notice__content">
                 {reservationNoticeSections.map((section) => (
                   <div className="reservation-notice__column" key={section.title}>
-                    <h3 className="reservation-notice__column-title ft-18r">*{section.title}</h3>
+                    <h3 className="reservation-notice__column-title ft-18r">{section.displayTitle}</h3>
                     <ul className="reservation-notice__list ft-16r">
                       {section.items.map((item) => (
                         <li key={item}>{item}</li>

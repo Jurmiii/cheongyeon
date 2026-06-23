@@ -59,7 +59,7 @@ export const reservationClasses: ReservationClassItem[] = [
     capacity: "4 ~ 8명",
     price: "45,000원",
     image: eventCardSummer,
-    imageOverlay: "dark",
+    imageOverlay: "light",
   },
   {
     id: 3,
@@ -70,7 +70,7 @@ export const reservationClasses: ReservationClassItem[] = [
     capacity: "4 ~ 8명",
     price: "45,000원",
     image: eventCardAutumn,
-    imageOverlay: "dark",
+    imageOverlay: "light",
   },
   {
     id: 4,
@@ -81,51 +81,51 @@ export const reservationClasses: ReservationClassItem[] = [
     capacity: "4 ~ 8명",
     price: "45,000원",
     image: eventCardWinter,
-    imageOverlay: "dark",
+    imageOverlay: "light",
   },
   {
     id: 5,
     badge: "입문 추천",
-    title: "차향 입문 클래스",
-    description: "청연의 기본 다법과\n계절 차를 함께 경험하는 입문 수업",
-    duration: "90분",
-    capacity: "최대 8명",
-    price: "45,000원",
+    title: "기본 다도 클래스",
+    description: "차 도구의 쓰임과\n기본 다도 흐름을 배우며\n일상 속 차 문화를 시작합니다.",
+    duration: "120분",
+    capacity: "4 ~ 8명",
+    price: "55,000원",
     image: eventCardBasic,
     imageOverlay: "light",
   },
   {
     id: 6,
-    badge: "숙성차",
-    title: "숙성차 테이스팅",
-    description: "시간이 깊이를 더한 숙성차를\n차별된 다도로 만나는 클래스",
+    badge: "깊은 풍미",
+    title: "숙성차 클래스",
+    description: "오랜 시간 숙성된 차의 향과 맛을 느끼며 차가 지닌\n깊은 여운을 배웁니다.",
     duration: "120분",
-    capacity: "4 ~ 6명",
-    price: "68,000원",
+    capacity: "4 ~ 8명",
+    price: "65,000원",
     image: eventCardAged,
-    imageOverlay: "dark",
+    imageOverlay: "light",
   },
   {
     id: 7,
-    badge: "블렌딩",
-    title: "티 블렌딩 클래스",
-    description: "취향에 맞는 향과 재료를 조합해\n나만의 차를 완성합니다",
+    badge: "나만의 차",
+    title: "티 블랜더 클래스",
+    description: "다양한 재료의 향과 맛을\n조합해 나만의 블렌딩 티를\n완성합니다.",
     duration: "120분",
-    capacity: "최대 6명",
-    price: "68,000원",
+    capacity: "4 ~ 8명",
+    price: "75,000원",
     image: eventCardBlender,
-    imageOverlay: "dark",
+    imageOverlay: "light",
   },
   {
     id: 8,
-    badge: "프라이빗",
-    title: "프라이빗 다도 클래스",
-    description: "소규모로 진행되는 맞춤형 클래스로\n차 한 잔의 시간을 온전히 누려보세요",
+    badge: "1:1 맞춤",
+    title: "프라이빗 클래스",
+    description: "조용한 공간에서 취향에 맞춰\n차를 깊이 있게 경험하는\n1:1 수업입니다.",
     duration: "120분",
-    capacity: "2 ~ 4명",
-    price: "120,000원",
+    capacity: "4 ~ 8명",
+    price: "75,000원",
     image: eventCardPrivate,
-    imageOverlay: "dark",
+    imageOverlay: "light",
   },
 ];
 
@@ -146,9 +146,16 @@ export const installmentPlans = ["일시불", "2개월", "3개월", "6개월", "
 
 export type InstallmentPlan = (typeof installmentPlans)[number];
 
-export const reservationNoticeSections = [
+export interface ReservationNoticeSection {
+  title: string;
+  displayTitle: string;
+  items: readonly string[];
+}
+
+export const reservationNoticeSections: ReservationNoticeSection[] = [
   {
     title: "유의사항",
+    displayTitle: "* 유의사항",
     items: [
       "클래스 시작 10분 전까지 도착 부탁드립니다.",
       "클래스 공간 내 외부 음식 및 음료 반입은 어렵습니다.",
@@ -158,6 +165,7 @@ export const reservationNoticeSections = [
   },
   {
     title: "예약변경, 취소안내",
+    displayTitle: "*예약변경, 취소안내",
     items: [
       "예약 변경 및 취소는 수업 2일전 까지만 가능 합니다.",
       "수업1일전~당일 취소 시 환불이 불가능합니다.",
@@ -167,6 +175,7 @@ export const reservationNoticeSections = [
   },
   {
     title: "문의 안내",
+    displayTitle: "*문의 안내",
     items: ["클래스에 대한 문의는 10:00~20:00 (월~금)", "02-123-4567  |  Cheongyeon@gmail.com"],
   },
-] as const;
+];

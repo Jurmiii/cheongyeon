@@ -16,7 +16,7 @@
 .reservation-hero {
   width: 120rem;
   max-width: 100%;
-  padding: 12.5rem 0 6.25rem;
+  padding: calc(5.625rem + 10rem) 0 6.25rem;
   background: var(--han50);
 }
 
@@ -198,8 +198,13 @@
 }
 
 .reservation-class-card__description {
+  display: flex;
+  flex-direction: column;
   margin: 0;
-  white-space: pre-line;
+
+  p {
+    margin: 0;
+  }
 }
 
 .reservation-class-card__meta {
@@ -310,6 +315,16 @@
   .calendar__weekdays {
     width: 100%;
   }
+
+  .calendar__nav:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .calendar__day--past {
+    color: var(--ink200);
+    cursor: not-allowed;
+  }
 }
 
 .reservation-schedule__options {
@@ -399,16 +414,23 @@
 .reservation-request__textarea {
   box-sizing: border-box;
   width: 100%;
-  min-height: 10.40625rem;
+  height: 10.40625rem;
   padding: 1rem;
-  border: calc(var(--space-1) / 8) solid var(--han300);
+  border: calc(var(--space-1) / 8) solid var(--han500);
   border-radius: 0.5rem;
   background: var(--white);
   color: var(--ink500);
-  resize: vertical;
+  resize: none;
+  overflow-y: auto;
 
   &::placeholder {
     color: var(--ink200);
+  }
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    border-color: var(--han500);
   }
 }
 
@@ -606,6 +628,7 @@
 .reservation-notice__toggle {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
   width: 100%;
   padding: 0;
@@ -615,15 +638,22 @@
   cursor: pointer;
 }
 
+.reservation-notice__toggle-head {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  min-width: 0;
+}
+
 .reservation-notice__asterisk {
   flex-shrink: 0;
   width: 1.5rem;
-  height: 1.5rem;
-  font-size: 1.5rem;
+  line-height: 1.5rem;
+  text-align: center;
 }
 
 .reservation-notice__toggle-text {
-  flex: 1;
+  flex: 0 1 auto;
 }
 
 .reservation-notice__chevron {
@@ -671,10 +701,22 @@
   color: rgb(80 80 80 / 50%);
 }
 
+.reservation-notice__column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .reservation-notice__list {
   margin: 0;
   padding-left: 1.5rem;
   color: rgb(80 80 80 / 50%);
+  list-style: disc;
+
+  li {
+    display: list-item;
+    list-style: disc;
+  }
 }
 
 @media (max-width: 90rem) {
@@ -704,7 +746,7 @@
 
 @media (max-width: 48rem) {
   .reservation-hero {
-    padding-top: 9rem;
+    padding-top: calc(5.625rem + 10rem);
   }
 
   .reservation-form__row,

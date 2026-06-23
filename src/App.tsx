@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import ClassIntroductionPage from './pages/Class/ClassIntroductionPage'
 import ComponentPreview from './pages/ComponentPreview'
 import MainPage from './pages/MainPage'
 import ReservationPage from './pages/Reservation/ReservationPage'
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/preview" element={<ComponentPreview />} />
+        <Route path="/class/introduction" element={<ClassIntroductionPage />} />
         <Route path="/reservation" element={<ReservationPage />} />
         <Route path="/event/notice" element={<NoticePage />} />
         <Route path="/event/notice/:noticeId" element={<NoticeDetailPage />} />

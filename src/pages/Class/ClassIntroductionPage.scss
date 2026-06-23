@@ -1,0 +1,316 @@
+.class-intro-page {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.class-intro-page__header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+}
+
+.class-intro-kv {
+  position: relative;
+  width: 120rem;
+  max-width: 100%;
+  height: 46.25rem;
+  overflow: hidden;
+  background-image: url("../../assets/images/bg/class-introduction-bg.webp");
+  background-size: cover;
+  background-position: center 26%;
+  background-repeat: no-repeat;
+}
+
+.class-intro-kv__grid {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 90rem;
+  height: 100%;
+  margin-inline: auto;
+}
+
+.class-intro-kv__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.class-intro-kv__head {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.class-intro-kv__title {
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.class-intro-kv__symbol {
+  display: block;
+}
+
+.class-intro-kv__description {
+  max-width: 26rem;
+  margin: 0;
+}
+
+@media (max-width: 90rem) {
+  .class-intro-kv__grid {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  .class-intro-kv {
+    height: 40rem;
+    background-position: center center;
+  }
+
+  .class-intro-kv__description {
+    max-width: 100%;
+  }
+}
+
+/* Figma 1445:191 — 1920×671 */
+.class-intro-about {
+  display: flex;
+  align-items: center;
+  width: 120rem;
+  max-width: 100%;
+  min-height: 41.9375rem;
+  padding: 0 15rem;
+  background: var(--han50);
+}
+
+.class-intro-about__grid {
+  display: flex;
+  align-items: center;
+  gap: 6.9375rem;
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+}
+
+.class-intro-about__media {
+  flex-shrink: 0;
+  width: 44.25rem;
+  max-width: 100%;
+  height: 28.125rem;
+  overflow: hidden;
+}
+
+.class-intro-about__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.class-intro-about__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2rem;
+  min-width: 0;
+  max-width: 38.8125rem;
+}
+
+.class-intro-about__title {
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.class-intro-about__description {
+  display: flex;
+  flex-direction: column;
+  max-width: 30.125rem;
+}
+
+.class-intro-about__description-line {
+  margin: 0;
+}
+
+@media (max-width: 90rem) {
+  .class-intro-about {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (max-width: 64rem) {
+  .class-intro-about {
+    min-height: auto;
+    padding-block: 3rem;
+  }
+
+  .class-intro-about__grid {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  .class-intro-about__media {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 708 / 450;
+  }
+
+  .class-intro-about__content,
+  .class-intro-about__description {
+    max-width: 100%;
+  }
+}
+
+/* Figma 1445:247 — 1920×715 */
+.class-intro-scroll {
+  display: flex;
+  align-items: center;
+  width: 120rem;
+  max-width: 100%;
+  min-height: 44.6875rem;
+  padding: 7.5rem 15rem;
+  background: var(--deep400);
+}
+
+.class-intro-scroll__grid {
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+}
+
+.class-intro-scroll__stage {
+  display: flex;
+  align-items: stretch;
+  gap: 1.5rem;
+  height: 29.6875rem;
+}
+
+.class-intro-scroll__media {
+  position: relative;
+  flex: 0 0 67.125rem;
+  width: 67.125rem;
+  max-width: calc(100% - 22.625rem);
+  height: 100%;
+  overflow: hidden;
+  border-radius: 1rem;
+}
+
+.class-intro-scroll__image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform, opacity;
+}
+
+.class-intro-scroll__panel {
+  position: relative;
+  flex: 0 0 21.125rem;
+  width: 21.125rem;
+  height: 100%;
+  border-radius: 1rem;
+  background: var(--han200);
+}
+
+.class-intro-scroll__panel-slide {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  height: 100%;
+  padding: 2.75rem 1.9375rem;
+
+  &:not(:first-child) {
+    position: absolute;
+    inset: 0;
+  }
+}
+
+.class-intro-scroll__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  width: 17.3125rem;
+}
+
+.class-intro-scroll__title {
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.class-intro-scroll__description {
+  margin: 0;
+  white-space: pre-line;
+}
+
+.class-intro-scroll__filters {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-content: flex-start;
+  width: 6.1875rem;
+}
+
+.class-intro-scroll__filter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3125rem 1.1875rem;
+  border: calc(var(--space-1) / 8) solid var(--deep500);
+  border-radius: 6.25rem;
+  color: var(--deep500);
+  background: transparent;
+
+  &--active {
+    border-color: transparent;
+    color: var(--white);
+    background: var(--deep400);
+  }
+}
+
+@media (max-width: 90rem) {
+  .class-intro-scroll {
+    padding-inline: 1.5rem;
+  }
+
+  .class-intro-scroll__media {
+    flex: 1 1 auto;
+    width: auto;
+    max-width: none;
+  }
+}
+
+@media (max-width: 64rem) {
+  .class-intro-scroll {
+    min-height: auto;
+    padding-block: 3rem;
+  }
+
+  .class-intro-scroll__stage {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .class-intro-scroll__media {
+    flex: none;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1074 / 475;
+  }
+
+  .class-intro-scroll__panel {
+    flex: none;
+    width: 100%;
+    height: 29.6875rem;
+  }
+
+  .class-intro-scroll__copy {
+    width: 100%;
+  }
+}
