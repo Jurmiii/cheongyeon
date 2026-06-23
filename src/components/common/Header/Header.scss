@@ -132,6 +132,11 @@
   height: 24px;
 }
 
+.site-header__user-name {
+  color: var(--ink500);
+  white-space: nowrap;
+}
+
 .site-header__dropdown-line {
   position: absolute;
   top: calc(89.99px + 22px);

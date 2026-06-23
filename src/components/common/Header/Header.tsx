@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../../assets/images/svg/logo.svg";
+import { useAuth } from "../../../contexts/AuthContext";
 import Icon from "../Icon";
 import "./Header.scss";
 
@@ -35,6 +36,7 @@ const submenuHrefs: Record<string, string> = {
 };
 
 export default function Header() {
+  const { isLoggedIn, loginId, logout } = useAuth();
   const [activeDropdown, setActiveDropdown] = useState<ActiveDropdown>(null);
   const isGnbOpen = activeDropdown === "gnb";
 
@@ -102,17 +104,35 @@ export default function Header() {
                 ].filter(Boolean).join(" ")}
                 key={menu.id}
               >
-                <button
-                  className="site-header__menu-link site-header__action-link ft-18b ink500"
-                  type="button"
-                  aria-label={menu.id === "user" ? "사용자 메뉴" : "언어 선택"}
-                >
-                  {menu.id === "user" ? (
-                    <Icon className="site-header__user-icon" name="user" aria-label="사용자 메뉴" />
+                {menu.id === "user" ? (
+                  isLoggedIn ? (
+                    <button
+                      className="site-header__menu-link site-header__action-link ft-18b ink500"
+                      type="button"
+                      aria-label={`${loginId}님 로그아웃`}
+                      onClick={logout}
+                    >
+                      <Icon className="site-header__user-icon" name="user" aria-hidden="true" />
+                      <span className="site-header__user-name ft-14r">{loginId}</span>
+                    </button>
                   ) : (
-                    menu.label
-                  )}
-                </button>
+                    <Link
+                      className="site-header__menu-link site-header__action-link ft-18b ink500"
+                      to="/login"
+                      aria-label="로그인"
+                    >
+                      <Icon className="site-header__user-icon" name="user" aria-label="로그인" />
+                    </Link>
+                  )
+                ) : (
+                  <button
+                    className="site-header__menu-link site-header__action-link ft-18b ink500"
+                    type="button"
+                    aria-label="언어 선택"
+                  >
+                    {menu.label}
+                  </button>
+                )}
               </div>
             ))}
           </div>

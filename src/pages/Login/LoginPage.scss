@@ -1,0 +1,38 @@
+@use "../../styles/abstracts/breakpoints" as *;
+
+.login-page-wrapper {
+  --login-content-top-spacing: 9.375rem;
+  --site-header-offset: 5.625rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  min-height: 100svh;
+  background: var(--white);
+}
+
+.login-page-wrapper__header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+}
+
+.login-page-wrapper .login-page {
+  flex: 1;
+  box-sizing: border-box;
+  min-height: auto;
+  padding-top: calc(var(--site-header-offset) + var(--login-content-top-spacing));
+  padding-bottom: var(--space-5);
+}
+
+@media (max-width: $tablet) {
+  .login-page-wrapper .login-page {
+    align-items: flex-start;
+    padding-top: calc(var(--site-header-offset) + var(--login-content-top-spacing));
+    padding-inline: var(--space-2);
+    padding-bottom: var(--space-2);
+  }
+}
