@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../../assets/images/00header-footer/logo.svg";
+import { useAuth } from "../../../contexts/AuthContext";
 import Icon from "../Icon";
 import "./Header.scss";
 
