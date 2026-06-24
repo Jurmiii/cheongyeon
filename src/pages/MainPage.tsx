@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type MouseEvent, type TouchEvent } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import mainBg1 from "../assets/images/01main/main-bg1.webp";
+import aboutVideo from "../assets/images/01main/about.webm";
 import mainBg2 from "../assets/images/01main/main-bg2.webp";
 import mainBg3 from "../assets/images/01main/main-bg3.webp";
 import mainCtaBg from "../assets/images/01main/main-cta-bg.webp";
@@ -718,27 +718,41 @@ export default function MainPage() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) {
-            return;
-          }
-
           const season = entry.target.getAttribute("data-season") as SeasonKey | null;
 
           if (!season) {
             return;
           }
 
-          setActiveSeasons((currentSeasons) => {
-            if (currentSeasons[season]) {
-              return currentSeasons;
-            }
+          const isPastFadePoint = entry.intersectionRatio >= 0.6;
 
-            return {
-              ...currentSeasons,
-              [season]: true,
-            };
-          });
-          observer.unobserve(entry.target);
+          if (isPastFadePoint) {
+            setActiveSeasons((currentSeasons) => {
+              if (currentSeasons[season]) {
+                return currentSeasons;
+              }
+
+              return {
+                ...currentSeasons,
+                [season]: true,
+              };
+            });
+
+            return;
+          }
+
+          if (entry.boundingClientRect.top > 0) {
+            setActiveSeasons((currentSeasons) => {
+              if (!currentSeasons[season]) {
+                return currentSeasons;
+              }
+
+              return {
+                ...currentSeasons,
+                [season]: false,
+              };
+            });
+          }
         });
       },
       { threshold: 0.6 },
@@ -765,32 +779,58 @@ export default function MainPage() {
         return;
       }
 
-      const maskRects = gsap.utils.toArray<SVGRectElement>(".main-sec3__draw-mask-rect", section);
-      maskRects.forEach((rect) => {
+      const lineSelectors = [
+        ".main-sec3__spring-line",
+        ".main-sec3__summer-line",
+        ".main-sec3__fall-line",
+        ".main-sec3__line4",
+      ];
+      const drawLines = lineSelectors
+        .map((selector) => {
+          const lineElement = section.querySelector<HTMLElement>(selector);
+          const rect = lineElement?.querySelector<SVGRectElement>(".main-sec3__draw-mask-rect") ?? null;
+
+          return lineElement && rect ? { lineElement, rect } : null;
+        })
+        .filter((line): line is { lineElement: HTMLElement; rect: SVGRectElement } => line !== null);
+
+      if (drawLines.length === 0) {
+        return;
+      }
+
+      drawLines.forEach(({ rect }) => {
         const drawDirection = rect.dataset.drawDirection as DrawLineDirection | undefined;
-        const revealHeight = Number(rect.dataset.revealHeight ?? 0);
-        const revealWidth = Number(rect.dataset.revealWidth ?? 0);
         const isHorizontal = drawDirection === "horizontal";
-        const lineElement = rect.closest(".main-sec3__line-svg");
 
         gsap.set(rect, {
           attr: isHorizontal ? { width: 0 } : { height: 0 },
           transformOrigin: isHorizontal ? "0% 50%" : "50% 0%",
         });
+      });
 
-        gsap.to(
+      const lineTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: drawLines[0].lineElement,
+          start: "top 78%",
+          endTrigger: drawLines[drawLines.length - 1].lineElement,
+          end: "bottom 58%",
+          scrub: 0.45,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      drawLines.forEach(({ rect }) => {
+        const drawDirection = rect.dataset.drawDirection as DrawLineDirection | undefined;
+        const revealHeight = Number(rect.dataset.revealHeight ?? 0);
+        const revealWidth = Number(rect.dataset.revealWidth ?? 0);
+        const isHorizontal = drawDirection === "horizontal";
+
+        lineTimeline.to(
           rect,
           {
             attr: isHorizontal ? { width: revealWidth } : { height: revealHeight },
             ease: "none",
-            duration: 0.22,
-            scrollTrigger: {
-              trigger: lineElement ?? section,
-              start: "top 78%",
-              end: isHorizontal ? "top 58%" : "bottom 58%",
-              scrub: 0.45,
-              invalidateOnRefresh: true,
-            },
+            duration: 1,
           },
         );
       });
@@ -812,42 +852,24 @@ export default function MainPage() {
         return;
       }
 
-      const lines = gsap.utils.toArray<HTMLImageElement>(".main-sec4__track-line", section);
       const cards = gsap.utils.toArray<HTMLElement>(".main-sec4__card", section);
       const getTravelDistance = () => {
-        const thirdCard = cards[2];
+        const previousCard = cards[cards.length - 2];
         const lastCard = cards[cards.length - 1];
 
-        if (!thirdCard || !lastCard) {
+        if (!previousCard || !lastCard) {
           return Math.max(track.scrollWidth - section.clientWidth, 0);
         }
 
-        const endingGroupCenter = (thirdCard.offsetLeft + lastCard.offsetLeft + lastCard.offsetWidth) / 2;
+        const finalPairCenter = (previousCard.offsetLeft + lastCard.offsetLeft + lastCard.offsetWidth) / 2;
 
-        return Math.max(endingGroupCenter - section.clientWidth / 2, 0);
+        return Math.max(finalPairCenter - section.clientWidth / 2, 0);
       };
       const getRootFontSize = () => parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
-      const getPinDistance = () => Math.max((getTravelDistance() + window.innerHeight) * 1.72, 281.25 * getRootFontSize());
-      const anticipationStart = 0.28;
-      const trackDuration = 1.56;
-      const holdDuration = 0.42;
-
-      gsap.set(lines, {
-        x: "26.25rem",
-        autoAlpha: 1,
-      });
-      gsap.set(lines[0], {
-        x: 0,
-        autoAlpha: 1,
-      });
-      gsap.set(cards, {
-        x: "26.25rem",
-        opacity: 0,
-      });
-      gsap.set(cards[0], {
-        x: 0,
-        opacity: 1,
-      });
+      const getPinDistance = () => Math.max((getTravelDistance() + window.innerHeight) * 2.05, 281.25 * getRootFontSize());
+      const introHoldDuration = 0.28;
+      const slideDuration = 1;
+      const holdDuration = 0.18;
 
       const timeline = gsap.timeline({
         scrollTrigger: {
@@ -860,16 +882,22 @@ export default function MainPage() {
           invalidateOnRefresh: true,
         },
       });
-      const setTimeline = gsap.timeline();
 
+      timeline.to(
+        { progress: 0 },
+        {
+          progress: 1,
+          ease: "none",
+          duration: introHoldDuration,
+        },
+      );
       timeline.to(
         track,
         {
           x: () => -getTravelDistance(),
           ease: "none",
-          duration: trackDuration,
+          duration: slideDuration,
         },
-        anticipationStart,
       );
       timeline.to(
         { progress: 0 },
@@ -878,47 +906,7 @@ export default function MainPage() {
           ease: "none",
           duration: holdDuration,
         },
-        anticipationStart + trackDuration,
       );
-
-      cards.forEach((card, index) => {
-        if (index === 0) {
-          return;
-        }
-
-        const matchingLine = lines[index];
-        const setStartAt = anticipationStart + 0.12 + (index - 1) * 0.42;
-        const movingSet = matchingLine ? [matchingLine, card] : [card];
-
-        setTimeline.to(
-          movingSet,
-          {
-            keyframes: [
-              {
-                x: "22rem",
-                autoAlpha: 1,
-                ease: "power3.out",
-                duration: 0.16,
-              },
-              {
-                x: "11rem",
-                autoAlpha: 1,
-                ease: "power2.out",
-                duration: 0.12,
-              },
-              {
-                x: 0,
-                autoAlpha: 1,
-                ease: "expo.out",
-                duration: 0.18,
-              },
-            ],
-          },
-          setStartAt,
-        );
-      });
-
-      timeline.add(setTimeline, 0);
     }, sec4Ref);
 
     return () => {
@@ -991,51 +979,46 @@ export default function MainPage() {
         return;
       }
 
-      const centerLabelProgress = [0, 0.303, 0.606, 0.909];
-      const getNearestCenterIndex = (progress: number) =>
-        centerLabelProgress.reduce((nearestIndex, labelProgress, index) => (
-          Math.abs(progress - labelProgress) < Math.abs(progress - centerLabelProgress[nearestIndex])
-            ? index
-            : nearestIndex
-        ), 0);
-      const holdDuration = 0.18;
-      const rotateDuration = 0.42;
+      const getStableIndex = (progress: number) => Math.min(
+        mainSeasonTeaSlides.length - 1,
+        Math.max(0, Math.round(progress * (mainSeasonTeaSlides.length - 1))),
+      );
+      let currentIndex = 0;
 
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: "+=2100",
-          scrub: 0.08,
-          pin: true,
-          anticipatePin: 1,
-          snap: {
-            snapTo: "labelsDirectional",
-            delay: 0,
-            duration: { min: 0.08, max: 0.16 },
-            ease: "power4.out",
-            inertia: false,
-          },
-          onUpdate: (self) => {
-            const nextIndex = getNearestCenterIndex(self.progress);
+      gsap.set(orbit, { rotate: 0, force3D: true });
 
-            setActiveSec6Index((currentIndex) => (currentIndex === nextIndex ? currentIndex : nextIndex));
-          },
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top top",
+        end: "+=2400",
+        pin: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        snap: {
+          snapTo: (progress) => getStableIndex(progress) / (mainSeasonTeaSlides.length - 1),
+          delay: 0.08,
+          duration: { min: 0.28, max: 0.42 },
+          ease: "power3.out",
+          inertia: false,
+        },
+        onUpdate: (self) => {
+          const nextIndex = getStableIndex(self.progress);
+
+          if (nextIndex === currentIndex) {
+            return;
+          }
+
+          currentIndex = nextIndex;
+          setActiveSec6Index(nextIndex);
+          gsap.to(orbit, {
+            rotate: -90 * nextIndex,
+            duration: 0.9,
+            ease: "power3.inOut",
+            overwrite: "auto",
+            force3D: true,
+          });
         },
       });
-
-      timeline
-        .addLabel("spring")
-        .to({}, { duration: holdDuration })
-        .to(orbit, { rotate: -90, ease: "power2.inOut", duration: rotateDuration })
-        .addLabel("summer")
-        .to({}, { duration: holdDuration })
-        .to(orbit, { rotate: -180, ease: "power2.inOut", duration: rotateDuration })
-        .addLabel("fall")
-        .to({}, { duration: holdDuration })
-        .to(orbit, { rotate: -270, ease: "power2.inOut", duration: rotateDuration })
-        .addLabel("winter")
-        .to({}, { duration: holdDuration });
     }, sec6Ref);
 
     return () => {
@@ -1075,21 +1058,14 @@ export default function MainPage() {
             </p>
             <div className="main-sec1__progress" aria-label={`${currentPage} / 03`}>
               <span className="main-sec1__progress-number ft-18r ink500">{currentPage}</span>
-              <span
-                className="main-sec1__progress-line ink500"
-                aria-hidden="true"
-              >
-                <span
-                  className="main-sec1__progress-line-fill"
-                  style={{ width: `${((activeSlideIndex + 1) / mainKvSlides.length) * 100}%` }}
-                />
-              </span>
+              <span className="main-sec1__progress-line ink500" aria-hidden="true" />
               <span className="main-sec1__progress-number main-sec1__progress-number--end ft-18r ink500">03</span>
             </div>
           </div>
         </div>
       </section>
-      <section className="main-sec2" style={{ backgroundImage: `url(${mainBg1})` }} aria-label="차와 함께하는 고요한 쉼">
+      <section className="main-sec2" aria-label="차와 함께하는 고요한 쉼">
+        <video className="main-sec2__video" src={aboutVideo} autoPlay loop muted playsInline aria-hidden="true" />
         <div className="main-sec2__grid">
           <div className="main-sec2__content">
             <h2 className="ft-48b ink50">
@@ -1097,12 +1073,12 @@ export default function MainPage() {
               <br />
               고요한 쉼
             </h2>
-            <p className="main-sec2__text-first ft-28r ink50">
+            <p className="main-sec2__text-first ft-22r ink50">
               차는 단순한 음료가 아니라
               <br />
               삶의 여유입니다.
             </p>
-            <p className="main-sec2__text-second ft-28r ink50">
+            <p className="main-sec2__text-second ft-22r ink50">
               지금 이 순간을 온전히
               <br />
               느껴보세요.
@@ -1178,7 +1154,6 @@ export default function MainPage() {
             <img className="main-sec3__summer-symbol-black" src={symbolBlack} alt="" aria-hidden="true" />
             <DrawLineSvg
               className="main-sec3__summer-line"
-              direction="horizontal"
               maskId="main-sec3-line2-mask"
               svgSource={line2Raw}
             />

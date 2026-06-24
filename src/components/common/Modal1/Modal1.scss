@@ -1,0 +1,134 @@
+.modal1 {
+  display: flex;
+  box-sizing: border-box;
+  width: 29rem;
+  flex: 0 0 auto;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: flex-start;
+  padding: 1rem 1.5rem;
+  background: var(--han50);
+  color: var(--ink500);
+  text-align: left;
+}
+
+.modal1__header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.modal1__badge.cy-badge {
+  background: var(--deep400);
+}
+
+.modal1__subtitle {
+  margin: 1rem 0 0;
+}
+
+.modal1__title {
+  margin: 1rem 0 0;
+}
+
+.modal1__description {
+  margin: 1rem 0 0;
+}
+
+.modal1__period {
+  margin: 1.3125rem 0 0;
+}
+
+.modal1__info-box {
+  display: flex;
+  box-sizing: border-box;
+  width: 26rem;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 0.0625rem solid var(--han300);
+  background: transparent;
+  text-align: left;
+}
+
+.modal1__info-block {
+  display: flex;
+  width: 24rem;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.modal1__info-row {
+  display: flex;
+  align-items: flex-start;
+}
+
+.modal1__icon-circle {
+  display: flex;
+  width: 2.8125rem;
+  height: 2.8125rem;
+  flex: 0 0 2.8125rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--han300);
+  color: var(--ink500);
+}
+
+.modal1__info-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.modal1__info-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 0.46875rem;
+  text-align: left;
+}
+
+.modal1__info-title {
+  margin: 0;
+}
+
+.modal1__info-content {
+  margin: 0.5rem 0 0;
+}
+
+.modal1__inline-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink500);
+  cursor: pointer;
+}
+
+.modal1__inline-link-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.modal1__divider {
+  display: block;
+  width: 24rem;
+  height: 0.0625rem;
+  flex: 0 0 auto;
+  margin: 1rem 0;
+  background: var(--ink500);
+}
+
+.modal1__close-button.cy-button {
+  width: 26rem;
+  margin-top: 1.5rem;
+  color: var(--han50);
+  border-color: transparent;
+  background: var(--deep500);
+}

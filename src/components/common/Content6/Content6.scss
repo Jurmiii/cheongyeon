@@ -1,0 +1,33 @@
+.content6 {
+  display: flex;
+  box-sizing: border-box;
+  width: 21.375rem;
+  height: 6.5rem;
+  flex: 0 0 auto;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: flex-start;
+  padding: 1rem;
+  background-color: var(--white);
+  text-align: left;
+}
+
+.content6__top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 8.0625rem;
+  white-space: nowrap;
+}
+
+.content6__store-name {
+  margin: 0;
+}
+
+.content6__store-type {
+  margin: 0;
+}
+
+.content6__address {
+  margin: 1rem 0 0;
+}
