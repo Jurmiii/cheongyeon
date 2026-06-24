@@ -1,0 +1,58 @@
+.card6 {
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  width: 29rem;
+  height: 20.0625rem;
+  flex: 0 0 auto;
+  flex-shrink: 0;
+  padding: 1.25rem;
+  border-radius: 1.25rem;
+  background: var(--han50);
+  color: var(--ink500);
+  overflow: hidden;
+}
+
+.card6__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 16.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.card6__badge.cy-badge {
+  padding: 0.125rem 0.625rem;
+  background: var(--deep400);
+}
+
+.card6__event-title {
+  margin-top: 0.625rem;
+}
+
+.card6__main-copy {
+  margin-top: 0.625rem;
+}
+
+.card6__description {
+  margin-top: 0.625rem;
+}
+
+.card6__period {
+  margin-top: 1.25rem;
+}
+
+.card6__button.cy-button {
+  margin-top: 1.55rem;
+  padding: 0.25rem 1rem;
+  color: var(--ink500);
+  border-color: var(--ink500);
+}
+
+.card6__button.cy-button:hover:not(:disabled) {
+  color: var(--han50);
+  border-color: transparent;
+  background: var(--deep400);
+}

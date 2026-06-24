@@ -115,43 +115,43 @@ export default function Header() {
               >
                 {menu.id === "user" ? (
                   <>
-                  <button
-                    className="site-header__menu-link site-header__action-link ft-18b ink500"
-                    type="button"
-                    aria-label="사용자 메뉴"
-                    aria-expanded={activeDropdown === "user"}
-                    onClick={() => handleActionClick("user")}
-                  >
-                    <Icon className="site-header__user-icon" name="user" aria-hidden="true" />
-                    {isLoggedIn ? <span className="site-header__user-name ft-14r">{loginId}</span> : null}
-                    <Icon className="site-header__angle-icon" name="angle-down" aria-hidden="true" />
-                  </button>
-                  <span className="site-header__dropdown-line" aria-hidden="true" />
-                  <ul className="site-header__action-dropdown site-header__action-dropdown--user" aria-hidden={activeDropdown !== "user"}>
-                    <li>
-                      {isLoggedIn ? (
-                        <button
-                          className="site-header__action-dropdown-link ft-16b ink500"
-                          type="button"
-                          onClick={() => {
-                            logout();
-                            setActiveDropdown(null);
-                          }}
-                        >
-                          로그아웃
-                        </button>
-                      ) : (
-                        <Link className="site-header__action-dropdown-link ft-16b ink500" to="/login">
-                          로그인
+                    <button
+                      className="site-header__menu-link site-header__action-link ft-18b ink500"
+                      type="button"
+                      aria-label={isLoggedIn ? `${loginId}님 사용자 메뉴` : "사용자 메뉴"}
+                      aria-expanded={activeDropdown === "user"}
+                      onClick={() => handleActionClick("user")}
+                    >
+                      <Icon className="site-header__user-icon" name="user" aria-hidden="true" />
+                      {isLoggedIn ? <span className="site-header__user-name ft-14r">{loginId}</span> : null}
+                      <Icon className="site-header__angle-icon" name="angle-down" aria-hidden="true" />
+                    </button>
+                    <span className="site-header__dropdown-line" aria-hidden="true" />
+                    <ul className="site-header__action-dropdown site-header__action-dropdown--user" aria-hidden={activeDropdown !== "user"}>
+                      <li>
+                        {isLoggedIn ? (
+                          <button
+                            className="site-header__action-dropdown-link ft-16b ink500"
+                            type="button"
+                            onClick={() => {
+                              logout();
+                              setActiveDropdown(null);
+                            }}
+                          >
+                            로그아웃
+                          </button>
+                        ) : (
+                          <Link className="site-header__action-dropdown-link ft-16b ink500" to="/login">
+                            로그인
+                          </Link>
+                        )}
+                      </li>
+                      <li>
+                        <Link className="site-header__action-dropdown-link ft-16b ink500" to="/mypage">
+                          마이페이지
                         </Link>
-                      )}
-                    </li>
-                    <li>
-                      <a className="site-header__action-dropdown-link ft-16b ink500" href="#mypage">
-                        마이페이지
-                      </a>
-                    </li>
-                  </ul>
+                      </li>
+                    </ul>
                   </>
                 ) : (
                   <>
