@@ -1,11 +1,11 @@
-import eventCardAged from "../assets/images/11event/event-card-aged.webp";
-import eventCardAutumn from "../assets/images/11event/event-card-autumn.webp";
-import eventCardBasic from "../assets/images/11event/event-card-basic.webp";
-import eventCardBlender from "../assets/images/11event/event-card-blender.webp";
-import eventCardPrivate from "../assets/images/11event/event-card-private.webp";
-import eventCardSpring from "../assets/images/11event/event-card-spring.webp";
-import eventCardSummer from "../assets/images/11event/event-card-summer.webp";
-import eventCardWinter from "../assets/images/11event/event-card-winter.webp";
+import eventCardAged from "../assets/images/10reservation/event-card-aged.webp";
+import eventCardAutumn from "../assets/images/10reservation/event-card-autumn.webp";
+import eventCardBasic from "../assets/images/10reservation/event-card-basic.webp";
+import eventCardBlender from "../assets/images/10reservation/event-card-blender.webp";
+import eventCardPrivate from "../assets/images/10reservation/event-card-private.webp";
+import eventCardSpring from "../assets/images/10reservation/event-card-spring.webp";
+import eventCardSummer from "../assets/images/10reservation/event-card-summer.webp";
+import eventCardWinter from "../assets/images/10reservation/event-card-winter.webp";
 
 export interface ReservationClassItem {
   id: number;
