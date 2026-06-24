@@ -96,6 +96,40 @@ const philosophyItems = [
   },
 ] as const;
 
+// 차를 만드는 사람들 — 교체 시 아래 import 경로만 수정하세요.
+import peopleBackgroundImage from "../../assets/images/02brand-story/branb-4-bg.webp";
+import peopleCardImage1 from "../../assets/images/02brand-story/brand-4-1.webp";
+import peopleCardImage2 from "../../assets/images/02brand-story/brand-4-2.webp";
+import peopleCardImage3 from "../../assets/images/02brand-story/brand-4-3.webp";
+
+const peopleCards = [
+  {
+    id: 1,
+    image: peopleCardImage1,
+    title: "재배",
+    description: "차가 자라는 시간을 기다립니다.",
+  },
+  {
+    id: 2,
+    image: peopleCardImage2,
+    title: "제다",
+    description: "전통 방식으로 차를 덖습니다.",
+    imagePosition: "center 60%",
+  },
+  {
+    id: 3,
+    image: peopleCardImage3,
+    title: "숙성",
+    description: "시간이 향이 되기를 기다립니다.",
+    imagePosition: "center 60%",
+  },
+] as const;
+
+// 청연이 전하는 시간 — 교체 시 아래 import 경로만 수정하세요.
+import brandStoryTimeImage from "../../assets/images/02brand-story/brand-5.webp";
+import lastBg from "../../assets/images/02brand-story/last-bg.webp";
+import logoWhite from "../../assets/images/00header-footer/logo-white.svg";
+
 const ROLL_WIDTH_REM = 16.375;
 const ROLL_BODY_HEIGHT_REM = ROLL_WIDTH_REM * (709 / 262);
 const ROLL_BOTTOM_HEIGHT_REM = ROLL_WIDTH_REM * (16 / 262);
@@ -381,6 +415,82 @@ function BrandStoryPage() {
               </article>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section
+        className="brand-story-people"
+        style={{ backgroundImage: `url(${peopleBackgroundImage})` }}
+        aria-label="차를 만드는 사람들"
+      >
+        <div className="brand-story-people__overlay" aria-hidden="true" />
+        <div className="brand-story-people__inner">
+          <div className="brand-story-people__head">
+            <h2 className="brand-story-people__title ft-48b white">차를 만드는 사람들</h2>
+            <p className="brand-story-people__subtitle ft-28r white">차는 자연만으로 완성되지 않습니다</p>
+          </div>
+
+          <div className="brand-story-people__cards">
+            {peopleCards.map((card, index) => (
+              <article
+                className={`brand-story-people__card${index === 0 ? " is-default" : ""}`}
+                key={card.id}
+              >
+                <img
+                  className="brand-story-people__card-image"
+                  src={card.image}
+                  alt=""
+                  aria-hidden="true"
+                  style={"imagePosition" in card ? { objectPosition: card.imagePosition } : undefined}
+                />
+                <div className="brand-story-people__card-dim" aria-hidden="true" />
+                <div className="brand-story-people__card-content">
+                  <h3 className="brand-story-people__card-title ft-36r white">{card.title}</h3>
+                  <p className="brand-story-people__card-desc ft-22r white">{card.description}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="brand-story-time" aria-label="청연이 전하는 시간">
+        <div className="brand-story-time__inner">
+          <div className="brand-story-time__content">
+            <h2 className="brand-story-time__title ft-48b ink500">청연이 전하는 시간</h2>
+            <p className="brand-story-time__subtitle ft-28r ink500">
+              한 잔의 차는 빠르게 소비되는 음료가 아닙니다
+            </p>
+            <p className="brand-story-time__desc ft-22r ink500">
+              차를 우리는 순간, 흩어졌던 마음은 천천히
+              <br />
+              가라앉습니다. 청연은 바쁜 하루 속 잠시
+              <br />
+              멈추어 머무는 시간을 제안합니다. 한 잔의 차가
+              <br />
+              전하는 온기와 여백으로 편안한 쉼을 경험해보세요.
+            </p>
+          </div>
+
+          <div className="brand-story-time__visual">
+            <img className="brand-story-time__image" src={brandStoryTimeImage} alt="" aria-hidden="true" />
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="brand-story-last"
+        style={{ backgroundImage: `url(${lastBg})` }}
+        aria-label="청연 브랜드 메시지"
+      >
+        <div className="brand-story-last__overlay" aria-hidden="true" />
+        <div className="brand-story-last__inner">
+          <img className="brand-story-last__logo" src={logoWhite} alt="청연" />
+          <h2 className="brand-story-last__title ft-36r white">
+            시간은 흐르지만
+            <br />
+            좋은 차는 기다림으로 완성됩니다.
+          </h2>
         </div>
       </section>
 
