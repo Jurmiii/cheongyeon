@@ -39,7 +39,7 @@
   height: 100%;
   overflow: hidden;
   border-radius: 0;
-  cursor: default;
+  cursor: pointer;
   transform: scale(1);
   transform-origin: center center;
   transition:
@@ -123,6 +123,10 @@
     justify-content: flex-end;
     padding-bottom: 2.375rem;
     text-align: center;
+  }
+
+  .class-intro-carousel__card-title {
+    white-space: nowrap;
   }
 }
 

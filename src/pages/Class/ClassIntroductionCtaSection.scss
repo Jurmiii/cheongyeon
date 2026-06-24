@@ -50,8 +50,9 @@
     color 0.2s ease;
 
   &:hover {
-    color: var(--ink500);
-    background: var(--white);
+    color: var(--white);
+    background: var(--deep500);
+    border-color: var(--deep500);
   }
 }
 

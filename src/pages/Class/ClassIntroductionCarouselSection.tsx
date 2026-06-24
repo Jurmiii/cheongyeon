@@ -22,6 +22,7 @@ function ClassIntroductionCarouselSection() {
             return (
               <article
                 key={item.id}
+                tabIndex={0}
                 className={[
                   "class-intro-carousel__card",
                   isActive && "class-intro-carousel__card--active",
@@ -30,6 +31,8 @@ function ClassIntroductionCarouselSection() {
                   .filter(Boolean)
                   .join(" ")}
                 onMouseEnter={() => setHoveredIndex(index)}
+                onFocus={() => setHoveredIndex(index)}
+                onClick={() => setHoveredIndex(index)}
               >
                 <div className="class-intro-carousel__media">
                   <div className="class-intro-carousel__video-slot" aria-hidden="true" />

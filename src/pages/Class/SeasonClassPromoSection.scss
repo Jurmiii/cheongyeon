@@ -1,0 +1,99 @@
+/* Figma 1463:681 — 1920×340 */
+.season-promo {
+  position: relative;
+  width: 120rem;
+  max-width: 100%;
+  height: 21.25rem;
+  overflow: hidden;
+}
+
+.season-promo__bg {
+  position: absolute;
+  top: -94.5%;
+  left: -0.01%;
+  z-index: 0;
+  width: 100%;
+  height: 282.35%;
+  max-width: none;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.season-promo__shade {
+  position: absolute;
+  top: 0.0625rem;
+  left: 0;
+  z-index: 1;
+  width: 46rem;
+  height: 21.1875rem;
+  background: linear-gradient(
+    89.38deg,
+    rgb(0 0 0 / 20%) 0.28%,
+    rgb(130 130 130 / 0%) 99.79%
+  );
+  pointer-events: none;
+}
+
+.season-promo__content {
+  position: absolute;
+  top: 5rem;
+  left: 15.0625rem;
+  z-index: 2;
+  width: 15.5rem;
+}
+
+.season-promo__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1.875rem;
+}
+
+.season-promo__title,
+.season-promo__subtitle,
+.season-promo__date {
+  margin: 0;
+}
+
+.season-promo__title {
+  letter-spacing: -0.02em;
+}
+
+.season-promo__date {
+  position: absolute;
+  top: 10.25rem;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+@media (max-width: 90rem) {
+  .season-promo__content {
+    left: 1.5rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  .season-promo {
+    height: auto;
+    min-height: 18rem;
+    padding-block: 3.5rem;
+  }
+
+  .season-promo__shade {
+    width: 100%;
+    height: 100%;
+    top: 0;
+  }
+
+  .season-promo__content {
+    position: relative;
+    top: auto;
+    left: 1.5rem;
+    width: calc(100% - 3rem);
+  }
+
+  .season-promo__date {
+    position: static;
+    transform: none;
+    margin-top: 1.5rem;
+  }
+}
