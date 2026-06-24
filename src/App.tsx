@@ -12,6 +12,7 @@ import BrandStoryPage from './pages/BrandStory/BrandStoryPage'
 import SpacePage from './pages/Space/SpacePage'
 import LocationPage from './pages/Location'
 import SeasonTeaPage from './pages/SeasonTea/SeasonTeaPage'
+import CollectionPage from './pages/Collection/CollectionPage'
 import MyPageRoute from './pages/MyPage/MyPageRoute'
 
 function App() {
@@ -36,6 +37,8 @@ function App() {
           <Route path="/seasontea" element={<SeasonTeaPage />} />
           <Route path="/season-tea" element={<SeasonTeaPage />} />
           <Route path="/product/season-tea" element={<SeasonTeaPage />} />
+          <Route path="/collection" element={<CollectionPage />} />
+          <Route path="/product/collection" element={<CollectionPage />} />
           <Route path="/mypage" element={<MyPageRoute />} />
           <Route path="/my-page" element={<MyPageRoute />} />
           <Route path="/brand/space" element={<SpacePage />} />
