@@ -8,6 +8,7 @@ import NoticeDetailPage from './pages/Notice/NoticeDetailPage'
 import NoticePage from './pages/Notice/NoticePage'
 import LoginPage from './pages/Login/LoginPage'
 import BrandStoryPage from './pages/BrandStory/BrandStoryPage'
+import SeasonTeaPage from './pages/SeasonTea/SeasonTeaPage'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/event/notice" element={<NoticePage />} />
           <Route path="/event/notice/:noticeId" element={<NoticeDetailPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/seasontea" element={<SeasonTeaPage />} />
           <Route path="*" element={<Navigate to="/preview" replace />} />
           <Route path="/brandstory" element={<BrandStoryPage />} />
         </Routes>
