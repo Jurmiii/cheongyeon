@@ -32,6 +32,7 @@ const actionMenus: HeaderActionItem[] = [
 ];
 
 const submenuHrefs: Record<string, string> = {
+  "차 컬렉션": "/collection",
   "계절의 차": "/seasontea",
   예약하기: "/reservation",
   공지사항: "/event/notice",
