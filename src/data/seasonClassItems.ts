@@ -1,5 +1,6 @@
 import seasonClassBg from "../assets/images/09season-class/season-class-2-bg.webp";
-import seasonClassSubBg from "../assets/images/09season-class/season-class-2-subbg.png";
+import seasonClassSubBg from "../assets/images/09season-class/season-class-2-subbg.webp";
+import seasonClass3Bg from "../assets/images/09season-class/season-class-3-bg.webp";
 import seasonClassAuScene from "../assets/images/09season-class/season-class-au.webp";
 import seasonClassAuTea from "../assets/images/09season-class/season-class-au-tea.webp";
 import seasonClassAuWord from "../assets/images/09season-class/season-class-word-au-word.webp";
@@ -25,50 +26,65 @@ export interface SeasonClassItem {
   duration: string;
   experience: string;
   capacity: string;
-  /** 큰 메인 원형 이미지 */
   sceneImage: string;
-  /** 작은 찻잔 버튼 이미지 */
   teaImage: string;
-  /** 한자 이미지 */
   wordImage: string;
-  cupSizeRem: number;
 }
 
-/** 섹션 배경: season-class-2-bg / 뒤 깔림: season-class-2-subbg */
+/** 궤도 찻잔 통일 크기 — Figma 슬롯 최대 프레임 220px (원형) */
+export const ORBIT_CUP_SIZE_REM = 13.75;
+
 export const seasonClassAssets = {
   bg: seasonClassBg,
   subBg: seasonClassSubBg,
   kvBg: seasonClassKvBg,
+  promoBg: seasonClass3Bg,
+} as const;
+
+/** Figma 1463:681 — 여름의 차 프로모 */
+export const SEASON_CLASS_PROMO = {
+  title: "여름의 차",
+  subtitle: "연꽃 냉차 클래스",
+  openLabel: "2026. 06 OPEN",
 } as const;
 
 export const SEASON_SECTION_TITLE = "계절을 배우는 찻자리";
 export const SEASON_SECTION_DESCRIPTION =
   "계절마다 가장 잘 어울리는 차를 배우고\n한 잔의 풍경을 직접 경험합니다.";
 
-export const SEASON_SCROLL_SNAP = [0, 0.303, 0.606, 0.909] as const;
+/** 원형 stroke 중심 — Figma 851 + 830/2, 세로 940/2 */
+export const ORBIT_RING_CENTER = {
+  xPx: 1266,
+  yPx: 470,
+} as const;
 
-/** Figma 1461:414 — 찻잔 슬롯 (활성·상·하) */
-export const SEASON_CUP_SLOTS = [
-  { leftPx: 709, topPx: 365 },
-  { leftPx: 993, topPx: -48 },
-  { leftPx: 965, topPx: 705 },
-] as const;
+/** 원형 stroke 반경 — 830px / 2 */
+export const ORBIT_RING_RADIUS_PX = 415;
+
+/** 중앙 메인 장면 원 중심 — Figma 1920 기준 */
+export const SEASON_SCENE_CENTER = {
+  xPx: 1388,
+  yPx: 470,
+} as const;
+
+export type SeasonOrbitPosition = "main" | "top" | "middle" | "bottom";
+
+/** Figma 1461:414 — 슬롯 프레임 (좌상단 + 설계 프레임 크기) */
+export const SEASON_ORBIT_SLOTS = {
+  top: { leftPx: 993, topPx: -48, frameWidthPx: 211, frameHeightPx: 217 },
+  middle: { leftPx: 709, topPx: 365, frameWidthPx: 211.548, frameHeightPx: 217 },
+  bottom: { leftPx: 965, topPx: 705, frameWidthPx: 216.887, frameHeightPx: 220 },
+} as const;
 
 const SEASON_COUNT = 4;
-const SEASON_HIDDEN_OFFSET = 3;
+const ORBIT_BY_OFFSET: SeasonOrbitPosition[] = ["main", "top", "middle", "bottom"];
 
-/** 시계 반대 방향 회전 — 4번째(작은 차) 슬롯은 숨김 */
-export function getSeasonCupSlotIndex(seasonIndex: number, activeIndex: number) {
-  const offset =
-    activeIndex === 0
-      ? ((seasonIndex - activeIndex) % SEASON_COUNT + SEASON_COUNT) % SEASON_COUNT
-      : ((activeIndex - seasonIndex) % SEASON_COUNT + SEASON_COUNT) % SEASON_COUNT;
-
-  if (offset >= SEASON_HIDDEN_OFFSET) {
-    return -1;
-  }
-
-  return offset;
+export function getSeasonOrbitPosition(
+  seasonIndex: number,
+  activeIndex: number,
+): SeasonOrbitPosition {
+  const offset = (seasonIndex - activeIndex + SEASON_COUNT) % SEASON_COUNT;
+  return ORBIT_BY_OFFSET[offset];
 }
 
 export const seasonClassItems: SeasonClassItem[] = [
@@ -84,7 +100,6 @@ export const seasonClassItems: SeasonClassItem[] = [
     sceneImage: seasonClassSpScene,
     teaImage: seasonClassSpTea,
     wordImage: seasonClassSpWord,
-    cupSizeRem: 17.75,
   },
   {
     key: "summer",
@@ -98,13 +113,12 @@ export const seasonClassItems: SeasonClassItem[] = [
     sceneImage: seasonClassSuScene,
     teaImage: seasonClassSuTea,
     wordImage: seasonClassSuWord,
-    cupSizeRem: 19.875,
   },
   {
     key: "fall",
     seasonLabel: "가을",
     title: "가을 다도클래스",
-    description: "단풍이 물드는 시간,\n깊고 풍부한 발효차의 여유",
+    description: "천천히 물드는 단풍처럼,\n깊어지는 향을 마주하는 시간",
     todayTea: "국화차",
     duration: "120분",
     experience: "차 우리기 · 시음 · 다도 예절",
@@ -112,13 +126,12 @@ export const seasonClassItems: SeasonClassItem[] = [
     sceneImage: seasonClassAuScene,
     teaImage: seasonClassAuTea,
     wordImage: seasonClassAuWord,
-    cupSizeRem: 19.5,
   },
   {
     key: "winter",
     seasonLabel: "겨울",
     title: "겨울 다도클래스",
-    description: "찬 바람 부는 날,\n따뜻한 온기로 몸과 마음을 채우는 다회",
+    description: "차분한 우롱의 온기와 함께,\n고요한 겨울을 마주하는 시간",
     todayTea: "보이차",
     duration: "120분",
     experience: "차 우리기 · 시음 · 다도 예절",
@@ -126,6 +139,5 @@ export const seasonClassItems: SeasonClassItem[] = [
     sceneImage: seasonClassWiScene,
     teaImage: seasonClassWiTea,
     wordImage: seasonClassWiWord,
-    cupSizeRem: 10.4375,
   },
 ];

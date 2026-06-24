@@ -1,0 +1,289 @@
+/* Figma 1463:541 — 1920×940 */
+.season-schedule {
+  width: 120rem;
+  max-width: 100%;
+  height: 58.75rem;
+  background: var(--han300);
+}
+
+.season-schedule__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding-top: 7.5rem;
+}
+
+.season-schedule__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 49.3125rem;
+  max-width: calc(100% - 3rem);
+  text-align: center;
+}
+
+.season-schedule__title,
+.season-schedule__desc {
+  margin: 0;
+}
+
+.season-schedule__title {
+  letter-spacing: -0.02em;
+}
+
+.season-schedule__month {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.75rem;
+}
+
+.season-schedule__month-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.season-schedule__month-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink500);
+  cursor: pointer;
+}
+
+.season-schedule__month-btn svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.season-schedule__month-label {
+  font-family: var(--font-body);
+  font-size: 1.448125rem;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--ink500);
+}
+
+.season-schedule__calendar-icon {
+  width: 1.6875rem;
+  height: 1.875rem;
+}
+
+.season-schedule__carousel {
+  position: relative;
+  width: 90rem;
+  max-width: 100%;
+  height: 35.25rem;
+  margin: 1.5rem auto 0;
+  overflow: hidden;
+}
+
+.season-schedule__track {
+  display: flex;
+  gap: 1.5rem;
+  height: 100%;
+  transition: transform 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+  will-change: transform;
+}
+
+.season-schedule__track--dragging {
+  transition: none;
+}
+
+.season-schedule__track--dragging .season-schedule__card {
+  transition: none;
+}
+
+.season-schedule__card {
+  position: relative;
+  flex: 0 0 13.75rem;
+  width: 13.75rem;
+  height: 24.9375rem;
+  margin-top: 4.3125rem;
+  transition: margin-top 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.season-schedule__card--active {
+  margin-top: 0;
+}
+
+.season-schedule__card-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 1.125rem 0 1.5rem;
+  border: 0;
+  border-radius: 1.5rem;
+  background: var(--han50);
+  box-shadow: none;
+  cursor: pointer;
+  overflow: visible;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.season-schedule__card--active .season-schedule__card-btn {
+  border: 0.125rem solid var(--deep500);
+}
+
+.season-schedule__card-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 3.875rem;
+  text-align: center;
+}
+
+.season-schedule__day {
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.season-schedule__weekday {
+  margin: 0;
+}
+
+.season-schedule__divider {
+  display: block;
+  width: 8.0375rem;
+  height: 1.64975rem;
+  margin-top: 0.3125rem;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.season-schedule__cup {
+  display: block;
+  flex-shrink: 0;
+  width: 8.4375rem;
+  height: 5.9375rem;
+  margin-top: 0.75rem;
+  object-fit: contain;
+  object-position: center bottom;
+  pointer-events: none;
+}
+
+.season-schedule__card--active .season-schedule__cup {
+  margin-top: 0.25rem;
+}
+
+.season-schedule__seats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+  margin-top: auto;
+  width: 7.4375rem;
+  overflow: visible;
+}
+
+.season-schedule__dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  gap: 0.5rem;
+  width: 100%;
+  overflow: visible;
+}
+
+.season-schedule__dot {
+  flex: 0 0 1.0860625rem;
+  width: 1.0860625rem;
+  height: 1.0860625rem;
+  min-width: 1.0860625rem;
+  min-height: 1.0860625rem;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.season-schedule__dot--filled {
+  background: var(--deep500);
+}
+
+.season-schedule__dot--empty {
+  border: 0.0625rem solid var(--deep200);
+  background: var(--han50);
+}
+
+.season-schedule__remain {
+  margin: 0;
+  text-align: center;
+}
+
+.season-schedule__scrollbar {
+  position: absolute;
+  bottom: 1.1875rem;
+  left: 50%;
+  width: 52rem;
+  max-width: calc(100% - 3rem);
+  height: 0.8125rem;
+  border-radius: 6.25rem;
+  background: var(--deep100);
+  transform: translateX(-50%);
+  cursor: pointer;
+  touch-action: none;
+}
+
+.season-schedule__scrollbar-thumb {
+  position: absolute;
+  top: 0;
+  width: 13.4375rem;
+  max-width: 32%;
+  height: 100%;
+  border-radius: 6.25rem;
+  background: var(--deep400);
+  transform: translateX(-50%);
+  transition: left 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+  pointer-events: none;
+}
+
+.season-schedule__scrollbar--dragging .season-schedule__scrollbar-thumb {
+  transition: none;
+}
+
+@media (max-width: 90rem) {
+  .season-schedule__carousel {
+    width: calc(100% - 3rem);
+  }
+}
+
+@media (max-width: 48rem) {
+  .season-schedule {
+    height: auto;
+    padding-bottom: 3rem;
+  }
+
+  .season-schedule__header {
+    padding-top: 4rem;
+  }
+
+  .season-schedule__intro {
+    width: 100%;
+  }
+
+  .season-schedule__carousel {
+    height: 28rem;
+    margin-top: 2rem;
+  }
+
+  .season-schedule__card {
+    flex-basis: 11.5rem;
+    width: 11.5rem;
+    height: 22rem;
+  }
+
+  .season-schedule__cup {
+    width: 7rem;
+    height: 4.75rem;
+  }
+}

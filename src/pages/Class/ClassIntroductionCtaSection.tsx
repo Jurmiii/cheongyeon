@@ -16,7 +16,7 @@ function ClassIntroductionCtaSection() {
             <span>청연에서 조용히 만나보세요</span>
           </h2>
           <Link className="class-intro-cta__button ft-22b" to="/reservation">
-            클래스예약하기
+            클래스 예약하기
           </Link>
         </div>
       </div>

@@ -1,61 +1,10 @@
-/* Blooming Smoke Reveal — single mask track, smooth finish without replay jump */
-@property --bloom-size {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 0%;
-}
-
-@property --bloom-feather {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 4%;
-}
-
-@keyframes class-intro-review-bloom {
-  0% {
-    --bloom-size: 0%;
-    --bloom-feather: 8%;
-    filter: blur(1rem);
-    opacity: 0.18;
+@keyframes class-intro-review-fade-in {
+  from {
+    opacity: 0;
   }
 
-  100% {
-    --bloom-size: 68%;
-    --bloom-feather: 100%;
-    filter: blur(0);
+  to {
     opacity: 1;
-  }
-}
-
-@keyframes class-intro-review-smoke-a {
-  0% {
-    opacity: 0.82;
-    transform: scale(0.5);
-  }
-
-  70% {
-    opacity: 0.28;
-  }
-
-  100% {
-    opacity: 0;
-    transform: scale(1.22);
-  }
-}
-
-@keyframes class-intro-review-smoke-b {
-  0% {
-    opacity: 0.72;
-    transform: scale(0.46);
-  }
-
-  70% {
-    opacity: 0.22;
-  }
-
-  100% {
-    opacity: 0;
-    transform: scale(1.26);
   }
 }
 
@@ -71,9 +20,6 @@
 }
 
 .class-intro-review__grid {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
   width: 100%;
   max-width: 90rem;
   margin-inline: auto;
@@ -89,11 +35,18 @@
 .class-intro-review__media {
   flex: 0 0 36.5625rem;
   width: 36.5625rem;
-  visibility: hidden;
 }
 
-.class-intro-review__media--visible {
-  visibility: visible;
+.class-intro-review__panel {
+  opacity: 0;
+
+  &--fading-in {
+    animation: class-intro-review-fade-in 0.8s ease forwards;
+  }
+
+  &--visible {
+    opacity: 1;
+  }
 }
 
 .class-intro-review__figure {
@@ -101,54 +54,6 @@
   width: 100%;
   height: 35.1875rem;
   margin: 0;
-
-  &::before,
-  &::after {
-    content: "";
-    position: absolute;
-    z-index: 1;
-    border-radius: 50%;
-    pointer-events: none;
-    opacity: 0;
-    transform-origin: center;
-    filter: blur(1rem);
-  }
-
-  &::before {
-    inset: 10% 14% 16% 12%;
-    background: radial-gradient(
-      circle at 46% 50%,
-      rgb(88 82 74 / 58%) 0%,
-      rgb(108 100 90 / 32%) 44%,
-      transparent 76%
-    );
-  }
-
-  &::after {
-    inset: 14% 10% 12% 16%;
-    background: radial-gradient(
-      circle at 54% 50%,
-      rgb(96 88 80 / 52%) 0%,
-      rgb(118 108 98 / 28%) 46%,
-      transparent 78%
-    );
-    filter: blur(1.125rem);
-  }
-
-  &--revealing::before,
-  &--revealing::after {
-    animation-duration: 3s;
-    animation-timing-function: cubic-bezier(0.33, 1, 0.45, 1);
-    animation-fill-mode: forwards;
-  }
-
-  &--revealing::before {
-    animation-name: class-intro-review-smoke-a;
-  }
-
-  &--revealing::after {
-    animation-name: class-intro-review-smoke-b;
-  }
 }
 
 .class-intro-review__image {
@@ -159,40 +64,13 @@
   margin-top: -8.5%;
   margin-left: -5.25%;
   object-fit: cover;
-  --bloom-size: 0%;
-  --bloom-feather: 8%;
-  opacity: 0.18;
-  filter: blur(1rem);
-  -webkit-mask-image: radial-gradient(
-    circle at 50% 50%,
-    #000 var(--bloom-size),
-    transparent var(--bloom-feather)
-  );
-  mask-image: radial-gradient(
-    circle at 50% 50%,
-    #000 var(--bloom-size),
-    transparent var(--bloom-feather)
-  );
-  will-change: filter, opacity, --bloom-size, --bloom-feather;
-}
-
-.class-intro-review__image--revealing {
-  animation: class-intro-review-bloom 3s cubic-bezier(0.33, 1, 0.45, 1) forwards;
-}
-
-.class-intro-review__image--revealed {
-  --bloom-size: 68%;
-  --bloom-feather: 100%;
-  opacity: 1;
-  filter: none;
-  animation: none;
 }
 
 .class-intro-review__content {
   display: flex;
   flex: 1 1 32.125rem;
   flex-direction: column;
-  gap: 4.0625rem;
+  gap: 2.5rem;
   min-width: 0;
 }
 
@@ -203,24 +81,38 @@
 }
 
 .class-intro-review__quote-head {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.class-intro-review__quote-mark {
-  line-height: 1;
-
-  &--close {
-    align-self: flex-end;
-    padding-right: 0.5rem;
-  }
+  margin: 0;
 }
 
 .class-intro-review__headline {
+  position: relative;
+  display: inline-block;
   margin: 0;
+  padding: 0 1rem 0 0.875rem;
   letter-spacing: -0.01em;
   line-height: 1.44;
+}
+
+.class-intro-review__headline-text {
+  display: block;
+  white-space: pre-line;
+}
+
+.class-intro-review__quote-mark {
+  position: absolute;
+  font-size: 2.25rem;
+  line-height: 1;
+  color: var(--deep500);
+
+  &:not(.class-intro-review__quote-mark--close) {
+    top: 0;
+    left: 0;
+  }
+
+  &--close {
+    right: 0;
+    bottom: 0;
+  }
 }
 
 .class-intro-review__stars {
@@ -241,6 +133,8 @@
 .class-intro-review__body {
   margin: 0;
   line-height: 1.64;
+  white-space: pre-line;
+  word-break: keep-all;
 }
 
 .class-intro-review__date {
@@ -248,12 +142,19 @@
   line-height: 1.67;
 }
 
+.class-intro-review__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
 .class-intro-review__pagination {
+  position: relative;
+  z-index: 1;
   display: flex;
   gap: 0.75rem;
-  justify-content: flex-end;
-  width: 100%;
-  padding-right: 0.125rem;
+  justify-content: flex-start;
 }
 
 .class-intro-review__dot {
@@ -265,10 +166,6 @@
   background: var(--deep200);
   cursor: pointer;
   transition: background-color 0.25s ease;
-
-  &:disabled {
-    cursor: default;
-  }
 
   &--active {
     background: var(--deep400);
@@ -308,28 +205,15 @@
   .class-intro-review__content {
     gap: 2rem;
   }
-
-  .class-intro-review__pagination {
-    justify-content: center;
-    padding-right: 0;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .class-intro-review__figure--revealing::before,
-  .class-intro-review__figure--revealing::after {
-    animation: none;
-    opacity: 0;
-  }
-
-  .class-intro-review__image--revealing {
+  .class-intro-review__panel--fading-in {
     animation: none;
   }
 
-  .class-intro-review__image--revealed {
-    --bloom-size: 68%;
-    --bloom-feather: 100%;
+  .class-intro-review__panel--visible,
+  .class-intro-review__panel--fading-in {
     opacity: 1;
-    filter: none;
   }
 }

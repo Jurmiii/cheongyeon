@@ -2,6 +2,9 @@ import { Footer, Header } from "../../components/common";
 import { seasonClassAssets } from "../../data/seasonClassItems";
 import subSymbol from "../../assets/images/01main/subsymbol.svg";
 import SeasonClassListSection from "./SeasonClassListSection";
+import SeasonClassPromoSection from "./SeasonClassPromoSection";
+import SeasonClassScheduleSection from "./SeasonClassScheduleSection";
+import SeasonClassGallerySection from "./SeasonClassGallerySection";
 import "./SeasonClassPage.scss";
 
 function SeasonClassPage() {
@@ -32,6 +35,12 @@ function SeasonClassPage() {
       </section>
 
       <SeasonClassListSection />
+
+      <SeasonClassPromoSection />
+
+      <SeasonClassScheduleSection />
+
+      <SeasonClassGallerySection />
 
       <Footer />
     </main>
