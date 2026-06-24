@@ -12,6 +12,7 @@ import "./ComponentPreview.scss";
 const typography = [
   "ft-96r",
   "ft-64r",
+  "ft-64b",
   "ft-48b",
   "ft-36b",
   "ft-36r",
