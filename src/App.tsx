@@ -7,6 +7,7 @@ import ReservationPage from './pages/Reservation/ReservationPage'
 import NoticeDetailPage from './pages/Notice/NoticeDetailPage'
 import NoticePage from './pages/Notice/NoticePage'
 import LoginPage from './pages/Login/LoginPage'
+import BrandStoryPage from './pages/BrandStory'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/event/notice/:noticeId" element={<NoticeDetailPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="*" element={<Navigate to="/preview" replace />} />
+          <Route path="/brandstory" element={<BrandStoryPage />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

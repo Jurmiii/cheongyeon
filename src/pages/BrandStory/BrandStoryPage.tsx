@@ -390,3 +390,4 @@ function BrandStoryPage() {
 }
 
 export default BrandStoryPage;
+<h1>받으슈</h1>
