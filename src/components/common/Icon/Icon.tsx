@@ -8,7 +8,9 @@ export type IconName =
   | "chevron-right"
   | "clock"
   | "credit-card"
+  | "gift"
   | "location-dot"
+  | "clipboard"
   | "star-of-life"
   | "user"
   | "won-circle";
@@ -59,10 +61,28 @@ export default function Icon({ name, className = "", ...props }: IconProps) {
           <path d="M7 15h3" />
         </>
       )}
+      {name === "gift" && (
+        <>
+          <path d="M20 12v8H4v-8" />
+          <path d="M2 7h20v5H2z" />
+          <path d="M12 7v13" />
+          <path d="M12 7H8.5A2.5 2.5 0 1 1 11 4.5L12 7Z" />
+          <path d="M12 7h3.5A2.5 2.5 0 1 0 13 4.5L12 7Z" />
+        </>
+      )}
       {name === "location-dot" && (
         <>
           <path d="M19 10c0 5-7 11-7 11s-7-6-7-11a7 7 0 1 1 14 0Z" />
           <circle cx="12" cy="10" r="2" />
+        </>
+      )}
+      {name === "clipboard" && (
+        <>
+          <rect width="14" height="17" x="5" y="4" rx="2" />
+          <path d="M9 4a3 3 0 0 1 6 0" />
+          <path d="M9 8h6" />
+          <path d="M8.5 13h7" />
+          <path d="M8.5 17h5" />
         </>
       )}
       {name === "star-of-life" && (

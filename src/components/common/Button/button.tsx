@@ -19,6 +19,7 @@ export default function Button({
   children,
   variant = "payment",
   className = "",
+  showIcon = true,
   type = "button",
   ...props
 }: ButtonProps) {
@@ -31,7 +32,7 @@ export default function Button({
   return (
     <button className={classes} type={type} {...props}>
       {children}
-      {resolvedVariant === "classMore" && (
+      {showIcon && resolvedVariant === "classMore" && (
         <Icon name="angle-right" />
       )}
     </button>

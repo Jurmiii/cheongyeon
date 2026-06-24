@@ -1,4 +1,4 @@
-import { Badge, Button, Calendar, ContentBox, Footer, Header, Input, ReservationInfoEdit } from "../components/common";
+import { Badge, Button, Calendar, ContentBox, Footer, Header, Icon, Input, Modal1, ReservationInfoEdit } from "../components/common";
 import {
   Card,
 } from "../components/cards";
@@ -111,12 +111,29 @@ const inputSamples = [
   { alias: "in4", state: "success", placeholder: "전화번호를 입력하세요", value: "01012345678" },
 ];
 
+const icons = [
+  "angle-down",
+  "angle-right",
+  "calendar",
+  "chevron-left",
+  "chevron-right",
+  "clock",
+  "credit-card",
+  "gift",
+  "location-dot",
+  "clipboard",
+  "star-of-life",
+  "user",
+  "won-circle",
+];
+
 const cards = [
   { alias: "card1", component: "ClassCard", props: classes[0] },
   { alias: "card2", component: "ContentCard", props: contents[0] },
   { alias: "card3", component: "ReservationCard", props: reservations[0] },
   { alias: "card4", component: "EventCard", props: events[0] },
   { alias: "card5", component: "SeasonClassCard", props: {} },
+  { alias: "card6", component: "Card6", props: {} },
 ];
 
 const contentBoxes = [
@@ -124,6 +141,8 @@ const contentBoxes = [
   { alias: "content2", component: "TeaClassContentBox" },
   { alias: "content3", component: "ProductContentBox" },
   { alias: "content4", component: "ReviewContentBox" },
+  { alias: "content5", component: "Content5" },
+  { alias: "content6", component: "Content6" },
 ];
 
 export default function ComponentPreview() {
@@ -166,12 +185,10 @@ export default function ComponentPreview() {
       <section className="component-preview__section">
         <h2 className="ft-28b">Badges</h2>
         <div className="component-preview__row">
-          {badges.map(({ alias, variant, text }) => (
+          {badges.map(({ alias, text }) => (
             <div className="component-preview__item" key={alias}>
               <Badge variant={alias}>{text}</Badge>
-              <p className="component-preview__alias ft-14r">
-                {alias} / {variant}
-              </p>
+              <p className="component-preview__alias ft-14r">{alias}</p>
             </div>
           ))}
         </div>
@@ -180,12 +197,10 @@ export default function ComponentPreview() {
       <section className="component-preview__section">
         <h2 className="ft-28b">Buttons</h2>
         <div className="component-preview__row">
-          {buttons.map(({ alias, variant, text }) => (
+          {buttons.map(({ alias, text }) => (
             <div className="component-preview__item" key={alias}>
               <Button variant={alias}>{text}</Button>
-              <p className="component-preview__alias ft-14r">
-                {alias} / {variant}
-              </p>
+              <p className="component-preview__alias ft-14r">{alias}</p>
             </div>
           ))}
         </div>
@@ -194,22 +209,30 @@ export default function ComponentPreview() {
       <section className="component-preview__section">
         <h2 className="ft-28b">Inputs</h2>
         <div className="component-preview__row">
-          {inputs.map(({ alias, state, placeholder }) => (
+          {inputs.map(({ alias, placeholder }) => (
             <div className="component-preview__item" key={placeholder}>
               <Input state={alias} placeholder={placeholder} />
-              <p className="component-preview__alias ft-14r">
-                {alias} / {state}
-              </p>
+              <p className="component-preview__alias ft-14r">{alias}</p>
             </div>
           ))}
         </div>
         <div className="component-preview__row">
-          {inputSamples.map(({ alias, state, placeholder, value }) => (
+          {inputSamples.map(({ alias, placeholder, value }) => (
             <div className="component-preview__item" key={alias}>
               <Input state={alias} defaultValue={value} placeholder={placeholder} readOnly />
-              <p className="component-preview__alias ft-14r">
-                {alias} / {state}
-              </p>
+              <p className="component-preview__alias ft-14r">{alias}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="component-preview__section">
+        <h2 className="ft-28b">Icons</h2>
+        <div className="component-preview__icons">
+          {icons.map((name) => (
+            <div className="component-preview__icon-item" key={name}>
+              <Icon className="component-preview__icon ink500" name={name} />
+              <p className="component-preview__alias ft-14r">{name}</p>
             </div>
           ))}
         </div>
@@ -218,12 +241,10 @@ export default function ComponentPreview() {
       <section className="component-preview__section">
         <h2 className="ft-28b">Cards</h2>
         <div className="component-preview__cards">
-          {cards.map(({ alias, component, props }) => (
+          {cards.map(({ alias, props }) => (
             <div className="component-preview__item" key={alias}>
               <Card name={alias} {...props} />
-              <p className="component-preview__alias ft-14r">
-                {alias} / {component}
-              </p>
+              <p className="component-preview__alias ft-14r">{alias}</p>
             </div>
           ))}
         </div>
@@ -246,23 +267,27 @@ export default function ComponentPreview() {
       </section>
 
       <section className="component-preview__section">
+        <h2 className="ft-28b">Modals</h2>
+        <div className="component-preview__item">
+          <Modal1 />
+          <p className="component-preview__alias ft-14r">modal1</p>
+        </div>
+      </section>
+
+      <section className="component-preview__section">
         <h2 className="ft-28b">Content Boxes</h2>
         <div className="component-preview__content-boxes">
-          {contentBoxes.slice(0, 2).map(({ alias, component }) => (
+          {contentBoxes.slice(0, 2).map(({ alias }) => (
             <div className="component-preview__item" key={alias}>
               <ContentBox name={alias} />
-              <p className="component-preview__alias ft-14r">
-                {alias} / {component}
-              </p>
+              <p className="component-preview__alias ft-14r">{alias}</p>
             </div>
           ))}
           <div className="component-preview__content-boxes-row">
-            {contentBoxes.slice(2).map(({ alias, component }) => (
+            {contentBoxes.slice(2).map(({ alias }) => (
               <div className="component-preview__item" key={alias}>
                 <ContentBox name={alias} />
-                <p className="component-preview__alias ft-14r">
-                  {alias} / {component}
-                </p>
+                <p className="component-preview__alias ft-14r">{alias}</p>
               </div>
             ))}
           </div>
