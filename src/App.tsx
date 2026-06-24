@@ -7,7 +7,7 @@ import ReservationPage from './pages/Reservation/ReservationPage'
 import NoticeDetailPage from './pages/Notice/NoticeDetailPage'
 import NoticePage from './pages/Notice/NoticePage'
 import LoginPage from './pages/Login/LoginPage'
-import BrandStoryPage from './pages/BrandStory'
+import BrandStoryPage from './pages/BrandStory/BrandStoryPage'
 
 function App() {
   return (
