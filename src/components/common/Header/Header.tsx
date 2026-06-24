@@ -37,7 +37,7 @@ const submenuHrefs: Record<string, string> = {
 };
 
 export default function Header() {
-  const { isLoggedIn, loginId, logout } = useAuth();
+  const { isLoggedIn, loginId } = useAuth();
   const [activeDropdown, setActiveDropdown] = useState<ActiveDropdown>(null);
   const isGnbOpen = activeDropdown === "gnb";
 
@@ -107,15 +107,14 @@ export default function Header() {
               >
                 {menu.id === "user" ? (
                   isLoggedIn ? (
-                    <button
+                    <Link
                       className="site-header__menu-link site-header__action-link ft-18b ink500"
-                      type="button"
-                      aria-label={`${loginId}님 로그아웃`}
-                      onClick={logout}
+                      to="/mypage"
+                      aria-label={`${loginId}님 마이페이지`}
                     >
                       <Icon className="site-header__user-icon" name="user" aria-hidden="true" />
                       <span className="site-header__user-name ft-14r">{loginId}</span>
-                    </button>
+                    </Link>
                   ) : (
                     <Link
                       className="site-header__menu-link site-header__action-link ft-18b ink500"

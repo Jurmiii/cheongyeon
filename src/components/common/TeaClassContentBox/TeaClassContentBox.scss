@@ -68,3 +68,28 @@
   flex-direction: column;
   gap: var(--space-3);
 }
+
+.tea-class-content-box--upcoming {
+  flex-shrink: 0;
+  width: 44.375rem;
+  height: 17.8125rem;
+
+  .tea-class-content-box__image {
+    flex: 0 0 21.5625rem;
+    width: 21.5625rem;
+    height: 17.8125rem;
+    border-radius: 1rem;
+    background-color: transparent;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .tea-class-content-box__content {
+    margin-left: var(--space-2);
+  }
+
+  .tea-class-content-box__meta {
+    margin-top: var(--space-2);
+  }
+}
