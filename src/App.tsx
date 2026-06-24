@@ -10,6 +10,7 @@ import NoticePage from './pages/Notice/NoticePage'
 import LoginPage from './pages/Login/LoginPage'
 import BrandStoryPage from './pages/BrandStory/BrandStoryPage'
 import SpacePage from './pages/Space/SpacePage'
+import LocationPage from './pages/Location'
 import SeasonTeaPage from './pages/SeasonTea/SeasonTeaPage'
 import MyPageRoute from './pages/MyPage/MyPageRoute'
 
@@ -41,6 +42,7 @@ function App() {
           <Route path="/space" element={<SpacePage />} />
           <Route path="/brandstory" element={<BrandStoryPage />} />
           <Route path="/brand/story" element={<BrandStoryPage />} />
+          <Route path="/brand/location" element={<LocationPage />} />
           <Route path="/brand-story" element={<BrandStoryPage />} />
           <Route path="*" element={<Navigate to="/preview" replace />} />
         </Routes>

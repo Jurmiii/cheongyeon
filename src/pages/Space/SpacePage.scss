@@ -250,6 +250,7 @@
   width: 100%;
   max-width: 43.75rem;
   margin: 1.75rem 0 1.25rem;
+  transform-origin: center center;
 }
 
 .space-rooms__image {
@@ -260,6 +261,16 @@
   height: 31.25rem;
   object-fit: cover;
   object-position: center;
+  transform-origin: center center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .space-rooms__head,
+  .space-rooms__line,
+  .space-rooms__image {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 @media (max-width: $laptop) {
@@ -788,16 +799,23 @@
   transform: translate(-50%, -50%);
   animation: space-map-marker-float 3s ease-in-out infinite;
 
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -50px;
+  }
+
   img {
     display: block;
     width: 1.875rem;
     height: 1.875rem;
+    max-width: none;
     border-radius: 50%;
     transform-origin: center center;
-    animation: space-map-marker-pulse 2.8s ease-in-out infinite;
+    transform: scale(1);
     transition:
-      transform 0.35s ease,
-      box-shadow 0.35s ease;
+      transform 0.45s cubic-bezier(0.34, 1.2, 0.64, 1),
+      box-shadow 0.45s ease;
   }
 }
 
@@ -806,13 +824,11 @@
 }
 
 .space-map__marker:hover img {
-  animation: none;
-  transform: scale(1.12);
+  transform: scale(1.28);
   box-shadow: 0 0 20px rgba(212, 178, 93, 0.35);
 }
 
 .space-map__marker--active img {
-  animation: none;
   transform: scale(1.12);
   box-shadow: 0 0 18px rgba(212, 178, 93, 0.42);
 }
@@ -822,7 +838,7 @@
 }
 
 .space-map__marker--active:hover img {
-  transform: scale(1.16);
+  transform: scale(1.32);
   box-shadow: 0 0 20px rgba(212, 178, 93, 0.45);
 }
 
@@ -846,17 +862,6 @@
 
   50% {
     transform: translate(-50%, calc(-50% - 5px));
-  }
-}
-
-@keyframes space-map-marker-pulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.08);
   }
 }
 
@@ -920,5 +925,6 @@
   .space-map__marker img {
     width: 1.625rem;
     height: 1.625rem;
+    max-width: none;
   }
 }

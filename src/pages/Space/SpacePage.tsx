@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import subSymbol from "../../assets/images/01main/subsymbol.svg";
 import aboutBg from "../../assets/images/03space/about-bg.webp";
 import spaceKv from "../../assets/images/03space/space-kv.webp";
@@ -178,6 +180,68 @@ function SpacePage() {
   const [showMapDetail, setShowMapDetail] = useState(false);
   const carouselSectionRef = useRef<HTMLElement>(null);
   const carouselCursorRef = useRef<HTMLImageElement>(null);
+  const roomsSectionRef = useRef<HTMLElement>(null);
+
+  useLayoutEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const section = roomsSectionRef.current;
+    if (!section) {
+      return;
+    }
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const items = Array.from(section.querySelectorAll<HTMLElement>(".space-rooms__item"));
+
+    if (prefersReducedMotion || items.length === 0) {
+      return;
+    }
+
+    const context = gsap.context(() => {
+      items.forEach((item, index) => {
+        const head = item.querySelector<HTMLElement>(".space-rooms__head");
+        const line = item.querySelector<HTMLElement>(".space-rooms__line");
+        const image = item.querySelector<HTMLElement>(".space-rooms__image");
+
+        if (!head || !line || !image) {
+          return;
+        }
+
+        const fromX = index === 0 ? -18 : 18;
+
+        gsap.set([head, line, image], { opacity: 0 });
+        gsap.set(head, { y: 24, x: fromX });
+        gsap.set(line, { scaleX: 0.35 });
+        gsap.set(image, { y: 28, scale: 1.03 });
+
+        const timeline = gsap
+          .timeline({ paused: true })
+          .to(head, { opacity: 1, y: 0, x: 0, duration: 0.85, ease: "power2.out" })
+          .to(line, { opacity: 1, scaleX: 1, duration: 0.75, ease: "power2.out" }, "-=0.55")
+          .to(image, { opacity: 1, y: 0, scale: 1, duration: 0.95, ease: "power2.out" }, "-=0.5");
+
+        const playRoomsAnimation = () => {
+          gsap.set([head, line, image], { opacity: 0 });
+          gsap.set(head, { y: 24, x: fromX });
+          gsap.set(line, { scaleX: 0.35 });
+          gsap.set(image, { y: 28, scale: 1.03 });
+          timeline.restart();
+        };
+
+        ScrollTrigger.create({
+          trigger: item,
+          start: "top 84%",
+          end: "bottom 16%",
+          onEnter: playRoomsAnimation,
+          onEnterBack: playRoomsAnimation,
+        });
+      });
+    }, section);
+
+    return () => {
+      context.revert();
+    };
+  }, []);
 
   useEffect(() => {
     const section = carouselSectionRef.current;
@@ -300,7 +364,7 @@ function SpacePage() {
         </div>
       </section>
 
-      <section className="space-rooms" aria-label="청연 공간 구성">
+      <section className="space-rooms" ref={roomsSectionRef} aria-label="청연 공간 구성">
         <div className="space-rooms__inner">
           <article className="space-rooms__item">
             <div className="space-rooms__head">
