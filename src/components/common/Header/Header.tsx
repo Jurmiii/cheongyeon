@@ -118,7 +118,7 @@ export default function Header() {
                     <button
                       className="site-header__menu-link site-header__action-link ft-18b ink500"
                       type="button"
-                      aria-label={isLoggedIn ? `${loginId}님 사용자 메뉴` : "사용자 메뉴"}
+                      aria-label="사용자 메뉴"
                       aria-expanded={activeDropdown === "user"}
                       onClick={() => handleActionClick("user")}
                     >
@@ -147,39 +147,39 @@ export default function Header() {
                         )}
                       </li>
                       <li>
-                        <Link className="site-header__action-dropdown-link ft-16b ink500" to="/mypage">
+                        <a className="site-header__action-dropdown-link ft-16b ink500" href="#mypage">
                           마이페이지
-                        </Link>
+                        </a>
                       </li>
                     </ul>
                   </>
                 ) : (
                   <>
-                  <button
-                    className="site-header__menu-link site-header__action-link ft-18b ink500"
-                    type="button"
-                    aria-label="언어 선택"
-                    aria-expanded={activeDropdown === "language"}
-                    onClick={() => handleActionClick("language")}
-                  >
-                    {selectedLanguage}
-                    <Icon className="site-header__angle-icon" name="angle-down" aria-hidden="true" />
-                  </button>
-                  <span className="site-header__dropdown-line" aria-hidden="true" />
-                  <ul className="site-header__action-dropdown site-header__action-dropdown--language" aria-hidden={activeDropdown !== "language"}>
-                    <li>
-                      <button
-                        className="site-header__action-dropdown-link ft-16b ink500"
-                        type="button"
-                        onClick={() => {
-                          setSelectedLanguage(nextLanguage);
-                          setActiveDropdown(null);
-                        }}
-                      >
-                        {nextLanguage}
-                      </button>
-                    </li>
-                  </ul>
+                    <button
+                      className="site-header__menu-link site-header__action-link ft-18b ink500"
+                      type="button"
+                      aria-label="언어 선택"
+                      aria-expanded={activeDropdown === "language"}
+                      onClick={() => handleActionClick("language")}
+                    >
+                      {selectedLanguage}
+                      <Icon className="site-header__angle-icon" name="angle-down" aria-hidden="true" />
+                    </button>
+                    <span className="site-header__dropdown-line" aria-hidden="true" />
+                    <ul className="site-header__action-dropdown site-header__action-dropdown--language" aria-hidden={activeDropdown !== "language"}>
+                      <li>
+                        <button
+                          className="site-header__action-dropdown-link ft-16b ink500"
+                          type="button"
+                          onClick={() => {
+                            setSelectedLanguage(nextLanguage);
+                            setActiveDropdown(null);
+                          }}
+                        >
+                          {nextLanguage}
+                        </button>
+                      </li>
+                    </ul>
                   </>
                 )}
               </div>

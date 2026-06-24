@@ -20,16 +20,28 @@ function App() {
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/preview" element={<ComponentPreview />} />
+          <Route path="/components" element={<ComponentPreview />} />
           <Route path="/class/introduction" element={<ClassIntroductionPage />} />
+          <Route path="/class" element={<ClassIntroductionPage />} />
+          <Route path="/class/general" element={<ClassIntroductionPage />} />
           <Route path="/class/season" element={<SeasonClassPage />} />
+          <Route path="/class/season-class" element={<SeasonClassPage />} />
           <Route path="/reservation" element={<ReservationPage />} />
           <Route path="/event/notice" element={<NoticePage />} />
           <Route path="/event/notice/:noticeId" element={<NoticeDetailPage />} />
+          <Route path="/notice" element={<NoticePage />} />
+          <Route path="/notice/:noticeId" element={<NoticeDetailPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/seasontea" element={<SeasonTeaPage />} />
+          <Route path="/season-tea" element={<SeasonTeaPage />} />
+          <Route path="/product/season-tea" element={<SeasonTeaPage />} />
           <Route path="/mypage" element={<MyPageRoute />} />
+          <Route path="/my-page" element={<MyPageRoute />} />
           <Route path="/brand/space" element={<SpacePage />} />
+          <Route path="/space" element={<SpacePage />} />
           <Route path="/brandstory" element={<BrandStoryPage />} />
+          <Route path="/brand/story" element={<BrandStoryPage />} />
+          <Route path="/brand-story" element={<BrandStoryPage />} />
           <Route path="*" element={<Navigate to="/preview" replace />} />
         </Routes>
       </AuthProvider>
