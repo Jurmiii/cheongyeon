@@ -36,7 +36,6 @@
   position: absolute;
   left: 0;
   top: 16.5625rem;
-  font-weight: 700;
 }
 
 .season-tea-kv__symbol {
@@ -50,4 +49,492 @@
   position: absolute;
   left: 0;
   top: 24.625rem;
+}
+
+/* Figma 1920×940 */
+.season-tea-spring,
+.season-tea-summer,
+.season-tea-autumn,
+.season-tea-winter {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 58.75rem;
+}
+
+.season-tea-spring {
+  background-color: var(--han50);
+  background-image: url("../../assets/images/07season-tea/sec2-spring-bg.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.season-tea-spring__grid {
+  display: grid;
+  grid-template-columns: repeat(12, 6.125rem);
+  column-gap: 1.5rem;
+  align-items: center;
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+  padding-block: 5rem;
+}
+
+.season-tea-spring__media {
+  grid-column: 1 / span 6;
+  aspect-ratio: 1 / 1;
+}
+
+.season-tea-spring__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.season-tea-spring__content {
+  grid-column: 8 / -1;
+  word-break: keep-all;
+}
+
+.season-tea-spring__season,
+.season-tea-spring__name,
+.season-tea-spring__lead,
+.season-tea-spring__body {
+  margin: 0;
+}
+
+.season-tea-spring__name {
+  margin-top: 1.5rem;
+}
+
+.season-tea-spring__lead {
+  margin-top: 3rem;
+}
+
+.season-tea-spring__body {
+  margin-top: 3rem;
+}
+
+.season-tea-spring__button {
+  margin-top: 3rem;
+}
+
+@media (max-width: 90rem) {
+  .season-tea-spring__grid {
+    padding-inline: 1.5rem;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 64rem) {
+  .season-tea-spring__grid {
+    grid-template-columns: 1fr;
+    row-gap: 2.5rem;
+    padding-block: 3.5rem;
+  }
+
+  .season-tea-spring__media {
+    grid-column: 1 / -1;
+    max-width: 28rem;
+    margin-inline: auto;
+  }
+
+  .season-tea-spring__content {
+    grid-column: 1 / -1;
+  }
+
+  .season-tea-spring__season {
+    font-size: 3rem;
+    line-height: 4rem;
+  }
+
+  .season-tea-spring__name {
+    font-size: 1.5rem;
+    line-height: 2.25rem;
+  }
+}
+
+@media (max-width: 30rem) {
+  .season-tea-spring__grid {
+    padding-inline: 1rem;
+  }
+
+  .season-tea-spring__season {
+    font-size: 2.25rem;
+    line-height: 3.25rem;
+  }
+
+  .season-tea-spring__lead {
+    font-size: 1.125rem;
+    line-height: 1.875rem;
+  }
+
+  .season-tea-spring__body {
+    font-size: 1rem;
+    line-height: 1.625rem;
+  }
+}
+
+.season-tea-summer {
+  background-color: var(--han50);
+  background-image: url("../../assets/images/07season-tea/sec3-summer-bg.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.season-tea-summer__grid {
+  display: grid;
+  grid-template-columns: repeat(12, 6.125rem);
+  column-gap: 1.5rem;
+  align-items: center;
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+  padding-block: 5rem;
+}
+
+.season-tea-summer__content {
+  grid-column: 2 / 7;
+  word-break: keep-all;
+}
+
+.season-tea-summer__media {
+  grid-column: 7 / -1;
+  aspect-ratio: 1 / 1;
+}
+
+.season-tea-summer__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.season-tea-summer__season,
+.season-tea-summer__name,
+.season-tea-summer__lead,
+.season-tea-summer__body {
+  margin: 0;
+}
+
+.season-tea-summer__name {
+  margin-top: 1.5rem;
+}
+
+.season-tea-summer__lead {
+  margin-top: 3rem;
+}
+
+.season-tea-summer__body {
+  margin-top: 3rem;
+}
+
+.season-tea-summer__button {
+  margin-top: 3rem;
+}
+
+@media (max-width: 90rem) {
+  .season-tea-summer__grid {
+    padding-inline: 1.5rem;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 64rem) {
+  .season-tea-summer__grid {
+    grid-template-columns: 1fr;
+    row-gap: 2.5rem;
+    padding-block: 3.5rem;
+  }
+
+  .season-tea-summer__content {
+    grid-column: 1 / -1;
+  }
+
+  .season-tea-summer__media {
+    grid-column: 1 / -1;
+    max-width: 28rem;
+    margin-inline: auto;
+  }
+
+  .season-tea-summer__season {
+    font-size: 3rem;
+    line-height: 4rem;
+  }
+
+  .season-tea-summer__name {
+    font-size: 1.5rem;
+    line-height: 2.25rem;
+  }
+}
+
+@media (max-width: 30rem) {
+  .season-tea-summer__grid {
+    padding-inline: 1rem;
+  }
+
+  .season-tea-summer__season {
+    font-size: 2.25rem;
+    line-height: 3.25rem;
+  }
+
+  .season-tea-summer__lead {
+    font-size: 1.125rem;
+    line-height: 1.875rem;
+  }
+
+  .season-tea-summer__body {
+    font-size: 1rem;
+    line-height: 1.625rem;
+  }
+}
+
+.season-tea-autumn {
+  background-color: var(--han50);
+  background-image: url("../../assets/images/07season-tea/sec4-autumn-bg.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.season-tea-autumn__grid {
+  display: grid;
+  grid-template-columns: repeat(12, 6.125rem);
+  column-gap: 1.5rem;
+  align-items: center;
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+  padding-block: 5rem;
+}
+
+.season-tea-autumn__media {
+  grid-column: 1 / span 6;
+  aspect-ratio: 1 / 1;
+}
+
+.season-tea-autumn__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.season-tea-autumn__content {
+  grid-column: 8 / -1;
+  word-break: keep-all;
+}
+
+.color-fall {
+  color: var(--color-fall);
+}
+
+.color-winter {
+  color: var(--color-winter);
+}
+
+.season-tea-autumn__season,
+.season-tea-autumn__name,
+.season-tea-autumn__lead,
+.season-tea-autumn__body {
+  margin: 0;
+}
+
+.season-tea-autumn__name {
+  margin-top: 1.5rem;
+}
+
+.season-tea-autumn__lead {
+  margin-top: 3rem;
+}
+
+.season-tea-autumn__body {
+  margin-top: 3rem;
+}
+
+.season-tea-autumn__button {
+  margin-top: 3rem;
+}
+
+@media (max-width: 90rem) {
+  .season-tea-autumn__grid {
+    padding-inline: 1.5rem;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 64rem) {
+  .season-tea-autumn__grid {
+    grid-template-columns: 1fr;
+    row-gap: 2.5rem;
+    padding-block: 3.5rem;
+  }
+
+  .season-tea-autumn__media {
+    grid-column: 1 / -1;
+    max-width: 28rem;
+    margin-inline: auto;
+  }
+
+  .season-tea-autumn__content {
+    grid-column: 1 / -1;
+  }
+
+  .season-tea-autumn__season {
+    font-size: 3rem;
+    line-height: 4rem;
+  }
+
+  .season-tea-autumn__name {
+    font-size: 1.5rem;
+    line-height: 2.25rem;
+  }
+}
+
+@media (max-width: 30rem) {
+  .season-tea-autumn__grid {
+    padding-inline: 1rem;
+  }
+
+  .season-tea-autumn__season {
+    font-size: 2.25rem;
+    line-height: 3.25rem;
+  }
+
+  .season-tea-autumn__lead {
+    font-size: 1.125rem;
+    line-height: 1.875rem;
+  }
+
+  .season-tea-autumn__body {
+    font-size: 1rem;
+    line-height: 1.625rem;
+  }
+}
+
+.season-tea-winter {
+  background-color: var(--han50);
+  background-image: url("../../assets/images/07season-tea/sec5-winter-bg.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.season-tea-winter__grid {
+  display: grid;
+  grid-template-columns: repeat(12, 6.125rem);
+  column-gap: 1.5rem;
+  align-items: center;
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+  padding-block: 5rem;
+}
+
+.season-tea-winter__content {
+  grid-column: 2 / 7;
+  word-break: keep-all;
+}
+
+.season-tea-winter__media {
+  grid-column: 7 / -1;
+  aspect-ratio: 1 / 1;
+}
+
+.season-tea-winter__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.season-tea-winter__season,
+.season-tea-winter__name,
+.season-tea-winter__lead,
+.season-tea-winter__body {
+  margin: 0;
+}
+
+.season-tea-winter__name {
+  margin-top: 1.5rem;
+}
+
+.season-tea-winter__lead {
+  margin-top: 3rem;
+}
+
+.season-tea-winter__body {
+  margin-top: 3rem;
+}
+
+.season-tea-winter__button {
+  margin-top: 3rem;
+}
+
+@media (max-width: 90rem) {
+  .season-tea-winter__grid {
+    padding-inline: 1.5rem;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 64rem) {
+  .season-tea-winter__grid {
+    grid-template-columns: 1fr;
+    row-gap: 2.5rem;
+    padding-block: 3.5rem;
+  }
+
+  .season-tea-winter__content {
+    grid-column: 1 / -1;
+  }
+
+  .season-tea-winter__media {
+    grid-column: 1 / -1;
+    max-width: 28rem;
+    margin-inline: auto;
+  }
+
+  .season-tea-winter__season {
+    font-size: 3rem;
+    line-height: 4rem;
+  }
+
+  .season-tea-winter__name {
+    font-size: 1.5rem;
+    line-height: 2.25rem;
+  }
+}
+
+@media (max-width: 30rem) {
+  .season-tea-winter__grid {
+    padding-inline: 1rem;
+  }
+
+  .season-tea-winter__season {
+    font-size: 2.25rem;
+    line-height: 3.25rem;
+  }
+
+  .season-tea-winter__lead {
+    font-size: 1.125rem;
+    line-height: 1.875rem;
+  }
+
+  .season-tea-winter__body {
+    font-size: 1rem;
+    line-height: 1.625rem;
+  }
+}
+
+@media (max-width: 64rem) {
+  .season-tea-spring,
+  .season-tea-summer,
+  .season-tea-autumn,
+  .season-tea-winter {
+    height: auto;
+  }
 }
