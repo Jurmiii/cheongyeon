@@ -49,7 +49,9 @@ function App() {
           <Route path="/reservation" element={<ReservationPage />} />
           <Route path="/reservation/apply" element={<ReservationPage />} />
           <Route path="/reservation/edit" element={<ReservationEditPage />} />
+          <Route path="/reservation-edit" element={<ReservationEditPage />} />
           <Route path="/stamp" element={<StampPage />} />
+          <Route path="/mypage/stamp" element={<StampPage />} />
           <Route path="/event" element={<EventPage />} />
           <Route path="/event/ongoing" element={<EventPage />} />
           <Route path="/event/notice" element={<NoticePage />} />
@@ -64,7 +66,9 @@ function App() {
           <Route path="/product/season-tea" element={<SeasonTeaPage />} />
           <Route path="/shop" element={<CollectionPage />} />
           <Route path="/shop/tea-story" element={<CollectionPage />} />
-          {/* TODO: 작업 완료 후 정식 연결 — /product/tea-story */}
+          <Route path="/product/tea-story" element={<TeaStorePage />} />
+          <Route path="/tea-story" element={<TeaStorePage />} />
+          <Route path="/tea-store" element={<TeaStorePage />} />
           <Route path="/dev/tea-story" element={<TeaStorePage />} />
           <Route path="/collection" element={<CollectionPage />} />
           <Route path="/product/collection" element={<CollectionPage />} />
