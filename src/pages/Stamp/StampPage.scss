@@ -1,0 +1,110 @@
+.stamp-page {
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+}
+
+.stamp-page__background {
+  position: relative;
+  z-index: 0;
+}
+
+.stamp-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgb(35 35 35 / 55%);
+}
+
+.stamp-card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 970px;
+  max-width: 100%;
+  height: 550px;
+  padding-top: 47px;
+  background-image: url("../../assets/images/13my-page/stemp.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.stamp-card__logo {
+  display: block;
+  width: 135px;
+  height: auto;
+}
+
+.stamp-card__subtitle {
+  margin: 12px 0 0;
+  color: var(--ink500);
+  text-align: center;
+}
+
+.stamp-card__cups {
+  display: grid;
+  grid-template-columns: repeat(4, 88px);
+  column-gap: 116px;
+  row-gap: 12px;
+  margin-top: 37px;
+}
+
+.stamp-cup {
+  position: relative;
+  width: 88px;
+  height: 88px;
+}
+
+.stamp-cup__image {
+  display: block;
+  width: 88px;
+  height: 88px;
+}
+
+.stamp-cup__number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -58%);
+  color: var(--plum300);
+  pointer-events: none;
+}
+
+.stamp-card__benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: fit-content;
+  margin: 40px auto 0;
+}
+
+.stamp-benefit {
+  display: flex;
+  align-items: center;
+}
+
+.stamp-benefit__icon {
+  display: block;
+  width: auto;
+  height: 24px;
+  margin-right: 4px;
+}
+
+.stamp-benefit__label {
+  color: var(--ink500);
+}
+
+.stamp-benefit__desc {
+  margin-left: 12px;
+  color: var(--ink500);
+}
+
+.stamp-benefit__desc strong {
+  font-weight: inherit;
+}

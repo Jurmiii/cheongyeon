@@ -8,6 +8,9 @@ import ReservationPage from './pages/Reservation/ReservationPage'
 import NoticePage, { NoticeDetailPage } from './pages/Notice/NoticePage'
 import EventPage from './pages/Event/EventPage'
 import LoginPage from './pages/Login/LoginPage'
+import SignupPage from './pages/Signup/SignupPage'
+import ReservationEditPage from './pages/ReservationEdit/ReservationEditPage'
+import StampPage from './pages/Stamp/StampPage'
 import BrandStoryPage from './pages/BrandStory/BrandStoryPage'
 import SpacePage from './pages/Space/SpacePage'
 import LocationPage from './pages/Location'
@@ -33,6 +36,8 @@ function App() {
           <Route path="/class/season-class" element={<SeasonClassPage />} />
           <Route path="/reservation" element={<ReservationPage />} />
           <Route path="/reservation/apply" element={<ReservationPage />} />
+          <Route path="/reservation/edit" element={<ReservationEditPage />} />
+          <Route path="/stamp" element={<StampPage />} />
           <Route path="/event" element={<EventPage />} />
           <Route path="/event/ongoing" element={<EventPage />} />
           <Route path="/event/notice" element={<NoticePage />} />
@@ -40,6 +45,8 @@ function App() {
           <Route path="/notice" element={<NoticePage />} />
           <Route path="/notice/:noticeId" element={<NoticeDetailPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/sign-up" element={<SignupPage />} />
           <Route path="/seasontea" element={<SeasonTeaPage />} />
           <Route path="/season-tea" element={<SeasonTeaPage />} />
           <Route path="/product/season-tea" element={<SeasonTeaPage />} />

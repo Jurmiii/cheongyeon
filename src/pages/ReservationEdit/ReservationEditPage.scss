@@ -1,0 +1,87 @@
+.reservation-edit-page {
+  width: 100%;
+  min-width: 0;
+  min-height: 100svh;
+  background: var(--white);
+}
+
+.reservation-edit {
+  width: 120rem;
+  max-width: 100%;
+  padding-block: 5rem;
+  background: var(--white);
+}
+
+.reservation-edit__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+}
+
+.reservation-edit__block {
+  display: flex;
+  flex-direction: column;
+}
+
+.reservation-edit__title {
+  margin: 0;
+}
+
+.reservation-edit__row {
+  margin-top: 1.5rem;
+}
+
+.reservation-edit__subtitle {
+  margin: 0.75rem 0 1.5rem;
+}
+
+.reservation-edit__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.5rem;
+}
+
+.reservation-edit__action {
+  flex: 0 0 auto;
+  min-width: 18rem;
+  min-height: 4rem;
+  border-radius: 0.5rem;
+  font-size: 1.375rem;
+  font-weight: 700;
+}
+
+.reservation-edit__action--cancel.cy-button {
+  color: var(--ink500);
+  border-color: var(--ink200);
+  background: var(--white);
+}
+
+.reservation-edit__action--submit.cy-button {
+  color: var(--white);
+  background: var(--deep500);
+}
+
+.reservation-edit__action--cancel-confirm.cy-button {
+  color: var(--ink500);
+  background: var(--han500);
+}
+
+@media (max-width: 90rem) {
+  .reservation-edit__grid {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  .reservation-edit__actions {
+    flex-direction: column;
+  }
+
+  .reservation-edit__action {
+    width: 100%;
+    min-width: 0;
+  }
+}
