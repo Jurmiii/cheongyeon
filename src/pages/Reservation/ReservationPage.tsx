@@ -1,8 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Button, Footer, Header, Icon, Input } from "../../components/common";
-import ReservationCalendar, { startOfDay } from "./ReservationCalendar";
-import ReservationCompleteModal from "./ReservationCompleteModal";
 import {
   RESERVATION_CLASSES_PER_PAGE,
   cardCompanies,
@@ -22,6 +20,8 @@ type PaymentMethod = "card" | "easy";
 
 type PaymentDropdown = "cardCompany" | "installment" | null;
 
+const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
+
 function normalizePhone(value: string) {
   return value.replace(/\D/g, "");
 }
@@ -29,6 +29,198 @@ function normalizePhone(value: string) {
 function isValidPhone(value: string) {
   const digits = normalizePhone(value);
   return digits.length >= 10 && digits.length <= 11;
+}
+
+function startOfDay(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function getCalendarDates(year: number, month: number) {
+  const firstDate = new Date(year, month, 1);
+  const lastDate = new Date(year, month + 1, 0);
+  const dates: Array<Date | null> = [];
+
+  for (let index = 0; index < firstDate.getDay(); index += 1) {
+    dates.push(null);
+  }
+
+  for (let date = 1; date <= lastDate.getDate(); date += 1) {
+    dates.push(new Date(year, month, date));
+  }
+
+  while (dates.length < 42) {
+    dates.push(null);
+  }
+
+  return dates;
+}
+
+function isSameMonth(left: Date, right: Date) {
+  return left.getFullYear() === right.getFullYear() && left.getMonth() === right.getMonth();
+}
+
+function isPastDate(date: Date, today: Date) {
+  return startOfDay(date).getTime() < startOfDay(today).getTime();
+}
+
+interface ReservationCalendarProps {
+  selectedDate: Date;
+  onSelectedDateChange: (date: Date) => void;
+}
+
+function ReservationCalendar({ selectedDate, onSelectedDateChange }: ReservationCalendarProps) {
+  const today = useMemo(() => startOfDay(new Date()), []);
+  const [currentDate, setCurrentDate] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
+
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  const dates = useMemo(() => getCalendarDates(year, month), [year, month]);
+  const isCurrentMonth = isSameMonth(currentDate, today);
+  const canGoPrevMonth = !isCurrentMonth;
+
+  const moveMonth = (offset: number) => {
+    if (offset < 0 && !canGoPrevMonth) {
+      return;
+    }
+
+    setCurrentDate((prevDate) => new Date(prevDate.getFullYear(), prevDate.getMonth() + offset, 1));
+  };
+
+  const handleDateSelect = (date: Date) => {
+    if (isPastDate(date, today)) {
+      return;
+    }
+
+    onSelectedDateChange(startOfDay(date));
+  };
+
+  return (
+    <section className="calendar reservation-calendar" aria-label="예약 날짜 선택">
+      <header className="calendar__header">
+        <button
+          className="calendar__nav"
+          type="button"
+          aria-label="이전 달"
+          disabled={!canGoPrevMonth}
+          onClick={() => moveMonth(-1)}
+        >
+          <Icon name="chevron-left" />
+        </button>
+        <h3 className="calendar__title ft-22b">
+          {year}.{String(month + 1).padStart(2, "0")}
+        </h3>
+        <button className="calendar__nav" type="button" aria-label="다음 달" onClick={() => moveMonth(1)}>
+          <Icon name="chevron-right" />
+        </button>
+      </header>
+      <div className="calendar__weekdays">
+        {weekdays.map((weekday) => (
+          <span className="calendar__weekday ft-14b" key={weekday}>
+            {weekday}
+          </span>
+        ))}
+      </div>
+      <div className="calendar__grid">
+        {dates.map((date, index) => {
+          const isSelected =
+            date !== null &&
+            date.getFullYear() === selectedDate.getFullYear() &&
+            date.getMonth() === selectedDate.getMonth() &&
+            date.getDate() === selectedDate.getDate();
+          const isDisabled = date === null || isPastDate(date, today);
+
+          return (
+            <button
+              className={[
+                "calendar__day",
+                isSelected && "calendar__day--selected",
+                date !== null && isPastDate(date, today) && "calendar__day--past",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              type="button"
+              disabled={isDisabled}
+              key={`${date?.toISOString() ?? "blank"}-${index}`}
+              onClick={() => date && handleDateSelect(date)}
+            >
+              {date?.getDate()}
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+interface ReservationCompleteModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+function ReservationCompleteModal({ isOpen, onClose }: ReservationCompleteModalProps) {
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) {
+    return null;
+  }
+
+  return (
+    <div className="reservation-complete-modal" role="presentation" onClick={onClose}>
+      <div
+        className="reservation-complete-modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="reservation-complete-title"
+        aria-describedby="reservation-complete-description"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="reservation-complete-modal__icon-wrap" aria-hidden="true">
+          <svg className="reservation-complete-modal__icon" viewBox="0 0 73 73" fill="none">
+            <path
+              d="M18 37.5 31.5 51 55 24.5"
+              stroke="currentColor"
+              strokeWidth="5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+
+        <div className="reservation-complete-modal__copy">
+          <h2 className="reservation-complete-modal__title ft-48b ink500" id="reservation-complete-title">
+            예약완료
+          </h2>
+          <p className="reservation-complete-modal__description ft-28r ink500" id="reservation-complete-description">
+            소중한 시간을 청연과 함께해 주셔서 감사합니다.
+          </p>
+        </div>
+
+        <button className="reservation-complete-modal__confirm ft-18r ink500" type="button" onClick={onClose}>
+          <span>예약 정보 확인하기</span>
+          <Icon className="reservation-complete-modal__confirm-icon" name="angle-right" aria-hidden="true" />
+        </button>
+      </div>
+    </div>
+  );
 }
 
 function ReservationPage() {

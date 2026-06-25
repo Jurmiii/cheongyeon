@@ -74,3 +74,925 @@
     max-width: 100%;
   }
 }
+
+/* Figma 1461:414 — 1920×940 */
+.season-scroll {
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: relative;
+  width: 120rem;
+  max-width: 100%;
+  height: 58.75rem;
+  overflow: hidden;
+  background: var(--han50);
+}
+
+/* 1. 배경 — season-class-2-bg */
+.season-scroll__bg {
+  position: absolute;
+  top: -84.75%;
+  left: -3.48%;
+  z-index: 0;
+  width: 188.58%;
+  height: 192.59%;
+  max-width: none;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* 2. 원형 stroke */
+.season-scroll__circle {
+  position: absolute;
+  top: 50%;
+  left: 53.1875rem;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 51.875rem;
+  height: 51.875rem;
+  border: 0.1875rem solid #c4ad98;
+  border-radius: 50%;
+  background: transparent;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+/* 궤도 트레일 — 원형 stroke와 동일 (#c4ad98) */
+.season-scroll__orbit-trail-svg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.season-scroll__orbit-trail {
+  fill: none;
+  stroke-width: 0.1875rem;
+  stroke-linecap: round;
+  opacity: 0;
+}
+
+/* 3. 궤도 찻잔 — subbg 아래(z-index 2) */
+.season-scroll__orbit {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* 4. season-class-2-subbg — Figma 1476:1236 Subtract (1083, 0) 837×940 */
+.season-scroll__subbg {
+  position: absolute;
+  top: 0;
+  left: 67.6875rem;
+  z-index: 3;
+  width: 52.3125rem;
+  height: 58.75rem;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.season-scroll__subbg-img {
+  position: absolute;
+  top: -2.66%;
+  left: -2.99%;
+  width: 105.98%;
+  height: 105.32%;
+  max-width: none;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* 5. 메인 장면 — subbg 위 */
+.season-scroll__scene {
+  position: absolute;
+  top: 50%;
+  left: 68.4375rem;
+  z-index: 4;
+  width: 36.625rem;
+  height: 36.625rem;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.season-scroll__scene-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(0.82);
+  transform-origin: center;
+  will-change: opacity, transform;
+}
+
+.season-scroll__scene-img.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* 6. 찻잔 — 계절별 크기, subbg 아래 */
+.season-scroll__cup {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 1.25rem rgb(0 0 0 / 25%);
+  opacity: 0;
+  visibility: hidden;
+  will-change: left, top, width, height, opacity;
+}
+
+.season-scroll__cup img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* 왼쪽 텍스트 — Figma (240, 82) w493 */
+.season-scroll__left {
+  position: absolute;
+  top: 5.125rem;
+  left: 15rem;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8125rem;
+  width: 30.8125rem;
+}
+
+.season-scroll__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.season-scroll__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.season-scroll__heading,
+.season-scroll__title,
+.season-scroll__lead {
+  margin: 0;
+}
+
+.season-scroll__desc {
+  margin: 0;
+}
+
+.season-scroll__desc-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.season-scroll__heading,
+.season-scroll__title {
+  letter-spacing: -0.02em;
+}
+
+.season-scroll__hanja {
+  width: 15.75rem;
+  height: 13.8125rem;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.season-scroll__detail {
+  display: flex;
+  flex-direction: column;
+  width: 22.6875rem;
+}
+
+.season-scroll__copy-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.season-scroll__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.season-scroll__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 0;
+}
+
+.season-scroll__meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.875rem;
+}
+
+.season-scroll__meta-row:nth-child(1) {
+  width: 18.125rem;
+}
+
+.season-scroll__meta-row:nth-child(2) {
+  width: 17.5625rem;
+}
+
+.season-scroll__meta-row--wide {
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.season-scroll__meta-row:nth-child(4) {
+  width: 17.125rem;
+}
+
+.season-scroll__meta-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9375rem;
+  margin: 0;
+  min-width: 6.875rem;
+}
+
+.season-scroll__meta-row dd {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.season-scroll__icon-svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+}
+
+.season-scroll__icon {
+  display: block;
+  width: 1.3125rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  background: currentColor;
+  mask: center / contain no-repeat;
+}
+
+.season-scroll__icon--tea {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 21 24' fill='none'%3E%3Cpath d='M3 9h11v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9Z' stroke='black' stroke-width='2'/%3E%3Cpath d='M14 11h2a3 3 0 0 1 0 6h-2' stroke='black' stroke-width='2'/%3E%3Cpath d='M6 5V3M10 5V2M14 5V3' stroke='black' stroke-width='2'/%3E%3C/svg%3E");
+}
+
+.season-scroll__icon--hand {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 21 24' fill='none'%3E%3Cpath d='M4 12 9 7l3 3 6-7M4 20h14' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+@media (max-width: 90rem) {
+  .season-scroll__left {
+    left: 1.5rem;
+  }
+}
+
+@media (max-width: 63.99rem) {
+  .season-scroll {
+    height: 100svh;
+    max-height: 58.75rem;
+  }
+
+  .season-scroll__circle,
+  .season-scroll__orbit-trail-svg,
+  .season-scroll__subbg,
+  .season-scroll__scene {
+    display: none;
+  }
+
+  .season-scroll__orbit {
+    transform: scale(0.55);
+    transform-origin: top right;
+  }
+
+  .season-scroll__left {
+    top: 3rem;
+    left: 1.5rem;
+    width: calc(100% - 3rem);
+  }
+
+  .season-scroll__detail {
+    width: 100%;
+  }
+
+  .season-scroll__desc-line {
+    white-space: normal;
+  }
+
+  .season-scroll__hanja {
+    width: 10rem;
+    height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .season-scroll__scene-img.is-active {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Figma 1463:681 — 1920×340 */
+.season-promo {
+  position: relative;
+  width: 120rem;
+  max-width: 100%;
+  height: 21.25rem;
+  overflow: hidden;
+}
+
+.season-promo__bg {
+  position: absolute;
+  top: -94.5%;
+  left: -0.01%;
+  z-index: 0;
+  width: 100%;
+  height: 282.35%;
+  max-width: none;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.season-promo__shade {
+  position: absolute;
+  top: 0.0625rem;
+  left: 0;
+  z-index: 1;
+  width: 46rem;
+  height: 21.1875rem;
+  background: linear-gradient(
+    89.38deg,
+    rgb(0 0 0 / 20%) 0.28%,
+    rgb(130 130 130 / 0%) 99.79%
+  );
+  pointer-events: none;
+}
+
+.season-promo__content {
+  position: absolute;
+  top: 5rem;
+  left: 15.0625rem;
+  z-index: 2;
+  width: 15.5rem;
+}
+
+.season-promo__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1.875rem;
+}
+
+.season-promo__title,
+.season-promo__subtitle,
+.season-promo__date {
+  margin: 0;
+}
+
+.season-promo__title {
+  letter-spacing: -0.02em;
+}
+
+.season-promo__date {
+  position: absolute;
+  top: 10.25rem;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+@media (max-width: 90rem) {
+  .season-promo__content {
+    left: 1.5rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  .season-promo {
+    height: auto;
+    min-height: 18rem;
+    padding-block: 3.5rem;
+  }
+
+  .season-promo__shade {
+    width: 100%;
+    height: 100%;
+    top: 0;
+  }
+
+  .season-promo__content {
+    position: relative;
+    top: auto;
+    left: 1.5rem;
+    width: calc(100% - 3rem);
+  }
+
+  .season-promo__date {
+    position: static;
+    transform: none;
+    margin-top: 1.5rem;
+  }
+}
+
+/* Figma 1463:541 — 1920×940 */
+.season-schedule {
+  width: 120rem;
+  max-width: 100%;
+  height: 58.75rem;
+  background: var(--han300);
+}
+
+.season-schedule__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding-top: 7.5rem;
+}
+
+.season-schedule__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 49.3125rem;
+  max-width: calc(100% - 3rem);
+  text-align: center;
+}
+
+.season-schedule__title,
+.season-schedule__desc {
+  margin: 0;
+}
+
+.season-schedule__title {
+  letter-spacing: -0.02em;
+}
+
+.season-schedule__month-wrap {
+  position: relative;
+}
+
+.season-schedule__month {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.75rem;
+}
+
+.season-schedule__month-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.season-schedule__month-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink500);
+  cursor: pointer;
+}
+
+.season-schedule__month-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.season-schedule__month-btn svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.season-schedule__month-label {
+  font-family: var(--font-body);
+  font-size: 1.448125rem;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--ink500);
+}
+
+.season-schedule__calendar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.season-schedule__calendar-btn[aria-expanded="true"] .season-schedule__calendar-icon {
+  color: var(--deep500);
+}
+
+.season-schedule__calendar-icon {
+  width: 1.6875rem;
+  height: 1.875rem;
+}
+
+.season-schedule__calendar-panel {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  left: 50%;
+  z-index: 10;
+  width: 22.5rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background: var(--han50);
+  box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 12%);
+  transform: translateX(-50%);
+}
+
+.season-schedule__calendar-weekdays,
+.season-schedule__calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.375rem;
+}
+
+.season-schedule__calendar-weekdays {
+  margin-bottom: 0.5rem;
+}
+
+.season-schedule__calendar-weekday {
+  text-align: center;
+}
+
+.season-schedule__calendar-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  min-height: 3rem;
+  padding: 0.25rem;
+  border: 0.0625rem solid transparent;
+  border-radius: 0.625rem;
+  background: transparent;
+  color: var(--ink300);
+  cursor: default;
+}
+
+.season-schedule__calendar-cell--blank {
+  visibility: hidden;
+}
+
+.season-schedule__calendar-cell--past {
+  opacity: 0.35;
+}
+
+.season-schedule__calendar-cell--available {
+  color: var(--ink500);
+  cursor: pointer;
+}
+
+.season-schedule__calendar-cell--available:hover {
+  border-color: var(--deep200);
+  background: var(--han100);
+}
+
+.season-schedule__calendar-cell--selected {
+  border-color: var(--deep500);
+  background: var(--han100);
+  color: var(--deep500);
+}
+
+.season-schedule__calendar-day {
+  line-height: 1;
+}
+
+.season-schedule__calendar-seats {
+  line-height: 1;
+}
+
+.season-schedule__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin: 0;
+  text-align: center;
+}
+
+.season-schedule__carousel {
+  position: relative;
+  width: 90rem;
+  max-width: 100%;
+  height: 35.25rem;
+  margin: 1.5rem auto 0;
+  overflow: hidden;
+}
+
+.season-schedule__track {
+  display: flex;
+  gap: 1.5rem;
+  height: 100%;
+  transition: transform 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+  will-change: transform;
+}
+
+.season-schedule__track--dragging {
+  transition: none;
+}
+
+.season-schedule__track--dragging .season-schedule__card {
+  transition: none;
+}
+
+.season-schedule__card {
+  position: relative;
+  flex: 0 0 13.75rem;
+  width: 13.75rem;
+  height: 24.9375rem;
+  margin-top: 4.3125rem;
+  transition: margin-top 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.season-schedule__card--active {
+  margin-top: 0;
+}
+
+.season-schedule__card-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 1.125rem 0 1.5rem;
+  border: 0;
+  border-radius: 1.5rem;
+  background: var(--han50);
+  box-shadow: none;
+  cursor: pointer;
+  overflow: visible;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.season-schedule__card--active .season-schedule__card-btn {
+  border: 0.125rem solid var(--deep500);
+}
+
+.season-schedule__card-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 3.875rem;
+  text-align: center;
+}
+
+.season-schedule__day {
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.season-schedule__weekday {
+  margin: 0;
+}
+
+.season-schedule__divider {
+  display: block;
+  width: 8.0375rem;
+  height: 1.64975rem;
+  margin-top: 0.3125rem;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.season-schedule__cup {
+  display: block;
+  flex-shrink: 0;
+  width: 8.4375rem;
+  height: 5.9375rem;
+  margin-top: 0.75rem;
+  object-fit: contain;
+  object-position: center bottom;
+  pointer-events: none;
+}
+
+.season-schedule__card--active .season-schedule__cup {
+  margin-top: 0.25rem;
+}
+
+.season-schedule__seats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+  margin-top: auto;
+  width: 7.4375rem;
+  overflow: visible;
+}
+
+.season-schedule__dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  gap: 0.5rem;
+  width: 100%;
+  overflow: visible;
+}
+
+.season-schedule__dot {
+  flex: 0 0 1.0860625rem;
+  width: 1.0860625rem;
+  height: 1.0860625rem;
+  min-width: 1.0860625rem;
+  min-height: 1.0860625rem;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.season-schedule__dot--filled {
+  background: var(--deep500);
+}
+
+.season-schedule__dot--empty {
+  border: 0.0625rem solid var(--deep200);
+  background: var(--han50);
+}
+
+.season-schedule__remain {
+  margin: 0;
+  text-align: center;
+}
+
+.season-schedule__scrollbar {
+  position: absolute;
+  bottom: 1.1875rem;
+  left: 50%;
+  width: 52rem;
+  max-width: calc(100% - 3rem);
+  height: 0.8125rem;
+  border-radius: 6.25rem;
+  background: var(--deep100);
+  transform: translateX(-50%);
+  cursor: pointer;
+  touch-action: none;
+}
+
+.season-schedule__scrollbar-thumb {
+  position: absolute;
+  top: 0;
+  width: 13.4375rem;
+  max-width: 32%;
+  height: 100%;
+  border-radius: 6.25rem;
+  background: var(--deep400);
+  transform: translateX(-50%);
+  transition: left 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+  pointer-events: none;
+}
+
+.season-schedule__scrollbar--dragging .season-schedule__scrollbar-thumb {
+  transition: none;
+}
+
+@media (max-width: 90rem) {
+  .season-schedule__carousel {
+    width: calc(100% - 3rem);
+  }
+}
+
+@media (max-width: 48rem) {
+  .season-schedule {
+    height: auto;
+    padding-bottom: 3rem;
+  }
+
+  .season-schedule__header {
+    padding-top: 4rem;
+  }
+
+  .season-schedule__intro {
+    width: 100%;
+  }
+
+  .season-schedule__carousel {
+    height: 28rem;
+    margin-top: 2rem;
+  }
+
+  .season-schedule__card {
+    flex-basis: 11.5rem;
+    width: 11.5rem;
+    height: 22rem;
+  }
+
+  .season-schedule__cup {
+    width: 7rem;
+    height: 4.75rem;
+  }
+}
+
+/* Figma 1463:688 — 1920×920 */
+.season-gallery {
+  width: 120rem;
+  max-width: 100%;
+  height: 57.5rem;
+  background: var(--han200);
+}
+
+.season-gallery__title {
+  margin: 0;
+  padding-top: 5.625rem;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+.season-gallery__grid {
+  position: relative;
+  width: 89.875rem;
+  height: 35.25rem;
+  margin: 2.5rem auto 0;
+}
+
+.season-gallery__item {
+  position: absolute;
+  margin: 0;
+  overflow: hidden;
+}
+
+.season-gallery__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center;
+}
+
+.season-gallery__item:first-child .season-gallery__img {
+  position: absolute;
+}
+
+@media (max-width: 90rem) {
+  .season-gallery__grid {
+    width: calc(100% - 3rem);
+    height: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-bottom: 3rem;
+  }
+
+  .season-gallery__item {
+    position: relative;
+    top: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 4 / 3;
+  }
+
+  .season-gallery__item:first-child {
+    grid-column: span 2;
+    aspect-ratio: 16 / 10;
+  }
+
+  .season-gallery__item:last-child {
+    aspect-ratio: 3 / 4;
+  }
+
+  .season-gallery__img {
+    position: static !important;
+    width: 100% !important;
+    height: 100% !important;
+    left: auto !important;
+    top: auto !important;
+  }
+}
+
+@media (max-width: 48rem) {
+  .season-gallery {
+    height: auto;
+  }
+
+  .season-gallery__title {
+    padding-top: 4rem;
+  }
+
+  .season-gallery__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .season-gallery__item:first-child {
+    grid-column: span 1;
+  }
+}

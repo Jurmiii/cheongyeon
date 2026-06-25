@@ -1,0 +1,575 @@
+.event-page {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.event-page__header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+}
+
+/* KV — 배경: event-kv-bg, 시즌 클래스 KV 참고 */
+.event-kv {
+  position: relative;
+  width: 120rem;
+  max-width: 100%;
+  height: 46.25rem;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.event-kv__grid {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 90rem;
+  height: 100%;
+  margin-inline: auto;
+}
+
+.event-kv__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.event-kv__head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.event-kv__title {
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.event-kv__symbol {
+  display: block;
+  width: auto;
+  height: 1.0625rem;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.event-kv__description {
+  max-width: 30rem;
+  margin: 0;
+}
+
+/* 본문 — Figma 1494:359 */
+.event-content {
+  width: 120rem;
+  max-width: 100%;
+  background: var(--han50);
+}
+
+.event-content__grid {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+  padding: 7.5rem 0 9rem;
+}
+
+/* 필터 탭 */
+.event-content__filters {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 3rem;
+}
+
+.event-content__filter {
+  width: 13.75rem;
+  max-width: 32%;
+  padding: 0.625rem;
+  border: 0.0625rem solid var(--deep500);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--ink500);
+  line-height: 2.5rem;
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.event-content__filter--active {
+  background: var(--deep500);
+  color: var(--white);
+}
+
+/* 카드 그리드 */
+.event-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.event-list__item {
+  display: flex;
+}
+
+/* 카드 — 배경 이미지 위 텍스트 */
+.event-card {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 20.0625rem;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  isolation: isolate;
+}
+
+.event-card__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.5s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.event-card:hover .event-card__bg {
+  transform: scale(1.05);
+}
+
+.event-card__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    105deg,
+    rgb(251 248 242 / 78%) 0%,
+    rgb(251 248 242 / 45%) 45%,
+    rgb(251 248 242 / 0%) 100%
+  );
+  pointer-events: none;
+}
+
+.event-card--dark .event-card__scrim {
+  background: linear-gradient(
+    105deg,
+    rgb(20 24 20 / 72%) 0%,
+    rgb(20 24 20 / 38%) 45%,
+    rgb(20 24 20 / 0%) 100%
+  );
+}
+
+.event-card__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: 1.5rem 2.5rem;
+}
+
+.event-card__top {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  align-items: flex-start;
+}
+
+.event-card__badge.cy-badge {
+  padding: 0.1875rem 0.625rem;
+  border-radius: 0.25rem;
+}
+
+.event-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  color: var(--ink500);
+}
+
+.event-card--dark .event-card__text,
+.event-card--dark .event-card__subtitle,
+.event-card--dark .event-card__title,
+.event-card--dark .event-card__description,
+.event-card--dark .event-card__date {
+  color: var(--white);
+}
+
+.event-card__heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.event-card__subtitle,
+.event-card__title,
+.event-card__description,
+.event-card__date {
+  margin: 0;
+}
+
+.event-card__title {
+  line-height: 2.25rem;
+}
+
+.event-card__description {
+  line-height: 1.625rem;
+}
+
+.event-card__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  align-self: flex-start;
+  height: 3rem;
+  padding: 0 1.25rem;
+  border: 0.0625rem solid var(--ink500);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--ink500);
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.event-card__more-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.event-card__more:hover {
+  background: var(--deep500);
+  border-color: var(--deep500);
+  color: var(--white);
+}
+
+.event-card--dark .event-card__more {
+  border-color: var(--white);
+  color: var(--white);
+}
+
+.event-card--dark .event-card__more:hover {
+  background: var(--white);
+  border-color: var(--white);
+  color: var(--ink500);
+}
+
+/* 페이지네이션 — 공지사항과 동일 */
+.event-content__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.3125rem;
+  width: 100%;
+  margin-top: 3rem;
+}
+
+.event-content__page-arrow {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink500);
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.event-content__page-arrow:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.event-content__page-list {
+  display: flex;
+  align-items: center;
+  gap: 1.5625rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.event-content__page-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.125rem;
+  height: 3.125rem;
+  padding: 0.625rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--ink500);
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.event-content__page-number--active {
+  color: var(--han50);
+  background: var(--deep500);
+}
+
+@media (max-width: 90rem) {
+  .event-kv__grid,
+  .event-content__grid {
+    padding-inline: 1.5rem;
+  }
+
+  .event-content__grid {
+    padding-top: 5rem;
+    padding-bottom: 6rem;
+  }
+}
+
+@media (max-width: 64rem) {
+  .event-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .event-card__content {
+    padding: 1.5rem 1.75rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  .event-kv {
+    height: 36rem;
+  }
+
+  .event-kv__description {
+    max-width: 100%;
+  }
+
+  .event-list {
+    grid-template-columns: 1fr;
+  }
+
+  .event-content__filter {
+    width: auto;
+    flex: 1 1 0;
+    font-size: 1.25rem;
+    line-height: 2rem;
+  }
+}
+.event-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgb(0 0 0 / 45%);
+  animation: event-modal-fade 0.2s ease;
+}
+
+@keyframes event-modal-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.event-modal__panel {
+  display: flex;
+  box-sizing: border-box;
+  width: 29rem;
+  max-width: 100%;
+  max-height: 90vh;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  background: var(--han50);
+  color: var(--ink500);
+  text-align: left;
+  overflow-y: auto;
+  animation: event-modal-pop 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes event-modal-pop {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.event-modal__header {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.event-modal__badge.cy-badge {
+  height: 2.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 2.25rem;
+}
+
+.event-modal__subtitle {
+  margin: 1rem 0 0;
+}
+
+.event-modal__title {
+  margin: 1rem 0 0;
+  letter-spacing: -0.01em;
+}
+
+.event-modal__description {
+  margin: 1rem 0 0;
+}
+
+.event-modal__period {
+  margin: 1.3125rem 0 0;
+}
+
+.event-modal__info-box {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 0.0625rem solid var(--han300);
+  background: transparent;
+  text-align: left;
+}
+
+.event-modal__info-block {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.event-modal__info-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 1rem;
+}
+
+.event-modal__icon-circle {
+  display: flex;
+  width: 2.8125rem;
+  height: 2.8125rem;
+  flex: 0 0 2.8125rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full, 999px);
+  background: var(--han300);
+  color: var(--ink500);
+}
+
+.event-modal__info-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.event-modal__info-copy {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.event-modal__info-title {
+  margin: 0;
+}
+
+.event-modal__info-content {
+  margin: 0;
+  line-height: 1.375rem;
+}
+
+.event-modal__inline-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink500);
+  cursor: pointer;
+}
+
+.event-modal__inline-link-icon {
+  width: 1.3125rem;
+  height: 1.3125rem;
+}
+
+.event-modal__divider {
+  display: block;
+  width: 100%;
+  height: 0.0625rem;
+  flex: 0 0 auto;
+  margin: 1rem 0;
+  background: var(--han300);
+}
+
+.event-modal__close {
+  display: flex;
+  width: 100%;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  border: 0.0625rem solid var(--ink500);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--ink500);
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.event-modal__close:hover {
+  background: var(--deep500);
+  border-color: var(--deep500);
+  color: var(--han50);
+}
+
+@media (max-width: 30rem) {
+  .event-modal {
+    padding: 1rem;
+  }
+
+  .event-modal__panel {
+    width: 100%;
+    padding: 1rem;
+  }
+}

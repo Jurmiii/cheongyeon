@@ -5,8 +5,8 @@ import SeasonClassPage from './pages/Class/SeasonClassPage'
 import ComponentPreview from './pages/ComponentPreview'
 import MainPage from './pages/MainPage'
 import ReservationPage from './pages/Reservation/ReservationPage'
-import NoticeDetailPage from './pages/Notice/NoticeDetailPage'
-import NoticePage from './pages/Notice/NoticePage'
+import NoticePage, { NoticeDetailPage } from './pages/Notice/NoticePage'
+import EventPage from './pages/Event/EventPage'
 import LoginPage from './pages/Login/LoginPage'
 import BrandStoryPage from './pages/BrandStory/BrandStoryPage'
 import SpacePage from './pages/Space/SpacePage'
@@ -29,6 +29,8 @@ function App() {
           <Route path="/class/season" element={<SeasonClassPage />} />
           <Route path="/class/season-class" element={<SeasonClassPage />} />
           <Route path="/reservation" element={<ReservationPage />} />
+          <Route path="/event" element={<EventPage />} />
+          <Route path="/event/ongoing" element={<EventPage />} />
           <Route path="/event/notice" element={<NoticePage />} />
           <Route path="/event/notice/:noticeId" element={<NoticeDetailPage />} />
           <Route path="/notice" element={<NoticePage />} />

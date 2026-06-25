@@ -60,7 +60,7 @@ const locationStores = [
 
 function LocationPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedStoreId, setSelectedStoreId] = useState(locationStores[0].id);
+  const [selectedStoreId, setSelectedStoreId] = useState<number>(locationStores[0].id);
 
   const filteredStores = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();

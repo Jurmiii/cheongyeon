@@ -1,6 +1,8 @@
-import { startOfDay } from "../pages/Reservation/ReservationCalendar";
-
 const WEEKDAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"] as const;
+
+function startOfDay(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
 
 export function formatReservationDate(date: string) {
   const parsed = startOfDay(new Date(`${date}T00:00:00`));
