@@ -213,7 +213,7 @@ function TeaStorePage() {
                     src={season.image}
                     alt={season.description.split("\n")[0]}
                   />
-                  <p className="tea-store-season__description ft-16r white">{season.description}</p>
+                  <p className="tea-store-season__description ft-22r white">{season.description}</p>
                 </article>
               ))}
             </div>
