@@ -1,4 +1,9 @@
-import sec8Image1 from "../../assets/images/06tea-store/sec8-1.webp";import sec8Image2 from "../../assets/images/06tea-store/sec8-2.webp";
+import sec3Image1 from "../../assets/images/06tea-store/sec3-1.webp";
+import sec3Image2 from "../../assets/images/06tea-store/sec3-2.webp";
+import sec3Image3 from "../../assets/images/06tea-store/sec3-3.webp";
+import sec3Image4 from "../../assets/images/06tea-store/sec3-4.webp";
+import sec8Image1 from "../../assets/images/06tea-store/sec8-1.webp";
+import sec8Image2 from "../../assets/images/06tea-store/sec8-2.webp";
 import sec8Image3 from "../../assets/images/06tea-store/sec8-3.webp";
 import sec8Image4 from "../../assets/images/06tea-store/sec8-4.webp";
 import greenTeaLeaf from "../../assets/images/06tea-store/g-tea.webp";
@@ -26,6 +31,40 @@ export type TeaStoreSeason = {
   image: string;
   description: string;
 };
+
+export type TeaStoreDadoItem = {
+  id: string;
+  image: string;
+  title: string;
+  description: string;
+};
+
+export const teaStoreDadoItems: TeaStoreDadoItem[] = [
+  {
+    id: "mind",
+    image: sec3Image1,
+    title: "마음의 수련",
+    description: "차를 마주하며 마음을 차분히 다스립니다.",
+  },
+  {
+    id: "care",
+    image: sec3Image2,
+    title: "타인에 대한 배려",
+    description: "상대방을 존중하고 정성을 다해 대접합니다.",
+  },
+  {
+    id: "nature",
+    image: sec3Image3,
+    title: "자연과의 조화",
+    description: "자연의 이치를 이해하고 그 순리대로 살아갑니다.",
+  },
+  {
+    id: "daily",
+    image: sec3Image4,
+    title: "일상의 수행",
+    description: "특별한 순간이 아닌, 매일의 삶 속에서 실천합니다.",
+  },
+];
 
 export const teaStoreSeasons: TeaStoreSeason[] = [
   {
