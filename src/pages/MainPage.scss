@@ -144,7 +144,7 @@
   position: relative;
   width: 120rem;
   max-width: 100%;
-  height: 179.8125rem;
+  height: 236.1875rem;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -221,8 +221,8 @@
     transform: scale(0.985);
     transform-origin: 50% 50%;
     transition:
-      opacity 1.4s ease,
-      transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity 3s ease,
+      transform 3s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   &.is-active {
@@ -258,17 +258,17 @@
 
 .main-sec3__spring-line {
   position: absolute;
-  top: 13.38825rem;
-  right: 43.8795rem;
+  top: 13.1875rem;
+  right: 43.875rem;
   z-index: 1;
   display: block;
-  width: 23.375rem;
-  height: 32.6875rem;
+  width: 24.1875rem;
+  height: 51.65rem;
 }
 
 .main-sec3__summer {
   position: absolute;
-  top: 63.375rem;
+  top: 82.1875rem;
   left: 6.5rem;
   display: flex;
   flex-direction: column;
@@ -324,17 +324,17 @@
 
 .main-sec3__summer-line {
   position: absolute;
-  top: 16.2rem;
-  left: 39.9rem;
+  top: 15.775rem;
+  left: 39.84375rem;
   z-index: 1;
   display: block;
-  width: 23.6875rem;
-  height: 31.4375rem;
+  width: 42.3125rem;
+  height: 25.1875rem;
 }
 
 .main-sec3__fall {
   position: absolute;
-  top: 96.6875rem;
+  top: 134.25rem;
   right: 8.8125rem;
   display: flex;
   flex-direction: column;
@@ -342,6 +342,8 @@
 }
 
 .main-sec3__fall-text {
+  position: relative;
+  z-index: 4;
   display: flex;
   width: 40.375rem;
   flex-direction: column;
@@ -390,17 +392,17 @@
 
 .main-sec3__fall-line {
   position: absolute;
-  top: 13.1246rem;
-  right: 41.1526rem;
+  top: 13.125rem;
+  right: 41.21875rem;
   z-index: 3;
   display: block;
-  width: 20.875rem;
-  height: 32rem;
+  width: 20.25rem;
+  height: 50.6125rem;
 }
 
 .main-sec3__winter {
   position: absolute;
-  top: 125.9375rem;
+  top: 182.3125rem;
   left: 7.0625rem;
   display: flex;
   flex-direction: column;
@@ -456,7 +458,7 @@
 
 .main-sec3__line4 {
   position: absolute;
-  top: 155.7rem;
+  top: 212.075rem;
   left: 50.9375rem;
   z-index: 1;
   display: block;
@@ -730,7 +732,7 @@
   height: 100%;
   border-radius: 6.25rem;
   background: var(--han500);
-  transition: transform 0.08s linear;
+  transition: none;
 }
 
 .main-sec6 {
