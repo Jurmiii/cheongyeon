@@ -512,7 +512,7 @@ function NoticePage() {
 
                   >
 
-                    <span className="notice-faq__mark notice-faq__mark--question ft-22b ink500">Q</span>
+                    <span className="notice-faq__mark notice-faq__mark--question ft-28b ink500">Q</span>
 
                     <span className="notice-faq__question-text ft-28b ink500">{faq.question}</span>
 

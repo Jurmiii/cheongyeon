@@ -175,14 +175,23 @@
   top: 1rem;
   right: 1rem;
   z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 6.125rem;
-  height: 2rem;
-  padding: 0.625rem;
-  border-radius: var(--radius-full);
+}
+
+/* 계절 클래스 — 메인 사계절 호버 색상 (.cy-badge 보다 높은 우선순위) */
+.cy-badge.reservation-class-card__badge--spring {
   background: var(--plum500);
+}
+
+.cy-badge.reservation-class-card__badge--summer {
+  background: var(--deep400);
+}
+
+.cy-badge.reservation-class-card__badge--autumn {
+  background: var(--fall);
+}
+
+.cy-badge.reservation-class-card__badge--winter {
+  background: var(--winter);
 }
 
 .reservation-class-card__body {
@@ -299,7 +308,16 @@
   min-width: 0;
 }
 
+.reservation-schedule__calendar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
 .reservation-schedule__calendar {
+  width: 100%;
+  max-width: 44.25rem;
   margin-top: 1.5rem;
 
   .calendar {
@@ -333,11 +351,23 @@
   gap: 3rem;
 }
 
+.reservation-schedule__times,
+.reservation-schedule__guests {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+
 .reservation-schedule__time-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1.5rem;
+  width: 100%;
+  max-width: 44.25rem;
   margin-top: 1.5rem;
+  margin-inline: auto;
 }
 
 .reservation-schedule__time {
@@ -371,8 +401,11 @@
   align-items: center;
   justify-content: center;
   gap: 4.125rem;
+  width: 100%;
+  max-width: 44.25rem;
   height: 2.875rem;
   margin-top: 1.5rem;
+  margin-inline: auto;
   padding: 0.625rem;
   border: calc(var(--space-1) / 8) solid var(--han300);
   border-radius: 0.5rem;
@@ -392,6 +425,11 @@
   font-size: 1.25rem;
   line-height: 1;
   cursor: pointer;
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
 }
 
 .reservation-schedule__counter-value {
@@ -401,6 +439,7 @@
 
 .reservation-schedule__guest-note {
   margin: 1.5rem 0 0;
+  text-align: center;
 }
 
 .reservation-request {
@@ -640,6 +679,11 @@
   color: var(--han300);
   border-color: var(--han300);
   background: var(--han100);
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
 }
 
 .reservation-payment__action--submit.cy-button {

@@ -21,133 +21,71 @@ function ClassIntroductionScrollSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const previousIndexRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
 
+  // 핀 + 한 계절씩 스냅 (메인 사계절 차와 동일 방식 — 네이티브 스크롤이라 절대 갇히지 않음)
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
     const section = sectionRef.current;
-
     if (!section) {
       return;
     }
 
+    const slideCount = classIntroductionSlides.length;
     const images = imageRefs.current.filter(Boolean) as HTMLImageElement[];
     const panels = panelRefs.current.filter(Boolean) as HTMLDivElement[];
 
-    if (images.length === 0 || panels.length === 0) {
+    if (images.length === 0) {
       return;
     }
 
-    const refreshScroll = () => {
-      ScrollTrigger.refresh();
-    };
+    const getStableIndex = (progress: number) =>
+      Math.min(slideCount - 1, Math.max(0, Math.round(progress * (slideCount - 1))));
+
+    gsap.set(images, { xPercent: 100, autoAlpha: 0 });
+    gsap.set(images[0], { xPercent: 0, autoAlpha: 1 });
+    gsap.set(panels, { autoAlpha: 0, y: 12 });
+    gsap.set(panels[0], { autoAlpha: 1, y: 0 });
+    previousIndexRef.current = 0;
+
+    let currentIndex = 0;
+
+    const refreshScroll = () => ScrollTrigger.refresh();
 
     const context = gsap.context(() => {
-      const slideCount = classIntroductionSlides.length;
-      const labelProgress = Array.from({ length: slideCount }, (_, index) => index / (slideCount - 1));
-      const getNearestIndex = (progress: number) =>
-        labelProgress.reduce(
-          (nearestIndex, labelProgressValue, index) =>
-            Math.abs(progress - labelProgressValue) < Math.abs(progress - labelProgress[nearestIndex])
-              ? index
-              : nearestIndex,
-          0,
-        );
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top top",
+        end: () => `+=${window.innerHeight * (slideCount - 1)}`,
+        pin: true,
+        pinSpacing: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        snap: {
+          snapTo: (progress) => getStableIndex(progress) / (slideCount - 1),
+          delay: 0.08,
+          duration: { min: 0.28, max: 0.45 },
+          ease: "power3.out",
+          inertia: false,
+        },
+        onUpdate: (self) => {
+          const nextIndex = getStableIndex(self.progress);
+          if (nextIndex === currentIndex) {
+            return;
+          }
 
-      const holdDuration = 0.2;
-      const transitionDuration = 0.42;
-
-      gsap.set(images, { xPercent: 100, autoAlpha: 0 });
-      gsap.set(images[0], { xPercent: 0, autoAlpha: 1 });
-      gsap.set(panels, { autoAlpha: 0, y: 12 });
-      gsap.set(panels[0], { autoAlpha: 1, y: 0 });
-
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: () => `+=${Math.max(Math.round(window.innerHeight * 2.75), 2400)}`,
-          scrub: 0.08,
-          pin: true,
-          pinSpacing: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          snap: {
-            snapTo: "labelsDirectional",
-            delay: 0,
-            duration: { min: 0.08, max: 0.16 },
-            ease: "power4.out",
-            inertia: false,
-          },
-          onUpdate: (self) => {
-            const nextIndex = getNearestIndex(self.progress);
-            setActiveIndex((currentIndex) => (currentIndex === nextIndex ? currentIndex : nextIndex));
-          },
+          currentIndex = nextIndex;
+          setActiveIndex(nextIndex);
         },
       });
-
-      timeline.addLabel("slide-0").to({}, { duration: holdDuration });
-
-      for (let index = 1; index < slideCount; index += 1) {
-        const previousImage = images[index - 1];
-        const nextImage = images[index];
-        const previousPanel = panels[index - 1];
-        const nextPanel = panels[index];
-
-        timeline
-          .to(
-            previousImage,
-            {
-              xPercent: -100,
-              autoAlpha: 0,
-              ease: "power2.inOut",
-              duration: transitionDuration,
-            },
-            `slide-${index - 1}-transition`,
-          )
-          .fromTo(
-            nextImage,
-            { xPercent: 100, autoAlpha: 1 },
-            {
-              xPercent: 0,
-              autoAlpha: 1,
-              ease: "power2.inOut",
-              duration: transitionDuration,
-            },
-            "<",
-          )
-          .to(
-            previousPanel,
-            {
-              autoAlpha: 0,
-              y: -12,
-              ease: "power2.inOut",
-              duration: transitionDuration * 0.7,
-            },
-            "<",
-          )
-          .fromTo(
-            nextPanel,
-            { autoAlpha: 0, y: 12 },
-            {
-              autoAlpha: 1,
-              y: 0,
-              ease: "power2.inOut",
-              duration: transitionDuration * 0.7,
-            },
-            "<0.08",
-          )
-          .addLabel(`slide-${index}`)
-          .to({}, { duration: holdDuration });
-      }
     }, sectionRef);
 
     images.forEach((image) => {
       if (image.complete) {
         return;
       }
-
       image.addEventListener("load", refreshScroll, { once: true });
     });
 
@@ -161,6 +99,46 @@ function ClassIntroductionScrollSection() {
       context.revert();
     };
   }, []);
+
+  // activeIndex 변경 시 한 장씩 부드럽게 전환
+  useEffect(() => {
+    const images = imageRefs.current.filter(Boolean) as HTMLImageElement[];
+    const panels = panelRefs.current.filter(Boolean) as HTMLDivElement[];
+    const previousIndex = previousIndexRef.current;
+
+    if (previousIndex === activeIndex || !images[activeIndex]) {
+      return;
+    }
+
+    const direction = activeIndex > previousIndex ? 1 : -1;
+
+    gsap.to(images[previousIndex], {
+      xPercent: -100 * direction,
+      autoAlpha: 0,
+      duration: 0.85,
+      ease: "power3.out",
+      overwrite: "auto",
+    });
+    gsap.fromTo(
+      images[activeIndex],
+      { xPercent: 100 * direction, autoAlpha: 1 },
+      { xPercent: 0, autoAlpha: 1, duration: 0.85, ease: "power3.out", overwrite: "auto" },
+    );
+    gsap.to(panels[previousIndex], {
+      autoAlpha: 0,
+      y: -12 * direction,
+      duration: 0.55,
+      ease: "power3.out",
+      overwrite: "auto",
+    });
+    gsap.fromTo(
+      panels[activeIndex],
+      { autoAlpha: 0, y: 12 * direction },
+      { autoAlpha: 1, y: 0, duration: 0.55, ease: "power3.out", overwrite: "auto" },
+    );
+
+    previousIndexRef.current = activeIndex;
+  }, [activeIndex]);
 
   return (
     <section className="class-intro-scroll" ref={sectionRef} aria-label="클래스 유형">
@@ -222,8 +200,26 @@ function ClassIntroductionScrollSection() {
 }
 
 function ClassIntroductionCarouselSection() {
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const activeIndex = hoveredIndex ?? 0;
+
+  useEffect(() => {
+    videoRefs.current.forEach((video, index) => {
+      if (!video) {
+        return;
+      }
+
+      if (index === activeIndex) {
+        video.currentTime = 0;
+        void video.play().catch(() => undefined);
+        return;
+      }
+
+      video.pause();
+      video.currentTime = 0;
+    });
+  }, [activeIndex]);
 
   return (
     <section className="class-intro-carousel" aria-label="차를 경험하는 시간">
@@ -254,7 +250,22 @@ function ClassIntroductionCarouselSection() {
                 onClick={() => setHoveredIndex(index)}
               >
                 <div className="class-intro-carousel__media">
-                  <div className="class-intro-carousel__video-slot" aria-hidden="true" />
+                  {item.video ? (
+                    <video
+                      ref={(element) => {
+                        videoRefs.current[index] = element;
+                      }}
+                      className="class-intro-carousel__video"
+                      src={item.video}
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <div className="class-intro-carousel__video-slot" aria-hidden="true" />
+                  )}
                 </div>
 
                 <div className="class-intro-carousel__content">
@@ -355,6 +366,16 @@ function ClassIntroductionReviewSection() {
     },
     [activeIndex, startFadeIn],
   );
+
+  const reviewCount = classIntroductionReviews.length;
+
+  const handlePrevReview = useCallback(() => {
+    goToSlide((activeIndex - 1 + reviewCount) % reviewCount);
+  }, [activeIndex, goToSlide, reviewCount]);
+
+  const handleNextReview = useCallback(() => {
+    goToSlide((activeIndex + 1) % reviewCount);
+  }, [activeIndex, goToSlide, reviewCount]);
 
   useEffect(() => {
     if (panelState !== "fading") {
@@ -465,12 +486,7 @@ function ClassIntroductionReviewSection() {
             </figure>
           </div>
 
-          <div
-            className={["class-intro-review__content", "class-intro-review__panel", panelClass]
-              .filter(Boolean)
-              .join(" ")}
-            aria-live="off"
-          >
+          <div className="class-intro-review__content" aria-live="off">
             <div className="class-intro-review__quote-block">
               <blockquote className="class-intro-review__quote-head">
                 <h2 className="class-intro-review__headline ft-36b deep500">
@@ -503,23 +519,43 @@ function ClassIntroductionReviewSection() {
             <div className="class-intro-review__meta">
               <p className="class-intro-review__date ft-18b deep400">{review.date}</p>
 
-              <div className="class-intro-review__pagination" role="tablist" aria-label="후기 슬라이드">
-                {classIntroductionReviews.map((item, index) => (
+              <div className="class-intro-review__nav" aria-label="후기 탐색">
+                <div className="class-intro-review__progress">
+                  <span className="class-intro-review__count" aria-live="polite">
+                    <span className="class-intro-review__count-current">
+                      {String(activeIndex + 1).padStart(2, "0")}
+                    </span>
+                    <span className="class-intro-review__count-sep">/</span>
+                    <span className="class-intro-review__count-total">
+                      {String(reviewCount).padStart(2, "0")}
+                    </span>
+                  </span>
+                  <span className="class-intro-review__progress-track" aria-hidden="true">
+                    <span
+                      className="class-intro-review__progress-fill"
+                      style={{ width: `${((activeIndex + 1) / reviewCount) * 100}%` }}
+                    />
+                  </span>
+                </div>
+
+                <div className="class-intro-review__arrows">
                   <button
-                    key={item.id}
                     type="button"
-                    role="tab"
-                    className={[
-                      "class-intro-review__dot",
-                      index === activeIndex && "class-intro-review__dot--active",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                    aria-label={`후기 ${index + 1}`}
-                    aria-selected={index === activeIndex}
-                    onClick={() => goToSlide(index)}
-                  />
-                ))}
+                    className="class-intro-review__arrow"
+                    aria-label="이전 후기"
+                    onClick={handlePrevReview}
+                  >
+                    <span aria-hidden="true">&#8592;</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="class-intro-review__arrow"
+                    aria-label="다음 후기"
+                    onClick={handleNextReview}
+                  >
+                    <span aria-hidden="true">&#8594;</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -562,7 +598,9 @@ function ClassIntroductionPage() {
             />
           </div>
           <div className="class-intro-about__content">
-            <h2 className="class-intro-about__title ft-48b ink500">차를 더 가까이 만나는 첫 수업</h2>
+            <h2 className="class-intro-about__title ft-48b ink500">
+              차를 더 가까이 만나는 첫 수업
+            </h2>
             <div className="class-intro-about__description ft-28r ink500">
               <p className="class-intro-about__description-line">어렵게 느껴졌던 다도를 일상 속에서 </p>
               <p className="class-intro-about__description-line">

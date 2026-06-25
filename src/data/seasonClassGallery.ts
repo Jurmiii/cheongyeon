@@ -38,7 +38,6 @@ export const seasonClassGalleryItems: SeasonClassGalleryItem[] = [
     image: seasonClassGallery1,
     alt: "계절별 차 재료",
     frame: { leftPx: 241, topPx: 234, widthPx: 462, heightPx: 564 },
-    crop: { widthPercent: 100, heightPercent: 145.55, leftPercent: -0.02, topPercent: -37.95 },
   },
   {
     id: "gallery-summer",

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { Button, Footer, Header, Icon, Input } from "../../components/common";
+import { Badge, Button, Footer, Header, Icon, Input } from "../../components/common";
 import {
   RESERVATION_CLASSES_PER_PAGE,
   cardCompanies,
@@ -21,6 +22,23 @@ type PaymentMethod = "card" | "easy";
 type PaymentDropdown = "cardCompany" | "installment" | null;
 
 const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
+
+/** 계절 클래스(id 1~4)는 메인 사계절 호버 색상, 나머지는 "나만의 차" 색(--deep500) */
+const CLASS_BADGE_SEASON_MODIFIER: Record<number, string> = {
+  1: "reservation-class-card__badge--spring",
+  2: "reservation-class-card__badge--summer",
+  3: "reservation-class-card__badge--autumn",
+  4: "reservation-class-card__badge--winter",
+};
+
+function getClassBadgeModifier(classId: number) {
+  return CLASS_BADGE_SEASON_MODIFIER[classId] ?? "";
+}
+
+function getMaxGuestCount(classId: number) {
+  const classItem = reservationClasses.find((item) => item.id === classId);
+  return classItem?.maxGuests ?? 4;
+}
 
 function normalizePhone(value: string) {
   return value.replace(/\D/g, "");
@@ -158,6 +176,8 @@ interface ReservationCompleteModalProps {
 }
 
 function ReservationCompleteModal({ isOpen, onClose }: ReservationCompleteModalProps) {
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (!isOpen) {
       return;
@@ -214,7 +234,14 @@ function ReservationCompleteModal({ isOpen, onClose }: ReservationCompleteModalP
           </p>
         </div>
 
-        <button className="reservation-complete-modal__confirm ft-18r ink500" type="button" onClick={onClose}>
+        <button
+          className="reservation-complete-modal__confirm ft-18r ink500"
+          type="button"
+          onClick={() => {
+            onClose();
+            navigate("/mypage");
+          }}
+        >
           <span>예약 정보 확인하기</span>
           <Icon className="reservation-complete-modal__confirm-icon" name="angle-right" aria-hidden="true" />
         </button>
@@ -249,12 +276,14 @@ function ReservationPage() {
     return reservationClasses.slice(startIndex, startIndex + RESERVATION_CLASSES_PER_PAGE);
   }, [classPage]);
 
+  const maxGuestCount = useMemo(() => getMaxGuestCount(selectedClassId), [selectedClassId]);
+
   const handleGuestDecrease = () => {
     setGuestCount((count) => Math.max(1, count - 1));
   };
 
   const handleGuestIncrease = () => {
-    setGuestCount((count) => Math.min(4, count + 1));
+    setGuestCount((count) => Math.min(maxGuestCount, count + 1));
   };
 
   const handlePaymentDropdownToggle = (dropdown: PaymentDropdown) => {
@@ -301,8 +330,8 @@ function ReservationPage() {
       errors.push("시간을 선택해주세요.");
     }
 
-    if (guestCount < 1 || guestCount > 4) {
-      errors.push("인원은 1명에서 4명 사이로 선택해주세요.");
+    if (guestCount < 1 || guestCount > maxGuestCount) {
+      errors.push(`인원은 1명에서 ${maxGuestCount}명 사이로 선택해주세요.`);
     }
 
     if (paymentMethod === "card" && !selectedCardCompany) {
@@ -426,7 +455,14 @@ function ReservationPage() {
                       .join(" ")}
                   >
                     <img className="reservation-class-card__image" src={classItem.image} alt="" />
-                    <span className="reservation-class-card__badge ft-14b han200">{classItem.badge}</span>
+                    <Badge
+                      className={["reservation-class-card__badge", getClassBadgeModifier(classItem.id)]
+                        .filter(Boolean)
+                        .join(" ")}
+                      variant="confirmed"
+                    >
+                      {classItem.badge}
+                    </Badge>
                   </div>
                   <div className="reservation-class-card__body">
                     <h3 className="reservation-class-card__title ft-22b ink400">{classItem.title}</h3>
@@ -460,7 +496,9 @@ function ReservationPage() {
                       type="button"
                       aria-pressed={isSelected}
                       onClick={() => {
+                        const nextMaxGuestCount = getMaxGuestCount(classItem.id);
                         setSelectedClassId(classItem.id);
+                        setGuestCount((count) => Math.min(count, nextMaxGuestCount));
                         setValidationErrors([]);
                       }}
                     >
@@ -555,13 +593,14 @@ function ReservationPage() {
                   className="reservation-schedule__counter-btn"
                   type="button"
                   aria-label="인원 증가"
+                  disabled={guestCount >= maxGuestCount}
                   onClick={handleGuestIncrease}
                 >
                   <span aria-hidden="true">+</span>
                 </button>
               </div>
               <p className="reservation-schedule__guest-note ft-18r ink300">
-                한 클래스 최대 4인까지 예약 가능합니다.
+                한 클래스 최대 1~{maxGuestCount}인까지 예약 가능합니다.
               </p>
             </div>
           </div>
@@ -725,7 +764,11 @@ function ReservationPage() {
             </div>
           )}
           <div className="reservation-payment__actions">
-            <Button className="reservation-payment__action reservation-payment__action--edit" variant="btn2">
+            <Button
+              className="reservation-payment__action reservation-payment__action--edit"
+              variant="btn2"
+              disabled
+            >
               예약변경
             </Button>
             <Button

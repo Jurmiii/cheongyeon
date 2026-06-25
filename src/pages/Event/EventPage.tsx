@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import subSymbol from "../../assets/images/01main/subsymbol.svg";
 import eventKvBg from "../../assets/images/11event/event-kv-bg.webp";
@@ -26,6 +27,7 @@ interface InfoBlock {
   title: string;
   lines: string[];
   link?: string;
+  linkTo?: string;
 }
 
 function toLines(value: string) {
@@ -34,6 +36,7 @@ function toLines(value: string) {
 
 function EventDetailModal({ event, onClose }: EventDetailModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleKeyDown = (keyboardEvent: KeyboardEvent) => {
@@ -56,7 +59,13 @@ function EventDetailModal({ event, onClose }: EventDetailModalProps) {
   const infoBlocks: InfoBlock[] = [
     { icon: "calendar", title: "이벤트 기간", lines: [event.period] },
     { icon: "gift", title: "이벤트 내용", lines: toLines(event.content) },
-    { icon: "location-dot", title: "참여 매장", lines: [event.store], link: event.storeLink },
+    {
+      icon: "location-dot",
+      title: "참여 매장",
+      lines: [event.store],
+      link: event.storeLink,
+      linkTo: "/brand/location",
+    },
     { icon: "user", title: "참여 대상", lines: [event.target] },
     { icon: "clipboard", title: "유의사항", lines: toLines(event.notice) },
   ];
@@ -112,7 +121,15 @@ function EventDetailModal({ event, onClose }: EventDetailModalProps) {
                     ))}
                   </p>
                   {block.link && (
-                    <button className="event-modal__inline-link ft-14r ink500" type="button">
+                    <button
+                      className="event-modal__inline-link ft-14r ink500"
+                      type="button"
+                      onClick={() => {
+                        if (block.linkTo) {
+                          navigate(block.linkTo);
+                        }
+                      }}
+                    >
                       <span>{block.link}</span>
                       <Icon className="event-modal__inline-link-icon" name="angle-right" />
                     </button>

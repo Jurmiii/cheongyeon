@@ -326,30 +326,41 @@ function SeasonClassListSection() {
     const ctx = gsap.context(() => {
       applyScrollProgress(0, cups, scenes, trailPath);
 
-      gsap.to(scrollState, {
-        progress: 1,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: () => `+=${Math.max(Math.round(window.innerHeight * 3), SCROLL_END)}`,
-          scrub: 0.35,
-          pin: true,
-          pinSpacing: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          snap: {
-            snapTo: (value) => Math.round(value * MAX_SEASON_INDEX) / MAX_SEASON_INDEX,
-            duration: { min: 0.2, max: 0.45 },
-            ease: "power3.out",
-            inertia: false,
-          },
-          onUpdate: (self) => {
-            scrollState.progress = self.progress;
-            applyScrollProgress(self.progress, cups, scenes, trailPath);
-            const nextIndex = Math.round(getScrollBlend(self.progress).floatIndex);
-            setActiveIndex((prev) => (prev === nextIndex ? prev : nextIndex));
-          },
+      const getStableIndex = (progress: number) =>
+        Math.min(MAX_SEASON_INDEX, Math.max(0, Math.round(progress * MAX_SEASON_INDEX)));
+      let currentIndex = 0;
+
+      // 메인 사계절 차와 동일: 스크럽 없이 한 번 스크롤 → 한 계절씩 스냅 후 부드럽게 전환
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top top",
+        end: () => `+=${Math.max(Math.round(window.innerHeight * 3), SCROLL_END)}`,
+        pin: true,
+        pinSpacing: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        snap: {
+          snapTo: (value) => getStableIndex(value) / MAX_SEASON_INDEX,
+          delay: 0.06,
+          duration: { min: 0.2, max: 0.45 },
+          ease: "power3.out",
+          inertia: false,
+        },
+        onUpdate: (self) => {
+          const nextIndex = getStableIndex(self.progress);
+          if (nextIndex === currentIndex) {
+            return;
+          }
+
+          currentIndex = nextIndex;
+          setActiveIndex(nextIndex);
+          gsap.to(scrollState, {
+            progress: nextIndex / MAX_SEASON_INDEX,
+            duration: 0.9,
+            ease: "power3.inOut",
+            overwrite: "auto",
+            onUpdate: () => applyScrollProgress(scrollState.progress, cups, scenes, trailPath),
+          });
         },
       });
     }, section);
@@ -528,18 +539,12 @@ function SeasonClassPromoSection() {
 const CARD_STEP_REM = 15.25;
 const ACTIVE_ANCHOR_REM = 38.125;
 
-function getCenterIndex(count: number) {
-  return count > 0 ? Math.floor((count - 1) / 2) : 0;
-}
-
 function SeasonClassScheduleSection() {
   const today = useMemo(() => startOfDay(new Date()), []);
   const monthWrapRef = useRef<HTMLDivElement>(null);
 
   const [viewMonth, setViewMonth] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
-  const [activeIndex, setActiveIndex] = useState(() =>
-    getCenterIndex(getScheduleDaysForMonth(today.getFullYear(), today.getMonth(), today).length),
-  );
+  const [activeIndex, setActiveIndex] = useState(0);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const scrollbarRef = useRef<HTMLDivElement>(null);
@@ -598,8 +603,7 @@ function SeasonClassScheduleSection() {
 
     setViewMonth((prev) => {
       const next = new Date(prev.getFullYear(), prev.getMonth() + offset, 1);
-      const nextDays = getScheduleDaysForMonth(next.getFullYear(), next.getMonth(), today);
-      setActiveIndex(getCenterIndex(nextDays.length));
+      setActiveIndex(0);
       return next;
     });
     setIsCalendarOpen(false);
