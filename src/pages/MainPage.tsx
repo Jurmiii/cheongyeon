@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type MouseEvent, type TouchEvent } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Link } from "react-router-dom";
 import aboutVideo from "../assets/images/01main/about.webm";
 import mainBg2 from "../assets/images/01main/main-bg2.webp";
 import mainBg3 from "../assets/images/01main/main-bg3.webp";
@@ -58,7 +59,7 @@ import summerBg2 from "../assets/images/01main/summer-bg2.svg";
 import summerPot from "../assets/images/01main/summer-tea.webp";
 import winterBg2 from "../assets/images/01main/winter-bg2.svg";
 import winterPot from "../assets/images/01main/winter-tea.webp";
-import { Button, Footer, Header } from "../components/common";
+import { Footer, Header, Icon } from "../components/common";
 import "./MainPage.scss";
 
 interface MainKvSlide {
@@ -724,7 +725,7 @@ export default function MainPage() {
             return;
           }
 
-          const isPastFadePoint = entry.intersectionRatio >= 0.6;
+          const isPastFadePoint = entry.intersectionRatio >= 1 / 3;
 
           if (isPastFadePoint) {
             setActiveSeasons((currentSeasons) => {
@@ -755,7 +756,7 @@ export default function MainPage() {
           }
         });
       },
-      { threshold: 0.6 },
+      { threshold: 1 / 3 },
     );
 
     Object.values(seasonImageRefs.current).forEach((node) => {
@@ -866,9 +867,9 @@ export default function MainPage() {
         return Math.max(finalPairCenter - section.clientWidth / 2, 0);
       };
       const getRootFontSize = () => parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
-      const getPinDistance = () => Math.max((getTravelDistance() + window.innerHeight) * 2.05, 281.25 * getRootFontSize());
+      const getPinDistance = () => Math.max((getTravelDistance() + window.innerHeight) * 1.25, 180 * getRootFontSize());
       const introHoldDuration = 0.28;
-      const slideDuration = 1;
+      const slideDuration = 0.82;
       const holdDuration = 0.18;
 
       const timeline = gsap.timeline({
@@ -876,7 +877,7 @@ export default function MainPage() {
           trigger: section,
           start: "top top",
           end: () => `+=${getPinDistance()}`,
-          scrub: 0.55,
+          scrub: 0.4,
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
@@ -1026,6 +1027,43 @@ export default function MainPage() {
     };
   }, []);
 
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const section = sec3Ref.current;
+    let refreshFrame = 0;
+    let initialRefreshFrame = 0;
+
+    const scheduleRefresh = () => {
+      window.cancelAnimationFrame(refreshFrame);
+      refreshFrame = window.requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+    };
+
+    initialRefreshFrame = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+    });
+
+    let resizeObserver: ResizeObserver | null = null;
+
+    if (section) {
+      resizeObserver = new ResizeObserver(scheduleRefresh);
+      resizeObserver.observe(section);
+    }
+
+    window.addEventListener("load", scheduleRefresh);
+
+    return () => {
+      window.cancelAnimationFrame(refreshFrame);
+      window.cancelAnimationFrame(initialRefreshFrame);
+      resizeObserver?.disconnect();
+      window.removeEventListener("load", scheduleRefresh);
+    };
+  }, []);
+
   return (
     <main className="main-page">
       <div className="main-page__header">
@@ -1154,6 +1192,7 @@ export default function MainPage() {
             <img className="main-sec3__summer-symbol-black" src={symbolBlack} alt="" aria-hidden="true" />
             <DrawLineSvg
               className="main-sec3__summer-line"
+              direction="horizontal"
               maskId="main-sec3-line2-mask"
               svgSource={line2Raw}
             />
@@ -1223,9 +1262,10 @@ export default function MainPage() {
                   <br />
                   다양한 경험을 통해 나만의 취향을 찾아보세요
                 </p>
-                <Button className="main-sec4__button" variant="classMore">
+                <Link className="cy-button cy-button--classMore ft-18b main-sec4__button" to="/class/general">
                   클래스 더보기
-                </Button>
+                  <Icon name="angle-right" />
+                </Link>
               </div>
             </div>
             <img className="main-sec4__track-line" src={centerLine} alt="" aria-hidden="true" />
@@ -1256,9 +1296,10 @@ export default function MainPage() {
             <br />
             한 잔의 여백을 전합니다.
           </p>
-          <Button className="main-sec5__button" variant="btn7">
+          <Link className="cy-button cy-button--classMore ft-18b main-sec5__button" to="/collection">
             청연의 제품 보기
-          </Button>
+            <Icon name="angle-right" />
+          </Link>
         </div>
         <div
           className={["main-sec5__carousel", isSec5Dragging && "main-sec5__carousel--dragging"].filter(Boolean).join(" ")}
@@ -1385,9 +1426,10 @@ export default function MainPage() {
                 </span>
               ))}
             </p>
-            <Button className="main-sec6__button" variant="btn7">
+            <Link className="cy-button cy-button--classMore ft-18b main-sec6__button" to="/seasontea">
               계절차 더 보기
-            </Button>
+              <Icon name="angle-right" />
+            </Link>
           </div>
         </div>
         <div className="main-sec6__orbit" ref={sec6OrbitRef} aria-hidden="true">
@@ -1409,9 +1451,10 @@ export default function MainPage() {
               <br />
               만나보세요.
             </p>
-            <Button className="main-sec7__button" variant="btn7">
+            <Link className="cy-button cy-button--classMore ft-18b main-sec7__button" to="/brand/space">
               차점보기
-            </Button>
+              <Icon name="angle-right" />
+            </Link>
           </div>
         </article>
         <article className="main-sec7__panel" style={{ backgroundImage: `url(${rightImage})` }}>
@@ -1424,9 +1467,10 @@ export default function MainPage() {
               <br />
               청연의 깊이를 경험해보세요.
             </p>
-            <Button className="main-sec7__button" variant="btn7">
+            <Link className="cy-button cy-button--classMore ft-18b main-sec7__button" to="/brand/space">
               다실보기
-            </Button>
+              <Icon name="angle-right" />
+            </Link>
           </div>
         </article>
       </section>
@@ -1463,9 +1507,15 @@ export default function MainPage() {
                 </span>
               ))}
             </p>
-            <Button className="main-sec8__button" variant="btn7">
+            <Link
+              className="cy-button cy-button--classMore ft-18b main-sec8__button"
+              to="/event/ongoing"
+              onMouseDown={(event) => event.stopPropagation()}
+              onTouchStart={(event) => event.stopPropagation()}
+            >
               이벤트 보기
-            </Button>
+              <Icon name="angle-right" />
+            </Link>
           </div>
           <div className="main-sec8__indicator" aria-label={`${activeSec8Index + 1} / ${mainEventSlides.length}`}>
             {mainEventSlides.map((slide, index) => (
@@ -1591,9 +1641,10 @@ export default function MainPage() {
               <br />
               집중하는 시간을 경험해보세요.
             </p>
-            <Button className="main-sec10__button" variant="btn7">
+            <Link className="cy-button cy-button--classMore ft-18b main-sec10__button" to="/reservation">
               다도 클래스 예약하기
-            </Button>
+              <Icon name="angle-right" />
+            </Link>
             <p className="main-sec10__notice ft-14r ink300">* 다도 클래스는 예약제로 운영됩니다.</p>
           </div>
         </div>

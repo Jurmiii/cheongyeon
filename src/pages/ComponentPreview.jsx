@@ -28,6 +28,40 @@ const typography = [
   "ft-14r",
 ];
 
+const tabletTypography = [
+  { className: "ft-64r", label: ".ft-64r / 80 / Weight 400" },
+  { className: "ft-48r", label: ".ft-48r / 58 / Weight 400" },
+  { className: "ft-48b", label: ".ft-48b / 58 / Weight 700" },
+  { className: "ft-40b", label: ".ft-40b / 52 / Weight 700" },
+  { className: "ft-30b", label: ".ft-30b / 42 / Weight 700" },
+  { className: "ft-30r", label: ".ft-30r / 42 / Weight 400" },
+  { className: "ft-24b", label: ".ft-24b / 34 / Weight 700" },
+  { className: "ft-24r", label: ".ft-24r / 34 / Weight 400" },
+  { className: "ft-20b", label: ".ft-20b / 32 / Weight 500" },
+  { className: "ft-20r", label: ".ft-20r / 32 / Weight 400" },
+  { className: "ft-18b", label: ".ft-18b / 30 / Weight 500" },
+  { className: "ft-18r", label: ".ft-18r / 30 / Weight 400" },
+  { className: "ft-16r", label: ".ft-16r / 26 / Weight 400" },
+  { className: "ft-14b", label: ".ft-14b / 22 / Weight 500" },
+  { className: "ft-14r", label: ".ft-14r / 22 / Weight 400" },
+];
+
+const mobileTypography = [
+  { className: "ft-36r", label: ".ft-36r / 46 / Weight 400" },
+  { className: "ft-36b", label: ".ft-36b / 46 / Weight 700" },
+  { className: "ft-32b", label: ".ft-32b / 42 / Weight 700" },
+  { className: "ft-26b", label: ".ft-26b / 36 / Weight 700" },
+  { className: "ft-26r", label: ".ft-26r / 36 / Weight 400" },
+  { className: "ft-22b", label: ".ft-22b / 30 / Weight 700" },
+  { className: "ft-22r", label: ".ft-22r / 30 / Weight 400" },
+  { className: "ft-18b", label: ".ft-18b / 28 / Weight 500" },
+  { className: "ft-18r", label: ".ft-18r / 28 / Weight 400" },
+  { className: "ft-16b", label: ".ft-16b / 26 / Weight 500" },
+  { className: "ft-16r", label: ".ft-16r / 26 / Weight 400" },
+  { className: "ft-14r", label: ".ft-14r / 22 / Weight 400" },
+  { className: "ft-14b", label: ".ft-14b / 22 / Weight 500" },
+];
+
 const colors = [
   ["han50", "var(--han50)"],
   ["han100", "var(--han100)"],
@@ -165,6 +199,30 @@ export default function ComponentPreview() {
             <div className="component-preview__item component-preview__type-item" key={item}>
               <p className={item}>청연에 오신 것을 환영합니다.</p>
               <p className="component-preview__alias ft-14r">{item}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="component-preview__section">
+        <h2 className="ft-28b">Tablet Typography</h2>
+        <div className="component-preview__responsive-type typography-preview--tablet">
+          {tabletTypography.map((item) => (
+            <div className="component-preview__responsive-type-row" key={item.className}>
+              <p className="component-preview__responsive-type-label ft-14r">{item.label}</p>
+              <p className={item.className}>청연다도 공간의 은은한 감칠맛</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="component-preview__section">
+        <h2 className="ft-28b">Mobile Typography</h2>
+        <div className="component-preview__responsive-type typography-preview--mobile">
+          {mobileTypography.map((item) => (
+            <div className="component-preview__responsive-type-row" key={item.className}>
+              <p className="component-preview__responsive-type-label ft-14r">{item.label}</p>
+              <p className={item.className}>청연다도 공간의 은은한 감칠맛</p>
             </div>
           ))}
         </div>

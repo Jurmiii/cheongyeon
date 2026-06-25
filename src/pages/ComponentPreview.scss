@@ -96,6 +96,28 @@
   margin-top: var(--space-2);
 }
 
+.component-preview__responsive-type {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.component-preview__responsive-type-row {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 18.75rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: calc(var(--space-1) / 8) solid var(--han500);
+}
+
+.component-preview__responsive-type-label {
+  color: var(--ink300);
+  white-space: nowrap;
+}
+
 .component-preview__cards {
   display: flex;
   flex-wrap: wrap;
@@ -176,6 +198,15 @@
 
   .component-preview__colors {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .component-preview__responsive-type-row {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+  }
+
+  .component-preview__responsive-type-label {
+    white-space: normal;
   }
 
   .component-preview__section--login-reservation {

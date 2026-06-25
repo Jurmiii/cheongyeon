@@ -1,4 +1,5 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { useLayoutEffect } from 'react'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import ClassIntroductionPage from './pages/Class/ClassIntroductionPage'
 import SeasonClassPage from './pages/Class/SeasonClassPage'
@@ -19,10 +20,21 @@ import CollectionPage from './pages/Collection/CollectionPage'
 import TeaStorePage from './pages/TeaStore/TeaStorePage'
 import MyPageRoute from './pages/MyPage/MyPageRoute'
 
+function RouteScrollReset() {
+  const { key, pathname, search } = useLocation()
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0)
+  }, [key, pathname, search])
+
+  return null
+}
+
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <RouteScrollReset />
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/preview" element={<ComponentPreview />} />
