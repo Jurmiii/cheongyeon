@@ -2,6 +2,7 @@
   position: relative;
   width: 100%;
   min-width: 0;
+  color: var(--ink500);
 }
 
 .tea-store-page__header {
@@ -189,6 +190,76 @@
   width: 100%;
 }
 
+/* Section 5 — 다도란 무엇인가 */
+.tea-store-dado {
+  width: 100%;
+  background-color: var(--han300);
+}
+
+.tea-store-dado__inner {
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+  padding-block: 7.5rem;
+}
+
+.tea-store-dado__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  padding-inline: 1.5rem;
+  text-align: center;
+  word-break: keep-all;
+}
+
+.tea-store-dado__title,
+.tea-store-dado__subtitle {
+  margin: 0;
+}
+
+.tea-store-dado__gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  width: 100%;
+}
+
+.tea-store-dado-card {
+  min-width: 0;
+}
+
+.tea-store-dado-card__media {
+  position: relative;
+  width: 100%;
+}
+
+.tea-store-dado-card__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 720 / 252;
+  object-fit: cover;
+  object-position: center;
+}
+
+.tea-store-dado-card__body {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(180deg, rgb(0 0 0 / 0%) 0%, rgb(0 0 0 / 55%) 100%);
+}
+
+.tea-store-dado-card__title,
+.tea-store-dado-card__description {
+  margin: 0;
+}
+
 /* Section 6 — Figma 1920×690 */
 .tea-store-kinds {
   position: relative;
@@ -374,6 +445,14 @@
   margin: 0;
 }
 
+.tea-store-seasons__cards {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(12, 6.125rem);
+  column-gap: 1.5rem;
+  width: 100%;
+}
+
 .tea-store-season {
   display: flex;
   flex-direction: column;
@@ -399,6 +478,40 @@
   word-break: keep-all;
 }
 
+/* Scroll reveal */
+.tea-store-reveal {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.tea-store-reveal--from-left {
+  transform: translateX(-2.5rem);
+}
+
+.tea-store-reveal--from-right {
+  transform: translateX(2.5rem);
+}
+
+.tea-store-reveal--from-bottom {
+  transform: translateY(2.5rem);
+}
+
+.tea-store-reveal.is-visible {
+  opacity: 1;
+  transform: translate(0, 0);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tea-store-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 @media (max-width: 90rem) {
   .tea-store-kv__grid,
   .tea-store-intro__grid,
@@ -407,6 +520,10 @@
   .tea-store-kinds__grid,
   .tea-store-seasons__grid {
     padding-inline: 1.5rem;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .tea-store-seasons__cards {
     grid-template-columns: repeat(12, minmax(0, 1fr));
   }
 
@@ -472,6 +589,10 @@
     padding-block: 5rem;
   }
 
+  .tea-store-dado__inner {
+    padding-block: 5rem;
+  }
+
   .tea-store-seasons__inner {
     padding-block: 5rem;
   }
@@ -496,6 +617,7 @@
   .tea-store-culture__title,
   .tea-store-ceremony__title,
   .tea-store-kinds__title,
+  .tea-store-dado__title,
   .tea-store-types__title,
   .tea-store-seasons__title {
     font-size: 2rem;
@@ -504,6 +626,10 @@
 }
 
 @media (max-width: 40rem) {
+  .tea-store-dado__gallery {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .tea-store-types__grid {
     grid-template-columns: minmax(0, 1fr);
   }
