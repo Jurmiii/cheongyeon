@@ -13,6 +13,7 @@ import SpacePage from './pages/Space/SpacePage'
 import LocationPage from './pages/Location'
 import SeasonTeaPage from './pages/SeasonTea/SeasonTeaPage'
 import CollectionPage from './pages/Collection/CollectionPage'
+import TeaStorePage from './pages/TeaStore/TeaStorePage'
 import MyPageRoute from './pages/MyPage/MyPageRoute'
 
 function App() {
@@ -44,6 +45,8 @@ function App() {
           <Route path="/product/season-tea" element={<SeasonTeaPage />} />
           <Route path="/shop" element={<CollectionPage />} />
           <Route path="/shop/tea-story" element={<CollectionPage />} />
+          {/* TODO: 작업 완료 후 정식 연결 — /product/tea-story */}
+          <Route path="/dev/tea-story" element={<TeaStorePage />} />
           <Route path="/collection" element={<CollectionPage />} />
           <Route path="/product/collection" element={<CollectionPage />} />
           <Route path="/mypage" element={<MyPageRoute />} />
