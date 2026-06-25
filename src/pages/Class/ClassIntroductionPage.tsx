@@ -12,10 +12,8 @@ import { classIntroductionReviews } from "../../data/classIntroductionReviews";
 import { classIntroductionSlides } from "../../data/classIntroductionSlides";
 import "./ClassIntroductionPage.scss";
 
-const FADE_DURATION_MS = 800;
+const INK_REVEAL_MS = 2500;
 const AUTO_ADVANCE_MS = 4000;
-
-type PanelState = "hidden" | "fading" | "shown";
 
 function ClassIntroductionScrollSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -326,28 +324,23 @@ function ClassIntroductionReviewSection() {
   const isTransitioningRef = useRef(false);
 
   const [activeIndex, setActiveIndex] = useState(0);
-  const [panelState, setPanelState] = useState<PanelState>("hidden");
+  const [revealed, setRevealed] = useState(false);
+  const [inkNonce, setInkNonce] = useState(0);
 
   const finishFadeIn = useCallback(() => {
     isTransitioningRef.current = false;
-    setPanelState("shown");
   }, []);
 
   const startFadeIn = useCallback((index: number) => {
     isTransitioningRef.current = true;
-    setPanelState("hidden");
     setActiveIndex(index);
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setPanelState("fading");
-      });
-    });
+    setRevealed(true);
+    setInkNonce((nonce) => nonce + 1);
   }, []);
 
   const handleFadeAnimationEnd = useCallback(
     (event: React.AnimationEvent<HTMLElement>) => {
-      if (event.animationName !== "class-intro-review-fade-in") {
+      if (event.animationName !== "class-intro-ink-transition") {
         return;
       }
 
@@ -378,18 +371,18 @@ function ClassIntroductionReviewSection() {
   }, [activeIndex, goToSlide, reviewCount]);
 
   useEffect(() => {
-    if (panelState !== "fading") {
+    if (!revealed) {
       return undefined;
     }
 
     const fallbackTimer = window.setTimeout(() => {
       finishFadeIn();
-    }, FADE_DURATION_MS + 50);
+    }, INK_REVEAL_MS + 150);
 
     return () => {
       window.clearTimeout(fallbackTimer);
     };
-  }, [finishFadeIn, panelState, activeIndex]);
+  }, [finishFadeIn, revealed, inkNonce]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -435,7 +428,7 @@ function ClassIntroductionReviewSection() {
   }, [startFadeIn]);
 
   useEffect(() => {
-    if (panelState !== "shown") {
+    if (!revealed) {
       return undefined;
     }
 
@@ -451,15 +444,9 @@ function ClassIntroductionReviewSection() {
     return () => {
       window.clearInterval(timer);
     };
-  }, [activeIndex, panelState, startFadeIn]);
+  }, [activeIndex, revealed, startFadeIn]);
 
   const review = classIntroductionReviews[activeIndex];
-  const panelClass =
-    panelState === "fading"
-      ? "class-intro-review__panel--fading-in"
-      : panelState === "shown"
-        ? "class-intro-review__panel--visible"
-        : "";
 
   return (
     <section
@@ -470,13 +457,14 @@ function ClassIntroductionReviewSection() {
     >
       <div className="class-intro-review__grid">
         <div className="class-intro-review__layout">
-          <div
-            className={["class-intro-review__media", "class-intro-review__panel", panelClass]
-              .filter(Boolean)
-              .join(" ")}
-            onAnimationEnd={handleFadeAnimationEnd}
-          >
-            <figure className="class-intro-review__figure">
+          <div className="class-intro-review__media">
+            <figure
+              key={inkNonce}
+              className={["class-intro-review__figure", revealed && "is-active"]
+                .filter(Boolean)
+                .join(" ")}
+              onAnimationEnd={handleFadeAnimationEnd}
+            >
               <img
                 className="class-intro-review__image"
                 src={review.image}

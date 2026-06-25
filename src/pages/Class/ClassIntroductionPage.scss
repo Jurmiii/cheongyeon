@@ -598,54 +598,17 @@
   }
 }
 
-@keyframes class-intro-review-fade-in {
+/* 잉크 번짐 리빌 — 알파 반전 스프라이트(40프레임)를 마스크로 써서
+   중앙에서 시작해 바깥으로 번지며 이미지가 드러난다 (크림색 사각형 덮개 없음) */
+@keyframes class-intro-ink-transition {
   from {
-    opacity: 0;
+    -webkit-mask-position: 0% 0;
+    mask-position: 0% 0;
   }
 
   to {
-    opacity: 1;
-  }
-}
-
-/* 이미지 등장 — 물결 번짐 (중앙에서 물결이 출렁이며 퍼져 드러남) */
-@keyframes class-intro-review-image-in {
-  0% {
-    opacity: 0;
-    transform: scale(1.06);
-    filter: blur(14px);
-    -webkit-mask-size: 0% 0%;
-    mask-size: 0% 0%;
-  }
-
-  35% {
-    opacity: 1;
-    filter: blur(6px);
-  }
-
-  70% {
-    transform: scale(0.995);
-    filter: blur(1.5px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1);
-    filter: blur(0);
-    -webkit-mask-size: 300% 300%;
-    mask-size: 300% 300%;
-  }
-}
-
-
-/* 활성 이미지 — 아주 천천히 확대되는 Ken Burns */
-@keyframes class-intro-review-image-kenburns {
-  from {
-    transform: scale(1);
-  }
-
-  to {
-    transform: scale(1.04);
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
   }
 }
 
@@ -679,18 +642,6 @@
   width: 36.5625rem;
 }
 
-.class-intro-review__panel {
-  opacity: 0;
-
-  &--fading-in {
-    animation: class-intro-review-fade-in 0.8s ease forwards;
-  }
-
-  &--visible {
-    opacity: 1;
-  }
-}
-
 .class-intro-review__figure {
   position: relative;
   width: 100%;
@@ -706,25 +657,21 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-  transform-origin: center;
-  will-change: transform, opacity, filter;
-}
 
-/* 슬라이드 변경 시 이미지 등장 — 물결 번짐 */
-.class-intro-review__media.class-intro-review__panel--fading-in .class-intro-review__image {
-  /* 가장자리가 부드럽게 풀리는 물결 마스크 */
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 45%, rgb(0 0 0 / 40%) 62%, transparent 76%);
-  mask-image: radial-gradient(circle at 50% 50%, #000 45%, rgb(0 0 0 / 40%) 62%, transparent 76%);
+  /* 알파 반전 스프라이트를 마스크로 사용. 리빌 전(첫 프레임)에는 마스크가 비어
+     이미지가 숨겨지고, 중앙부터 잉크 모양으로 번지며 드러난다 */
+  -webkit-mask-image: url("../../assets/images/08class/ink-transition-sprite-inverted.png");
+  mask-image: url("../../assets/images/08class/ink-transition-sprite-inverted.png");
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  animation: class-intro-review-image-in 2.4s cubic-bezier(0.4, 0.85, 0.4, 1) both;
-}
+  -webkit-mask-size: 4000% 100%;
+  mask-size: 4000% 100%;
+  -webkit-mask-position: 0% 0;
+  mask-position: 0% 0;
 
-/* 활성 상태에서 아주 천천히 확대 (Ken Burns) */
-.class-intro-review__media.class-intro-review__panel--visible .class-intro-review__image {
-  animation: class-intro-review-image-kenburns 12s ease-out forwards;
+  .is-active & {
+    animation: class-intro-ink-transition 2s steps(39) 0.2s forwards;
+  }
 }
 
 .class-intro-review__content {
@@ -942,23 +889,9 @@
   }
 }
 
+/* 후기 잉크 리빌은 브랜드 핵심 연출이라 동작 줄이기 환경에서도 재생한다 */
 @media (prefers-reduced-motion: reduce) {
-  .class-intro-review__panel--fading-in {
-    animation: none;
-  }
-
-  .class-intro-review__panel--visible,
-  .class-intro-review__panel--fading-in {
-    opacity: 1;
-  }
-
-  .class-intro-review__media.class-intro-review__panel--fading-in .class-intro-review__image,
-  .class-intro-review__media.class-intro-review__panel--visible .class-intro-review__image {
-    animation: none;
-    opacity: 1;
-    -webkit-mask-image: none;
-    mask-image: none;
-    transform: none;
-    filter: none;
+  .class-intro-review__figure.is-active .class-intro-review__image {
+    animation-duration: 1.2s;
   }
 }
