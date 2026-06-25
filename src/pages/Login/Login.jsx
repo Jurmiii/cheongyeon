@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { Button, Input } from "../../components/common";
 import { useAuth } from "../../contexts/AuthContext";
@@ -121,9 +121,9 @@ export default function Login() {
         <nav className="login-links" aria-label="login links">
           <p className="login-links__row">
             <span className="ft-14r">계정이 없으신가요?</span>
-            <a className="ft-14r login-links__signup" href="#signup">
+            <Link className="ft-14r login-links__signup" to="/signup">
               회원가입
-            </a>
+            </Link>
           </p>
           <p className="login-links__row">
             <a className="ft-14r" href="#find-password">
