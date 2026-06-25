@@ -138,6 +138,13 @@
   gap: var(--space-3);
 }
 
+.component-preview__modals {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
 .component-preview__section--login-reservation {
   display: flex;
   flex-direction: row;

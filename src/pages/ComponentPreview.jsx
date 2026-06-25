@@ -1,4 +1,16 @@
-import { Badge, Button, Calendar, ContentBox, Footer, Header, Icon, Input, Modal1, ReservationInfoEdit } from "../components/common";
+import {
+  Badge,
+  Button,
+  Calendar,
+  ContentBox,
+  Footer,
+  Header,
+  Icon,
+  Input,
+  Modal1,
+  Modal2,
+  ReservationInfoEdit,
+} from "../components/common";
 import {
   Card,
 } from "../components/cards";
@@ -326,9 +338,15 @@ export default function ComponentPreview() {
 
       <section className="component-preview__section">
         <h2 className="ft-28b">Modals</h2>
-        <div className="component-preview__item">
-          <Modal1 />
-          <p className="component-preview__alias ft-14r">modal1</p>
+        <div className="component-preview__modals">
+          <div className="component-preview__item">
+            <Modal1 />
+            <p className="component-preview__alias ft-14r">modal1</p>
+          </div>
+          <div className="component-preview__item">
+            <Modal2 />
+            <p className="component-preview__alias ft-14r">modal2</p>
+          </div>
         </div>
       </section>
 

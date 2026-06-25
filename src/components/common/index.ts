@@ -16,6 +16,7 @@ export { default as Input } from "./Input";
 export type { InputAlias, InputProps, InputState } from "./Input";
 export { default as MainContentBox } from "./MainContentBox/MainContentBox";
 export { default as Modal1 } from "./Modal1/Modal1";
+export { default as Modal2 } from "./TeaCollectionModal";
 export { default as ProductContentBox } from "./ProductContentBox";
 export { default as ReservationInfoEdit } from "./ReservationInfoEdit/ReservationInfoEdit";
 export { default as ReviewContentBox } from "./ReviewContentBox";
