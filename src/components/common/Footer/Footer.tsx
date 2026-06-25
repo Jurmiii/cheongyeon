@@ -6,17 +6,17 @@ import naverIcon from "../../../assets/images/00header-footer/naver.svg";
 import "./Footer.scss";
 
 const footerLinks = [
-  { label: "브랜드 소개", href: "#brand" },
-  { label: "제품 소개", href: "#product" },
-  { label: "다도 클래스", href: "#class" },
-  { label: "예약", href: "#reservation" },
-  { label: "이벤트", href: "#event" },
+  "브랜드 소개",
+  "제품소개",
+  "다도 클래스",
+  "예약",
+  "이벤트",
 ];
 
 const snsLinks = [
-  { label: "kakao", href: "#kakao", icon: kakaoIcon },
-  { label: "naver", href: "#naver", icon: naverIcon },
-  { label: "github", href: "#github", icon: githubIcon },
+  { label: "kakao", icon: kakaoIcon },
+  { label: "naver", icon: naverIcon },
+  { label: "github", icon: githubIcon },
 ];
 
 export default function Footer() {
@@ -25,7 +25,9 @@ export default function Footer() {
       <div className="site-footer__inner">
         <div className="site-footer__top">
           <div className="site-footer__brand">
-            <img className="site-footer__logo" src={logoWhite} alt="청연" />
+            <div className="site-footer__logo" aria-label="청연 로고">
+              <img className="site-footer__logo-image" src={logoWhite} alt="청연" />
+            </div>
             <p className="site-footer__slogan ft-16r text-white">
               자연이 선물한 차 한 잔,
               <br />
@@ -34,10 +36,10 @@ export default function Footer() {
           </div>
 
           <nav className="site-footer__nav" aria-label="푸터 메뉴">
-            {footerLinks.map((link) => (
-              <a className="site-footer__nav-link ft-18r text-white" href={link.href} key={link.label}>
-                {link.label}
-              </a>
+            {footerLinks.map((label) => (
+              <span className="site-footer__nav-link ft-18r text-white" key={label}>
+                {label}
+              </span>
             ))}
           </nav>
         </div>
@@ -48,9 +50,9 @@ export default function Footer() {
           <ul className="site-footer__sns" aria-label="SNS 링크">
             {snsLinks.map((sns) => (
               <li key={sns.label}>
-                <a className="site-footer__sns-link" href={sns.href} aria-label={sns.label}>
+                <span className="site-footer__sns-link" aria-label={sns.label}>
                   <img src={sns.icon} alt="" />
-                </a>
+                </span>
               </li>
             ))}
           </ul>

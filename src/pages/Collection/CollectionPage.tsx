@@ -1,7 +1,7 @@
 import { useState } from "react";
 import subSymbol from "../../assets/images/01main/subsymbol.svg";
 import aromaGraph from "../../assets/images/05collection/graph.webp";
-import { Header } from "../../components/common";
+import { Footer, Header } from "../../components/common";
 import { collectionTabs } from "./collectionTabs";
 import type { CollectionTabId } from "./collectionTabs";
 import { collectionCategories } from "./collectionProducts";
@@ -93,6 +93,8 @@ function CollectionPage() {
           </div>
         </div>
       </section>
+
+      <Footer />
     </main>
   );
 }

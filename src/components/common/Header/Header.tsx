@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 import logo from "../../../assets/images/00header-footer/logo.svg";
 import Icon from "../Icon";
@@ -10,7 +10,13 @@ type HeaderLanguage = "KO" | "EN";
 
 interface HeaderMenuItem {
   label: string;
-  children: string[];
+  to: string;
+  children: HeaderSubmenuItem[];
+}
+
+interface HeaderSubmenuItem {
+  label: string;
+  to: string;
 }
 
 interface HeaderActionItem {
@@ -18,12 +24,48 @@ interface HeaderActionItem {
   label: string;
 }
 
+const TEA_STORY_PATH = "/product/tea-story";
+
 const gnbMenus: HeaderMenuItem[] = [
-  { label: "브랜드 소개", children: ["브랜드 스토리", "공간소개", "오시는 길"] },
-  { label: "제품 소개", children: ["차 이야기", "차 컬렉션", "계절의 차"] },
-  { label: "다도 클래스", children: ["일반 클래스", "시즌 클래스"] },
-  { label: "예약", children: ["예약하기"] },
-  { label: "이벤트", children: ["진행중 이벤트", "공지사항"] },
+  {
+    label: "브랜드 소개",
+    to: "/about",
+    children: [
+      { label: "브랜드 스토리", to: "/about" },
+      { label: "공간소개", to: "/brand/space" },
+      { label: "오시는 길", to: "/store" },
+    ],
+  },
+  {
+    label: "제품 소개",
+    to: "/shop",
+    children: [
+      { label: "차 이야기", to: TEA_STORY_PATH },
+      { label: "차 컬렉션", to: "/shop" },
+      { label: "계절의 차", to: "/seasontea" },
+    ],
+  },
+  {
+    label: "다도 클래스",
+    to: "/class",
+    children: [
+      { label: "일반 클래스", to: "/class" },
+      { label: "시즌 클래스", to: "/class/season" },
+    ],
+  },
+  {
+    label: "예약",
+    to: "/reservation",
+    children: [{ label: "예약하기", to: "/reservation" }],
+  },
+  {
+    label: "이벤트",
+    to: "/event",
+    children: [
+      { label: "진행중 이벤트", to: "/event" },
+      { label: "공지사항", to: "/event/notice" },
+    ],
+  },
 ];
 
 const actionMenus: HeaderActionItem[] = [
@@ -31,15 +73,16 @@ const actionMenus: HeaderActionItem[] = [
   { id: "language", label: "KO" },
 ];
 
-const submenuHrefs: Record<string, string> = {
-  "차 컬렉션": "/collection",
-  "계절의 차": "/seasontea",
-  예약하기: "/reservation",
-  공지사항: "/event/notice",
-};
+const pathMatches = (pathname: string, to: string) => pathname === to || pathname.startsWith(`${to}/`);
+
+const getNavLinkClassName = (baseClassName: string, activeClassName: string, isActive: boolean) =>
+  [baseClassName, isActive && "active", isActive && activeClassName]
+    .filter(Boolean)
+    .join(" ");
 
 export default function Header() {
   const { isLoggedIn, loginId, logout } = useAuth();
+  const { pathname } = useLocation();
   const [activeDropdown, setActiveDropdown] = useState<ActiveDropdown>(null);
   const [selectedLanguage, setSelectedLanguage] = useState<HeaderLanguage>("KO");
   const isGnbOpen = activeDropdown === "gnb";
@@ -56,9 +99,9 @@ export default function Header() {
       <div className="site-header__overlay" aria-hidden="true" />
       <div className="site-header__inner">
         <h1 className="site-header__logo">
-          <a href="/" aria-label="청연 홈">
+          <Link to="/" aria-label="청연 홈">
             <img src={logo} alt="청연" />
-          </a>
+          </Link>
         </h1>
 
         <div className="site-header__interactive">
@@ -67,39 +110,54 @@ export default function Header() {
             aria-label="주요 메뉴"
             onMouseEnter={() => setActiveDropdown("gnb")}
           >
-            {gnbMenus.map((menu) => (
-              <div
-                className={[
-                  "site-header__menu-item",
-                  activeDropdown === "gnb" && "site-header__menu-item--active",
-                ].filter(Boolean).join(" ")}
-                key={menu.label}
-              >
-                <a className="site-header__menu-link ft-18b ink500" href={`#${menu.label}`}>
-                  {menu.label}
-                </a>
-                <span className="site-header__dropdown-line" aria-hidden="true" />
-                <ul className="site-header__submenu" aria-hidden={activeDropdown !== "gnb"}>
-                  {menu.children.map((child) => {
-                    const href = submenuHrefs[child];
+            {gnbMenus.map((menu) => {
+              const isMenuActive =
+                pathMatches(pathname, menu.to) ||
+                menu.children.some((child) => pathMatches(pathname, child.to));
 
-                    return (
-                      <li key={child}>
-                        {href ? (
-                          <Link className="site-header__submenu-link ft-18b ink500" to={href}>
-                            {child}
-                          </Link>
-                        ) : (
-                          <a className="site-header__submenu-link ft-18b ink500" href={`#${child}`}>
-                            {child}
-                          </a>
-                        )}
+              return (
+                <div
+                  className={[
+                    "site-header__menu-item",
+                    activeDropdown === "gnb" && "site-header__menu-item--active",
+                  ].filter(Boolean).join(" ")}
+                  key={menu.label}
+                >
+                  <NavLink
+                    className={() =>
+                      getNavLinkClassName(
+                        "site-header__menu-link ft-18b ink500",
+                        "site-header__menu-link--active",
+                        isMenuActive,
+                      )
+                    }
+                    to={menu.to}
+                  >
+                    {menu.label}
+                  </NavLink>
+                  <span className="site-header__dropdown-line" aria-hidden="true" />
+                  <ul className="site-header__submenu" aria-hidden={activeDropdown !== "gnb"}>
+                    {menu.children.map((child) => (
+                      <li key={child.label}>
+                        <NavLink
+                          className={({ isActive }) =>
+                            getNavLinkClassName(
+                              "site-header__submenu-link ft-18b ink500",
+                              "site-header__submenu-link--active",
+                              isActive,
+                            )
+                          }
+                          end={child.to !== "/event/notice"}
+                          to={child.to}
+                        >
+                          {child.label}
+                        </NavLink>
                       </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            ))}
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
           </nav>
 
           <div className="site-header__actions">
@@ -148,9 +206,19 @@ export default function Header() {
                         )}
                       </li>
                       <li>
-                        <a className="site-header__action-dropdown-link ft-16b ink500" href="#mypage">
+                        <NavLink
+                          className={({ isActive }) =>
+                            getNavLinkClassName(
+                              "site-header__action-dropdown-link ft-16b ink500",
+                              "site-header__action-dropdown-link--active",
+                              isActive,
+                            )
+                          }
+                          end
+                          to="/mypage"
+                        >
                           마이페이지
-                        </a>
+                        </NavLink>
                       </li>
                     </ul>
                   </>

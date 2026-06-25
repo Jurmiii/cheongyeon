@@ -4,7 +4,7 @@ import springTeaImage from "../../assets/images/07season-tea/sec2-tea.webp";
 import summerTeaImage from "../../assets/images/07season-tea/sec3-tea.webp";
 import autumnTeaImage from "../../assets/images/07season-tea/sec4-tea.webp";
 import winterTeaImage from "../../assets/images/07season-tea/sec5-tea.webp";
-import { Button, Header } from "../../components/common";
+import { Button, Footer, Header } from "../../components/common";
 import SeasonTeaDetailModal from "./SeasonTeaDetailModal";
 import { springTeaDetail } from "./seasonTeaDetailData";
 import "./SeasonTeaPage.scss";
@@ -172,6 +172,8 @@ function SeasonTeaPage() {
         onClose={() => setIsSpringModalOpen(false)}
         data={springTeaDetail}
       />
+
+      <Footer />
     </main>
   );
 }

@@ -121,6 +121,11 @@
   text-decoration: none;
 }
 
+.site-header .site-header__submenu-link--active,
+.site-header .site-header__action-dropdown-link--active {
+  color: var(--han500);
+}
+
 .site-header__action-link {
   min-width: 0;
   height: 24px;

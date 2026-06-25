@@ -23,12 +23,15 @@ function App() {
           <Route path="/" element={<MainPage />} />
           <Route path="/preview" element={<ComponentPreview />} />
           <Route path="/components" element={<ComponentPreview />} />
+          <Route path="/about" element={<BrandStoryPage />} />
+          <Route path="/about/story" element={<BrandStoryPage />} />
           <Route path="/class/introduction" element={<ClassIntroductionPage />} />
           <Route path="/class" element={<ClassIntroductionPage />} />
           <Route path="/class/general" element={<ClassIntroductionPage />} />
           <Route path="/class/season" element={<SeasonClassPage />} />
           <Route path="/class/season-class" element={<SeasonClassPage />} />
           <Route path="/reservation" element={<ReservationPage />} />
+          <Route path="/reservation/apply" element={<ReservationPage />} />
           <Route path="/event" element={<EventPage />} />
           <Route path="/event/ongoing" element={<EventPage />} />
           <Route path="/event/notice" element={<NoticePage />} />
@@ -39,10 +42,13 @@ function App() {
           <Route path="/seasontea" element={<SeasonTeaPage />} />
           <Route path="/season-tea" element={<SeasonTeaPage />} />
           <Route path="/product/season-tea" element={<SeasonTeaPage />} />
+          <Route path="/shop" element={<CollectionPage />} />
+          <Route path="/shop/tea-story" element={<CollectionPage />} />
           <Route path="/collection" element={<CollectionPage />} />
           <Route path="/product/collection" element={<CollectionPage />} />
           <Route path="/mypage" element={<MyPageRoute />} />
           <Route path="/my-page" element={<MyPageRoute />} />
+          <Route path="/store" element={<LocationPage />} />
           <Route path="/brand/space" element={<SpacePage />} />
           <Route path="/space" element={<SpacePage />} />
           <Route path="/brandstory" element={<BrandStoryPage />} />
