@@ -2,6 +2,7 @@ import type { Reservation, ReservationStats, ReservationStatus } from "../types/
 import { isFutureOrTodayReservation } from "./reservationFormat";
 
 export const RESERVATIONS_STORAGE_KEY = "cheongyeon-reservations";
+export const RESERVATIONS_CHANGED_EVENT = "cheongyeon-reservations-changed";
 
 function readReservations(): Reservation[] {
   const raw = localStorage.getItem(RESERVATIONS_STORAGE_KEY);
@@ -20,6 +21,7 @@ function readReservations(): Reservation[] {
 
 function writeReservations(reservations: Reservation[]) {
   localStorage.setItem(RESERVATIONS_STORAGE_KEY, JSON.stringify(reservations));
+  window.dispatchEvent(new Event(RESERVATIONS_CHANGED_EVENT));
 }
 
 export function getReservationsByUser(userId: string) {
@@ -63,6 +65,13 @@ export function getUpcomingReservation(reservations: Reservation[]) {
   return reservations
     .filter(isActiveUpcomingReservation)
     .sort((left, right) => {
+      const leftCreatedAt = new Date(left.createdAt).getTime();
+      const rightCreatedAt = new Date(right.createdAt).getTime();
+
+      if (leftCreatedAt !== rightCreatedAt) {
+        return rightCreatedAt - leftCreatedAt;
+      }
+
       const leftDate = new Date(`${left.date}T${left.time}`);
       const rightDate = new Date(`${right.date}T${right.time}`);
       return leftDate.getTime() - rightDate.getTime();
@@ -92,5 +101,7 @@ export function getReservationStats(reservations: Reservation[]): ReservationSta
 
 export function addReservation(reservation: Reservation) {
   const reservations = readReservations();
-  writeReservations([...reservations, reservation]);
+  const nextReservations = [...reservations, reservation];
+  writeReservations(nextReservations);
+  return nextReservations.filter((item) => item.userId === reservation.userId);
 }

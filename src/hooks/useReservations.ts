@@ -4,6 +4,8 @@ import { createSeedReservations } from "../data/myPageSeed";
 import { useAuth } from "../contexts/AuthContext";
 import type { Reservation } from "../types/mypage";
 import {
+  RESERVATIONS_CHANGED_EVENT,
+  RESERVATIONS_STORAGE_KEY,
   getHistoryReservations,
   getReservationStats,
   getUpcomingReservation,
@@ -27,6 +29,26 @@ export function useReservations() {
 
   useEffect(() => {
     loadReservations();
+  }, [loadReservations]);
+
+  useEffect(() => {
+    const handleReservationsChange = () => {
+      loadReservations();
+    };
+
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === RESERVATIONS_STORAGE_KEY) {
+        loadReservations();
+      }
+    };
+
+    window.addEventListener(RESERVATIONS_CHANGED_EVENT, handleReservationsChange);
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener(RESERVATIONS_CHANGED_EVENT, handleReservationsChange);
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, [loadReservations]);
 
   const upcomingReservation = useMemo(

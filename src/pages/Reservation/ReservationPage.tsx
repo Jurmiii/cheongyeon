@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Badge, Button, Footer, Header, Icon, Input } from "../../components/common";
+import { useAuth } from "../../contexts/AuthContext";
 import {
   RESERVATION_CLASSES_PER_PAGE,
   cardCompanies,
@@ -15,6 +16,8 @@ import {
   type ReservationBranch,
   type ReservationTimeSlot,
 } from "../../data/reservationClasses";
+import type { Reservation } from "../../types/mypage";
+import { addReservation } from "../../utils/reservationStorage";
 import "./ReservationPage.scss";
 
 type PaymentMethod = "card" | "easy";
@@ -51,6 +54,14 @@ function isValidPhone(value: string) {
 
 function startOfDay(date: Date) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function formatDateForStorage(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 }
 
 function getCalendarDates(year: number, month: number) {
@@ -251,6 +262,7 @@ function ReservationCompleteModal({ isOpen, onClose }: ReservationCompleteModalP
 }
 
 function ReservationPage() {
+  const { loginId } = useAuth();
   const today = useMemo(() => startOfDay(new Date()), []);
   const [selectedBranch, setSelectedBranch] = useState<ReservationBranch>(reservationBranches[0]);
   const [reservationName, setReservationName] = useState("");
@@ -277,6 +289,10 @@ function ReservationPage() {
   }, [classPage]);
 
   const maxGuestCount = useMemo(() => getMaxGuestCount(selectedClassId), [selectedClassId]);
+  const selectedClass = useMemo(
+    () => reservationClasses.find((classItem) => classItem.id === selectedClassId) ?? reservationClasses[0],
+    [selectedClassId],
+  );
 
   const handleGuestDecrease = () => {
     setGuestCount((count) => Math.max(1, count - 1));
@@ -303,6 +319,10 @@ function ReservationPage() {
 
   const validateReservation = () => {
     const errors: string[] = [];
+
+    if (!loginId) {
+      errors.push("로그인 후 예약해주세요.");
+    }
 
     if (!selectedBranch) {
       errors.push("지점을 선택해주세요.");
@@ -351,6 +371,21 @@ function ReservationPage() {
     }
 
     setValidationErrors([]);
+    const nextReservation: Reservation = {
+      id: `reservation-${Date.now()}`,
+      userId: loginId as string,
+      classTitle: selectedClass.title,
+      branch: selectedBranch,
+      location: selectedBranch,
+      date: formatDateForStorage(selectedDate),
+      time: selectedTime,
+      guestCount,
+      status: "upcoming",
+      image: selectedClass.image,
+      createdAt: new Date().toISOString(),
+    };
+
+    addReservation(nextReservation);
     setIsCompleteModalOpen(true);
   };
 
