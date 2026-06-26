@@ -56,6 +56,10 @@ function App() {
           <Route path="/reservation/apply" element={<ReservationPage />} />
           <Route path="/reservation/edit" element={<ReservationEditPage />} />
           <Route path="/reservation-edit" element={<ReservationEditPage />} />
+          <Route path="/reservation/notice" element={<NoticePage />}>
+            <Route path=":noticeId" />
+          </Route>
+          <Route path="/reservation/faq" element={<FaqPage />} />
           <Route path="/stamp" element={<StampPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/mypage/stamp" element={<StampPage />} />

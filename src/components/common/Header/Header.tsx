@@ -11,7 +11,7 @@ type HeaderLanguage = "KO" | "EN";
 interface HeaderMenuItem {
   label: string;
   to: string;
-  children: HeaderSubmenuItem[];
+  children?: HeaderSubmenuItem[];
 }
 
 interface HeaderSubmenuItem {
@@ -56,15 +56,15 @@ const gnbMenus: HeaderMenuItem[] = [
   {
     label: "예약",
     to: "/reservation",
-    children: [{ label: "예약하기", to: "/reservation" }],
+    children: [
+      { label: "예약하기", to: "/reservation" },
+      { label: "공지사항", to: "/reservation/notice" },
+      { label: "FAQ", to: "/reservation/faq" },
+    ],
   },
   {
     label: "이벤트",
     to: "/event",
-    children: [
-      { label: "진행중 이벤트", to: "/event" },
-      { label: "공지사항", to: "/event/notice" },
-    ],
   },
 ];
 
@@ -111,9 +111,11 @@ export default function Header() {
             onMouseEnter={() => setActiveDropdown("gnb")}
           >
             {gnbMenus.map((menu) => {
+              const submenuItems = menu.children ?? [];
+              const hasSubmenu = submenuItems.length > 0;
               const isMenuActive =
                 pathMatches(pathname, menu.to) ||
-                menu.children.some((child) => pathMatches(pathname, child.to));
+                submenuItems.some((child) => pathMatches(pathname, child.to));
 
               return (
                 <div
@@ -135,26 +137,30 @@ export default function Header() {
                   >
                     {menu.label}
                   </NavLink>
-                  <span className="site-header__dropdown-line" aria-hidden="true" />
-                  <ul className="site-header__submenu" aria-hidden={activeDropdown !== "gnb"}>
-                    {menu.children.map((child) => (
-                      <li key={child.label}>
-                        <NavLink
-                          className={({ isActive }) =>
-                            getNavLinkClassName(
-                              "site-header__submenu-link ft-18b ink500",
-                              "site-header__submenu-link--active",
-                              isActive,
-                            )
-                          }
-                          end={child.to !== "/event/notice"}
-                          to={child.to}
-                        >
-                          {child.label}
-                        </NavLink>
-                      </li>
-                    ))}
-                  </ul>
+                  {hasSubmenu ? (
+                    <>
+                      <span className="site-header__dropdown-line" aria-hidden="true" />
+                      <ul className="site-header__submenu" aria-hidden={activeDropdown !== "gnb"}>
+                        {submenuItems.map((child) => (
+                          <li key={child.label}>
+                            <NavLink
+                              className={({ isActive }) =>
+                                getNavLinkClassName(
+                                  "site-header__submenu-link ft-18b ink500",
+                                  "site-header__submenu-link--active",
+                                  isActive,
+                                )
+                              }
+                              end={!child.to.endsWith("/notice")}
+                              to={child.to}
+                            >
+                              {child.label}
+                            </NavLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  ) : null}
                 </div>
               );
             })}

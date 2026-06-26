@@ -29,6 +29,12 @@ function parseNoticeDate(date: string) {
 
 function getNoticeBasePath(pathname: string) {
 
+  if (pathname.startsWith("/reservation/notice")) {
+
+    return "/reservation/notice";
+
+  }
+
   return pathname.startsWith("/notice") ? "/notice" : "/event/notice";
 
 }
@@ -108,7 +114,7 @@ function NoticeDetailFrame({ notice, basePath }: NoticeDetailFrameProps) {
 function NoticePage() {
   const location = useLocation();
   const { noticeId } = useParams();
-  const noticeListRef = useRef<HTMLElement>(null);
+  const noticeListRef = useRef<HTMLHeadingElement>(null);
   const contentFrameRef = useRef<HTMLDivElement>(null);
   const basePath = getNoticeBasePath(location.pathname);
   const selectedNotice = noticeId ? getNoticeById(Number(noticeId)) : null;
