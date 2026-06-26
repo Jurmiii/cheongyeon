@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 
@@ -6,28 +6,16 @@ import subSymbol from "../../assets/images/01main/subsymbol.svg";
 
 import { Badge, Button, Footer, Header, Icon } from "../../components/common";
 
-import { faqs } from "../../data/faqs";
-
 import {
   NOTICE_ITEMS_PER_PAGE,
   getNoticeById,
   noticeCategories,
   notices,
   type NoticeCategory,
-  type NoticeSortOrder,
+  type NoticeItem,
 } from "../../data/notices";
 
 import "./NoticePage.scss";
-
-
-
-const sortOptions: { value: NoticeSortOrder; label: string }[] = [
-
-  { value: "latest", label: "최신순" },
-
-  { value: "oldest", label: "오래된순" },
-
-];
 
 
 
@@ -39,20 +27,96 @@ function parseNoticeDate(date: string) {
 
 
 
+function getNoticeBasePath(pathname: string) {
+
+  return pathname.startsWith("/notice") ? "/notice" : "/event/notice";
+
+}
+
+
+
+interface NoticeDetailFrameProps {
+
+  notice: NoticeItem;
+
+  basePath: string;
+
+}
+
+
+
+function NoticeDetailFrame({ notice, basePath }: NoticeDetailFrameProps) {
+
+  return (
+
+    <section className="notice-detail" aria-label="공지사항 상세">
+
+      <div className="notice-detail__grid">
+
+        <header className="notice-detail__head">
+
+          <Badge className="notice-detail__badge" variant="ba1">
+
+            {notice.category}
+
+          </Badge>
+
+          <div className="notice-detail__intro">
+
+            <h2 className="notice-detail__title ft-48b ink500">{notice.title}</h2>
+
+            <p className="notice-detail__summary ft-36r ink500">{notice.description}</p>
+
+          </div>
+
+        </header>
+
+        <div className="notice-detail__content">
+
+          <div className="notice-detail__divider" aria-hidden="true" />
+
+          <p className="notice-detail__body ft-18r ink500">{notice.body}</p>
+
+          <div className="notice-detail__divider" aria-hidden="true" />
+
+        </div>
+
+        <div className="notice-detail__actions">
+
+          <Link className="notice-detail__back-link" to={`${basePath}#notice-list`}>
+
+            <Button className="notice-detail__back-button" variant="btn1">
+
+              목록으로
+
+            </Button>
+
+          </Link>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  );
+
+}
+
+
+
 function NoticePage() {
   const location = useLocation();
+  const { noticeId } = useParams();
   const noticeListRef = useRef<HTMLElement>(null);
+  const contentFrameRef = useRef<HTMLDivElement>(null);
+  const basePath = getNoticeBasePath(location.pathname);
+  const selectedNotice = noticeId ? getNoticeById(Number(noticeId)) : null;
   const [activeCategory, setActiveCategory] = useState<NoticeCategory>("전체");
 
   const [activePage, setActivePage] = useState(1);
 
-  const [sortOrder, setSortOrder] = useState<NoticeSortOrder>("latest");
-
-  const [isSortOpen, setIsSortOpen] = useState(false);
-
   const [listAnimationKey, setListAnimationKey] = useState(0);
-
-  const [openFaqId, setOpenFaqId] = useState<number | null>(null);
 
 
 
@@ -64,15 +128,11 @@ function NoticePage() {
 
 
 
-    return [...categoryFiltered].sort((a, b) => {
+    return [...categoryFiltered].sort(
+      (a, b) => parseNoticeDate(b.date) - parseNoticeDate(a.date),
+    );
 
-      const diff = parseNoticeDate(b.date) - parseNoticeDate(a.date);
-
-      return sortOrder === "latest" ? diff : -diff;
-
-    });
-
-  }, [activeCategory, sortOrder]);
+  }, [activeCategory]);
 
 
 
@@ -116,23 +176,49 @@ function NoticePage() {
 
     setListAnimationKey((key) => key + 1);
 
-  }, [activeCategory, sortOrder]);
+  }, [activeCategory]);
 
 
 
-  useEffect(() => {
+  useLayoutEffect(() => {
 
-    if (location.hash === "#notice-list") {
+    if (selectedNotice) {
 
-      requestAnimationFrame(() => {
+      contentFrameRef.current?.scrollIntoView({ behavior: "auto", block: "start" });
 
-        noticeListRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-
-      });
+      return;
 
     }
 
-  }, [location]);
+    if (location.hash !== "#notice-list") {
+
+      return;
+
+    }
+
+    const scrollToNoticeList = () => {
+
+      noticeListRef.current?.scrollIntoView({ behavior: "auto", block: "start" });
+
+    };
+
+    scrollToNoticeList();
+
+    requestAnimationFrame(() => {
+
+      requestAnimationFrame(scrollToNoticeList);
+
+    });
+
+  }, [location.hash, location.key, selectedNotice?.id]);
+
+
+
+  if (noticeId && !selectedNotice) {
+
+    return <Navigate to={basePath} replace />;
+
+  }
 
 
 
@@ -155,26 +241,6 @@ function NoticePage() {
     setActiveCategory(category);
 
     setActivePage(1);
-
-  };
-
-
-
-  const handleSortChange = (order: NoticeSortOrder) => {
-
-    setSortOrder(order);
-
-    setIsSortOpen(false);
-
-    setActivePage(1);
-
-  };
-
-
-
-  const handleFaqToggle = (faqId: number) => {
-
-    setOpenFaqId((currentId) => (currentId === faqId ? null : faqId));
 
   };
 
@@ -212,11 +278,17 @@ function NoticePage() {
 
       </section>
 
-      <section className="notice-content" id="notice-list" ref={noticeListRef} aria-label="공지 목록">
+      {selectedNotice ? (
+        <div className="notice-content-frame" ref={contentFrameRef}>
+          <NoticeDetailFrame notice={selectedNotice} basePath={basePath} />
+        </div>
+      ) : (
+        <>
+      <section className="notice-content" aria-label="공지 목록">
 
         <div className="notice-content__grid">
 
-          <h2 className="notice-content__title ft-48b ink500">공지 목록</h2>
+          <h2 className="notice-content__title ft-48b ink500" id="notice-list" ref={noticeListRef}>공지 목록</h2>
 
           <div className="notice-content__filters" role="tablist" aria-label="공지 카테고리">
 
@@ -260,82 +332,6 @@ function NoticePage() {
 
           <div className="notice-content__body">
 
-            <div
-
-              className={["notice-content__sort-wrap", isSortOpen && "notice-content__sort-wrap--open"]
-
-                .filter(Boolean)
-
-                .join(" ")}
-
-            >
-
-              <button
-
-                className="notice-content__sort ft-18r ink500"
-
-                type="button"
-
-                aria-haspopup="listbox"
-
-                aria-expanded={isSortOpen}
-
-                onClick={() => setIsSortOpen((open) => !open)}
-
-              >
-
-                <span className="notice-content__sort-label">{sortOptions.find((option) => option.value === sortOrder)?.label}</span>
-
-                <Icon className="notice-content__sort-icon" name="angle-down" aria-hidden="true" />
-
-              </button>
-
-              <ul className="notice-content__sort-menu" role="listbox" aria-label="정렬 방식">
-
-                {sortOptions.map((option) => (
-
-                  <li key={option.value}>
-
-                    <button
-
-                      className={[
-
-                        "notice-content__sort-option",
-
-                        "ft-18r",
-
-                        "ink500",
-
-                        option.value === sortOrder && "notice-content__sort-option--active",
-
-                      ]
-
-                        .filter(Boolean)
-
-                        .join(" ")}
-
-                      type="button"
-
-                      role="option"
-
-                      aria-selected={option.value === sortOrder}
-
-                      onClick={() => handleSortChange(option.value)}
-
-                    >
-
-                      {option.label}
-
-                    </button>
-
-                  </li>
-
-                ))}
-
-              </ul>
-
-            </div>
-
             <ul className="notice-content__list notice-content__list--animated" key={listAnimationKey}>
 
               {paginatedNotices.map((notice, index) => (
@@ -350,7 +346,7 @@ function NoticePage() {
 
                 >
 
-                  <Link className="notice-content__card" to={`/event/notice/${notice.id}`}>
+                  <Link className="notice-content__card" to={`${basePath}/${notice.id}`}>
 
                     <div className="notice-content__card-main">
 
@@ -475,74 +471,8 @@ function NoticePage() {
         </div>
 
       </section>
-
-      <section className="notice-faq" aria-label="자주 묻는 질문">
-
-        <div className="notice-faq__grid">
-
-          <h2 className="notice-faq__title ft-48b ink500">자주 묻는 질문</h2>
-
-          <ul className="notice-faq__list">
-
-            {faqs.map((faq) => {
-
-              const isOpen = openFaqId === faq.id;
-
-
-
-              return (
-
-                <li
-
-                  className={["notice-faq__item", isOpen && "notice-faq__item--open"].filter(Boolean).join(" ")}
-
-                  key={faq.id}
-
-                >
-
-                  <button
-
-                    className="notice-faq__question"
-
-                    type="button"
-
-                    aria-expanded={isOpen}
-
-                    onClick={() => handleFaqToggle(faq.id)}
-
-                  >
-
-                    <span className="notice-faq__mark notice-faq__mark--question ft-28b ink500">Q</span>
-
-                    <span className="notice-faq__question-text ft-28b ink500">{faq.question}</span>
-
-                    <Icon className="notice-faq__chevron ink500" name="angle-down" aria-hidden="true" />
-
-                  </button>
-
-                  <div className="notice-faq__answer-wrap" aria-hidden={!isOpen}>
-
-                    <div className="notice-faq__answer">
-
-                      <span className="notice-faq__mark notice-faq__mark--answer ft-22b ink500">A.</span>
-
-                      <p className="notice-faq__answer-text ft-22r ink500">{faq.answer}</p>
-
-                    </div>
-
-                  </div>
-
-                </li>
-
-              );
-
-            })}
-
-          </ul>
-
-        </div>
-
-      </section>
+        </>
+      )}
 
       <Footer />
 
@@ -555,47 +485,4 @@ function NoticePage() {
 
 
 export default NoticePage;
-
-export function NoticeDetailPage() {
-  const { noticeId } = useParams();
-  const notice = getNoticeById(Number(noticeId));
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [noticeId]);
-
-  if (!notice) {
-    return <Navigate to="/event/notice" replace />;
-  }
-
-  return (
-    <main className="notice-detail-page">
-      <section className="notice-detail" aria-label="공지사항 상세">
-        <div className="notice-detail__grid">
-          <header className="notice-detail__head">
-            <Badge className="notice-detail__badge" variant="ba1">
-              {notice.category}
-            </Badge>
-            <div className="notice-detail__intro">
-              <h1 className="notice-detail__title ft-48b ink500">{notice.title}</h1>
-              <p className="notice-detail__summary ft-36r ink500">{notice.description}</p>
-            </div>
-          </header>
-          <div className="notice-detail__content">
-            <div className="notice-detail__divider" aria-hidden="true" />
-            <p className="notice-detail__body ft-18r ink500">{notice.body}</p>
-            <div className="notice-detail__divider" aria-hidden="true" />
-          </div>
-          <div className="notice-detail__actions">
-            <Link className="notice-detail__back-link" to="/event/notice#notice-list">
-              <Button className="notice-detail__back-button" variant="btn1">
-                목록으로
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-    </main>
-  );
-}
 

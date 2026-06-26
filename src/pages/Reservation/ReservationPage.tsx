@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Badge, Button, Footer, Header, Icon, Input } from "../../components/common";
@@ -8,6 +8,7 @@ import {
   cardCompanies,
   installmentPlans,
   reservationBranches,
+  reservationBranchAddresses,
   reservationClasses,
   reservationNoticeSections,
   reservationTimeSlots,
@@ -20,11 +21,18 @@ import type { Reservation } from "../../types/mypage";
 import { addReservation } from "../../utils/reservationStorage";
 import "./ReservationPage.scss";
 
-type PaymentMethod = "card" | "easy";
+type PaymentMethod = "card" | "bank";
 
 type PaymentDropdown = "cardCompany" | "installment" | null;
 
 const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
+
+/** 무통장입금 계좌 정보 */
+const BANK_ACCOUNT = {
+  bank: "국민은행",
+  number: "123456-04-567890",
+  holder: "(주)청연",
+} as const;
 
 /** 계절 클래스(id 1~4)는 메인 사계절 호버 색상, 나머지는 "나만의 차" 색(--deep500) */
 const CLASS_BADGE_SEASON_MODIFIER: Record<number, string> = {
@@ -279,7 +287,12 @@ function ReservationPage() {
   const [savePaymentMethod, setSavePaymentMethod] = useState(false);
   const [isNoticeOpen, setIsNoticeOpen] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [fieldErrors, setFieldErrors] = useState<{ name: boolean; phone: boolean }>({
+    name: false,
+    phone: false,
+  });
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const customerInfoRef = useRef<HTMLDivElement>(null);
 
   const totalClassPages = Math.ceil(reservationClasses.length / RESERVATION_CLASSES_PER_PAGE);
 
@@ -364,13 +377,24 @@ function ReservationPage() {
   const handleReservationSubmit = () => {
     const errors = validateReservation();
 
+    const nextFieldErrors = {
+      name: !reservationName.trim(),
+      phone: !reservationPhone.trim() || !isValidPhone(reservationPhone),
+    };
+    setFieldErrors(nextFieldErrors);
+
     if (errors.length > 0) {
       setValidationErrors(errors);
       setIsCompleteModalOpen(false);
+
+      if (nextFieldErrors.name || nextFieldErrors.phone) {
+        customerInfoRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
       return;
     }
 
     setValidationErrors([]);
+    setFieldErrors({ name: false, phone: false });
     const nextReservation: Reservation = {
       id: `reservation-${Date.now()}`,
       userId: loginId as string,
@@ -434,21 +458,26 @@ function ReservationPage() {
                 </button>
               ))}
             </div>
+            <p className="reservation-form__branch-address ft-18r ink300">
+              <Icon className="reservation-form__branch-address-icon" name="location-dot" aria-hidden="true" />
+              <span>{reservationBranchAddresses[selectedBranch]}</span>
+            </p>
           </div>
 
-          <div className="reservation-form__row">
+          <div className="reservation-form__row" ref={customerInfoRef}>
             <div className="reservation-form__field">
               <label className="reservation-form__label ft-18b ink500" htmlFor="reservation-name">
                 * 예약자명
               </label>
               <Input
                 id="reservation-name"
-                state="in1"
+                state={fieldErrors.name ? "in3" : "in1"}
                 placeholder="이름을 입력하세요"
                 value={reservationName}
                 onChange={(event) => {
                   setReservationName(event.target.value);
                   setValidationErrors([]);
+                  setFieldErrors((prev) => ({ ...prev, name: false }));
                 }}
               />
             </div>
@@ -458,13 +487,14 @@ function ReservationPage() {
               </label>
               <Input
                 id="reservation-phone"
-                state="in1"
+                state={fieldErrors.phone ? "in3" : "in1"}
                 placeholder="휴대폰 번호를 입력하세요"
                 type="tel"
                 value={reservationPhone}
                 onChange={(event) => {
                   setReservationPhone(event.target.value);
                   setValidationErrors([]);
+                  setFieldErrors((prev) => ({ ...prev, phone: false }));
                 }}
               />
             </div>
@@ -678,21 +708,22 @@ function ReservationPage() {
               className={[
                 "reservation-payment__tab",
                 "ft-22b",
-                paymentMethod === "easy" && "reservation-payment__tab--active",
+                paymentMethod === "bank" && "reservation-payment__tab--active",
               ]
                 .filter(Boolean)
                 .join(" ")}
               type="button"
               role="tab"
-              aria-selected={paymentMethod === "easy"}
+              aria-selected={paymentMethod === "bank"}
               onClick={() => {
-                setPaymentMethod("easy");
+                setPaymentMethod("bank");
                 setOpenPaymentDropdown(null);
               }}
             >
-              간편결제
+              무통장입금
             </button>
           </div>
+          {paymentMethod === "card" ? (
           <div className="reservation-payment__selects">
             <div
               className={[
@@ -779,6 +810,27 @@ function ReservationPage() {
               </ul>
             </div>
           </div>
+          ) : (
+            <div className="reservation-payment__bank" role="group" aria-label="무통장입금 계좌 안내">
+              <p className="reservation-payment__bank-guide ft-18r ink500">
+                아래 계좌로 입금해주시면 예약이 확정됩니다.
+              </p>
+              <dl className="reservation-payment__bank-info">
+                <div className="reservation-payment__bank-row">
+                  <dt className="reservation-payment__bank-term ft-18r ink300">입금 은행</dt>
+                  <dd className="reservation-payment__bank-desc ft-22b ink500">{BANK_ACCOUNT.bank}</dd>
+                </div>
+                <div className="reservation-payment__bank-row">
+                  <dt className="reservation-payment__bank-term ft-18r ink300">계좌번호</dt>
+                  <dd className="reservation-payment__bank-desc ft-22b ink500">{BANK_ACCOUNT.number}</dd>
+                </div>
+                <div className="reservation-payment__bank-row">
+                  <dt className="reservation-payment__bank-term ft-18r ink300">예금주</dt>
+                  <dd className="reservation-payment__bank-desc ft-22b ink500">{BANK_ACCOUNT.holder}</dd>
+                </div>
+              </dl>
+            </div>
+          )}
           <label className="reservation-payment__remember ft-18r ink500">
             <input
               className="reservation-payment__checkbox"

@@ -178,9 +178,8 @@
   box-sizing: border-box;
   width: 120rem;
   max-width: 100%;
-  height: 100vh;
   min-height: 44.6875rem;
-  padding: 0 15rem;
+  padding: 7.5rem 15rem;
   background: var(--deep700);
 }
 
@@ -274,6 +273,12 @@
   border-radius: 6.25rem;
   color: var(--deep500);
   background: transparent;
+  cursor: pointer;
+  font: inherit;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
 
   &--active {
     border-color: transparent;
@@ -296,7 +301,6 @@
 
 @media (max-width: 64rem) {
   .class-intro-scroll {
-    height: auto;
     min-height: auto;
     padding-block: 3rem;
   }
@@ -612,7 +616,6 @@
   }
 }
 
-
 .class-intro-review {
   width: 120rem;
   max-width: 100%;
@@ -646,30 +649,41 @@
   position: relative;
   width: 100%;
   height: 35.1875rem;
-  margin: 0;
   overflow: hidden;
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+
+  &:active {
+    cursor: grabbing;
+  }
 }
 
 .class-intro-review__image {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   max-width: none;
   height: 100%;
   object-fit: cover;
   object-position: center;
+  will-change: transform, opacity;
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
 
-  /* 알파 반전 스프라이트를 마스크로 사용. 리빌 전(첫 프레임)에는 마스크가 비어
-     이미지가 숨겨지고, 중앙부터 잉크 모양으로 번지며 드러난다 */
-  -webkit-mask-image: url("../../assets/images/08class/ink-transition-sprite-inverted.png");
-  mask-image: url("../../assets/images/08class/ink-transition-sprite-inverted.png");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 4000% 100%;
-  mask-size: 4000% 100%;
-  -webkit-mask-position: 0% 0;
-  mask-position: 0% 0;
-
-  .is-active & {
+  /* 활성(들어오는) 이미지만 잉크 마스크로 번지며 드러난다.
+     비활성 이미지는 마스크가 없어 스와이프로 빠져나갈 때 그대로 보인다 */
+  &.is-active {
+    -webkit-mask-image: url("../../assets/images/08class/ink-transition-sprite-inverted.png");
+    mask-image: url("../../assets/images/08class/ink-transition-sprite-inverted.png");
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 4000% 100%;
+    mask-size: 4000% 100%;
+    -webkit-mask-position: 0% 0;
+    mask-position: 0% 0;
     animation: class-intro-ink-transition 2s steps(39) 0.2s forwards;
   }
 }
@@ -764,8 +778,6 @@
   z-index: 1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
   width: 100%;
   max-width: 24rem;
 }
@@ -821,39 +833,6 @@
   transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.class-intro-review__arrows {
-  display: flex;
-  flex-shrink: 0;
-  gap: 0.75rem;
-}
-
-.class-intro-review__arrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  font-size: 1.5rem;
-  line-height: 1;
-  color: var(--ink500);
-  opacity: 0.85;
-  cursor: pointer;
-  transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
-
-  &:hover {
-    opacity: 1;
-  }
-
-  &:active {
-    transform: scale(0.92);
-  }
-}
-
 @media (max-width: 90rem) {
   .class-intro-review {
     padding-inline: 1.5rem;
@@ -886,12 +865,5 @@
 
   .class-intro-review__content {
     gap: 2rem;
-  }
-}
-
-/* 후기 잉크 리빌은 브랜드 핵심 연출이라 동작 줄이기 환경에서도 재생한다 */
-@media (prefers-reduced-motion: reduce) {
-  .class-intro-review__figure.is-active .class-intro-review__image {
-    animation-duration: 1.2s;
   }
 }

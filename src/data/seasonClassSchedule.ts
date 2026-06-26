@@ -7,6 +7,8 @@ import seasonClassScheduleDivider from "../assets/images/09season-class/season-c
 
 export type SeatDotState = "filled" | "empty";
 
+export type SeatSlotState = "available" | "closed";
+
 export const SEASON_CLASS_SCHEDULE_TOTAL_SEATS = 5;
 
 export const SEASON_CLASS_SCHEDULE_WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"] as const;
@@ -79,6 +81,18 @@ export function canGoToPreviousMonth(viewMonth: Date, today: Date) {
   return viewStart.getTime() > currentStart.getTime();
 }
 
+/** 잔여석 수만큼 동그라미를 채워 표시 */
+export function getSeatSlots(remainingSeats: number): SeatSlotState[] {
+  const available = Math.max(
+    0,
+    Math.min(SEASON_CLASS_SCHEDULE_TOTAL_SEATS, remainingSeats),
+  );
+
+  return Array.from({ length: SEASON_CLASS_SCHEDULE_TOTAL_SEATS }, (_, index) =>
+    index < available ? "available" : "closed",
+  );
+}
+
 /** 잔여석 → 예약된 좌석 수만큼 왼쪽부터 채움 (반쪽 없음) */
 export function getSeatDots(remainingSeats: number): SeatDotState[] {
   const booked = Math.max(
@@ -112,6 +126,22 @@ export function getScheduleDaysForMonth(year: number, month: number, today: Date
       weekday: SEASON_CLASS_SCHEDULE_WEEKDAY_LABELS[date.getDay()],
       date,
       remainingSeats: getRemainingSeatsMock(year, month, day),
+    });
+  }
+
+  if (lastDay === 30) {
+    const nextMonthDate = new Date(year, month + 1, 1);
+
+    days.push({
+      id: `${nextMonthDate.getFullYear()}-${nextMonthDate.getMonth() + 1}-1`,
+      day: 1,
+      weekday: SEASON_CLASS_SCHEDULE_WEEKDAY_LABELS[nextMonthDate.getDay()],
+      date: nextMonthDate,
+      remainingSeats: getRemainingSeatsMock(
+        nextMonthDate.getFullYear(),
+        nextMonthDate.getMonth(),
+        1,
+      ),
     });
   }
 

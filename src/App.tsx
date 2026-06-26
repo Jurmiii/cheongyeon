@@ -6,7 +6,8 @@ import SeasonClassPage from './pages/Class/SeasonClassPage'
 import ComponentPreview from './pages/ComponentPreview'
 import MainPage from './pages/MainPage'
 import ReservationPage from './pages/Reservation/ReservationPage'
-import NoticePage, { NoticeDetailPage } from './pages/Notice/NoticePage'
+import NoticePage from './pages/Notice/NoticePage'
+import FaqPage from './pages/Faq/FaqPage'
 import EventPage from './pages/Event/EventPage'
 import LoginPage from './pages/Login/LoginPage'
 import SignupPage from './pages/Signup/SignupPage'
@@ -21,11 +22,15 @@ import TeaStorePage from './pages/TeaStore/TeaStorePage'
 import MyPageRoute from './pages/MyPage/MyPageRoute'
 
 function RouteScrollReset() {
-  const { key, pathname, search } = useLocation()
+  const { key, pathname, search, hash } = useLocation()
 
   useLayoutEffect(() => {
+    if (hash) {
+      return
+    }
+
     window.scrollTo(0, 0)
-  }, [key, pathname, search])
+  }, [key, pathname, search, hash])
 
   return null
 }
@@ -54,10 +59,14 @@ function App() {
           <Route path="/mypage/stamp" element={<StampPage />} />
           <Route path="/event" element={<EventPage />} />
           <Route path="/event/ongoing" element={<EventPage />} />
-          <Route path="/event/notice" element={<NoticePage />} />
-          <Route path="/event/notice/:noticeId" element={<NoticeDetailPage />} />
-          <Route path="/notice" element={<NoticePage />} />
-          <Route path="/notice/:noticeId" element={<NoticeDetailPage />} />
+          <Route path="/event/notice" element={<NoticePage />}>
+            <Route path=":noticeId" />
+          </Route>
+          <Route path="/notice" element={<NoticePage />}>
+            <Route path=":noticeId" />
+          </Route>
+          <Route path="/faq" element={<FaqPage />} />
+          <Route path="/event/faq" element={<FaqPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/sign-up" element={<SignupPage />} />

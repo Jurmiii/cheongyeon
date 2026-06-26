@@ -35,7 +35,7 @@ import {
   getCalendarGridDates,
   getCupImage,
   getScheduleDaysForMonth,
-  getSeatDots,
+  getSeatSlots,
   isBeforeDay,
   isSameDay,
   isSameMonthView,
@@ -550,8 +550,6 @@ function SeasonClassScheduleSection() {
   const [viewMonth, setViewMonth] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
   const [activeIndex, setActiveIndex] = useState(0);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const scrollbarRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [trackOffset, setTrackOffset] = useState(0);
@@ -568,7 +566,6 @@ function SeasonClassScheduleSection() {
   );
 
   const lastIndex = Math.max(0, scheduleDays.length - 1);
-  const thumbOffsetPercent = lastIndex > 0 ? (activeIndex / lastIndex) * 100 : 0;
   const canGoPrevMonth = canGoToPreviousMonth(viewMonth, today);
   const selectedDay = scheduleDays[activeIndex] ?? scheduleDays[0];
 
@@ -685,60 +682,6 @@ function SeasonClassScheduleSection() {
     selectDay(day);
   };
 
-  const setIndexFromClientX = useCallback(
-    (clientX: number) => {
-      const track = scrollbarRef.current;
-      if (!track) {
-        return;
-      }
-
-      const rect = track.getBoundingClientRect();
-      const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-      setActiveIndex(Math.round(ratio * lastIndex));
-    },
-    [lastIndex],
-  );
-
-  const handleScrollbarPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    event.currentTarget.setPointerCapture(event.pointerId);
-    setIsDragging(true);
-    setIndexFromClientX(event.clientX);
-  };
-
-  const handleScrollbarPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDragging) {
-      return;
-    }
-
-    setIndexFromClientX(event.clientX);
-  };
-
-  const handleScrollbarPointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDragging) {
-      return;
-    }
-
-    setIsDragging(false);
-    event.currentTarget.releasePointerCapture(event.pointerId);
-  };
-
-  const handleScrollbarKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      setActiveIndex((prev) => Math.max(0, prev - 1));
-    } else if (event.key === "ArrowRight") {
-      event.preventDefault();
-      setActiveIndex((prev) => Math.min(lastIndex, prev + 1));
-    } else if (event.key === "Home") {
-      event.preventDefault();
-      setActiveIndex(0);
-    } else if (event.key === "End") {
-      event.preventDefault();
-      setActiveIndex(lastIndex);
-    }
-  };
-
   return (
     <section className="season-schedule" aria-label={SEASON_CLASS_SCHEDULE_TITLE}>
       <header className="season-schedule__header">
@@ -843,23 +786,17 @@ function SeasonClassScheduleSection() {
 
       <div className="season-schedule__carousel" ref={carouselRef}>
         {scheduleDays.length > 0 ? (
-          <>
-            <div
-              ref={trackRef}
-              className={[
-                "season-schedule__track",
-                isDragging && "season-schedule__track--dragging",
-              ]
-                .filter(Boolean)
-                .join(" ")}
-              style={{ transform: `translateX(${trackOffset}px)` }}
-            >
-              {scheduleDays.map((item, index) => {
-                const isActive = index === activeIndex;
-                const seatDots = getSeatDots(item.remainingSeats);
-                const cupImage = getCupImage(item.remainingSeats);
+          <div
+            ref={trackRef}
+            className="season-schedule__track"
+            style={{ transform: `translateX(${trackOffset}px)` }}
+          >
+            {scheduleDays.map((item, index) => {
+              const isActive = index === activeIndex;
+              const seatSlots = getSeatSlots(item.remainingSeats);
+              const cupImage = getCupImage(item.remainingSeats);
 
-                return (
+              return (
                   <article
                     key={item.id}
                     className={["season-schedule__card", isActive && "season-schedule__card--active"]
@@ -889,7 +826,7 @@ function SeasonClassScheduleSection() {
 
                       <div className="season-schedule__seats">
                         <div className="season-schedule__dots" aria-hidden="true">
-                          {seatDots.map((state, dotIndex) => (
+                          {seatSlots.map((state, dotIndex) => (
                             <span
                               key={`${item.id}-dot-${dotIndex}`}
                               className={["season-schedule__dot", `season-schedule__dot--${state}`].join(" ")}
@@ -901,32 +838,8 @@ function SeasonClassScheduleSection() {
                     </button>
                   </article>
                 );
-              })}
-            </div>
-
-            <div
-              ref={scrollbarRef}
-              className={["season-schedule__scrollbar", isDragging && "season-schedule__scrollbar--dragging"]
-                .filter(Boolean)
-                .join(" ")}
-              role="slider"
-              aria-label="일정 카드 위치"
-              aria-valuemin={0}
-              aria-valuemax={lastIndex}
-              aria-valuenow={activeIndex}
-              tabIndex={0}
-              onPointerDown={handleScrollbarPointerDown}
-              onPointerMove={handleScrollbarPointerMove}
-              onPointerUp={handleScrollbarPointerUp}
-              onPointerCancel={handleScrollbarPointerUp}
-              onKeyDown={handleScrollbarKeyDown}
-            >
-              <div
-                className="season-schedule__scrollbar-thumb"
-                style={{ left: `${thumbOffsetPercent}%` }}
-              />
-            </div>
-          </>
+            })}
+          </div>
         ) : (
           <p className="season-schedule__empty ft-22r ink500">이번 달 예약 가능한 일정이 없습니다.</p>
         )}

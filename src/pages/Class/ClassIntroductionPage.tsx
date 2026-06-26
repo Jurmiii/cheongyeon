@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Footer, Header } from "../../components/common";
 import subSymbol from "../../assets/images/01main/subsymbol.svg";
 import classIntroImage from "../../assets/images/08class/class-introduction-2-1.webp";
@@ -12,26 +11,28 @@ import { classIntroductionReviews } from "../../data/classIntroductionReviews";
 import { classIntroductionSlides } from "../../data/classIntroductionSlides";
 import "./ClassIntroductionPage.scss";
 
-const INK_REVEAL_MS = 2500;
 const AUTO_ADVANCE_MS = 4000;
+const REVIEW_SWIPE_MS = 850;
+const REVIEW_SWIPE_THRESHOLD = 40;
+
+function getReviewSwipeDirection(from: number, to: number, count: number) {
+  if (from === to) {
+    return 0;
+  }
+
+  const forward = (to - from + count) % count;
+  const backward = (from - to + count) % count;
+
+  return forward <= backward ? 1 : -1;
+}
 
 function ClassIntroductionScrollSection() {
-  const sectionRef = useRef<HTMLElement>(null);
   const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const previousIndexRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // 핀 + 한 계절씩 스냅 (메인 사계절 차와 동일 방식 — 네이티브 스크롤이라 절대 갇히지 않음)
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
-    const section = sectionRef.current;
-    if (!section) {
-      return;
-    }
-
-    const slideCount = classIntroductionSlides.length;
     const images = imageRefs.current.filter(Boolean) as HTMLImageElement[];
     const panels = panelRefs.current.filter(Boolean) as HTMLDivElement[];
 
@@ -39,64 +40,20 @@ function ClassIntroductionScrollSection() {
       return;
     }
 
-    const getStableIndex = (progress: number) =>
-      Math.min(slideCount - 1, Math.max(0, Math.round(progress * (slideCount - 1))));
-
     gsap.set(images, { xPercent: 100, autoAlpha: 0 });
     gsap.set(images[0], { xPercent: 0, autoAlpha: 1 });
     gsap.set(panels, { autoAlpha: 0, y: 12 });
     gsap.set(panels[0], { autoAlpha: 1, y: 0 });
     previousIndexRef.current = 0;
-
-    let currentIndex = 0;
-
-    const refreshScroll = () => ScrollTrigger.refresh();
-
-    const context = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        end: () => `+=${window.innerHeight * (slideCount - 1)}`,
-        pin: true,
-        pinSpacing: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        snap: {
-          snapTo: (progress) => getStableIndex(progress) / (slideCount - 1),
-          delay: 0.08,
-          duration: { min: 0.28, max: 0.45 },
-          ease: "power3.out",
-          inertia: false,
-        },
-        onUpdate: (self) => {
-          const nextIndex = getStableIndex(self.progress);
-          if (nextIndex === currentIndex) {
-            return;
-          }
-
-          currentIndex = nextIndex;
-          setActiveIndex(nextIndex);
-        },
-      });
-    }, sectionRef);
-
-    images.forEach((image) => {
-      if (image.complete) {
-        return;
-      }
-      image.addEventListener("load", refreshScroll, { once: true });
-    });
-
-    requestAnimationFrame(refreshScroll);
-    window.addEventListener("load", refreshScroll);
-    window.addEventListener("resize", refreshScroll);
-
-    return () => {
-      window.removeEventListener("load", refreshScroll);
-      window.removeEventListener("resize", refreshScroll);
-      context.revert();
-    };
   }, []);
+
+  const goToSlide = useCallback((index: number) => {
+    if (index === activeIndex) {
+      return;
+    }
+
+    setActiveIndex(index);
+  }, [activeIndex]);
 
   // activeIndex 변경 시 한 장씩 부드럽게 전환
   useEffect(() => {
@@ -139,7 +96,7 @@ function ClassIntroductionScrollSection() {
   }, [activeIndex]);
 
   return (
-    <section className="class-intro-scroll" ref={sectionRef} aria-label="클래스 유형">
+    <section className="class-intro-scroll" aria-label="클래스 유형">
       <div className="class-intro-scroll__grid">
         <div className="class-intro-scroll__stage">
           <div className="class-intro-scroll__media" aria-live="polite">
@@ -172,20 +129,23 @@ function ClassIntroductionScrollSection() {
                   <p className="class-intro-scroll__description ft-22r ink500">{slide.description}</p>
                 </div>
 
-                <div className="class-intro-scroll__filters" aria-label="클래스 유형">
+                <div className="class-intro-scroll__filters" role="tablist" aria-label="클래스 유형">
                   {classIntroductionSlides.map((filterSlide, filterIndex) => (
-                    <span
+                    <button
                       key={filterSlide.key}
+                      type="button"
+                      role="tab"
                       className={[
                         "class-intro-scroll__filter ft-16r",
                         filterIndex === activeIndex && "class-intro-scroll__filter--active",
                       ]
                         .filter(Boolean)
                         .join(" ")}
-                      aria-current={filterIndex === activeIndex ? "true" : undefined}
+                      aria-selected={filterIndex === activeIndex}
+                      onClick={() => goToSlide(filterIndex)}
                     >
                       {filterSlide.filterLabel}
-                    </span>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -320,69 +280,145 @@ function ClassIntroductionCtaSection() {
 
 function ClassIntroductionReviewSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
+  const swipeStartRef = useRef<{ x: number; y: number } | null>(null);
+  const activeIndexRef = useRef(0);
+  const previousIndexRef = useRef(0);
   const hasTriggeredRef = useRef(false);
   const isTransitioningRef = useRef(false);
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
-  const [inkNonce, setInkNonce] = useState(0);
-
-  const finishFadeIn = useCallback(() => {
-    isTransitioningRef.current = false;
-  }, []);
-
-  const startFadeIn = useCallback((index: number) => {
-    isTransitioningRef.current = true;
-    setActiveIndex(index);
-    setRevealed(true);
-    setInkNonce((nonce) => nonce + 1);
-  }, []);
-
-  const handleFadeAnimationEnd = useCallback(
-    (event: React.AnimationEvent<HTMLElement>) => {
-      if (event.animationName !== "class-intro-ink-transition") {
-        return;
-      }
-
-      finishFadeIn();
-    },
-    [finishFadeIn],
-  );
-
-  const goToSlide = useCallback(
-    (index: number) => {
-      if (index === activeIndex || isTransitioningRef.current) {
-        return;
-      }
-
-      startFadeIn(index);
-    },
-    [activeIndex, startFadeIn],
-  );
 
   const reviewCount = classIntroductionReviews.length;
 
-  const handlePrevReview = useCallback(() => {
-    goToSlide((activeIndex - 1 + reviewCount) % reviewCount);
-  }, [activeIndex, goToSlide, reviewCount]);
+  const finishTransition = useCallback(() => {
+    isTransitioningRef.current = false;
+  }, []);
 
-  const handleNextReview = useCallback(() => {
-    goToSlide((activeIndex + 1) % reviewCount);
-  }, [activeIndex, goToSlide, reviewCount]);
-
-  useEffect(() => {
-    if (!revealed) {
-      return undefined;
+  const advanceReview = useCallback((index: number) => {
+    if (activeIndexRef.current === index && hasTriggeredRef.current) {
+      return;
     }
 
-    const fallbackTimer = window.setTimeout(() => {
-      finishFadeIn();
-    }, INK_REVEAL_MS + 150);
+    hasTriggeredRef.current = true;
+    setRevealed(true);
+    setActiveIndex(index);
+  }, []);
 
-    return () => {
-      window.clearTimeout(fallbackTimer);
-    };
-  }, [finishFadeIn, revealed, inkNonce]);
+  const goToNextReview = useCallback(() => {
+    if (isTransitioningRef.current) {
+      return;
+    }
+
+    advanceReview((activeIndexRef.current + 1) % reviewCount);
+  }, [advanceReview, reviewCount]);
+
+  const goToPrevReview = useCallback(() => {
+    if (isTransitioningRef.current) {
+      return;
+    }
+
+    advanceReview((activeIndexRef.current - 1 + reviewCount) % reviewCount);
+  }, [advanceReview, reviewCount]);
+
+  const handleReviewPointerDown = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    swipeStartRef.current = { x: event.clientX, y: event.clientY };
+
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      /* pointer capture 미지원 환경 무시 */
+    }
+  }, []);
+
+  const handleReviewPointerUp = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      const swipeStart = swipeStartRef.current;
+
+      if (!swipeStart) {
+        return;
+      }
+
+      swipeStartRef.current = null;
+
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+
+      const deltaX = event.clientX - swipeStart.x;
+      const deltaY = event.clientY - swipeStart.y;
+
+      if (Math.abs(deltaX) < REVIEW_SWIPE_THRESHOLD || Math.abs(deltaX) < Math.abs(deltaY)) {
+        return;
+      }
+
+      if (deltaX < 0) {
+        goToNextReview();
+        return;
+      }
+
+      goToPrevReview();
+    },
+    [goToNextReview, goToPrevReview],
+  );
+
+  const handleReviewPointerCancel = useCallback(() => {
+    swipeStartRef.current = null;
+  }, []);
+
+  useEffect(() => {
+    const images = imageRefs.current.filter(Boolean) as HTMLImageElement[];
+
+    if (images.length === 0) {
+      return;
+    }
+
+    gsap.set(images, { xPercent: 100, autoAlpha: 0 });
+    gsap.set(images[0], { xPercent: 0, autoAlpha: 1 });
+    previousIndexRef.current = 0;
+    activeIndexRef.current = 0;
+  }, []);
+
+  useEffect(() => {
+    const images = imageRefs.current.filter(Boolean) as HTMLImageElement[];
+    const previousIndex = previousIndexRef.current;
+
+    if (previousIndex === activeIndex || !images[activeIndex]) {
+      return;
+    }
+
+    const direction = getReviewSwipeDirection(previousIndex, activeIndex, reviewCount);
+
+    if (direction === 0) {
+      return;
+    }
+
+    isTransitioningRef.current = true;
+    activeIndexRef.current = activeIndex;
+
+    gsap.to(images[previousIndex], {
+      xPercent: -100 * direction,
+      autoAlpha: 0,
+      duration: REVIEW_SWIPE_MS / 1000,
+      ease: "power3.out",
+      overwrite: "auto",
+    });
+    gsap.fromTo(
+      images[activeIndex],
+      { xPercent: 100 * direction, autoAlpha: 1 },
+      {
+        xPercent: 0,
+        autoAlpha: 1,
+        duration: REVIEW_SWIPE_MS / 1000,
+        ease: "power3.out",
+        overwrite: "auto",
+        onComplete: finishTransition,
+      },
+    );
+
+    previousIndexRef.current = activeIndex;
+  }, [activeIndex, finishTransition, reviewCount]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -396,8 +432,7 @@ function ClassIntroductionReviewSection() {
         return;
       }
 
-      hasTriggeredRef.current = true;
-      startFadeIn(0);
+      advanceReview(0);
     };
 
     const observer = new IntersectionObserver(
@@ -425,10 +460,10 @@ function ClassIntroductionReviewSection() {
     return () => {
       observer.disconnect();
     };
-  }, [startFadeIn]);
+  }, [advanceReview]);
 
   useEffect(() => {
-    if (!revealed) {
+    if (!revealed || reviewCount <= 1) {
       return undefined;
     }
 
@@ -437,14 +472,13 @@ function ClassIntroductionReviewSection() {
         return;
       }
 
-      const nextIndex = (activeIndex + 1) % classIntroductionReviews.length;
-      startFadeIn(nextIndex);
+      advanceReview((activeIndexRef.current + 1) % reviewCount);
     }, AUTO_ADVANCE_MS);
 
     return () => {
       window.clearInterval(timer);
     };
-  }, [activeIndex, revealed, startFadeIn]);
+  }, [advanceReview, revealed, reviewCount]);
 
   const review = classIntroductionReviews[activeIndex];
 
@@ -458,20 +492,33 @@ function ClassIntroductionReviewSection() {
       <div className="class-intro-review__grid">
         <div className="class-intro-review__layout">
           <div className="class-intro-review__media">
-            <figure
-              key={inkNonce}
-              className={["class-intro-review__figure", revealed && "is-active"]
-                .filter(Boolean)
-                .join(" ")}
-              onAnimationEnd={handleFadeAnimationEnd}
+            <div
+              className="class-intro-review__figure"
+              aria-live="polite"
+              aria-label="후기 이미지 스와이퍼"
+              onPointerDown={handleReviewPointerDown}
+              onPointerUp={handleReviewPointerUp}
+              onPointerCancel={handleReviewPointerCancel}
             >
-              <img
-                className="class-intro-review__image"
-                src={review.image}
-                alt=""
-                aria-hidden="true"
-              />
-            </figure>
+              {classIntroductionReviews.map((item, index) => (
+                <img
+                  key={item.id}
+                  ref={(element) => {
+                    imageRefs.current[index] = element;
+                  }}
+                  className={[
+                    "class-intro-review__image",
+                    revealed && index === activeIndex && "is-active",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  src={item.image}
+                  alt=""
+                  aria-hidden={index !== activeIndex}
+                  draggable={false}
+                />
+              ))}
+            </div>
           </div>
 
           <div className="class-intro-review__content" aria-live="off">
@@ -507,7 +554,7 @@ function ClassIntroductionReviewSection() {
             <div className="class-intro-review__meta">
               <p className="class-intro-review__date ft-18b deep400">{review.date}</p>
 
-              <div className="class-intro-review__nav" aria-label="후기 탐색">
+              <div className="class-intro-review__nav" aria-label="후기 진행">
                 <div className="class-intro-review__progress">
                   <span className="class-intro-review__count" aria-live="polite">
                     <span className="class-intro-review__count-current">
@@ -524,25 +571,6 @@ function ClassIntroductionReviewSection() {
                       style={{ width: `${((activeIndex + 1) / reviewCount) * 100}%` }}
                     />
                   </span>
-                </div>
-
-                <div className="class-intro-review__arrows">
-                  <button
-                    type="button"
-                    className="class-intro-review__arrow"
-                    aria-label="이전 후기"
-                    onClick={handlePrevReview}
-                  >
-                    <span aria-hidden="true">&#8592;</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="class-intro-review__arrow"
-                    aria-label="다음 후기"
-                    onClick={handleNextReview}
-                  >
-                    <span aria-hidden="true">&#8594;</span>
-                  </button>
                 </div>
               </div>
             </div>
