@@ -81,7 +81,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  grid-column: 1 / span 5;
+  grid-column: 1 / span 6;
   align-self: center;
   justify-self: start;
   word-break: keep-all;
@@ -94,6 +94,17 @@
 
 .collection-aroma__description {
   margin-top: 3rem;
+  word-break: keep-all;
+}
+
+.collection-aroma__description-second {
+  display: inline-block;
+}
+
+@media (min-width: 90rem) {
+  .collection-aroma__description-second {
+    white-space: nowrap;
+  }
 }
 
 .collection-aroma__chart {

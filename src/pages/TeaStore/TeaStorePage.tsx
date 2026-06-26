@@ -29,9 +29,9 @@ function TeaStorePage() {
       <section className="tea-store-kv" aria-label="차 이야기 키비주얼">
         <div className="tea-store-kv__grid">
           <div className="tea-store-kv__content">
-            <h1 className="tea-store-kv__title ft-48b ink500">차 이야기</h1>
+            <h1 className="tea-store-kv__title ft-64b ink500">차 이야기</h1>
             <img className="tea-store-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
-            <p className="tea-store-kv__description ft-22r ink500">
+            <p className="tea-store-kv__description ft-28r ink500">
               차에는 자연의 시간이 담겨 있습니다.
               <br />
               한 잔에는 사람의 정성이 담겨 있습니다.
@@ -95,9 +95,9 @@ function TeaStorePage() {
               사람, 자연을 마주하는 하나의 생활 방식입니다.
             </p>
             <p className="tea-store-ceremony__description ft-22r white">
-              청연은 이러한 다도의 정신을 바탕으로 일상 속에서
+              청연은 이러한 다도의 정신을 바탕으로 일상 속에서도
               <br />
-              도 차의 가치를 온전히 느낄 수 있도록 제안합니다.
+              차의 가치를 온전히 느낄 수 있도록 제안합니다.
             </p>
           </div>
         </div>
@@ -124,7 +124,7 @@ function TeaStorePage() {
                   <img className="tea-store-dado-card__image" src={item.image} alt={item.title} />
                   <div className="tea-store-dado-card__body">
                     <h3 className="tea-store-dado-card__title ft-22r white">{item.title}</h3>
-                    <p className="tea-store-dado-card__description ft-16r white">{item.description}</p>
+                    <p className="tea-store-dado-card__description ft-18r white">{item.description}</p>
                   </div>
                 </div>
               </article>
@@ -141,10 +141,16 @@ function TeaStorePage() {
           >
             <h2 className="tea-store-kinds__title ft-48b ink500">차의 종류</h2>
             <p className="tea-store-kinds__description ft-22r ink500">
-              차는 발효 정도와 제조 방식에 따라 다양한 종류로 나뉩니다. 각각의 차는 고유의 향, 맛, 색을 가지고 있어 다양한 매력을 느낄 수 있습니다.
+              차는 발효 정도와 제조 방식에 따라 다양한 종류로 나뉩니다.
+              <br />
+              각각의 차는 고유의 향, 맛, 색을 가지고 있어 다양한 매력을
+              <br />
+              느낄 수 있습니다.
             </p>
             <p className="tea-store-kinds__description ft-22r ink500">
-              청연은 한국의 자연에서 자란 찻잎으로 정성을 다해 다양한 차를 만듭니다.
+              청연은 한국의 자연에서 자란 찻잎으로 정성을 다해
+              <br />
+              다양한 차를 만듭니다.
             </p>
           </div>
         </div>
@@ -208,11 +214,13 @@ function TeaStorePage() {
             >
               {teaStoreSeasons.map((season) => (
                 <article className="tea-store-season" key={season.id}>
-                  <img
-                    className="tea-store-season__image"
-                    src={season.image}
-                    alt={season.description.split("\n")[0]}
-                  />
+                  <div className="tea-store-season__image-wrap">
+                    <img
+                      className="tea-store-season__image"
+                      src={season.image}
+                      alt={season.description.split("\n")[0]}
+                    />
+                  </div>
                   <p className="tea-store-season__description ft-22r white">{season.description}</p>
                 </article>
               ))}

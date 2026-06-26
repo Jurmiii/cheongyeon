@@ -1,14 +1,15 @@
 import collectionLineSymbol from "../../assets/images/05collection/collection-line-symbol.svg";
 import Content5 from "../../components/common/Content5/Content5";
-import type { CollectionCategory } from "./collectionProducts";
+import type { CollectionCategory, CollectionProduct } from "./collectionProducts";
 import "./CollectionCategorySection.scss";
 
 interface CollectionCategorySectionProps {
   category: CollectionCategory;
   title: string;
+  onProductClick: (product: CollectionProduct, categoryId: CollectionCategory["id"]) => void;
 }
 
-function CollectionCategorySection({ category, title }: CollectionCategorySectionProps) {
+function CollectionCategorySection({ category, title, onProductClick }: CollectionCategorySectionProps) {
   return (
     <section className="collection-category" aria-label={title}>
       <h3 className="collection-category__title ft-36r ink500">{title}</h3>
@@ -29,6 +30,7 @@ function CollectionCategorySection({ category, title }: CollectionCategorySectio
             summary={product.summary}
             description={product.description}
             imageSrc={product.imageSrc}
+            onClick={() => onProductClick(product, category.id)}
           />
         ))}
       </div>

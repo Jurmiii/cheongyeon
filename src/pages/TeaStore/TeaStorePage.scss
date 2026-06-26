@@ -3,6 +3,8 @@
   width: 100%;
   min-width: 0;
   color: var(--ink500);
+  overflow-wrap: break-word;
+  word-break: keep-all;
 }
 
 .tea-store-page__header {
@@ -43,7 +45,6 @@
   align-items: flex-start;
   grid-column: 1 / span 5;
   justify-self: start;
-  word-break: keep-all;
 }
 
 .tea-store-kv__title,
@@ -57,7 +58,7 @@
 }
 
 .tea-store-kv__description {
-  margin-top: 0.5625rem;
+  margin-top: 1rem;
 }
 
 /* Section 2 — Figma 1920×690 */
@@ -92,7 +93,6 @@
   grid-column: 1 / span 5;
   justify-self: start;
   max-width: 31.25rem;
-  word-break: keep-all;
 }
 
 .tea-store-intro__description {
@@ -135,7 +135,6 @@
   gap: 3rem;
   grid-column: 8 / span 5;
   justify-self: start;
-  word-break: keep-all;
 }
 
 .tea-store-culture__title,
@@ -178,7 +177,6 @@
   grid-column: 1 / span 5;
   justify-self: start;
   max-width: 38rem;
-  word-break: keep-all;
 }
 
 .tea-store-ceremony__title,
@@ -211,7 +209,6 @@
   margin-bottom: 3rem;
   padding-inline: 1.5rem;
   text-align: center;
-  word-break: keep-all;
 }
 
 .tea-store-dado__title,
@@ -293,7 +290,6 @@
   justify-self: start;
   width: 100%;
   max-width: 36.625rem;
-  word-break: keep-all;
 }
 
 .tea-store-kinds__title,
@@ -303,6 +299,8 @@
 
 .tea-store-kinds__description {
   width: 100%;
+  overflow-wrap: break-word;
+  word-break: keep-all;
 }
 
 /* Section 7 — 차의 기본 분류 */
@@ -325,7 +323,6 @@
   gap: 1.5rem;
   padding-inline: 1.5rem;
   text-align: center;
-  word-break: keep-all;
 }
 
 .tea-store-types__title,
@@ -354,7 +351,6 @@
   gap: 1rem;
   text-align: center;
   background-color: var(--han50);
-  word-break: keep-all;
 }
 
 .tea-store-type__head {
@@ -437,7 +433,6 @@
   align-items: flex-start;
   gap: 1.5rem;
   grid-column: 1 / -1;
-  word-break: keep-all;
 }
 
 .tea-store-seasons__title,
@@ -460,14 +455,24 @@
   grid-column: span 3;
 }
 
-.tea-store-season__image {
-  display: block;
+.tea-store-season__image-wrap {
   width: 100%;
   max-width: 21.375rem;
   aspect-ratio: 342 / 377;
-  border-radius: 3.125rem 3.125rem 0 0;
+  overflow: hidden;
+  container-type: inline-size;
+  /* 너비의 절반 = 완전한 반원 아치(타워형) */
+  border-radius: 9999px 9999px 0 0;
+  border-radius: 50cqw 50cqw 0 0;
+  flex-shrink: 0;
+}
+
+.tea-store-season__image {
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: center center;
 }
 
 .tea-store-season__description {
@@ -475,7 +480,6 @@
   margin: 1.5rem 0 0;
   text-align: center;
   white-space: pre-line;
-  word-break: keep-all;
 }
 
 /* Scroll reveal */
@@ -525,6 +529,10 @@
 
   .tea-store-seasons__cards {
     grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .tea-store-kinds__description br {
+    display: none;
   }
 
   .tea-store-types__grid {

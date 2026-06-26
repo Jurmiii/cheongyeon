@@ -1,3 +1,19 @@
+.tea-collection-modal__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgb(35 35 35 / 45%);
+}
+
+.tea-collection-modal__dialog {
+  max-height: calc(100svh - 2rem);
+  overflow: auto;
+}
+
 .tea-collection-modal {
   display: flex;
   box-sizing: border-box;
