@@ -1,16 +1,18 @@
 import { useState } from "react";
 import subSymbol from "../../assets/images/01main/subsymbol.svg";
 import aromaGraph from "../../assets/images/05collection/graph.webp";
-import { Footer, Header } from "../../components/common";
+import { Footer, Header, Modal2 } from "../../components/common";
+import type { TeaCollectionModalData } from "../../components/common/TeaCollectionModal/teaCollectionModal.types";
 import { collectionTabs } from "./collectionTabs";
 import type { CollectionTabId } from "./collectionTabs";
+import { getCollectionProductModalData } from "./collectionProductModal";
 import { collectionCategories } from "./collectionProducts";
 import CollectionCategorySection from "./CollectionCategorySection";
 import "./CollectionPage.scss";
 
 function CollectionPage() {
   const [activeTab, setActiveTab] = useState<CollectionTabId>("all");
-  const visibleCategories =
+  const [selectedModalData, setSelectedModalData] = useState<TeaCollectionModalData | null>(null);  const visibleCategories =
     activeTab === "all"
       ? collectionCategories
       : collectionCategories.filter((category) => category.id === activeTab);
@@ -42,7 +44,9 @@ function CollectionPage() {
             <p className="collection-aroma__description ft-28r ink500">
               같은 차라도, 우리는 다른 향을 느낍니다.
               <br />
-              향미 맵을 따라가며 당신의 취향을 발견해보세요.
+              <span className="collection-aroma__description-second">
+                향미 맵을 따라가며 당신의 취향을 발견해보세요.
+              </span>
             </p>
           </div>
           <div className="collection-aroma__chart">
@@ -88,11 +92,20 @@ function CollectionPage() {
                 key={category.id}
                 category={category}
                 title={activeTab === "all" ? category.title : category.lineupTitle}
+                onProductClick={(product, categoryId) => {
+                  setSelectedModalData(getCollectionProductModalData(product, categoryId));
+                }}
               />
             ))}
           </div>
         </div>
       </section>
+
+      <Modal2
+        isOpen={selectedModalData !== null}
+        onClose={() => setSelectedModalData(null)}
+        data={selectedModalData ?? undefined}
+      />
 
       <Footer />
     </main>

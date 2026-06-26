@@ -6,11 +6,11 @@ import autumnTeaImage from "../../assets/images/07season-tea/sec4-tea.webp";
 import winterTeaImage from "../../assets/images/07season-tea/sec5-tea.webp";
 import { Button, Footer, Header } from "../../components/common";
 import SeasonTeaDetailModal from "./SeasonTeaDetailModal";
-import { springTeaDetail } from "./seasonTeaDetailData";
+import { autumnTeaDetail, springTeaDetail, summerTeaDetail, winterTeaDetail, type SeasonTeaDetail } from "./seasonTeaDetailData";
 import "./SeasonTeaPage.scss";
 
 function SeasonTeaPage() {
-  const [isSpringModalOpen, setIsSpringModalOpen] = useState(false);
+  const [activeTeaDetail, setActiveTeaDetail] = useState<SeasonTeaDetail | null>(null);
 
   return (
     <main className="season-tea-page">
@@ -20,13 +20,15 @@ function SeasonTeaPage() {
 
       <section className="season-tea-kv" aria-label="계절의 차 키비주얼">
         <div className="season-tea-kv__grid">
-          <h1 className="season-tea-kv__title ft-64b ink500">계절의 차</h1>
-          <img className="season-tea-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
-          <p className="season-tea-kv__description ft-28r ink500">
-            계절이 머문 향과 풍미를 담아,
-            <br />
-            가장 아름다운 순간을 전합니다.
-          </p>
+          <div className="season-tea-kv__content">
+            <h1 className="season-tea-kv__title ft-64b ink500">계절의 차</h1>
+            <img className="season-tea-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
+            <p className="season-tea-kv__description ft-28r ink500">
+              계절이 머문 향과 풍미를 담아,
+              <br />
+              가장 아름다운 순간을 전합니다.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -58,9 +60,9 @@ function SeasonTeaPage() {
             </p>
             <Button
               className="season-tea-spring__button"
-              variant="btn7"
+              variant="classMore"
               type="button"
-              onClick={() => setIsSpringModalOpen(true)}
+              onClick={() => setActiveTeaDetail(springTeaDetail)}
             >
               차 특징 보기
             </Button>
@@ -87,7 +89,12 @@ function SeasonTeaPage() {
               <br />
               푸른 계절의 풍경을 천천히 펼쳐냅니다.
             </p>
-            <Button className="season-tea-summer__button" variant="btn7">
+            <Button
+              className="season-tea-summer__button"
+              variant="classMore"
+              type="button"
+              onClick={() => setActiveTeaDetail(summerTeaDetail)}
+            >
               차 특징 보기
             </Button>
           </div>
@@ -127,7 +134,12 @@ function SeasonTeaPage() {
               <br />
               가을의 풍경을 천천히 펼쳐냅니다.
             </p>
-            <Button className="season-tea-autumn__button" variant="btn7">
+            <Button
+              className="season-tea-autumn__button"
+              variant="classMore"
+              type="button"
+              onClick={() => setActiveTeaDetail(autumnTeaDetail)}
+            >
               차 특징 보기
             </Button>
           </div>
@@ -153,7 +165,12 @@ function SeasonTeaPage() {
               <br />
               겨울의 풍경을 천천히 펼쳐냅니다.
             </p>
-            <Button className="season-tea-winter__button" variant="btn7">
+            <Button
+              className="season-tea-winter__button"
+              variant="classMore"
+              type="button"
+              onClick={() => setActiveTeaDetail(winterTeaDetail)}
+            >
               차 특징 보기
             </Button>
           </div>
@@ -167,11 +184,13 @@ function SeasonTeaPage() {
         </div>
       </section>
 
-      <SeasonTeaDetailModal
-        isOpen={isSpringModalOpen}
-        onClose={() => setIsSpringModalOpen(false)}
-        data={springTeaDetail}
-      />
+      {activeTeaDetail && (
+        <SeasonTeaDetailModal
+          isOpen
+          onClose={() => setActiveTeaDetail(null)}
+          data={activeTeaDetail}
+        />
+      )}
 
       <Footer />
     </main>

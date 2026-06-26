@@ -1,18 +1,18 @@
+import { useEffect } from "react";
+
+import {
+  previewTeaCollectionModalData,
+  type TeaCollectionModalData,
+} from "./teaCollectionModal.types";
 import "./TeaCollectionModal.scss";
 
-const teaSpecs = [
-  { label: "종류", value: "녹차" },
-  { label: "원산지", value: "전라남도 보성" },
-  { label: "수확시기", value: "4월 초" },
-  { label: "추천음용", value: "70ºC/2분" },
-  { label: "보관방법", value: "서늘하고 건조한 곳" },
-];
-
-const recommendations = [
-  "은은한 향을 선호하시는 분",
-  "가벼운 식사와 함께 즐기고 싶은 분",
-  "하루를 시작하는 상쾌한 차를 찾는 분",
-];
+export type { TeaCollectionModalData } from "./teaCollectionModal.types";
+export { previewTeaCollectionModalData } from "./teaCollectionModal.types";
+export type TeaCollectionModalProps = {
+  isOpen?: boolean;
+  onClose?: () => void;
+  data?: TeaCollectionModalData;
+};
 
 function CloseIcon() {
   return (
@@ -31,43 +31,63 @@ function CheckIcon() {
   );
 }
 
-export default function TeaCollectionModal() {
+function TeaCollectionModalPanel({
+  data,
+  onClose,
+  isModalMode,
+}: {
+  data: TeaCollectionModalData;
+  onClose?: () => void;
+  isModalMode: boolean;
+}) {
+  const titleId = `tea-collection-modal-title-${data.title}`;
+  const descriptionLines = data.description.split("\n").filter(Boolean);
+
   return (
     <section
       className="tea-collection-modal"
       role="dialog"
-      aria-modal="true"
-      aria-labelledby="tea-collection-modal-title"
+      aria-modal={isModalMode}
+      aria-labelledby={titleId}
     >
       <header className="tea-collection-modal__header">
-        <h2 className="tea-collection-modal__title ft-48b deep400" id="tea-collection-modal-title">
-          우전
+        <h2 className="tea-collection-modal__title ft-48b deep400" id={titleId}>
+          {data.title}
         </h2>
-        <button className="tea-collection-modal__close-button" type="button" aria-label="닫기">
-          <CloseIcon />
-        </button>
+        {isModalMode ? (
+          <button className="tea-collection-modal__close-button" type="button" aria-label="닫기" onClick={onClose}>
+            <CloseIcon />
+          </button>
+        ) : (
+          <button className="tea-collection-modal__close-button" type="button" aria-label="닫기" disabled>
+            <CloseIcon />
+          </button>
+        )}
       </header>
 
       <section className="tea-collection-modal__summary" aria-label="상품 요약">
-        <p className="tea-collection-modal__subtitle ft-28b ink500">깊은 향과 부드러운 맛</p>
+        <p className="tea-collection-modal__subtitle ft-28b ink500">{data.summary}</p>
         <div className="tea-collection-modal__meta" aria-label="용량 및 가격">
-          <span className="tea-collection-modal__capacity ft-28b ink300">40g</span>
+          <span className="tea-collection-modal__capacity ft-28b ink300">{data.weight}</span>
           <span className="tea-collection-modal__meta-divider" aria-hidden="true" />
-          <span className="tea-collection-modal__price ft-28b ink300">35,000원</span>
+          <span className="tea-collection-modal__price ft-28b ink300">{data.price}</span>
         </div>
       </section>
 
       <section className="tea-collection-modal__description-section" aria-label="상품 상세 설명">
         <p className="tea-collection-modal__description ft-22r deep300">
-          맑고 섬세한 향과 은은한 감칠맛이 어우러집니다.
-          <br />
-          봄의 첫 기운을 담아 섬세한 여운을 남깁니다.
+          {descriptionLines.map((line, index) => (
+            <span key={line}>
+              {index > 0 ? <br /> : null}
+              {line}
+            </span>
+          ))}
         </p>
         <span className="tea-collection-modal__divider" aria-hidden="true" />
       </section>
 
       <dl className="tea-collection-modal__specs" aria-label="제원 정보">
-        {teaSpecs.map((spec) => (
+        {data.specs.map((spec) => (
           <div className="tea-collection-modal__spec-row" key={spec.label}>
             <dt className="tea-collection-modal__spec-label ft-22r ink500">{spec.label}</dt>
             <dd className="tea-collection-modal__spec-value ft-22r ink300">{spec.value}</dd>
@@ -78,7 +98,7 @@ export default function TeaCollectionModal() {
       <section className="tea-collection-modal__recommendations" aria-label="추천 대상">
         <h3 className="tea-collection-modal__recommendation-title ft-28b deep400">이런 분들께 추천해요</h3>
         <ul className="tea-collection-modal__recommendation-list">
-          {recommendations.map((item) => (
+          {data.recommendations.map((item) => (
             <li className="tea-collection-modal__recommendation-item" key={item}>
               <span className="tea-collection-modal__check-circle" aria-hidden="true">
                 <CheckIcon />
@@ -89,5 +109,47 @@ export default function TeaCollectionModal() {
         </ul>
       </section>
     </section>
+  );
+}
+
+export default function TeaCollectionModal({ isOpen, onClose, data }: TeaCollectionModalProps = {}) {
+  const isModalMode = onClose !== undefined;
+  const content = data ?? previewTeaCollectionModalData;
+
+  useEffect(() => {
+    if (!isModalMode || !isOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isModalMode, isOpen, onClose]);
+
+  if (isModalMode && !isOpen) {
+    return null;
+  }
+
+  if (!isModalMode) {
+    return <TeaCollectionModalPanel data={content} isModalMode={false} />;
+  }
+
+  return (
+    <div className="tea-collection-modal__overlay" role="presentation" onClick={onClose}>
+      <div className="tea-collection-modal__dialog" onClick={(event) => event.stopPropagation()}>
+        <TeaCollectionModalPanel data={content} onClose={onClose} isModalMode />
+      </div>
+    </div>
   );
 }

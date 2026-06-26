@@ -40,7 +40,10 @@ function SeasonTeaDetailModal({ isOpen, onClose, data }: SeasonTeaDetailModalPro
   return (
     <div className="season-tea-detail-modal" role="presentation" onClick={onClose}>
       <div
-        className="season-tea-detail-modal__dialog"
+        className={[
+          "season-tea-detail-modal__dialog",
+          `season-tea-detail-modal__dialog--theme-${data.titleColorClass}`,
+        ].join(" ")}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
@@ -60,7 +63,10 @@ function SeasonTeaDetailModal({ isOpen, onClose, data }: SeasonTeaDetailModalPro
         <div className="season-tea-detail-modal__layout">
           <section className="season-tea-detail-modal__story">
             <div className="season-tea-detail-modal__story-head">
-              <h2 className="season-tea-detail-modal__title ft-64r plum500" id={titleId}>
+              <h2
+                className={["season-tea-detail-modal__title", "ft-64r", data.titleColorClass].join(" ")}
+                id={titleId}
+              >
                 {data.title}
               </h2>
               <p className="season-tea-detail-modal__tagline ft-28r ink500">{data.tagline}</p>
@@ -87,7 +93,7 @@ function SeasonTeaDetailModal({ isOpen, onClose, data }: SeasonTeaDetailModalPro
                 return (
                   <div key={row.label} className="season-tea-detail-modal__sensory-col">
                     <p className="season-tea-detail-modal__sensory-label ft-28r ink500">{row.label}</p>
-                    <p className="season-tea-detail-modal__sensory-range ft-18r ink300">{row.rangeLabel}</p>
+                    <p className="season-tea-detail-modal__sensory-range ft-18r">{row.rangeLabel}</p>
                     <div className="season-tea-detail-modal__sensory-scale">
                       <div className="season-tea-detail-modal__sensory-scale-labels">
                         <span
@@ -154,7 +160,7 @@ function SeasonTeaDetailModal({ isOpen, onClose, data }: SeasonTeaDetailModalPro
                 </h3>
 
                 <div className="season-tea-detail-modal__recommend-block">
-                  <p className="season-tea-detail-modal__meta-label ft-22r plum500">
+                  <p className="season-tea-detail-modal__meta-label ft-22r">
                     {data.recommendTimeLabel}
                   </p>
                   <p className="season-tea-detail-modal__meta-value ft-18r ink500">{data.recommendTime}</p>
@@ -162,12 +168,12 @@ function SeasonTeaDetailModal({ isOpen, onClose, data }: SeasonTeaDetailModalPro
                 </div>
 
                 <div className="season-tea-detail-modal__recommend-block">
-                  <p className="season-tea-detail-modal__meta-label ft-22r plum500">
+                  <p className="season-tea-detail-modal__meta-label ft-22r">
                     {data.recommendAudienceLabel}
                   </p>
                   <ul className="season-tea-detail-modal__audience-list ft-18r ink500">
                     {data.recommendAudience.map((item) => (
-                      <li key={item}>{item}</li>
+                      <li key={item}>• {item}</li>
                     ))}
                   </ul>
                 </div>
@@ -177,21 +183,21 @@ function SeasonTeaDetailModal({ isOpen, onClose, data }: SeasonTeaDetailModalPro
                 <h3 className="season-tea-detail-modal__section-title ft-28r ink500">{data.brewTitle}</h3>
 
                 <div className="season-tea-detail-modal__brew-block">
-                  <p className="season-tea-detail-modal__meta-label ft-22r plum500">
+                  <p className="season-tea-detail-modal__meta-label ft-22r">
                     {data.brewTemperatureLabel}
                   </p>
                   <p className="season-tea-detail-modal__meta-value ft-18r ink500">{data.brewTemperature}</p>
                 </div>
 
                 <div className="season-tea-detail-modal__brew-block">
-                  <p className="season-tea-detail-modal__meta-label ft-22r plum500">
+                  <p className="season-tea-detail-modal__meta-label ft-22r">
                     {data.brewDurationLabel}
                   </p>
                   <p className="season-tea-detail-modal__meta-value ft-18r ink500">{data.brewDuration}</p>
                 </div>
 
                 <div className="season-tea-detail-modal__brew-block">
-                  <p className="season-tea-detail-modal__meta-label ft-22r plum500">{data.brewCountLabel}</p>
+                  <p className="season-tea-detail-modal__meta-label ft-22r">{data.brewCountLabel}</p>
                   <p className="season-tea-detail-modal__meta-value ft-18r ink500">{data.brewCount}</p>
                 </div>
               </div>

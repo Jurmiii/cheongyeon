@@ -14,7 +14,7 @@
 
 .season-tea-kv {
   position: relative;
-  width: 120rem;
+  width: 100%;
   max-width: 100%;
   height: 46.25rem;
   overflow: hidden;
@@ -25,30 +25,77 @@
 }
 
 .season-tea-kv__grid {
-  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, 6.125rem);
+  column-gap: 1.5rem;
+  align-items: center;
   width: 100%;
   max-width: 90rem;
   height: 100%;
   margin-inline: auto;
 }
 
-.season-tea-kv__title {
-  position: absolute;
-  left: 0;
-  top: 16.5625rem;
+.season-tea-kv__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  grid-column: 1 / span 5;
+  justify-self: start;
+  word-break: keep-all;
+}
+
+.season-tea-kv__title,
+.season-tea-kv__description {
+  margin: 0;
 }
 
 .season-tea-kv__symbol {
-  position: absolute;
-  left: 0;
-  top: 22.0625rem;
   display: block;
+  margin-top: 1rem;
 }
 
 .season-tea-kv__description {
-  position: absolute;
-  left: 0;
-  top: 24.625rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 90rem) {
+  .season-tea-kv__grid {
+    padding-inline: 1.5rem;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 64rem) {
+  .season-tea-kv {
+    height: auto;
+    min-height: 28rem;
+    padding-block: 8rem 3.5rem;
+  }
+
+  .season-tea-kv__content {
+    grid-column: 1 / -1;
+  }
+
+  .season-tea-kv__title {
+    font-size: 3rem;
+    line-height: 4rem;
+  }
+}
+
+@media (max-width: 30rem) {
+  .season-tea-kv__grid {
+    padding-inline: 1rem;
+  }
+
+  .season-tea-kv__title {
+    font-size: 2.25rem;
+    line-height: 3.25rem;
+  }
+
+  .season-tea-kv__description {
+    font-size: 1.125rem;
+    line-height: 1.875rem;
+  }
 }
 
 /* Figma 1920×940 */
@@ -119,6 +166,10 @@
 
 .season-tea-spring__button {
   margin-top: 3rem;
+}
+
+.season-tea-spring .season-tea-spring__button.cy-button--classMore:hover:not(:disabled) {
+  background: var(--plum500);
 }
 
 @media (max-width: 90rem) {
@@ -234,6 +285,10 @@
 
 .season-tea-summer__button {
   margin-top: 3rem;
+}
+
+.season-tea-summer .season-tea-summer__button.cy-button--classMore:hover:not(:disabled) {
+  background: var(--deep400);
 }
 
 @media (max-width: 90rem) {
@@ -359,6 +414,10 @@
   margin-top: 3rem;
 }
 
+.season-tea-autumn .season-tea-autumn__button.cy-button--classMore:hover:not(:disabled) {
+  background: var(--fall);
+}
+
 @media (max-width: 90rem) {
   .season-tea-autumn__grid {
     padding-inline: 1.5rem;
@@ -472,6 +531,10 @@
 
 .season-tea-winter__button {
   margin-top: 3rem;
+}
+
+.season-tea-winter .season-tea-winter__button.cy-button--classMore:hover:not(:disabled) {
+  background: var(--winter);
 }
 
 @media (max-width: 90rem) {

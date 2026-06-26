@@ -1,3 +1,4 @@
+import type { KeyboardEvent } from "react";
 import tea1 from "../../../assets/images/01main/tea1.webp";
 import "./Content5.scss";
 
@@ -9,6 +10,7 @@ export type Content5Props = {
   description?: string;
   imageSrc?: string;
   imageAlt?: string;
+  onClick?: () => void;
 };
 
 const defaultContent = {
@@ -31,9 +33,28 @@ export default function Content5(props: Content5Props = {}) {
   const imageSrc = isPreview ? defaultContent.imageSrc : props.imageSrc;
   const imageAlt = props.imageAlt ?? title;
   const descriptionLines = description.split("\n").filter(Boolean);
+  const isClickable = Boolean(props.onClick);
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (!props.onClick) {
+      return;
+    }
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      props.onClick();
+    }
+  };
 
   return (
-    <article className="content5" aria-label={`${title} 상품 소개`}>
+    <article
+      className={["content5", isClickable && "content5--clickable"].filter(Boolean).join(" ")}
+      aria-label={`${title} 상품 소개`}
+      onClick={props.onClick}
+      onKeyDown={handleKeyDown}
+      role={isClickable ? "button" : undefined}
+      tabIndex={isClickable ? 0 : undefined}
+    >
       {imageSrc ? (
         <img className="content5__image" src={imageSrc} alt={imageAlt} />
       ) : (
