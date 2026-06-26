@@ -1,9 +1,9 @@
 import subSymbol from "../../assets/images/01main/subsymbol.svg";
 import { Footer, Header } from "../../components/common";
 import {
-  teaStoreDadoItems,
-  teaStoreSeasons,
-  teaStoreTypes,
+  teaStoryDadoItems,
+  teaStorySeasons,
+  teaStoryTypes,
 } from "./teaStoreData";
 import { useScrollReveal } from "./useScrollReveal";
 import "./TeaStorePage.scss";
@@ -11,7 +11,7 @@ import "./TeaStorePage.scss";
 const revealClass = (isVisible: boolean, variant: "from-left" | "from-right" | "from-bottom") =>
   ["tea-store-reveal", `tea-store-reveal--${variant}`, isVisible && "is-visible"].filter(Boolean).join(" ");
 
-function TeaStorePage() {
+function TeaStoryPage() {
   const introReveal = useScrollReveal();
   const cultureReveal = useScrollReveal();
   const ceremonyReveal = useScrollReveal();
@@ -26,10 +26,10 @@ function TeaStorePage() {
         <Header />
       </div>
 
-      <section className="tea-store-kv" aria-label="차 이야기 키비주얼">
+      <section className="tea-store-kv" aria-label="티 스토리 키비주얼">
         <div className="tea-store-kv__grid">
           <div className="tea-store-kv__content">
-            <h1 className="tea-store-kv__title ft-64b ink500">차 이야기</h1>
+            <h1 className="tea-store-kv__title ft-64b ink500">티 스토리</h1>
             <img className="tea-store-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
             <p className="tea-store-kv__description ft-28r ink500">
               차에는 자연의 시간이 담겨 있습니다.
@@ -118,7 +118,7 @@ function TeaStorePage() {
             ref={dadoGalleryReveal.ref}
             className={`tea-store-dado__gallery ${revealClass(dadoGalleryReveal.isVisible, "from-bottom")}`}
           >
-            {teaStoreDadoItems.map((item) => (
+            {teaStoryDadoItems.map((item) => (
               <article className="tea-store-dado-card" key={item.id}>
                 <div className="tea-store-dado-card__media">
                   <img className="tea-store-dado-card__image" src={item.image} alt={item.title} />
@@ -169,7 +169,7 @@ function TeaStorePage() {
             ref={typesGridReveal.ref}
             className={`tea-store-types__grid ${revealClass(typesGridReveal.isVisible, "from-bottom")}`}
           >
-            {teaStoreTypes.map((type) => (
+            {teaStoryTypes.map((type) => (
               <article className="tea-store-type" key={type.id} aria-label={type.name}>
                 <div className="tea-store-type__head">
                   <h3 className="tea-store-type__name ft-22b ink500">{type.name}</h3>
@@ -212,7 +212,7 @@ function TeaStorePage() {
               ref={seasonsContentReveal.ref}
               className={`tea-store-seasons__cards ${revealClass(seasonsContentReveal.isVisible, "from-bottom")}`}
             >
-              {teaStoreSeasons.map((season) => (
+              {teaStorySeasons.map((season) => (
                 <article className="tea-store-season" key={season.id}>
                   <div className="tea-store-season__image-wrap">
                     <img
@@ -234,4 +234,4 @@ function TeaStorePage() {
   );
 }
 
-export default TeaStorePage;
+export default TeaStoryPage;

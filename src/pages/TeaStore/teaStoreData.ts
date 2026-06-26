@@ -17,7 +17,7 @@ import blackTeaCup from "../../assets/images/06tea-store/b-tea-h.webp";
 import darkTeaLeaf from "../../assets/images/06tea-store/d-tea.webp";
 import darkTeaCup from "../../assets/images/06tea-store/d-tea-h.webp";
 
-export type TeaStoreType = {
+export type TeaStoryType = {
   id: string;
   name: string;
   tagline: string;
@@ -26,20 +26,20 @@ export type TeaStoreType = {
   description: string;
 };
 
-export type TeaStoreSeason = {
+export type TeaStorySeason = {
   id: string;
   image: string;
   description: string;
 };
 
-export type TeaStoreDadoItem = {
+export type TeaStoryDadoItem = {
   id: string;
   image: string;
   title: string;
   description: string;
 };
 
-export const teaStoreDadoItems: TeaStoreDadoItem[] = [
+export const teaStoryDadoItems: TeaStoryDadoItem[] = [
   {
     id: "mind",
     image: sec3Image1,
@@ -66,7 +66,7 @@ export const teaStoreDadoItems: TeaStoreDadoItem[] = [
   },
 ];
 
-export const teaStoreSeasons: TeaStoreSeason[] = [
+export const teaStorySeasons: TeaStorySeason[] = [
   {
     id: "spring",
     image: sec8Image1,
@@ -93,7 +93,7 @@ export const teaStoreSeasons: TeaStoreSeason[] = [
   },
 ];
 
-export const teaStoreTypes: TeaStoreType[] = [
+export const teaStoryTypes: TeaStoryType[] = [
   {
     id: "green",
     name: "녹차",

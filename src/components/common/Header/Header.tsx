@@ -40,7 +40,7 @@ const gnbMenus: HeaderMenuItem[] = [
     label: "제품 소개",
     to: "/shop",
     children: [
-      { label: "차 이야기", to: TEA_STORY_PATH },
+      { label: "티 스토리", to: TEA_STORY_PATH },
       { label: "차 컬렉션", to: "/shop" },
       { label: "계절의 차", to: "/seasontea" },
     ],

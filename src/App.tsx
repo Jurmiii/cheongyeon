@@ -19,7 +19,7 @@ import SpacePage from './pages/Space/SpacePage'
 import LocationPage from './pages/Location'
 import SeasonTeaPage from './pages/SeasonTea/SeasonTeaPage'
 import CollectionPage from './pages/Collection/CollectionPage'
-import TeaStorePage from './pages/TeaStore/TeaStorePage'
+import TeaStoryPage from './pages/TeaStore/TeaStorePage'
 import MyPageRoute from './pages/MyPage/MyPageRoute'
 
 function RouteScrollReset() {
@@ -80,11 +80,11 @@ function App() {
           <Route path="/season-tea" element={<SeasonTeaPage />} />
           <Route path="/product/season-tea" element={<SeasonTeaPage />} />
           <Route path="/shop" element={<CollectionPage />} />
-          <Route path="/shop/tea-story" element={<CollectionPage />} />
-          <Route path="/product/tea-story" element={<TeaStorePage />} />
-          <Route path="/tea-story" element={<TeaStorePage />} />
-          <Route path="/tea-store" element={<TeaStorePage />} />
-          <Route path="/dev/tea-story" element={<TeaStorePage />} />
+          <Route path="/shop/tea-story" element={<Navigate to="/product/tea-story" replace />} />
+          <Route path="/product/tea-story" element={<TeaStoryPage />} />
+          <Route path="/tea-story" element={<Navigate to="/product/tea-story" replace />} />
+          <Route path="/tea-store" element={<Navigate to="/product/tea-story" replace />} />
+          <Route path="/dev/tea-story" element={<Navigate to="/product/tea-story" replace />} />
           <Route path="/collection" element={<CollectionPage />} />
           <Route path="/product/collection" element={<CollectionPage />} />
           <Route path="/mypage" element={<MyPageRoute />} />
