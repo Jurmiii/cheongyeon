@@ -83,30 +83,35 @@
 /* 필터 탭 */
 .event-content__filters {
   display: flex;
-  gap: 1.5rem;
+  flex-wrap: nowrap;
+  gap: 6rem;
   align-items: center;
   justify-content: center;
   margin-bottom: 3rem;
 }
 
 .event-content__filter {
-  width: 13.75rem;
-  max-width: 32%;
-  padding: 0.625rem;
-  border: 0.0625rem solid var(--deep500);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 9.25rem;
+  height: 3rem;
+  padding: 1rem 2rem;
+  border: 0.0625rem solid var(--ink500);
   border-radius: 0.5rem;
   background: transparent;
   color: var(--ink500);
-  line-height: 2.5rem;
+  white-space: nowrap;
   cursor: pointer;
   transition:
-    background 0.25s ease,
+    background-color 0.25s ease,
     color 0.25s ease;
 }
 
 .event-content__filter--active {
+  color: var(--han50);
   background: var(--deep500);
-  color: var(--white);
 }
 
 /* 카드 그리드 */
@@ -360,11 +365,13 @@
     grid-template-columns: 1fr;
   }
 
+  .event-content__filters {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
   .event-content__filter {
-    width: auto;
-    flex: 1 1 0;
-    font-size: 1.25rem;
-    line-height: 2rem;
+    width: calc(50% - 0.5rem);
   }
 }
 .event-modal {

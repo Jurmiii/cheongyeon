@@ -4,6 +4,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { Footer, Header, Icon } from "../../components/common";
 import subSymbol from "../../assets/images/01main/subsymbol.svg";
+import chaIcon from "../../assets/images/09season-class/cha-icon.svg";
+import tryIcon from "../../assets/images/09season-class/try-icon.svg";
 import {
   SEASON_CLASS_GALLERY_GRID,
   SEASON_CLASS_GALLERY_TITLE,
@@ -398,7 +400,12 @@ function SeasonClassListSection() {
     >
       <img className="season-scroll__bg" src={seasonClassAssets.bg} alt="" aria-hidden="true" />
 
-      <div className="season-scroll__circle" aria-hidden="true" />
+      <img
+        className="season-scroll__ellipse"
+        src={seasonClassAssets.ellipse}
+        alt=""
+        aria-hidden="true"
+      />
 
       <svg
         className="season-scroll__orbit-trail-svg"
@@ -478,7 +485,7 @@ function SeasonClassListSection() {
             <dl className="season-scroll__meta">
               <div className="season-scroll__meta-row season-scroll__animate">
                 <dt className="season-scroll__meta-label">
-                  <span className="season-scroll__icon season-scroll__icon--tea" aria-hidden="true" />
+                  <img className="season-scroll__icon-img" src={chaIcon} alt="" aria-hidden="true" />
                   <span className="ft-18b ink500">오늘의 차</span>
                 </dt>
                 <dd className="ft-18r ink500">{season.todayTea}</dd>
@@ -492,7 +499,7 @@ function SeasonClassListSection() {
               </div>
               <div className="season-scroll__meta-row season-scroll__meta-row--wide season-scroll__animate">
                 <dt className="season-scroll__meta-label">
-                  <span className="season-scroll__icon season-scroll__icon--hand" aria-hidden="true" />
+                  <img className="season-scroll__icon-img" src={tryIcon} alt="" aria-hidden="true" />
                   <span className="ft-18b ink500">체험 내용</span>
                 </dt>
                 <dd className="ft-18r ink500">{season.experience}</dd>
@@ -536,9 +543,6 @@ function SeasonClassPromoSection() {
 
 // --- SeasonClassScheduleSection helpers ---
 
-const CARD_STEP_REM = 15.25;
-const ACTIVE_ANCHOR_REM = 38.125;
-
 function SeasonClassScheduleSection() {
   const today = useMemo(() => startOfDay(new Date()), []);
   const monthWrapRef = useRef<HTMLDivElement>(null);
@@ -548,6 +552,9 @@ function SeasonClassScheduleSection() {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const scrollbarRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [trackOffset, setTrackOffset] = useState(0);
 
   const scheduleDays = useMemo(
     () => getScheduleDaysForMonth(viewMonth.getFullYear(), viewMonth.getMonth(), today),
@@ -561,7 +568,6 @@ function SeasonClassScheduleSection() {
   );
 
   const lastIndex = Math.max(0, scheduleDays.length - 1);
-  const trackOffsetRem = ACTIVE_ANCHOR_REM - activeIndex * CARD_STEP_REM;
   const thumbOffsetPercent = lastIndex > 0 ? (activeIndex / lastIndex) * 100 : 0;
   const canGoPrevMonth = canGoToPreviousMonth(viewMonth, today);
   const selectedDay = scheduleDays[activeIndex] ?? scheduleDays[0];
@@ -569,6 +575,46 @@ function SeasonClassScheduleSection() {
   useEffect(() => {
     setActiveIndex((prev) => Math.min(prev, lastIndex));
   }, [lastIndex]);
+
+  useLayoutEffect(() => {
+    const carousel = carouselRef.current;
+    const track = trackRef.current;
+    if (!carousel || !track) {
+      return;
+    }
+
+    const recenter = () => {
+      const card = track.children[activeIndex] as HTMLElement | undefined;
+      if (!card) {
+        return;
+      }
+
+      const carouselWidth = carousel.clientWidth;
+      const trackWidth = track.scrollWidth;
+      const centerOffset = carouselWidth / 2 - (card.offsetLeft + card.offsetWidth / 2);
+
+      let offset = centerOffset;
+      if (trackWidth <= carouselWidth) {
+        offset = (carouselWidth - trackWidth) / 2;
+      } else {
+        const minOffset = carouselWidth - trackWidth;
+        offset = Math.min(0, Math.max(minOffset, centerOffset));
+      }
+
+      setTrackOffset(offset);
+    };
+
+    recenter();
+
+    const observer = new ResizeObserver(recenter);
+    observer.observe(carousel);
+    window.addEventListener("resize", recenter);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", recenter);
+    };
+  }, [activeIndex, scheduleDays]);
 
   useEffect(() => {
     if (!isCalendarOpen) {
@@ -795,17 +841,18 @@ function SeasonClassScheduleSection() {
         </div>
       </header>
 
-      <div className="season-schedule__carousel">
+      <div className="season-schedule__carousel" ref={carouselRef}>
         {scheduleDays.length > 0 ? (
           <>
             <div
+              ref={trackRef}
               className={[
                 "season-schedule__track",
                 isDragging && "season-schedule__track--dragging",
               ]
                 .filter(Boolean)
                 .join(" ")}
-              style={{ transform: `translateX(${trackOffsetRem}rem)` }}
+              style={{ transform: `translateX(${trackOffset}px)` }}
             >
               {scheduleDays.map((item, index) => {
                 const isActive = index === activeIndex;

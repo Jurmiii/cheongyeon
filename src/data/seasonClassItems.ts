@@ -1,4 +1,5 @@
 import seasonClassBg from "../assets/images/09season-class/season-class-2-bg.webp";
+import seasonClassEllipse from "../assets/images/09season-class/Ellipse.webp";
 import seasonClassSubBg from "../assets/images/09season-class/season-class-2-subbg.webp";
 import seasonClass3Bg from "../assets/images/09season-class/season-class-3-bg.webp";
 import seasonClassAuScene from "../assets/images/09season-class/season-class-au.webp";
@@ -36,6 +37,7 @@ export const ORBIT_CUP_SIZE_REM = 13.75;
 
 export const seasonClassAssets = {
   bg: seasonClassBg,
+  ellipse: seasonClassEllipse,
   subBg: seasonClassSubBg,
   kvBg: seasonClassKvBg,
   promoBg: seasonClass3Bg,

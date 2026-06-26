@@ -90,30 +90,27 @@
 /* 1. 배경 — season-class-2-bg */
 .season-scroll__bg {
   position: absolute;
-  top: -84.75%;
-  left: -3.48%;
+  inset: 0;
   z-index: 0;
-  width: 188.58%;
-  height: 192.59%;
+  width: 100%;
+  height: 100%;
   max-width: none;
   object-fit: cover;
+  object-position: center;
   pointer-events: none;
 }
 
-/* 2. 원형 stroke */
-.season-scroll__circle {
+/* 2. Ellipse — Figma 830×830 (851, 55) */
+.season-scroll__ellipse {
   position: absolute;
-  top: 50%;
+  top: 3.4375rem;
   left: 53.1875rem;
   z-index: 1;
-  box-sizing: border-box;
   width: 51.875rem;
   height: 51.875rem;
-  border: 0.1875rem solid #c4ad98;
-  border-radius: 50%;
-  background: transparent;
+  max-width: none;
+  object-fit: contain;
   pointer-events: none;
-  transform: translateY(-50%);
 }
 
 /* 궤도 트레일 — 원형 stroke와 동일 (#c4ad98) */
@@ -335,21 +332,12 @@
   flex-shrink: 0;
 }
 
-.season-scroll__icon {
+.season-scroll__icon-img {
   display: block;
   width: 1.3125rem;
   height: 1.5rem;
   flex-shrink: 0;
-  background: currentColor;
-  mask: center / contain no-repeat;
-}
-
-.season-scroll__icon--tea {
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 21 24' fill='none'%3E%3Cpath d='M3 9h11v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9Z' stroke='black' stroke-width='2'/%3E%3Cpath d='M14 11h2a3 3 0 0 1 0 6h-2' stroke='black' stroke-width='2'/%3E%3Cpath d='M6 5V3M10 5V2M14 5V3' stroke='black' stroke-width='2'/%3E%3C/svg%3E");
-}
-
-.season-scroll__icon--hand {
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 21 24' fill='none'%3E%3Cpath d='M4 12 9 7l3 3 6-7M4 20h14' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  object-fit: contain;
 }
 
 @media (max-width: 90rem) {
@@ -364,7 +352,7 @@
     max-height: 58.75rem;
   }
 
-  .season-scroll__circle,
+  .season-scroll__ellipse,
   .season-scroll__orbit-trail-svg,
   .season-scroll__subbg,
   .season-scroll__scene {
@@ -926,6 +914,11 @@
   position: absolute;
   margin: 0;
   overflow: hidden;
+
+  /* \uba39/\ubd93 \ub290\ub08c\uc758 \uac70\uce5c \ube0c\ub7ec\uc26c \uac00\uc7a5\uc790\ub9ac \ub9c8\uc2a4\ud06c */
+  --brush-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='320'%3E%3Cdefs%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.016' numOctaves='2' seed='7' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='26'/%3E%3C/filter%3E%3C/defs%3E%3Crect x='18' y='18' width='384' height='284' rx='8' fill='%23fff' filter='url(%23b)'/%3E%3C/svg%3E");
+  -webkit-mask: var(--brush-mask) center / 100% 100% no-repeat;
+  mask: var(--brush-mask) center / 100% 100% no-repeat;
 }
 
 .season-gallery__img {
