@@ -456,7 +456,14 @@ function MyPage() {
 
         <div className="my-page__history-inner">
 
-          <h2 className="my-page__history-title ft-48b ink500">예약이력</h2>
+          <div className="my-page__history-head">
+            <h2 className="my-page__history-title ft-48b ink500">예약이력</h2>
+            {historyReservations.length > 0 ? (
+              <Button variant="btn7" className="my-page__history-more-button" type="button">
+                더보기
+              </Button>
+            ) : null}
+          </div>
 
           {historyReservations.length > 0 ? (
 
@@ -464,9 +471,10 @@ function MyPage() {
 
               <ul className="my-page__history-list">
 
-                {pagedHistory.map((item) => (
+                {pagedHistory.map((item, index) => (
 
-                  <li className="my-page__history-card" key={item.id}>
+                  <Fragment key={item.id}>
+                  <li className="my-page__history-card">
 
                     <img className="my-page__history-card-image" src={item.image} alt="" />
 
@@ -490,45 +498,15 @@ function MyPage() {
 
                   </li>
 
+                  {index < pagedHistory.length - 1 ? (
+                    <li className="my-page__history-divider" aria-hidden="true" />
+                  ) : null}
+
+                  </Fragment>
+
                 ))}
 
               </ul>
-
-              {totalHistoryPages > 1 ? (
-
-                <div className="my-page__history-pagination" role="tablist" aria-label="예약이력 페이지">
-
-                  {Array.from({ length: totalHistoryPages }, (_, index) => (
-
-                    <button
-
-                      className={[
-
-                        "my-page__history-dot",
-
-                        index === historyPage && "my-page__history-dot--active",
-
-                      ]
-
-                        .filter(Boolean)
-
-                        .join(" ")}
-
-                      type="button"
-
-                      key={index}
-
-                      aria-current={index === historyPage ? "true" : undefined}
-
-                      onClick={() => setHistoryPage(index)}
-
-                    />
-
-                  ))}
-
-                </div>
-
-              ) : null}
 
             </>
 

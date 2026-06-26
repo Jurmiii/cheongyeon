@@ -12,6 +12,7 @@ import LoginPage from './pages/Login/LoginPage'
 import SignupPage from './pages/Signup/SignupPage'
 import ReservationEditPage from './pages/ReservationEdit/ReservationEditPage'
 import StampPage from './pages/Stamp/StampPage'
+import ContactPage from './pages/Contact/ContactPage'
 import BrandStoryPage from './pages/BrandStory/BrandStoryPage'
 import SpacePage from './pages/Space/SpacePage'
 import LocationPage from './pages/Location'
@@ -51,6 +52,7 @@ function App() {
           <Route path="/reservation/edit" element={<ReservationEditPage />} />
           <Route path="/reservation-edit" element={<ReservationEditPage />} />
           <Route path="/stamp" element={<StampPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/mypage/stamp" element={<StampPage />} />
           <Route path="/event" element={<EventPage />} />
           <Route path="/event/ongoing" element={<EventPage />} />

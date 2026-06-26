@@ -1,0 +1,245 @@
+@use "../../styles/abstracts/breakpoints" as *;
+
+.contact-page {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 100svh;
+  background: var(--han50);
+}
+
+.contact {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: var(--space-9) var(--space-3);
+}
+
+.contact__inner {
+  display: grid;
+  grid-template-columns: 24rem 1fr;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: 70rem;
+}
+
+.contact__intro {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--deep500);
+  color: var(--white);
+}
+
+.contact__title {
+  margin: 0;
+}
+
+.contact__description {
+  margin: var(--space-2) 0 0;
+  color: rgb(255 255 255 / 80%);
+}
+
+.contact__intro-image {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 16rem;
+  margin-top: var(--space-4);
+  border-radius: var(--radius-md);
+  background: rgb(255 255 255 / 8%);
+  color: rgb(255 255 255 / 35%);
+  font-size: 5rem;
+}
+
+.contact__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.contact__row {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.contact__field {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.contact__label {
+  margin: 0;
+}
+
+.contact__field .cy-input {
+  width: 100%;
+}
+
+.contact__select-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.contact__select {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  height: var(--input-height);
+  padding: 0 var(--space-2);
+  border: calc(var(--space-1) / 8) solid var(--han500);
+  border-radius: var(--radius-input);
+  background: var(--white);
+  color: var(--ink500);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.contact__select-wrap--open .contact__select {
+  border-color: var(--deep500);
+}
+
+.contact__select-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contact__select-label--placeholder {
+  color: var(--ink200);
+}
+
+.contact__select-icon {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  transition: transform 0.25s ease;
+}
+
+.contact__select-wrap--open .contact__select-icon {
+  transform: rotate(180deg);
+}
+
+.contact__select-menu {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  margin: 0;
+  padding: var(--space-1) 0;
+  border: calc(var(--space-1) / 8) solid var(--han500);
+  border-radius: var(--radius-input);
+  list-style: none;
+  background: var(--white);
+  box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 8%);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-0.5rem);
+  transition:
+    opacity 0.2s ease,
+    transform 0.25s ease,
+    visibility 0.2s ease;
+}
+
+.contact__select-wrap--open .contact__select-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.contact__select-option {
+  display: block;
+  width: 100%;
+  padding: var(--space-1) var(--space-2);
+  border: 0;
+  background: transparent;
+  color: var(--ink500);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover,
+  &.contact__select-option--active {
+    background: rgb(28 58 43 / 8%);
+  }
+}
+
+.contact__textarea {
+  box-sizing: border-box;
+  width: 100%;
+  height: 10rem;
+  padding: var(--space-2);
+  border: calc(var(--space-1) / 8) solid var(--han500);
+  border-radius: var(--radius-input);
+  background: var(--white);
+  color: var(--ink500);
+  resize: none;
+
+  &::placeholder {
+    color: var(--ink200);
+  }
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    border-color: var(--deep500);
+  }
+}
+
+.contact__agree {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  cursor: pointer;
+}
+
+.contact__checkbox {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0;
+  border: calc(var(--space-1) / 8) solid var(--ink500);
+  accent-color: var(--deep500);
+  cursor: pointer;
+}
+
+.contact__submit.cy-button {
+  width: 100%;
+  min-height: 3.75rem;
+}
+
+.contact__hours {
+  margin: 0;
+}
+
+@media (max-width: $laptop) {
+  .contact__inner {
+    grid-template-columns: 1fr;
+    max-width: 40rem;
+  }
+
+  .contact__intro-image {
+    min-height: 12rem;
+  }
+}
+
+@media (max-width: $tablet) {
+  .contact__row {
+    flex-direction: column;
+  }
+}
