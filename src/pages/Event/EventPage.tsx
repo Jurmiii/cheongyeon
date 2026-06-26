@@ -7,10 +7,9 @@ import { Badge, Footer, Header, Icon } from "../../components/common";
 import type { IconName } from "../../components/common";
 import { events, type EventItem, type EventStatus } from "../../data/eventList";
 import "./EventPage.scss";
-type EventFilter = "all" | EventStatus;
+type EventFilter = EventStatus;
 
 const filterTabs: { value: EventFilter; label: string }[] = [
-  { value: "all", label: "전체" },
   { value: "progress", label: "진행중" },
   { value: "ended", label: "종료" },
 ];
@@ -149,12 +148,13 @@ function EventDetailModal({ event, onClose }: EventDetailModalProps) {
   );
 }
 
-function EventPage() {  const [activeFilter, setActiveFilter] = useState<EventFilter>("all");
+function EventPage() {
+  const [activeFilter, setActiveFilter] = useState<EventFilter>("progress");
   const [activePage, setActivePage] = useState(1);
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
 
   const filteredEvents = useMemo(
-    () => (activeFilter === "all" ? events : events.filter((event) => event.status === activeFilter)),
+    () => events.filter((event) => event.status === activeFilter),
     [activeFilter],
   );
 

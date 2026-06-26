@@ -1,5 +1,4 @@
 export type NoticeCategory = "전체" | "운영 안내" | "휴무 안내" | "클래스 일정";
-export type NoticeSortOrder = "latest" | "oldest";
 export type NoticeItemCategory = Exclude<NoticeCategory, "전체">;
 
 export interface NoticeItem {

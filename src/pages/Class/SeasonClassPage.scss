@@ -690,14 +690,6 @@
   will-change: transform;
 }
 
-.season-schedule__track--dragging {
-  transition: none;
-}
-
-.season-schedule__track--dragging .season-schedule__card {
-  transition: none;
-}
-
 .season-schedule__card {
   position: relative;
   flex: 0 0 13.75rem;
@@ -712,12 +704,13 @@
 }
 
 .season-schedule__card-btn {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   height: 100%;
-  padding: 1.125rem 0 1.5rem;
+  padding: 1.125rem 0.875rem 1.5rem;
   border: 0;
   border-radius: 1.5rem;
   background: var(--han50);
@@ -736,10 +729,10 @@
 .season-schedule__card-head {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
   gap: 0;
-  width: 3.875rem;
-  text-align: center;
+  width: 100%;
+  text-align: right;
 }
 
 .season-schedule__day {
@@ -815,40 +808,18 @@
   background: var(--han50);
 }
 
+.season-schedule__dot--available {
+  background: var(--deep500);
+}
+
+.season-schedule__dot--closed {
+  border: 0.0625rem solid var(--deep200);
+  background: var(--han50);
+}
+
 .season-schedule__remain {
   margin: 0;
   text-align: center;
-}
-
-.season-schedule__scrollbar {
-  position: absolute;
-  bottom: 1.1875rem;
-  left: 50%;
-  width: 52rem;
-  max-width: calc(100% - 3rem);
-  height: 0.8125rem;
-  border-radius: 6.25rem;
-  background: var(--deep100);
-  transform: translateX(-50%);
-  cursor: pointer;
-  touch-action: none;
-}
-
-.season-schedule__scrollbar-thumb {
-  position: absolute;
-  top: 0;
-  width: 13.4375rem;
-  max-width: 32%;
-  height: 100%;
-  border-radius: 6.25rem;
-  background: var(--deep400);
-  transform: translateX(-50%);
-  transition: left 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
-  pointer-events: none;
-}
-
-.season-schedule__scrollbar--dragging .season-schedule__scrollbar-thumb {
-  transition: none;
 }
 
 @media (max-width: 90rem) {
@@ -916,9 +887,6 @@
   overflow: hidden;
 
   /* \uba39/\ubd93 \ub290\ub08c\uc758 \uac70\uce5c \ube0c\ub7ec\uc26c \uac00\uc7a5\uc790\ub9ac \ub9c8\uc2a4\ud06c */
-  --brush-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='320'%3E%3Cdefs%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.016' numOctaves='2' seed='7' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='26'/%3E%3C/filter%3E%3C/defs%3E%3Crect x='18' y='18' width='384' height='284' rx='8' fill='%23fff' filter='url(%23b)'/%3E%3C/svg%3E");
-  -webkit-mask: var(--brush-mask) center / 100% 100% no-repeat;
-  mask: var(--brush-mask) center / 100% 100% no-repeat;
 }
 
 .season-gallery__img {
