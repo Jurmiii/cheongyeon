@@ -87,11 +87,32 @@
 }
 
 .main-sec1__progress-line {
+  position: relative;
   display: block;
   width: 8.0625rem;
-  height: 0.0625rem;
+  height: 0.09375rem;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.main-sec1__progress-line::before {
+  position: absolute;
+  inset: 0;
   background: currentColor;
+  content: "";
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: main-sec1-progress-line var(--main-sec1-progress-duration, 15000ms) linear forwards;
+}
+
+@keyframes main-sec1-progress-line {
+  0% {
+    transform: scaleX(0);
+  }
+
+  100% {
+    transform: scaleX(1);
+  }
 }
 
 .main-sec2 {
@@ -641,7 +662,7 @@
 
 .main-sec5__carousel {
   position: absolute;
-  top: 7.5rem;
+  top: 9.3125rem;
   right: 0;
   left: calc((100% - 90rem) / 2 + 30rem);
   cursor: grab;
@@ -713,26 +734,6 @@
 
 .main-sec5__product-price {
   margin-top: 1rem;
-}
-
-.main-sec5__progress {
-  position: relative;
-  width: calc(100% - 15rem);
-  height: 0.3125rem;
-  margin-top: 1.5rem;
-  overflow: hidden;
-  border-radius: 6.25rem;
-  background: var(--han300);
-  cursor: pointer;
-  touch-action: none;
-}
-
-.main-sec5__progress-thumb {
-  display: block;
-  height: 100%;
-  border-radius: 6.25rem;
-  background: var(--han500);
-  transition: none;
 }
 
 .main-sec6 {
@@ -1154,7 +1155,7 @@
 
 .main-sec9__carousel {
   position: absolute;
-  top: 7.5rem;
+  top: 9.3125rem;
   right: 0;
   left: calc((100% - 90rem) / 2 + 37.5rem);
   cursor: grab;
@@ -1220,26 +1221,6 @@
 
 .main-sec9__review-text {
   margin-top: 1rem;
-}
-
-.main-sec9__progress {
-  position: relative;
-  width: calc(100% - 15rem);
-  height: 0.3125rem;
-  margin-top: 1.5rem;
-  overflow: hidden;
-  border-radius: 6.25rem;
-  background: var(--han300);
-  cursor: pointer;
-  touch-action: none;
-}
-
-.main-sec9__progress-thumb {
-  display: block;
-  height: 100%;
-  border-radius: 6.25rem;
-  background: var(--han500);
-  transition: transform 0.08s linear;
 }
 
 .main-sec10 {
