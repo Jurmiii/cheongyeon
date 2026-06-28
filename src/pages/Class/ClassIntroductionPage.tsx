@@ -27,6 +27,7 @@ function getReviewSwipeDirection(from: number, to: number, count: number) {
 }
 
 function ClassIntroductionScrollSection() {
+  const sectionRef = useRef<HTMLElement>(null);
   const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const previousIndexRef = useRef(0);
@@ -47,13 +48,16 @@ function ClassIntroductionScrollSection() {
     previousIndexRef.current = 0;
   }, []);
 
-  const goToSlide = useCallback((index: number) => {
-    if (index === activeIndex) {
-      return;
-    }
+  const goToSlide = useCallback(
+    (index: number) => {
+      if (index === activeIndex) {
+        return;
+      }
 
-    setActiveIndex(index);
-  }, [activeIndex]);
+      setActiveIndex(index);
+    },
+    [activeIndex],
+  );
 
   // activeIndex 변경 시 한 장씩 부드럽게 전환
   useEffect(() => {
@@ -96,7 +100,7 @@ function ClassIntroductionScrollSection() {
   }, [activeIndex]);
 
   return (
-    <section className="class-intro-scroll" aria-label="클래스 유형">
+    <section ref={sectionRef} className="class-intro-scroll" aria-label="클래스 유형">
       <div className="class-intro-scroll__grid">
         <div className="class-intro-scroll__stage">
           <div className="class-intro-scroll__media" aria-live="polite">

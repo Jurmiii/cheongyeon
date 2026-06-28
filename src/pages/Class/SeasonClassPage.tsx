@@ -35,6 +35,7 @@ import {
   getCalendarGridDates,
   getCupImage,
   getScheduleDaysForMonth,
+  getScheduleDaysFromDate,
   getSeatSlots,
   isBeforeDay,
   isSameDay,
@@ -543,75 +544,116 @@ function SeasonClassPromoSection() {
 
 // --- SeasonClassScheduleSection helpers ---
 
+const SCHEDULE_SWIPE_THRESHOLD = 48;
+
 function SeasonClassScheduleSection() {
   const today = useMemo(() => startOfDay(new Date()), []);
   const monthWrapRef = useRef<HTMLDivElement>(null);
+  const swipeStartRef = useRef<{ x: number; y: number } | null>(null);
+  const suppressClickRef = useRef(false);
 
-  const [viewMonth, setViewMonth] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [leadDate, setLeadDate] = useState(() => today);
+  const [calendarMonth, setCalendarMonth] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [trackOffset, setTrackOffset] = useState(0);
 
-  const scheduleDays = useMemo(
-    () => getScheduleDaysForMonth(viewMonth.getFullYear(), viewMonth.getMonth(), today),
-    [today, viewMonth],
+  const visibleDays = useMemo(
+    () => getScheduleDaysFromDate(leadDate, today, 18),
+    [leadDate, today],
   );
 
-  const monthLabel = formatScheduleMonthLabel(viewMonth.getFullYear(), viewMonth.getMonth());
+  const monthLabel = formatScheduleMonthLabel(leadDate.getFullYear(), leadDate.getMonth());
   const calendarDates = useMemo(
-    () => getCalendarGridDates(viewMonth.getFullYear(), viewMonth.getMonth()),
-    [viewMonth],
+    () => getCalendarGridDates(calendarMonth.getFullYear(), calendarMonth.getMonth()),
+    [calendarMonth],
   );
 
-  const lastIndex = Math.max(0, scheduleDays.length - 1);
-  const canGoPrevMonth = canGoToPreviousMonth(viewMonth, today);
-  const selectedDay = scheduleDays[activeIndex] ?? scheduleDays[0];
+  const canGoPrevMonth = canGoToPreviousMonth(calendarMonth, today);
+  const currentDay = visibleDays[0];
 
   useEffect(() => {
-    setActiveIndex((prev) => Math.min(prev, lastIndex));
-  }, [lastIndex]);
+    setCalendarMonth(new Date(leadDate.getFullYear(), leadDate.getMonth(), 1));
+  }, [leadDate]);
 
-  useLayoutEffect(() => {
-    const carousel = carouselRef.current;
-    const track = trackRef.current;
-    if (!carousel || !track) {
+  const goToDay = useCallback((date: Date) => {
+    if (isBeforeDay(date, today)) {
       return;
     }
 
-    const recenter = () => {
-      const card = track.children[activeIndex] as HTMLElement | undefined;
-      if (!card) {
+    setLeadDate(startOfDay(date));
+  }, [today]);
+
+  const goToNextDay = useCallback(() => {
+    const nextDay = visibleDays[1];
+    if (!nextDay) {
+      return;
+    }
+
+    setLeadDate(startOfDay(nextDay.date));
+  }, [visibleDays]);
+
+  const goToPrevDay = useCallback(() => {
+    const prevDate = new Date(
+      leadDate.getFullYear(),
+      leadDate.getMonth(),
+      leadDate.getDate() - 1,
+    );
+
+    if (isBeforeDay(prevDate, today)) {
+      return;
+    }
+
+    setLeadDate(startOfDay(prevDate));
+  }, [leadDate, today]);
+
+  const handleCardClick = useCallback(
+    (date: Date, isActive: boolean) => {
+      if (suppressClickRef.current || isActive) {
         return;
       }
 
-      const carouselWidth = carousel.clientWidth;
-      const trackWidth = track.scrollWidth;
-      const centerOffset = carouselWidth / 2 - (card.offsetLeft + card.offsetWidth / 2);
+      goToDay(date);
+    },
+    [goToDay],
+  );
 
-      let offset = centerOffset;
-      if (trackWidth <= carouselWidth) {
-        offset = (carouselWidth - trackWidth) / 2;
-      } else {
-        const minOffset = carouselWidth - trackWidth;
-        offset = Math.min(0, Math.max(minOffset, centerOffset));
+  const handleSchedulePointerDown = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    swipeStartRef.current = { x: event.clientX, y: event.clientY };
+  }, []);
+
+  const handleSchedulePointerUp = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      const swipeStart = swipeStartRef.current;
+
+      if (!swipeStart) {
+        return;
       }
 
-      setTrackOffset(offset);
-    };
+      swipeStartRef.current = null;
 
-    recenter();
+      const deltaX = event.clientX - swipeStart.x;
+      const deltaY = event.clientY - swipeStart.y;
 
-    const observer = new ResizeObserver(recenter);
-    observer.observe(carousel);
-    window.addEventListener("resize", recenter);
+      if (Math.abs(deltaX) < SCHEDULE_SWIPE_THRESHOLD || Math.abs(deltaX) < Math.abs(deltaY)) {
+        return;
+      }
 
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", recenter);
-    };
-  }, [activeIndex, scheduleDays]);
+      suppressClickRef.current = true;
+      window.setTimeout(() => {
+        suppressClickRef.current = false;
+      }, 300);
+
+      if (deltaX < 0) {
+        goToNextDay();
+      } else {
+        goToPrevDay();
+      }
+    },
+    [goToNextDay, goToPrevDay],
+  );
+
+  const handleSchedulePointerCancel = useCallback(() => {
+    swipeStartRef.current = null;
+  }, []);
 
   useEffect(() => {
     if (!isCalendarOpen) {
@@ -640,29 +682,33 @@ function SeasonClassScheduleSection() {
   }, [isCalendarOpen]);
 
   const moveMonth = (offset: number) => {
-    if (offset < 0 && !canGoPrevMonth) {
+    const nextMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + offset, 1);
+
+    const currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+    if (offset < 0 && nextMonth.getTime() < currentMonthStart.getTime()) {
       return;
     }
 
-    setViewMonth((prev) => {
-      const next = new Date(prev.getFullYear(), prev.getMonth() + offset, 1);
-      setActiveIndex(0);
-      return next;
-    });
+    const monthDays = getScheduleDaysForMonth(nextMonth.getFullYear(), nextMonth.getMonth(), today);
+    const firstAvailable = monthDays.find((day) => !day.isPast);
+
+    setCalendarMonth(nextMonth);
+    if (firstAvailable) {
+      setLeadDate(startOfDay(firstAvailable.date));
+    }
     setIsCalendarOpen(false);
   };
 
   const selectDay = useCallback(
     (day: SeasonClassScheduleDay) => {
-      const index = scheduleDays.findIndex((item) => isSameDay(item.date, day.date));
-      if (index < 0) {
+      if (day.isPast) {
         return;
       }
 
-      setActiveIndex(index);
+      goToDay(day.date);
       setIsCalendarOpen(false);
     },
-    [scheduleDays],
+    [goToDay],
   );
 
   const handleCalendarDateSelect = (date: Date) => {
@@ -670,11 +716,12 @@ function SeasonClassScheduleSection() {
       return;
     }
 
-    if (!isSameMonthView(viewMonth, date)) {
+    if (!isSameMonthView(calendarMonth, date)) {
       return;
     }
 
-    const day = scheduleDays.find((item) => isSameDay(item.date, date));
+    const monthDays = getScheduleDaysForMonth(date.getFullYear(), date.getMonth(), today);
+    const day = monthDays.find((item) => isSameDay(item.date, date));
     if (!day) {
       return;
     }
@@ -745,9 +792,13 @@ function SeasonClassScheduleSection() {
                   }
 
                   const isPast = isBeforeDay(date, today);
-                  const scheduleDay = scheduleDays.find((item) => isSameDay(item.date, date));
-                  const isSelectable = Boolean(scheduleDay);
-                  const isSelected = selectedDay ? isSameDay(date, selectedDay.date) : false;
+                  const scheduleDay = getScheduleDaysForMonth(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    today,
+                  ).find((item) => isSameDay(item.date, date));
+                  const isSelectable = Boolean(scheduleDay && !scheduleDay.isPast);
+                  const isSelected = currentDay ? isSameDay(date, currentDay.date) : false;
 
                   return (
                     <button
@@ -784,60 +835,66 @@ function SeasonClassScheduleSection() {
         </div>
       </header>
 
-      <div className="season-schedule__carousel" ref={carouselRef}>
-        {scheduleDays.length > 0 ? (
-          <div
-            ref={trackRef}
-            className="season-schedule__track"
-            style={{ transform: `translateX(${trackOffset}px)` }}
-          >
-            {scheduleDays.map((item, index) => {
-              const isActive = index === activeIndex;
+      <div
+        className="season-schedule__carousel"
+        aria-label="클래스 일정 스와이퍼"
+        onPointerDown={handleSchedulePointerDown}
+        onPointerUp={handleSchedulePointerUp}
+        onPointerCancel={handleSchedulePointerCancel}
+      >
+        {currentDay ? (
+          <div className="season-schedule__track" key={currentDay.id}>
+            {visibleDays.map((item, offset) => {
+              const isActive = offset === 0;
               const seatSlots = getSeatSlots(item.remainingSeats);
               const cupImage = getCupImage(item.remainingSeats);
 
               return (
-                  <article
-                    key={item.id}
-                    className={["season-schedule__card", isActive && "season-schedule__card--active"]
-                      .filter(Boolean)
-                      .join(" ")}
+                <article
+                  key={item.id}
+                  className={[
+                    "season-schedule__card",
+                    isActive && "season-schedule__card--active",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  aria-hidden={!isActive}
+                >
+                  <button
+                    type="button"
+                    className="season-schedule__card-surface"
+                    aria-label={`${item.day}일 ${item.weekday}, 잔여 ${item.remainingSeats}석`}
+                    aria-current={isActive ? "date" : undefined}
+                    onClick={() => handleCardClick(item.date, isActive)}
                   >
-                    <button
-                      type="button"
-                      className="season-schedule__card-btn"
-                      aria-pressed={isActive}
-                      aria-label={`${item.day}일 ${item.weekday}, 잔여 ${item.remainingSeats}석`}
-                      onClick={() => setActiveIndex(index)}
-                    >
-                      <div className="season-schedule__card-head">
-                        <p className="season-schedule__day ft-48b deep500">{item.day}</p>
-                        <p className="season-schedule__weekday ft-18r deep500">{item.weekday}</p>
+                    <div className="season-schedule__card-head">
+                      <p className="season-schedule__day ft-48b deep500">{item.day}</p>
+                      <p className="season-schedule__weekday ft-18r deep500">{item.weekday}</p>
+                    </div>
+
+                    <img
+                      className="season-schedule__divider"
+                      src={SEASON_CLASS_SCHEDULE_DIVIDER}
+                      alt=""
+                      aria-hidden="true"
+                    />
+
+                    <img className="season-schedule__cup" src={cupImage} alt="" aria-hidden="true" />
+
+                    <div className="season-schedule__seats">
+                      <div className="season-schedule__dots" aria-hidden="true">
+                        {seatSlots.map((state, dotIndex) => (
+                          <span
+                            key={`${item.id}-dot-${dotIndex}`}
+                            className={["season-schedule__dot", `season-schedule__dot--${state}`].join(" ")}
+                          />
+                        ))}
                       </div>
-
-                      <img
-                        className="season-schedule__divider"
-                        src={SEASON_CLASS_SCHEDULE_DIVIDER}
-                        alt=""
-                        aria-hidden="true"
-                      />
-
-                      <img className="season-schedule__cup" src={cupImage} alt="" aria-hidden="true" />
-
-                      <div className="season-schedule__seats">
-                        <div className="season-schedule__dots" aria-hidden="true">
-                          {seatSlots.map((state, dotIndex) => (
-                            <span
-                              key={`${item.id}-dot-${dotIndex}`}
-                              className={["season-schedule__dot", `season-schedule__dot--${state}`].join(" ")}
-                            />
-                          ))}
-                        </div>
-                        <p className="season-schedule__remain ft-18r ink500">잔여 {item.remainingSeats}석</p>
-                      </div>
-                    </button>
-                  </article>
-                );
+                      <p className="season-schedule__remain ft-18r ink500">잔여 {item.remainingSeats}석</p>
+                    </div>
+                  </button>
+                </article>
+              );
             })}
           </div>
         ) : (

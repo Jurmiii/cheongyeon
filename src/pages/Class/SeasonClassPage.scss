@@ -680,14 +680,36 @@
   height: 35.25rem;
   margin: 1.5rem auto 0;
   overflow: hidden;
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+
+  &:active {
+    cursor: grabbing;
+  }
 }
 
 .season-schedule__track {
   display: flex;
   gap: 1.5rem;
+  align-items: flex-start;
+  justify-content: flex-start;
   height: 100%;
-  transition: transform 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
-  will-change: transform;
+}
+
+/* 스와이프 시 카드 묶음이 한 칸(카드폭 + 간격)만큼 왼쪽에서 밀려 들어온다 */
+@keyframes season-schedule-track-in {
+  from {
+    transform: translateX(15.25rem);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.season-schedule__track {
+  animation: season-schedule-track-in 0.5s var(--ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
 }
 
 .season-schedule__card {
@@ -696,14 +718,19 @@
   width: 13.75rem;
   height: 24.9375rem;
   margin-top: 4.3125rem;
-  transition: margin-top 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+  opacity: 0.72;
+  transition:
+    margin-top 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    opacity 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
+/* 첫 번째(현재) 카드만 올라오고 강조 */
 .season-schedule__card--active {
   margin-top: 0;
+  opacity: 1;
 }
 
-.season-schedule__card-btn {
+.season-schedule__card-surface {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -711,19 +738,42 @@
   width: 100%;
   height: 100%;
   padding: 1.125rem 0.875rem 1.5rem;
-  border: 0;
+  border: 0.125rem solid transparent;
   border-radius: 1.5rem;
   background: var(--han50);
   box-shadow: none;
-  cursor: pointer;
   overflow: visible;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
   transition:
     border-color 0.3s ease,
-    box-shadow 0.3s ease;
+    box-shadow 0.3s ease,
+    background-color 0.3s ease;
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+
+  &:disabled {
+    cursor: default;
+  }
 }
 
-.season-schedule__card--active .season-schedule__card-btn {
-  border: 0.125rem solid var(--deep500);
+.season-schedule__card--active .season-schedule__card-surface {
+  cursor: default;
+  border-color: var(--deep500);
+  box-shadow: 0 0.75rem 1.75rem rgb(45 74 62 / 12%);
+}
+
+.season-schedule__card--past .season-schedule__card-surface {
+  background: var(--han100);
+}
+
+.season-schedule__card--past .season-schedule__day,
+.season-schedule__card--past .season-schedule__weekday,
+.season-schedule__card--past .season-schedule__remain {
+  color: var(--deep200);
 }
 
 .season-schedule__card-head {

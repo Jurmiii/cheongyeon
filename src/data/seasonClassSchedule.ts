@@ -29,6 +29,7 @@ export interface SeasonClassScheduleDay {
   weekday: string;
   date: Date;
   remainingSeats: number;
+  isPast: boolean;
 }
 
 const SEASON_CLASS_SCHEDULE_CUP_IMAGES = [
@@ -106,42 +107,64 @@ export function getSeatDots(remainingSeats: number): SeatDotState[] {
 }
 
 function getRemainingSeatsMock(year: number, month: number, day: number) {
-  const seed = year * 10_000 + (month + 1) * 100 + day;
+  const seed = year * 372 + (month + 1) * 31 + day * 7;
   return (seed % SEASON_CLASS_SCHEDULE_TOTAL_SEATS) + 1;
 }
 
-/** 오늘이 포함된 달은 오늘~말일, 이후 달은 1일~말일 */
+export function getFirstAvailableDayIndex(days: SeasonClassScheduleDay[]) {
+  const index = days.findIndex((day) => !day.isPast);
+  return index >= 0 ? index : 0;
+}
+
+export function getLastAvailableDayIndex(days: SeasonClassScheduleDay[]) {
+  for (let index = days.length - 1; index >= 0; index -= 1) {
+    if (!days[index]?.isPast) {
+      return index;
+    }
+  }
+
+  return Math.max(0, days.length - 1);
+}
+
+/** leadDate부터 예약 가능한 날을 count개 — 월말 이후 다음 달로 자연스럽게 이어짐 */
+export function getScheduleDaysFromDate(startDate: Date, today: Date, count = 18) {
+  const days: SeasonClassScheduleDay[] = [];
+  let cursor = startOfDay(startDate);
+  let iterations = 0;
+
+  while (days.length < count && iterations < 90) {
+    const year = cursor.getFullYear();
+    const month = cursor.getMonth();
+    const monthDays = getScheduleDaysForMonth(year, month, today);
+    const entry = monthDays.find((day) => isSameDay(day.date, cursor));
+
+    if (entry && !entry.isPast) {
+      days.push(entry);
+    }
+
+    cursor = new Date(year, month, cursor.getDate() + 1);
+    iterations += 1;
+  }
+
+  return days;
+}
+
+/** 달력은 1일부터 말일까지 모두 표시. 지난 날은 isPast로 구분 */
 export function getScheduleDaysForMonth(year: number, month: number, today: Date): SeasonClassScheduleDay[] {
   const lastDay = new Date(year, month + 1, 0).getDate();
-  const isCurrentMonth = year === today.getFullYear() && month === today.getMonth();
-  const startDay = isCurrentMonth ? today.getDate() : 1;
   const days: SeasonClassScheduleDay[] = [];
 
-  for (let day = startDay; day <= lastDay; day += 1) {
+  for (let day = 1; day <= lastDay; day += 1) {
     const date = new Date(year, month, day);
+    const isPast = isBeforeDay(date, today);
 
     days.push({
       id: `${year}-${month + 1}-${day}`,
       day,
       weekday: SEASON_CLASS_SCHEDULE_WEEKDAY_LABELS[date.getDay()],
       date,
-      remainingSeats: getRemainingSeatsMock(year, month, day),
-    });
-  }
-
-  if (lastDay === 30) {
-    const nextMonthDate = new Date(year, month + 1, 1);
-
-    days.push({
-      id: `${nextMonthDate.getFullYear()}-${nextMonthDate.getMonth() + 1}-1`,
-      day: 1,
-      weekday: SEASON_CLASS_SCHEDULE_WEEKDAY_LABELS[nextMonthDate.getDay()],
-      date: nextMonthDate,
-      remainingSeats: getRemainingSeatsMock(
-        nextMonthDate.getFullYear(),
-        nextMonthDate.getMonth(),
-        1,
-      ),
+      isPast,
+      remainingSeats: isPast ? 0 : getRemainingSeatsMock(year, month, day),
     });
   }
 
