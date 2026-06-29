@@ -1,16 +1,82 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import subSymbol from "../../assets/images/01main/subsymbol.svg";
 import springTeaImage from "../../assets/images/07season-tea/sec2-tea.webp";
+import wayImage from "../../assets/images/07season-tea/way.webp";
 import summerTeaImage from "../../assets/images/07season-tea/sec3-tea.webp";
 import autumnTeaImage from "../../assets/images/07season-tea/sec4-tea.webp";
+import sec4WayB from "../../assets/images/07season-tea/sec4-way-b.webp";
 import winterTeaImage from "../../assets/images/07season-tea/sec5-tea.webp";
+import sec5WayB from "../../assets/images/07season-tea/sec5-way-b.webp";
+import sec5WayT from "../../assets/images/07season-tea/sec5-way-t.webp";
 import { Button, Footer, Header } from "../../components/common";
 import SeasonTeaDetailModal from "./SeasonTeaDetailModal";
 import { autumnTeaDetail, springTeaDetail, summerTeaDetail, winterTeaDetail, type SeasonTeaDetail } from "./seasonTeaDetailData";
 import "./SeasonTeaPage.scss";
 
+const seasonTeaWayImages = [
+  { className: "season-tea-way__image season-tea-way__image--combined", src: wayImage },
+  { className: "season-tea-way__image season-tea-way__image--sec4-b", src: sec4WayB },
+  { className: "season-tea-way__image season-tea-way__image--sec5-t", src: sec5WayT },
+  { className: "season-tea-way__image season-tea-way__image--sec5-b", src: sec5WayB },
+] as const;
+
 function SeasonTeaPage() {
   const [activeTeaDetail, setActiveTeaDetail] = useState<SeasonTeaDetail | null>(null);
+  const wayScrollRef = useRef<HTMLDivElement | null>(null);
+  const wayImageRefs = useRef<Array<HTMLImageElement | null>>([]);
+
+  const setWayImageRef = (index: number) => (element: HTMLImageElement | null) => {
+    wayImageRefs.current[index] = element;
+  };
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      const wayImages = wayImageRefs.current.filter((element): element is HTMLImageElement => Boolean(element));
+
+      if (!wayScrollRef.current || wayImages.length === 0) {
+        return;
+      }
+
+      const wayTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: wayImages[0],
+          endTrigger: wayScrollRef.current,
+          start: "top 82%",
+          end: "bottom bottom",
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      const wayDurations = [5.6, 1, 1.05, 0.55];
+
+      wayImages.forEach((element, index) => {
+        wayTimeline.fromTo(
+          element,
+          {
+            clipPath: "inset(0 0 100% 0)",
+            WebkitClipPath: "inset(0 0 100% 0)",
+          },
+          {
+            clipPath: "inset(0 0 0% 0)",
+            WebkitClipPath: "inset(0 0 0% 0)",
+            ease: "none",
+            duration: wayDurations[index] ?? 1,
+          },
+        );
+      });
+    }, wayScrollRef);
+
+    ScrollTrigger.refresh();
+
+    return () => {
+      ctx.revert();
+    };
+  }, []);
 
   return (
     <main className="season-tea-page">
@@ -31,6 +97,20 @@ function SeasonTeaPage() {
           </div>
         </div>
       </section>
+
+      <div className="season-tea-way-scroll" ref={wayScrollRef}>
+        <div className="season-tea-way-layer" aria-hidden="true">
+          {seasonTeaWayImages.map((wayImage, index) => (
+            <img
+              className={wayImage.className}
+              ref={setWayImageRef(index)}
+              src={wayImage.src}
+              alt=""
+              key={wayImage.className}
+              onLoad={() => ScrollTrigger.refresh()}
+            />
+          ))}
+        </div>
 
       <section className="season-tea-spring" aria-label="봄의 차">
         <div className="season-tea-spring__grid">
@@ -183,6 +263,7 @@ function SeasonTeaPage() {
           </div>
         </div>
       </section>
+      </div>
 
       {activeTeaDetail && (
         <SeasonTeaDetailModal

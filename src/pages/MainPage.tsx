@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type MouseEvent, type TouchEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type MouseEvent, type TouchEvent } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Link } from "react-router-dom";
@@ -397,6 +397,7 @@ function DrawLineSvg({
 
 export default function MainPage() {
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
+  const [sec1ProgressCycle, setSec1ProgressCycle] = useState<number>(0);
   const [activeSeasons, setActiveSeasons] = useState<Record<SeasonKey, boolean>>(initialActiveSeasons);
   const [sec5Carousel, setSec5Carousel] = useState<{ progress: number; translate: number }>({
     progress: 0,
@@ -671,29 +672,17 @@ export default function MainPage() {
     resumeSec9Carousel();
   };
 
-  const syncSec5ProgressFromBar = (clientX: number, element: HTMLElement) => {
-    const rect = element.getBoundingClientRect();
-
-    if (rect.width <= 0) {
-      return;
-    }
-
-    syncSec5Carousel(Math.min(Math.max((clientX - rect.left) / rect.width, 0), 0.999));
-  };
-
-  const syncSec9ProgressFromBar = (clientX: number, element: HTMLElement) => {
-    const rect = element.getBoundingClientRect();
-
-    if (rect.width <= 0) {
-      return;
-    }
-
-    syncSec9Carousel(Math.min(Math.max((clientX - rect.left) / rect.width, 0), 0.999));
-  };
-
   useEffect(() => {
     const timerId = window.setInterval(() => {
-      setActiveSlideIndex((currentIndex) => (currentIndex + 1) % mainKvSlides.length);
+      setActiveSlideIndex((currentIndex) => {
+        const nextIndex = (currentIndex + 1) % mainKvSlides.length;
+
+        if (nextIndex === 0) {
+          setSec1ProgressCycle((currentCycle) => currentCycle + 1);
+        }
+
+        return nextIndex;
+      });
     }, slideInterval);
 
     return () => {
@@ -1096,7 +1085,12 @@ export default function MainPage() {
             </p>
             <div className="main-sec1__progress" aria-label={`${currentPage} / 03`}>
               <span className="main-sec1__progress-number ft-18r ink500">{currentPage}</span>
-              <span className="main-sec1__progress-line ink500" aria-hidden="true" />
+              <span
+                key={sec1ProgressCycle}
+                className="main-sec1__progress-line ink500"
+                style={{ "--main-sec1-progress-duration": `${slideInterval * mainKvSlides.length}ms` } as CSSProperties}
+                aria-hidden="true"
+              />
               <span className="main-sec1__progress-number main-sec1__progress-number--end ft-18r ink500">03</span>
             </div>
           </div>
@@ -1332,59 +1326,6 @@ export default function MainPage() {
               </div>
             </div>
           </div>
-          <div
-            className="main-sec5__progress"
-            role="slider"
-            aria-label="제품 슬라이드 위치"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={Math.round(sec5Carousel.progress * 100)}
-            tabIndex={0}
-            onMouseDown={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              pauseSec5Carousel();
-              syncSec5ProgressFromBar(event.clientX, event.currentTarget);
-              setIsSec5Dragging(true);
-            }}
-            onMouseMove={(event) => {
-              event.stopPropagation();
-              if (isSec5Dragging) {
-                syncSec5ProgressFromBar(event.clientX, event.currentTarget);
-              }
-            }}
-            onMouseUp={(event) => {
-              event.stopPropagation();
-              endSec5CarouselDrag();
-            }}
-            onMouseLeave={(event) => {
-              event.stopPropagation();
-              endSec5CarouselDrag();
-            }}
-            onTouchStart={(event) => {
-              event.stopPropagation();
-              pauseSec5Carousel();
-              syncSec5ProgressFromBar(event.touches[0].clientX, event.currentTarget);
-              setIsSec5Dragging(true);
-            }}
-            onTouchMove={(event) => {
-              event.stopPropagation();
-              syncSec5ProgressFromBar(event.touches[0].clientX, event.currentTarget);
-            }}
-            onTouchEnd={(event) => {
-              event.stopPropagation();
-              endSec5CarouselDrag();
-            }}
-          >
-            <span
-              className="main-sec5__progress-thumb"
-              style={{
-                width: `${100 / mainProducts.length}%`,
-                transform: `translateX(${sec5Carousel.progress * (mainProducts.length - 1) * 100}%)`,
-              }}
-              aria-hidden="true"
-            />
-          </div>
         </div>
       </section>
       <section className={`main-sec6 main-sec6--${activeSec6Slide.key}`} ref={sec6Ref} aria-label="사계절 계절차">
@@ -1570,59 +1511,6 @@ export default function MainPage() {
                 ))}
               </div>
             </div>
-          </div>
-          <div
-            className="main-sec9__progress"
-            role="slider"
-            aria-label="리뷰 슬라이드 위치"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={Math.round(sec9Carousel.progress * 100)}
-            tabIndex={0}
-            onMouseDown={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              pauseSec9Carousel();
-              syncSec9ProgressFromBar(event.clientX, event.currentTarget);
-              setIsSec9Dragging(true);
-            }}
-            onMouseMove={(event) => {
-              event.stopPropagation();
-              if (isSec9Dragging) {
-                syncSec9ProgressFromBar(event.clientX, event.currentTarget);
-              }
-            }}
-            onMouseUp={(event) => {
-              event.stopPropagation();
-              endSec9CarouselDrag();
-            }}
-            onMouseLeave={(event) => {
-              event.stopPropagation();
-              endSec9CarouselDrag();
-            }}
-            onTouchStart={(event) => {
-              event.stopPropagation();
-              pauseSec9Carousel();
-              syncSec9ProgressFromBar(event.touches[0].clientX, event.currentTarget);
-              setIsSec9Dragging(true);
-            }}
-            onTouchMove={(event) => {
-              event.stopPropagation();
-              syncSec9ProgressFromBar(event.touches[0].clientX, event.currentTarget);
-            }}
-            onTouchEnd={(event) => {
-              event.stopPropagation();
-              endSec9CarouselDrag();
-            }}
-          >
-            <span
-              className="main-sec9__progress-thumb"
-              style={{
-                width: `${100 / mainReviews.length}%`,
-                transform: `translateX(${sec9Carousel.progress * (mainReviews.length - 1) * 100}%)`,
-              }}
-              aria-hidden="true"
-            />
           </div>
         </div>
       </section>
