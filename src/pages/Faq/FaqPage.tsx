@@ -22,7 +22,7 @@ function FaqPage() {
         <div className="faq-kv__grid">
           <div className="faq-kv__content">
             <div className="faq-kv__head">
-              <h1 className="faq-kv__title ft-64b ink500">자주묻는 질문</h1>
+              <h1 className="faq-kv__title ft-64b ink500">자주 묻는 질문</h1>
               <img className="faq-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
             </div>
             <p className="faq-kv__description ft-28r ink500">
@@ -36,8 +36,6 @@ function FaqPage() {
 
       <section className="faq-content" aria-label="자주 묻는 질문 목록">
         <div className="faq-content__grid">
-          <h2 className="faq-content__title ft-48b ink500">질문 목록</h2>
-
           <ul className="faq-content__list">
             {faqs.map((faq) => {
               const isOpen = openFaqId === faq.id;

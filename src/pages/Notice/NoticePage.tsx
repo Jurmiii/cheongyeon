@@ -306,7 +306,7 @@ function NoticePage() {
 
                   "notice-content__filter",
 
-                  "ft-22b",
+                  "ft-28b",
 
                   category === activeCategory && "notice-content__filter--active",
 

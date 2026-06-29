@@ -211,7 +211,7 @@ function EventPage() {
                 role="tab"
                 className={[
                   "event-content__filter",
-                  "ft-28r",
+                  "ft-28b",
                   tab.value === activeFilter && "event-content__filter--active",
                 ]
                   .filter(Boolean)
@@ -228,10 +228,9 @@ function EventPage() {
             {pagedEvents.map((event) => (
               <li className="event-list__item" key={event.id}>
                 <article
-                  className={["event-card", event.dark && "event-card--dark"].filter(Boolean).join(" ")}
+                  className={["event-card", "event-page-card", event.dark && "event-card--dark"].filter(Boolean).join(" ")}
+                  style={{ backgroundImage: `url(${event.image})` }}
                 >
-                  <img className="event-card__bg" src={event.image} alt="" loading="lazy" />
-
                   <div className="event-card__content">
                     <div className="event-card__top">
                       <Badge

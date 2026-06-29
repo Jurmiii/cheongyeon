@@ -95,8 +95,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 9.25rem;
-  height: 3rem;
+  width: 13.75rem;
+  height: 3.125rem;
   padding: 1rem 2rem;
   border: 0.0625rem solid var(--ink500);
   border-radius: 0.5rem;
@@ -117,8 +117,9 @@
 /* 카드 그리드 */
 .event-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 29rem), 29rem));
   gap: 1.5rem;
+  justify-content: center;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -126,94 +127,95 @@
 
 .event-list__item {
   display: flex;
+  justify-content: center;
+  min-width: 0;
 }
 
 /* 카드 — 배경 이미지 위 텍스트 */
-.event-card {
+.event-content .event-page-card {
   position: relative;
   display: flex;
-  width: 100%;
-  min-height: 20.0625rem;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0;
+  width: min(100%, 29rem);
+  max-width: 29rem;
+  height: 20.0625rem;
+  min-height: 0;
+  padding: 1.25rem;
   overflow: hidden;
   border-radius: 1.25rem;
+  color: var(--ink500);
+  background-color: var(--han50);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-sizing: border-box;
   isolation: isolate;
 }
 
-.event-card__bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
-  transition: transform 0.5s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
-}
-
-.event-card:hover .event-card__bg {
-  transform: scale(1.05);
-}
-
-.event-card__content {
+.event-content .event-page-card .event-card__content {
   position: relative;
   z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 1rem;
-  width: 100%;
-  padding: 1.5rem;
+  width: 16.5rem;
+  height: 100%;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.event-card__top {
+.event-content .event-page-card .event-card__top {
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
   align-items: flex-start;
 }
 
-.event-card__badge.cy-badge {
+.event-content .event-page-card .event-card__badge.cy-badge {
   padding: 0.1875rem 0.625rem;
   border-radius: 0.25rem;
 }
 
-.event-card__text {
+.event-content .event-page-card .event-card__text {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
   color: var(--ink500);
 }
 
-.event-card--dark .event-card__text,
-.event-card--dark .event-card__subtitle,
-.event-card--dark .event-card__title,
-.event-card--dark .event-card__description,
-.event-card--dark .event-card__date {
+.event-content .event-page-card.event-card--dark .event-card__text,
+.event-content .event-page-card.event-card--dark .event-card__subtitle,
+.event-content .event-page-card.event-card--dark .event-card__title,
+.event-content .event-page-card.event-card--dark .event-card__description,
+.event-content .event-page-card.event-card--dark .event-card__date {
   color: var(--white);
 }
 
-.event-card__heading {
+.event-content .event-page-card .event-card__heading {
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
 }
 
-.event-card__subtitle,
-.event-card__title,
-.event-card__description,
-.event-card__date {
+.event-content .event-page-card .event-card__subtitle,
+.event-content .event-page-card .event-card__title,
+.event-content .event-page-card .event-card__description,
+.event-content .event-page-card .event-card__date {
   margin: 0;
 }
 
-.event-card__title {
+.event-content .event-page-card .event-card__title {
   line-height: 2.25rem;
 }
 
-.event-card__description {
+.event-content .event-page-card .event-card__description {
   line-height: 1.625rem;
 }
 
-.event-card__more {
+.event-content .event-page-card .event-card__more {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
@@ -231,23 +233,23 @@
     border-color 0.25s ease;
 }
 
-.event-card__more-icon {
+.event-content .event-page-card .event-card__more-icon {
   width: 1.5rem;
   height: 1.5rem;
 }
 
-.event-card__more:hover {
+.event-content .event-page-card .event-card__more:hover {
   background: var(--deep500);
   border-color: var(--deep500);
   color: var(--white);
 }
 
-.event-card--dark .event-card__more {
+.event-content .event-page-card.event-card--dark .event-card__more {
   border-color: var(--white);
   color: var(--white);
 }
 
-.event-card--dark .event-card__more:hover {
+.event-content .event-page-card.event-card--dark .event-card__more:hover {
   background: var(--white);
   border-color: var(--white);
   color: var(--ink500);
@@ -322,11 +324,11 @@
 
 @media (max-width: 64rem) {
   .event-list {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: minmax(0, 29rem);
   }
 
-  .event-card__content {
-    padding: 1.5rem;
+  .event-content .event-page-card .event-card__content {
+    padding: 0;
   }
 }
 
@@ -340,7 +342,7 @@
   }
 
   .event-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 29rem);
   }
 
   .event-content__filters {

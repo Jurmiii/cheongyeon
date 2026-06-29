@@ -725,14 +725,14 @@ export default function MainPage() {
       return;
     }
 
-    const timerId = window.setInterval(() => {
+    const timerId = window.setTimeout(() => {
       setActiveSec8Index((currentIndex) => (currentIndex + 1) % mainEventSlides.length);
     }, sec8SlideInterval);
 
     return () => {
-      window.clearInterval(timerId);
+      window.clearTimeout(timerId);
     };
-  }, [isSec8Dragging, sec8AutoPlayResetKey]);
+  }, [activeSec8Index, isSec8Dragging, sec8AutoPlayResetKey]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
