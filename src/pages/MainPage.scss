@@ -4,6 +4,36 @@
   min-width: 0;
 }
 
+.main-intro {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #000;
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  transition:
+    opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 1.2s;
+}
+
+.main-intro--hidden {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.main-intro__video {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+}
+
 .main-page__header {
   position: absolute;
   top: 0;
@@ -18,6 +48,12 @@
   max-width: 100%;
   height: 58.75rem;
   overflow: hidden;
+  opacity: 0;
+  transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.main-sec1--revealed {
+  opacity: 1;
 }
 
 .main-sec1__background {
@@ -49,6 +85,48 @@
   flex-direction: column;
   align-items: flex-start;
   padding-top: 14.4375rem;
+}
+
+.main-sec1__kv-title,
+.main-sec1__title,
+.main-sec1__symbol,
+.main-sec1__description,
+.main-sec1__progress {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition:
+    opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.main-sec1--revealed .main-sec1__kv-title {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.12s;
+}
+
+.main-sec1--revealed .main-sec1__title {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.24s;
+}
+
+.main-sec1--revealed .main-sec1__symbol {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.36s;
+}
+
+.main-sec1--revealed .main-sec1__description {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.48s;
+}
+
+.main-sec1--revealed .main-sec1__progress {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.6s;
 }
 
 .main-sec1__kv-title {
@@ -103,6 +181,10 @@
   transform: scaleX(0);
   transform-origin: left center;
   animation: main-sec1-progress-line var(--main-sec1-progress-duration, 15000ms) linear forwards;
+}
+
+.main-sec1:not(.main-sec1--revealed) .main-sec1__progress-line::before {
+  animation-play-state: paused;
 }
 
 @keyframes main-sec1-progress-line {

@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Link } from "react-router-dom";
 import aboutVideo from "../assets/images/01main/about.webm";
+import mainIntroVideo from "../assets/images/01main/main-intro.webm";
 import mainBg2 from "../assets/images/01main/main-bg2.webp";
 import mainBg3 from "../assets/images/01main/main-bg3.webp";
 import mainCtaBg from "../assets/images/01main/main-cta-bg.webp";
@@ -396,6 +397,8 @@ function DrawLineSvg({
 }
 
 export default function MainPage() {
+  const [isIntroEnded, setIsIntroEnded] = useState(false);
+  const [isScrollReleased, setIsScrollReleased] = useState(false);
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
   const [sec1ProgressCycle, setSec1ProgressCycle] = useState<number>(0);
   const [activeSeasons, setActiveSeasons] = useState<Record<SeasonKey, boolean>>(initialActiveSeasons);
@@ -445,6 +448,10 @@ export default function MainPage() {
   const currentPage = String(activeSlide.id).padStart(2, "0");
   const activeSec6Slide = mainSeasonTeaSlides[activeSec6Index];
   const activeSec8Slide = mainEventSlides[activeSec8Index];
+
+  const finishIntro = () => {
+    setIsIntroEnded(true);
+  };
 
   const setSeasonImageRef = (season: SeasonKey) => (node: HTMLDivElement | null) => {
     seasonImageRefs.current[season] = node;
@@ -673,6 +680,10 @@ export default function MainPage() {
   };
 
   useEffect(() => {
+    if (!isIntroEnded) {
+      return;
+    }
+
     const timerId = window.setInterval(() => {
       setActiveSlideIndex((currentIndex) => {
         const nextIndex = (currentIndex + 1) % mainKvSlides.length;
@@ -688,7 +699,22 @@ export default function MainPage() {
     return () => {
       window.clearInterval(timerId);
     };
-  }, []);
+  }, [isIntroEnded]);
+
+  useEffect(() => {
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousDocumentOverflow = document.documentElement.style.overflow;
+
+    if (!isScrollReleased) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    }
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousDocumentOverflow;
+    };
+  }, [isScrollReleased]);
 
   useEffect(() => {
     if (isSec8Dragging) {
@@ -1055,10 +1081,41 @@ export default function MainPage() {
 
   return (
     <main className="main-page">
+      <div
+        className={["main-intro", isIntroEnded && "main-intro--hidden"].filter(Boolean).join(" ")}
+        aria-hidden="true"
+      >
+        <video
+          className="main-intro__video"
+          src={mainIntroVideo}
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+          controls={false}
+          disablePictureInPicture
+          controlsList="nodownload nofullscreen noplaybackrate"
+          onEnded={finishIntro}
+          onError={finishIntro}
+        />
+      </div>
       <div className="main-page__header">
         <Header />
       </div>
-      <section className="main-sec1" aria-label="청연 메인 키비주얼">
+      <section
+        className={["main-sec1", isIntroEnded && "main-sec1--revealed"].filter(Boolean).join(" ")}
+        aria-label="청연 메인 키비주얼"
+        onTransitionEnd={(event) => {
+          if (event.currentTarget !== event.target || event.propertyName !== "opacity") {
+            return;
+          }
+
+          if (isIntroEnded) {
+            setIsScrollReleased(true);
+            ScrollTrigger.refresh();
+          }
+        }}
+      >
         {mainKvSlides.map((slide, index) => (
           <div
             className={["main-sec1__background", index === activeSlideIndex && "main-sec1__background--active"]
