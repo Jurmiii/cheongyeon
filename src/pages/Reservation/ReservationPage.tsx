@@ -427,6 +427,42 @@ function ReservationPage() {
           <p className="reservation-hero__description ft-28r ink500">
             원하시는 지점과 클래스를 고르고, 차 한 잔의 시간을 예약하세요.
           </p>
+          <div className="reservation-notice">
+            <button
+              className="reservation-notice__toggle"
+              type="button"
+              aria-expanded={isNoticeOpen}
+              onClick={() => setIsNoticeOpen((open) => !open)}
+            >
+              <span className="reservation-notice__toggle-head">
+                <span className="reservation-notice__asterisk ft-22b ink500" aria-hidden="true">
+                  *
+                </span>
+                <span className="reservation-notice__toggle-text ft-22b ink500">예약 전 꼭 확인해주세요</span>
+              </span>
+              <Icon
+                className={["reservation-notice__chevron", isNoticeOpen && "reservation-notice__chevron--open"]
+                  .filter(Boolean)
+                  .join(" ")}
+                name="angle-down"
+                aria-hidden="true"
+              />
+            </button>
+            <div className="reservation-notice__content-wrap" aria-hidden={!isNoticeOpen}>
+              <div className="reservation-notice__content">
+                {reservationNoticeSections.map((section) => (
+                  <div className="reservation-notice__column" key={section.title}>
+                    <h3 className="reservation-notice__column-title ft-18r">{section.displayTitle}</h3>
+                    <ul className="reservation-notice__list ft-16r">
+                      {section.items.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -866,42 +902,6 @@ function ReservationPage() {
             >
               예약하기
             </Button>
-          </div>
-          <div className="reservation-notice">
-            <button
-              className="reservation-notice__toggle"
-              type="button"
-              aria-expanded={isNoticeOpen}
-              onClick={() => setIsNoticeOpen((open) => !open)}
-            >
-              <span className="reservation-notice__toggle-head">
-                <span className="reservation-notice__asterisk ft-22b ink500" aria-hidden="true">
-                  *
-                </span>
-                <span className="reservation-notice__toggle-text ft-22b ink500">예약 전 꼭 확인해주세요</span>
-              </span>
-              <Icon
-                className={["reservation-notice__chevron", isNoticeOpen && "reservation-notice__chevron--open"]
-                  .filter(Boolean)
-                  .join(" ")}
-                name="angle-down"
-                aria-hidden="true"
-              />
-            </button>
-            <div className="reservation-notice__content-wrap" aria-hidden={!isNoticeOpen}>
-              <div className="reservation-notice__content">
-                {reservationNoticeSections.map((section) => (
-                  <div className="reservation-notice__column" key={section.title}>
-                    <h3 className="reservation-notice__column-title ft-18r">{section.displayTitle}</h3>
-                    <ul className="reservation-notice__list ft-16r">
-                      {section.items.map((item) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </section>

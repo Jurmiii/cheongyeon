@@ -12,7 +12,9 @@
 .tea-collection-modal__dialog {
   max-width: calc(100vw - 2rem);
   max-height: calc(100svh - 2rem);
-  overflow: auto;
+  overscroll-behavior: contain;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .tea-collection-modal {
@@ -21,7 +23,8 @@
   width: 31.25rem;
   max-width: calc(100vw - 2rem);
   min-width: 0;
-  height: 51.5rem;
+  height: auto;
+  max-height: none;
   flex: 0 0 auto;
   flex-direction: column;
   flex-shrink: 0;
@@ -30,8 +33,7 @@
   border-radius: 1rem;
   background: var(--han50);
   color: var(--ink500);
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: visible;
   text-align: left;
 }
 

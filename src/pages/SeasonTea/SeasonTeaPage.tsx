@@ -15,6 +15,8 @@ import SeasonTeaDetailModal from "./SeasonTeaDetailModal";
 import { autumnTeaDetail, springTeaDetail, summerTeaDetail, winterTeaDetail, type SeasonTeaDetail } from "./seasonTeaDetailData";
 import "./SeasonTeaPage.scss";
 
+type SeasonTeaKey = "spring" | "summer" | "autumn" | "winter";
+
 const seasonTeaWayImages = [
   { className: "season-tea-way__image season-tea-way__image--combined", src: wayImage },
   { className: "season-tea-way__image season-tea-way__image--sec4-b", src: sec4WayB },
@@ -22,14 +24,70 @@ const seasonTeaWayImages = [
   { className: "season-tea-way__image season-tea-way__image--sec5-b", src: sec5WayB },
 ] as const;
 
+const initialActiveSeasonTeaImages: Record<SeasonTeaKey, boolean> = {
+  spring: false,
+  summer: false,
+  autumn: false,
+  winter: false,
+};
+
 function SeasonTeaPage() {
   const [activeTeaDetail, setActiveTeaDetail] = useState<SeasonTeaDetail | null>(null);
+  const [activeSeasonTeaImages, setActiveSeasonTeaImages] = useState<Record<SeasonTeaKey, boolean>>(
+    initialActiveSeasonTeaImages,
+  );
   const wayScrollRef = useRef<HTMLDivElement | null>(null);
   const wayImageRefs = useRef<Array<HTMLImageElement | null>>([]);
+  const seasonTeaImageRefs = useRef<Record<SeasonTeaKey, HTMLDivElement | null>>({
+    spring: null,
+    summer: null,
+    autumn: null,
+    winter: null,
+  });
 
   const setWayImageRef = (index: number) => (element: HTMLImageElement | null) => {
     wayImageRefs.current[index] = element;
   };
+
+  const setSeasonTeaImageRef = (season: SeasonTeaKey) => (element: HTMLDivElement | null) => {
+    seasonTeaImageRefs.current[season] = element;
+  };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const season = entry.target.getAttribute("data-season-tea") as SeasonTeaKey | null;
+
+          if (!season || entry.intersectionRatio < 1 / 3) {
+            return;
+          }
+
+          setActiveSeasonTeaImages((currentImages) => {
+            if (currentImages[season]) {
+              return currentImages;
+            }
+
+            return {
+              ...currentImages,
+              [season]: true,
+            };
+          });
+        });
+      },
+      { threshold: 1 / 3 },
+    );
+
+    Object.values(seasonTeaImageRefs.current).forEach((element) => {
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -114,7 +172,15 @@ function SeasonTeaPage() {
 
       <section className="season-tea-spring" aria-label="봄의 차">
         <div className="season-tea-spring__grid">
-          <div className="season-tea-spring__media">
+          <div
+            className={[
+              "season-tea-spring__media",
+              "season-tea-image-reveal",
+              activeSeasonTeaImages.spring && "is-active",
+            ].filter(Boolean).join(" ")}
+            ref={setSeasonTeaImageRef("spring")}
+            data-season-tea="spring"
+          >
             <img
               className="season-tea-spring__image"
               src={springTeaImage}
@@ -178,7 +244,15 @@ function SeasonTeaPage() {
               차 특징 보기
             </Button>
           </div>
-          <div className="season-tea-summer__media">
+          <div
+            className={[
+              "season-tea-summer__media",
+              "season-tea-image-reveal",
+              activeSeasonTeaImages.summer && "is-active",
+            ].filter(Boolean).join(" ")}
+            ref={setSeasonTeaImageRef("summer")}
+            data-season-tea="summer"
+          >
             <img
               className="season-tea-summer__image"
               src={summerTeaImage}
@@ -190,7 +264,15 @@ function SeasonTeaPage() {
 
       <section className="season-tea-autumn" aria-label="가을의 차">
         <div className="season-tea-autumn__grid">
-          <div className="season-tea-autumn__media">
+          <div
+            className={[
+              "season-tea-autumn__media",
+              "season-tea-image-reveal",
+              activeSeasonTeaImages.autumn && "is-active",
+            ].filter(Boolean).join(" ")}
+            ref={setSeasonTeaImageRef("autumn")}
+            data-season-tea="autumn"
+          >
             <img
               className="season-tea-autumn__image"
               src={autumnTeaImage}
@@ -254,7 +336,15 @@ function SeasonTeaPage() {
               차 특징 보기
             </Button>
           </div>
-          <div className="season-tea-winter__media">
+          <div
+            className={[
+              "season-tea-winter__media",
+              "season-tea-image-reveal",
+              activeSeasonTeaImages.winter && "is-active",
+            ].filter(Boolean).join(" ")}
+            ref={setSeasonTeaImageRef("winter")}
+            data-season-tea="winter"
+          >
             <img
               className="season-tea-winter__image"
               src={winterTeaImage}

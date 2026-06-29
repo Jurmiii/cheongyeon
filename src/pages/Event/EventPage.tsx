@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useNavigate } from "react-router-dom";
 
 import subSymbol from "../../assets/images/01main/subsymbol.svg";
@@ -35,23 +35,66 @@ function toLines(value: string) {
 
 function EventDetailModal({ event, onClose }: EventDetailModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const [modalScale, setModalScale] = useState(1);
   const navigate = useNavigate();
 
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+
+    if (!panel) {
+      return;
+    }
+
+    const updateModalScale = () => {
+      const availableHeight = window.innerHeight - 48;
+      const nextScale = Math.min(1, availableHeight / panel.scrollHeight);
+
+      setModalScale(Number.isFinite(nextScale) ? nextScale : 1);
+    };
+
+    updateModalScale();
+
+    const resizeObserver = new ResizeObserver(updateModalScale);
+    resizeObserver.observe(panel);
+    window.addEventListener("resize", updateModalScale);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateModalScale);
+    };
+  }, [event]);
+
   useEffect(() => {
+    const scrollBlockKeys = new Set(["ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp", "End", "Home", "PageDown", "PageUp", " "]);
+
     const handleKeyDown = (keyboardEvent: KeyboardEvent) => {
       if (keyboardEvent.key === "Escape") {
         onClose();
+        return;
       }
+
+      const target = keyboardEvent.target;
+      const isInteractiveTarget =
+        target instanceof HTMLElement && target.closest("button, a, input, textarea, select");
+
+      if (scrollBlockKeys.has(keyboardEvent.key) && !isInteractiveTarget) {
+        keyboardEvent.preventDefault();
+      }
+    };
+    const preventBackgroundScroll = (event: WheelEvent | TouchEvent) => {
+      event.preventDefault();
     };
 
     document.addEventListener("keydown", handleKeyDown);
-    document.body.style.overflow = "hidden";
+    window.addEventListener("wheel", preventBackgroundScroll, { passive: false });
+    window.addEventListener("touchmove", preventBackgroundScroll, { passive: false });
     panelRef.current?.scrollTo({ top: 0 });
     panelRef.current?.focus({ preventScroll: true });
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
+      window.removeEventListener("wheel", preventBackgroundScroll);
+      window.removeEventListener("touchmove", preventBackgroundScroll);
     };
   }, [onClose]);
 
@@ -78,6 +121,7 @@ function EventDetailModal({ event, onClose }: EventDetailModalProps) {
         aria-modal="true"
         aria-labelledby="event-modal-title"
         tabIndex={-1}
+        style={{ "--event-modal-scale": modalScale } as CSSProperties}
         onClick={(clickEvent) => clickEvent.stopPropagation()}
       >
         <header className="event-modal__header">

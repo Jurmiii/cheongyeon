@@ -691,7 +691,11 @@
 }
 
 .space-map {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
   width: 100%;
+  min-height: 51.4425rem;
   padding: 7.5rem 0 8.75rem;
   background-color: var(--han100);
 }
@@ -702,12 +706,16 @@
   align-items: center;
   gap: 4rem 5rem;
   width: min(100%, 90rem);
+  min-height: 33.9425rem;
   margin: 0 auto;
   padding-inline: 2.5rem;
 }
 
 .space-map__content {
   min-width: 0;
+  min-height: 33.125rem;
+  display: flex;
+  align-items: center;
 }
 
 .space-map__intro {
@@ -736,6 +744,7 @@
 }
 
 .space-map__detail {
+  width: 100%;
   animation: space-map-detail-fade 0.45s ease;
 }
 
@@ -877,12 +886,14 @@
 
 @media (max-width: $laptop) {
   .space-map {
+    display: block;
     padding: 5rem 0 6rem;
   }
 
   .space-map__inner {
     grid-template-columns: 1fr;
     gap: 3.5rem;
+    min-height: 0;
     padding-inline: 2rem;
   }
 
@@ -894,6 +905,10 @@
     width: min(100%, 28.125rem);
     height: auto;
     aspect-ratio: 450 / 340;
+  }
+
+  .space-map__content {
+    min-height: 0;
   }
 
   .space-map__blueprint {

@@ -11,6 +11,13 @@ import "./TeaStorePage.scss";
 const revealClass = (isVisible: boolean, variant: "from-left" | "from-right" | "from-bottom") =>
   ["tea-store-reveal", `tea-store-reveal--${variant}`, isVisible && "is-visible"].filter(Boolean).join(" ");
 
+const seasonHoverLabels: Record<string, string> = {
+  spring: "봄",
+  summer: "여름",
+  autumn: "가을",
+  winter: "겨울",
+};
+
 function TeaStoryPage() {
   const introReveal = useScrollReveal();
   const cultureReveal = useScrollReveal();
@@ -26,10 +33,10 @@ function TeaStoryPage() {
         <Header />
       </div>
 
-      <section className="tea-store-kv" aria-label="티 스토리 키비주얼">
+      <section className="tea-store-kv" aria-label="차 이야기 키비주얼">
         <div className="tea-store-kv__grid">
           <div className="tea-store-kv__content">
-            <h1 className="tea-store-kv__title ft-64b ink500">티 스토리</h1>
+            <h1 className="tea-store-kv__title ft-64b ink500">차 이야기</h1>
             <img className="tea-store-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
             <p className="tea-store-kv__description ft-28r ink500">
               차에는 자연의 시간이 담겨 있습니다.
@@ -220,6 +227,7 @@ function TeaStoryPage() {
                       src={season.image}
                       alt={season.description.split("\n")[0]}
                     />
+                    <span className="tea-store-season__hover-text ft-48b">{seasonHoverLabels[season.id]}</span>
                   </div>
                   <p className="tea-store-season__description ft-22r white">{season.description}</p>
                 </article>

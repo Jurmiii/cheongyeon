@@ -61,6 +61,7 @@ import summerPot from "../assets/images/01main/summer-tea.webp";
 import winterBg2 from "../assets/images/01main/winter-bg2.svg";
 import winterPot from "../assets/images/01main/winter-tea.webp";
 import { Footer, Header, Icon } from "../components/common";
+import ProductContentBox from "../components/common/ProductContentBox";
 import "./MainPage.scss";
 
 interface MainKvSlide {
@@ -298,16 +299,13 @@ const initialActiveSeasons: Record<SeasonKey, boolean> = {
 
 function ProductCard({ product }: { product: MainProduct }) {
   return (
-    <article className="main-sec5__product-card">
-      <img className="main-sec5__product-image" src={product.image} alt={product.name} />
-      <div className="main-sec5__product-overlay">
-        <div className="main-sec5__product-row">
-          <h3 className="ft-22b white">{product.name}</h3>
-          <span className="ft-16r white">{product.capacity}</span>
-        </div>
-        <p className="main-sec5__product-price ft-22b white">{product.price}</p>
-      </div>
-    </article>
+    <ProductContentBox
+      className="main-sec5__product-card"
+      image={product.image}
+      name={product.name}
+      capacity={product.capacity}
+      price={product.price}
+    />
   );
 }
 

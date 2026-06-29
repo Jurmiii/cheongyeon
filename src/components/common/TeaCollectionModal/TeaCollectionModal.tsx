@@ -121,19 +121,38 @@ export default function TeaCollectionModal({ isOpen, onClose, data }: TeaCollect
       return;
     }
 
+    const scrollBlockKeys = new Set(["ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp", "End", "Home", "PageDown", "PageUp", " "]);
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
+        return;
+      }
+
+      const target = event.target;
+      const isInteractiveTarget =
+        target instanceof HTMLElement && target.closest("button, a, input, textarea, select");
+
+      if (scrollBlockKeys.has(event.key) && !isInteractiveTarget) {
+        event.preventDefault();
       }
     };
+    const preventBackgroundScroll = (event: WheelEvent | TouchEvent) => {
+      if (event.target instanceof HTMLElement && event.target.closest(".tea-collection-modal__dialog")) {
+        return;
+      }
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+      event.preventDefault();
+    };
+
     window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("wheel", preventBackgroundScroll, { passive: false });
+    window.addEventListener("touchmove", preventBackgroundScroll, { passive: false });
 
     return () => {
-      document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("wheel", preventBackgroundScroll);
+      window.removeEventListener("touchmove", preventBackgroundScroll);
     };
   }, [isModalMode, isOpen, onClose]);
 

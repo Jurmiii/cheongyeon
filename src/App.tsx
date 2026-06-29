@@ -5,7 +5,7 @@ import ClassIntroductionPage from './pages/Class/ClassIntroductionPage'
 import SeasonClassPage from './pages/Class/SeasonClassPage'
 import ComponentPreview from './pages/ComponentPreview'
 import MainPage from './pages/MainPage'
-import ReservationPage from './pages/Reservation/ReservationPage'
+import ReservationPageRoute from './pages/Reservation/ReservationPageRoute'
 import NoticePage from './pages/Notice/NoticePage'
 import FaqPage from './pages/Faq/FaqPage'
 import EventPage from './pages/Event/EventPage'
@@ -52,8 +52,8 @@ function App() {
           <Route path="/class/general" element={<ClassIntroductionPage />} />
           <Route path="/class/season" element={<SeasonClassPage />} />
           <Route path="/class/season-class" element={<SeasonClassPage />} />
-          <Route path="/reservation" element={<ReservationPage />} />
-          <Route path="/reservation/apply" element={<ReservationPage />} />
+          <Route path="/reservation" element={<ReservationPageRoute />} />
+          <Route path="/reservation/apply" element={<ReservationPageRoute />} />
           <Route path="/reservation/edit" element={<ReservationEditPage />} />
           <Route path="/reservation-edit" element={<ReservationEditPage />} />
           <Route path="/reservation/notice" element={<NoticePage />}>

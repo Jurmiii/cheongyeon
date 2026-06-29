@@ -173,6 +173,27 @@
   height: 19.375rem;
 }
 
+.season-tea-image-reveal {
+  background: transparent;
+  overflow: hidden;
+
+  > img {
+    opacity: 0;
+    transform: scale(0.985);
+    transform-origin: 50% 50%;
+    transition:
+      opacity 3s ease,
+      transform 3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  &.is-active {
+    > img {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
 .season-tea-spring {
   background-color: var(--han50);
 }

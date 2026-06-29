@@ -24,6 +24,7 @@ const GALLERY_FINAL_HEIGHT = 519;
 const GALLERY_CARD_GAP = 24;
 const GALLERY_TITLE_GAP = 70;
 const GALLERY_HOLD_DURATION = 0.5;
+const GALLERY_HOVER_READY_PROGRESS = 1;
 
 function SpaceGallerySection({
   blockClass,
@@ -101,13 +102,13 @@ function SpaceGallerySection({
           gallery.classList.toggle(readyClass, enabled);
         };
 
-        let hoverStartProgress = 0;
-
         const updateHoverState = (progress: number) => {
-          setHoverEnabled(progress > hoverStartProgress);
+          setHoverEnabled(progress >= GALLERY_HOVER_READY_PROGRESS);
         };
 
         applyInitialState = () => {
+          setHoverEnabled(false);
+
           gsap.set(mainTitle, {
             position: "absolute",
             left: 0,
@@ -228,8 +229,6 @@ function SpaceGallerySection({
             },
             "<0.3",
           );
-
-        hoverStartProgress = GALLERY_HOLD_DURATION / timeline.duration();
 
         const scrollTrigger = timeline.scrollTrigger;
 

@@ -194,17 +194,23 @@
   position: relative;
   display: block;
   width: 8.0625rem;
-  height: 0.09375rem;
+  height: 0.1875rem;
   flex-shrink: 0;
   overflow: hidden;
+  border-radius: 1.875rem;
+  background: var(--han100);
 }
 
 .main-sec1__progress-line::before {
   position: absolute;
-  inset: 0;
-  background: currentColor;
+  top: 0;
+  left: 0;
+  width: 2.6875rem;
+  height: 100%;
+  border-radius: 1.875rem;
+  background: var(--han500);
   content: "";
-  transform: scaleX(0);
+  transform: translateX(0) scaleX(0);
   transform-origin: left center;
   animation: main-sec1-progress-line var(--main-sec1-progress-duration, 15000ms) linear forwards;
 }
@@ -215,11 +221,11 @@
 
 @keyframes main-sec1-progress-line {
   0% {
-    transform: scaleX(0);
+    transform: translateX(0) scaleX(0);
   }
 
   100% {
-    transform: scaleX(1);
+    transform: translateX(0) scaleX(3);
   }
 }
 

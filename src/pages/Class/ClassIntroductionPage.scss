@@ -1,4 +1,4 @@
-.class-intro-page {
+row.class-intro-page {
   position: relative;
   width: 100%;
   min-width: 0;
@@ -408,11 +408,6 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-}
-
-.class-intro-carousel__media:hover,
-.class-intro-carousel__video:hover {
-  cursor: none;
 }
 
 .class-intro-carousel__content {

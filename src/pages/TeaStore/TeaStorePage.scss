@@ -351,6 +351,18 @@
   gap: 1rem;
   text-align: center;
   background-color: var(--han50);
+  box-shadow: 0 0 0 rgb(0 0 0 / 0%);
+  transform: translateY(0);
+  transition:
+    box-shadow 0.35s ease,
+    transform 0.35s ease;
+  will-change: transform, box-shadow;
+}
+
+.tea-store-type:hover,
+.tea-store-type:focus-within {
+  box-shadow: 0 1.125rem 1.75rem rgb(0 0 0 / 14%);
+  transform: translateY(-0.5rem);
 }
 
 .tea-store-type__head {
@@ -456,6 +468,7 @@
 }
 
 .tea-store-season__image-wrap {
+  position: relative;
   width: 100%;
   max-width: 21.375rem;
   aspect-ratio: 342 / 377;
@@ -465,6 +478,16 @@
   border-radius: 9999px 9999px 0 0;
   border-radius: 50cqw 50cqw 0 0;
   flex-shrink: 0;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / 42%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
 }
 
 .tea-store-season__image {
@@ -473,6 +496,29 @@
   height: 100%;
   object-fit: cover;
   object-position: center center;
+}
+
+.tea-store-season__hover-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  color: var(--han50);
+  opacity: 0;
+  transform: translate(-50%, calc(-50% + 0.75rem));
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+  pointer-events: none;
+}
+
+.tea-store-season__image-wrap:hover::after {
+  opacity: 1;
+}
+
+.tea-store-season__image-wrap:hover .tea-store-season__hover-text {
+  opacity: 1;
+  transform: translate(-50%, -50%);
 }
 
 .tea-store-season__description {
