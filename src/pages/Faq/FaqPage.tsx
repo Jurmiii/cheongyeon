@@ -23,9 +23,9 @@ function FaqPage() {
           <h1 className="faq-kv__title ft-64r ink500">자주 묻는 질문</h1>
           <img className="faq-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
           <p className="faq-kv__description ft-28r ink500">
-            클래스 예약부터 이용 안내까지
+            청연 이용에 필요한 궁금한 내용을
             <br />
-            궁금하신 점을 모았습니다.
+            한눈에 확인하실 수 있습니다.
           </p>
         </div>
       </section>

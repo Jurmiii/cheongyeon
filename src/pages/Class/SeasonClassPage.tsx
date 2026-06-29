@@ -545,12 +545,17 @@ function SeasonClassPromoSection() {
 // --- SeasonClassScheduleSection helpers ---
 
 const SCHEDULE_SWIPE_THRESHOLD = 48;
+const SCHEDULE_CARD_GAP_PX = 24;
+const SCHEDULE_CARD_INACTIVE_Y = "4.3125rem";
+const SCHEDULE_SLIDE_DURATION = 0.45;
 
 function SeasonClassScheduleSection() {
   const today = useMemo(() => startOfDay(new Date()), []);
   const monthWrapRef = useRef<HTMLDivElement>(null);
-  const swipeStartRef = useRef<{ x: number; y: number } | null>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const swipeStartRef = useRef<{ x: number; y: number; pointerId: number } | null>(null);
   const suppressClickRef = useRef(false);
+  const isAnimatingRef = useRef(false);
 
   const [leadDate, setLeadDate] = useState(() => today);
   const [calendarMonth, setCalendarMonth] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
@@ -574,86 +579,193 @@ function SeasonClassScheduleSection() {
     setCalendarMonth(new Date(leadDate.getFullYear(), leadDate.getMonth(), 1));
   }, [leadDate]);
 
+  const getCardStep = useCallback(() => {
+    const track = trackRef.current;
+    const firstCard = track?.firstElementChild as HTMLElement | undefined;
+    return firstCard ? firstCard.offsetWidth + SCHEDULE_CARD_GAP_PX : 244;
+  }, []);
+
+  const animateToOffset = useCallback(
+    (offset: number, targetDate: Date) => {
+      const track = trackRef.current;
+      const targetDay = visibleDays[offset];
+
+      if (!track || !targetDay || isAnimatingRef.current || offset <= 0) {
+        return;
+      }
+
+      if (!isSameDay(targetDay.date, targetDate)) {
+        return;
+      }
+
+      const cards = Array.from(track.children) as HTMLElement[];
+      const targetCard = cards[offset];
+
+      if (!targetCard) {
+        return;
+      }
+
+      const step = getCardStep();
+      isAnimatingRef.current = true;
+
+      const timeline = gsap.timeline({
+        onComplete: () => {
+          setLeadDate(startOfDay(targetDate));
+          requestAnimationFrame(() => {
+            gsap.set(track, { clearProps: "transform" });
+            gsap.set(cards, { clearProps: "transform,opacity" });
+            isAnimatingRef.current = false;
+          });
+        },
+      });
+
+      timeline.to(
+        track,
+        { x: -step * offset, duration: SCHEDULE_SLIDE_DURATION, ease: "power3.out" },
+        0,
+      );
+      timeline.fromTo(
+        targetCard,
+        { y: SCHEDULE_CARD_INACTIVE_Y, opacity: 0.72 },
+        { y: 0, opacity: 1, duration: SCHEDULE_SLIDE_DURATION, ease: "power3.out", overwrite: "auto" },
+        0,
+      );
+
+      cards.slice(0, offset).forEach((card) => {
+        timeline.to(
+          card,
+          { opacity: 0.35, duration: SCHEDULE_SLIDE_DURATION, ease: "power3.out" },
+          0,
+        );
+      });
+    },
+    [getCardStep, visibleDays],
+  );
+
+  const animateToNextDay = useCallback(() => {
+    const nextDay = visibleDays[1];
+    if (!nextDay) {
+      return;
+    }
+
+    animateToOffset(1, nextDay.date);
+  }, [animateToOffset, visibleDays]);
+
+  const animateToPrevDay = useCallback(() => {
+    const track = trackRef.current;
+
+    if (!track || isAnimatingRef.current) {
+      return;
+    }
+
+    const prevDate = new Date(leadDate.getFullYear(), leadDate.getMonth(), leadDate.getDate() - 1);
+    if (isBeforeDay(prevDate, today)) {
+      return;
+    }
+
+    isAnimatingRef.current = true;
+    const step = getCardStep();
+
+    setLeadDate(startOfDay(prevDate));
+
+    requestAnimationFrame(() => {
+      const nextTrack = trackRef.current;
+      if (!nextTrack) {
+        isAnimatingRef.current = false;
+        return;
+      }
+
+      const card0 = nextTrack.firstElementChild as HTMLElement | null;
+      if (!card0) {
+        isAnimatingRef.current = false;
+        return;
+      }
+
+      gsap.set(nextTrack, { x: -step });
+      gsap.set(card0, { y: SCHEDULE_CARD_INACTIVE_Y, opacity: 0.72 });
+
+      gsap
+        .timeline({
+          onComplete: () => {
+            gsap.set(nextTrack, { clearProps: "transform" });
+            gsap.set(card0, { clearProps: "transform,opacity" });
+            isAnimatingRef.current = false;
+          },
+        })
+        .to(nextTrack, { x: 0, duration: SCHEDULE_SLIDE_DURATION, ease: "power3.out" }, 0)
+        .to(
+          card0,
+          { y: 0, opacity: 1, duration: SCHEDULE_SLIDE_DURATION, ease: "power3.out" },
+          0,
+        );
+    });
+  }, [getCardStep, leadDate, today]);
+
   const goToDay = useCallback((date: Date) => {
-    if (isBeforeDay(date, today)) {
+    if (isBeforeDay(date, today) || isAnimatingRef.current) {
       return;
     }
 
     setLeadDate(startOfDay(date));
   }, [today]);
 
-  const goToNextDay = useCallback(() => {
-    const nextDay = visibleDays[1];
-    if (!nextDay) {
-      return;
-    }
-
-    setLeadDate(startOfDay(nextDay.date));
-  }, [visibleDays]);
-
-  const goToPrevDay = useCallback(() => {
-    const prevDate = new Date(
-      leadDate.getFullYear(),
-      leadDate.getMonth(),
-      leadDate.getDate() - 1,
-    );
-
-    if (isBeforeDay(prevDate, today)) {
-      return;
-    }
-
-    setLeadDate(startOfDay(prevDate));
-  }, [leadDate, today]);
-
   const handleCardClick = useCallback(
-    (date: Date, isActive: boolean) => {
-      if (suppressClickRef.current || isActive) {
+    (date: Date, offset: number) => {
+      if (suppressClickRef.current || isAnimatingRef.current || offset === 0) {
         return;
       }
 
-      goToDay(date);
+      animateToOffset(offset, date);
     },
-    [goToDay],
+    [animateToOffset],
   );
 
-  const handleSchedulePointerDown = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
-    swipeStartRef.current = { x: event.clientX, y: event.clientY };
-  }, []);
-
-  const handleSchedulePointerUp = useCallback(
+  const handleSchedulePointerDown = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
-      const swipeStart = swipeStartRef.current;
-
-      if (!swipeStart) {
+      if (isAnimatingRef.current) {
         return;
       }
 
-      swipeStartRef.current = null;
+      const start = { x: event.clientX, y: event.clientY, pointerId: event.pointerId };
+      swipeStartRef.current = start;
 
-      const deltaX = event.clientX - swipeStart.x;
-      const deltaY = event.clientY - swipeStart.y;
+      const finishSwipe = (upEvent: PointerEvent) => {
+        if (upEvent.pointerId !== start.pointerId) {
+          return;
+        }
 
-      if (Math.abs(deltaX) < SCHEDULE_SWIPE_THRESHOLD || Math.abs(deltaX) < Math.abs(deltaY)) {
-        return;
-      }
+        document.removeEventListener("pointerup", finishSwipe);
+        document.removeEventListener("pointercancel", finishSwipe);
+        swipeStartRef.current = null;
 
-      suppressClickRef.current = true;
-      window.setTimeout(() => {
-        suppressClickRef.current = false;
-      }, 300);
+        if (isAnimatingRef.current) {
+          return;
+        }
 
-      if (deltaX < 0) {
-        goToNextDay();
-      } else {
-        goToPrevDay();
-      }
+        const deltaX = upEvent.clientX - start.x;
+        const deltaY = upEvent.clientY - start.y;
+
+        if (Math.abs(deltaX) < SCHEDULE_SWIPE_THRESHOLD || Math.abs(deltaX) < Math.abs(deltaY)) {
+          return;
+        }
+
+        suppressClickRef.current = true;
+        window.setTimeout(() => {
+          suppressClickRef.current = false;
+        }, 300);
+
+        if (deltaX < 0) {
+          animateToNextDay();
+        } else {
+          animateToPrevDay();
+        }
+      };
+
+      document.addEventListener("pointerup", finishSwipe);
+      document.addEventListener("pointercancel", finishSwipe);
     },
-    [goToNextDay, goToPrevDay],
+    [animateToNextDay, animateToPrevDay],
   );
-
-  const handleSchedulePointerCancel = useCallback(() => {
-    swipeStartRef.current = null;
-  }, []);
 
   useEffect(() => {
     if (!isCalendarOpen) {
@@ -839,11 +951,9 @@ function SeasonClassScheduleSection() {
         className="season-schedule__carousel"
         aria-label="클래스 일정 스와이퍼"
         onPointerDown={handleSchedulePointerDown}
-        onPointerUp={handleSchedulePointerUp}
-        onPointerCancel={handleSchedulePointerCancel}
       >
         {currentDay ? (
-          <div className="season-schedule__track" key={currentDay.id}>
+          <div className="season-schedule__track" ref={trackRef}>
             {visibleDays.map((item, offset) => {
               const isActive = offset === 0;
               const seatSlots = getSeatSlots(item.remainingSeats);
@@ -865,7 +975,10 @@ function SeasonClassScheduleSection() {
                     className="season-schedule__card-surface"
                     aria-label={`${item.day}일 ${item.weekday}, 잔여 ${item.remainingSeats}석`}
                     aria-current={isActive ? "date" : undefined}
-                    onClick={() => handleCardClick(item.date, isActive)}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleCardClick(item.date, offset);
+                    }}
                   >
                     <div className="season-schedule__card-head">
                       <p className="season-schedule__day ft-48b deep500">{item.day}</p>

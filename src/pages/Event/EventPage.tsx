@@ -231,7 +231,6 @@ function EventPage() {
                   className={["event-card", event.dark && "event-card--dark"].filter(Boolean).join(" ")}
                 >
                   <img className="event-card__bg" src={event.image} alt="" loading="lazy" />
-                  <span className="event-card__scrim" aria-hidden="true" />
 
                   <div className="event-card__content">
                     <div className="event-card__top">

@@ -680,7 +680,7 @@
   height: 35.25rem;
   margin: 1.5rem auto 0;
   overflow: hidden;
-  touch-action: pan-y;
+  touch-action: none;
   cursor: grab;
   user-select: none;
 
@@ -695,39 +695,23 @@
   align-items: flex-start;
   justify-content: flex-start;
   height: 100%;
+  will-change: transform;
 }
 
-/* 스와이프 시 카드 묶음이 한 칸(카드폭 + 간격)만큼 왼쪽에서 밀려 들어온다 */
-@keyframes season-schedule-track-in {
-  from {
-    transform: translateX(15.25rem);
-  }
-
-  to {
-    transform: translateX(0);
-  }
-}
-
-.season-schedule__track {
-  animation: season-schedule-track-in 0.5s var(--ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
-}
 
 .season-schedule__card {
   position: relative;
   flex: 0 0 13.75rem;
   width: 13.75rem;
   height: 24.9375rem;
-  margin-top: 4.3125rem;
   opacity: 0.72;
-  transition:
-    margin-top 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1)),
-    opacity 0.45s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+  transform: translateY(4.3125rem);
 }
 
-/* 첫 번째(현재) 카드만 올라오고 강조 */
+/* 첫 번째(현재) 카드만 위로 올라오고 강조 — GSAP 슬라이드 중에는 인라인 값으로 덮어씀 */
 .season-schedule__card--active {
-  margin-top: 0;
   opacity: 1;
+  transform: translateY(0);
 }
 
 .season-schedule__card-surface {
@@ -779,10 +763,10 @@
 .season-schedule__card-head {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   gap: 0;
   width: 100%;
-  text-align: right;
+  text-align: center;
 }
 
 .season-schedule__day {
@@ -812,10 +796,6 @@
   object-fit: contain;
   object-position: center bottom;
   pointer-events: none;
-}
-
-.season-schedule__card--active .season-schedule__cup {
-  margin-top: 0.25rem;
 }
 
 .season-schedule__seats {

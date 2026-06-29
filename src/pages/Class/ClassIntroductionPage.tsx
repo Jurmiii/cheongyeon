@@ -494,15 +494,18 @@ function ClassIntroductionReviewSection() {
       aria-label="클래스 수강 후기"
     >
       <div className="class-intro-review__grid">
-        <div className="class-intro-review__layout">
+        <div
+          className="class-intro-review__layout"
+          aria-label="후기 스와이퍼"
+          onPointerDown={handleReviewPointerDown}
+          onPointerUp={handleReviewPointerUp}
+          onPointerCancel={handleReviewPointerCancel}
+        >
           <div className="class-intro-review__media">
             <div
               className="class-intro-review__figure"
               aria-live="polite"
-              aria-label="후기 이미지 스와이퍼"
-              onPointerDown={handleReviewPointerDown}
-              onPointerUp={handleReviewPointerUp}
-              onPointerCancel={handleReviewPointerCancel}
+              aria-label="후기 이미지"
             >
               {classIntroductionReviews.map((item, index) => (
                 <img
