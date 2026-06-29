@@ -1,5 +1,39 @@
 @use "../../styles/abstracts/breakpoints" as *;
 
+// Tablet: 640px grid + 64px side padding = 768px
+$location-tablet-outer: 48rem;
+$location-tablet-padding: 4rem;
+$location-tablet-columns: 8;
+$location-tablet-gap: 1.5rem;
+
+// Mobile: 370px grid + 16px side padding = 402px
+$location-mobile-outer: 25.125rem;
+$location-mobile-padding: 1rem;
+$location-mobile-columns: 6;
+$location-mobile-gap: 0.875rem;
+
+@mixin location-tablet-grid {
+  display: grid;
+  grid-template-columns: repeat($location-tablet-columns, minmax(0, 1fr));
+  column-gap: $location-tablet-gap;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: $location-tablet-outer;
+  padding-inline: $location-tablet-padding;
+  margin-inline: auto;
+}
+
+@mixin location-mobile-grid {
+  display: grid;
+  grid-template-columns: repeat($location-mobile-columns, minmax(0, 1fr));
+  column-gap: $location-mobile-gap;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: $location-mobile-outer;
+  padding-inline: $location-mobile-padding;
+  margin-inline: auto;
+}
+
 .location {
   position: relative;
   width: 100%;
@@ -11,6 +45,7 @@
   top: 0;
   left: 0;
   z-index: 2;
+  display: none;
   width: 100%;
 }
 
@@ -21,6 +56,7 @@
   height: 46.25rem;
   overflow: hidden;
   background-color: var(--han50);
+  background-image: url("../../assets/images/04location/location-kv.webp");
   background-size: cover;
   background-position: center right;
   background-repeat: no-repeat;
@@ -34,76 +70,64 @@
   margin-inline: auto;
 }
 
-.location-kv__title {
+.location-kv__text {
   position: absolute;
-  left: 0;
   top: 16.5625rem;
+  left: 0;
+  max-width: 32rem;
+}
+
+.location-kv__head {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.location-kv__title {
   margin: 0;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
 .location-kv__ornament {
-  position: absolute;
-  left: 0;
-  top: 22.0625rem;
   display: block;
+  margin-top: 1rem;
 
   img {
     display: block;
   }
 }
 
-.location-kv__desc {
-  position: absolute;
-  left: 0;
-  top: 24.625rem;
-  max-width: 32rem;
-  margin: 0;
+.location-kv__line {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 1rem;
 }
 
-@media (max-width: $desktop) {
+.location-kv__line-bar {
+  flex: 1;
+  height: 1px;
+  min-height: 1px;
+  background-color: var(--ink500);
+  opacity: 0.4;
+}
+
+.location-kv__line-symbol {
+  display: block;
+  flex-shrink: 0;
+  width: 1.0625rem;
+  height: 1.125rem;
+}
+
+.location-kv__desc {
+  margin: 0.5625rem 0 0;
+  max-width: 32rem;
+}
+
+@media (min-width: calc($laptop + 1px)) and (max-width: $desktop) {
   .location-kv__content {
     padding-inline: 1.5rem;
-  }
-}
-
-@media (max-width: $tablet) {
-  .location-kv {
-    height: 40rem;
-    background-position: 70% center;
-  }
-
-  .location-kv__title {
-    top: 14rem;
-  }
-
-  .location-kv__ornament {
-    top: 19rem;
-  }
-
-  .location-kv__desc {
-    top: 21.5rem;
-    max-width: 100%;
-  }
-}
-
-@media (max-width: $mobile) {
-  .location-kv {
-    height: 36rem;
-    background-position: 80% center;
-  }
-
-  .location-kv__title {
-    top: 12rem;
-  }
-
-  .location-kv__ornament {
-    top: 16.5rem;
-  }
-
-  .location-kv__desc {
-    top: 19rem;
   }
 }
 
@@ -133,7 +157,6 @@
   overflow: hidden;
   border-radius: var(--radius-md);
   background-color: var(--white);
-  box-shadow: var(--shadow-2);
 }
 
 .location-map__list {
@@ -141,7 +164,9 @@
   flex-shrink: 0;
   flex-direction: column;
   width: 21.375rem;
+  min-height: 0;
   height: 100%;
+  overflow: hidden;
   background-color: var(--white);
   border-right: 1px solid var(--han200);
 }
@@ -199,23 +224,55 @@
   }
 }
 
-.location-map__list-scroll {
+.location-map__list-scroll-wrap {
+  position: relative;
   flex: 1;
+  min-height: 0;
+}
+
+.location-map__list-scroll {
+  width: 100%;
+  height: 100%;
   min-height: 0;
   margin: 0;
   padding: 0;
-  overflow-y: auto;
+  padding-inline-end: 0.75rem;
+  overflow-x: hidden;
+  overflow-y: scroll;
   list-style: none;
   background-color: var(--white);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 
   &::-webkit-scrollbar {
-    width: 0.375rem;
+    display: none;
   }
+}
 
-  &::-webkit-scrollbar-thumb {
-    border-radius: var(--radius-full);
-    background-color: var(--han300);
-  }
+.location-map__scrollbar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 0.25rem;
+  pointer-events: none;
+}
+
+.location-map__scrollbar-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-full);
+  background-color: var(--han100);
+}
+
+.location-map__scrollbar-thumb {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  min-height: 2.5rem;
+  border-radius: var(--radius-full);
+  background-color: var(--han500);
 }
 
 .location-map__item {
@@ -283,43 +340,162 @@
   text-align: center;
 }
 
+@media (max-width: $tablet) {
+  .location-kv {
+    background-image: url("../../assets/images/04location/ta-story-kv.webp");
+  }
+}
+
 @media (max-width: $laptop) {
+  .location-kv {
+    height: 40rem;
+    background-position: 70% center;
+  }
+
+  .location-kv__content {
+    @include location-tablet-grid;
+    align-items: center;
+    height: 100%;
+    padding-inline: $location-tablet-padding;
+  }
+
+  .location-kv__text {
+    position: static;
+    grid-column: 1 / -1;
+    justify-self: start;
+    max-width: 100%;
+  }
+}
+
+@media (min-width: calc($mobile + 1px)) and (max-width: $laptop) {
+  .location-kv__title {
+    font-family: var(--font-headline);
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 3.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  .location-kv__ornament {
+    display: none;
+  }
+
+  .location-kv__line {
+    display: flex;
+  }
+
+  .location-kv__desc {
+    margin-top: 1.5rem;
+    font-family: var(--font-headline);
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 2.125rem;
+    max-width: none;
+  }
+}
+
+@media (min-width: calc($mobile + 1px)) and (max-width: $laptop) {
   .location-map {
-    padding: 5rem 2rem 6rem;
+    padding-block: 6rem;
+    padding-inline: 0;
+  }
+
+  .location-map__inner {
+    @include location-tablet-grid;
+  }
+
+  .location-map__title {
+    grid-column: 1 / -1;
+    margin: 0 0 2.5rem;
+    font-family: var(--font-headline);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 2.75rem;
+    letter-spacing: -0.01em;
   }
 
   .location-map__card {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns:
+      calc(3.6875rem * 4 + 1.5rem * 3)
+      calc(1.5rem + 3.6875rem * 4 + 1.5rem * 3);
+    column-gap: 0;
+    width: 100%;
+    height: 30.3125rem;
+  }
+
+  .location-map__list {
+    grid-column: 1;
+    width: auto;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+    border-right: 1px solid var(--han200);
+    border-bottom: 0;
+  }
+
+  .location-map__map {
+    grid-column: 2;
+    width: auto;
+    min-width: 0;
+    height: 100%;
+  }
+}
+
+@media (max-width: $mobile) {
+  .location-kv {
+    height: 36rem;
+    background-position: 80% center;
+  }
+
+  .location-kv__content {
+    @include location-mobile-grid;
+    padding-inline: $location-mobile-padding;
+  }
+
+  .location-kv__text {
+    grid-column: 1 / -1;
+    justify-self: start;
+    max-width: 100%;
+  }
+
+  .location-map {
+    padding: var(--space-10) $location-mobile-padding var(--space-8);
+  }
+
+  .location-map__inner {
+    @include location-mobile-grid;
+    padding-inline: $location-mobile-padding;
+  }
+
+  .location-map__title {
+    margin-bottom: 2rem;
+    font-family: var(--font-headline);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 2.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  .location-map__card {
+    display: flex;
     flex-direction: column;
     height: auto;
   }
 
   .location-map__list {
     width: 100%;
-    height: 21.375rem;
+    min-height: 0;
+    height: 18.75rem;
+    overflow: hidden;
     border-right: 0;
     border-bottom: 1px solid var(--han200);
   }
 
   .location-map__map {
     width: 100%;
-    height: 24rem;
-  }
-}
-
-@media (max-width: $mobile) {
-  .location-map {
-    padding: var(--space-10) 1.25rem var(--space-8);
-  }
-
-  .location-map__title {
-    margin-bottom: 2rem;
-  }
-
-  .location-map__list {
-    height: 18.75rem;
-  }
-
-  .location-map__map {
     height: 16rem;
   }
 }

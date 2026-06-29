@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import subSymbol from "../../assets/images/01main/subsymbol.svg";
-import locationKv from "../../assets/images/04location/location-kv.webp";
+import collectionLineSymbol from "../../assets/images/05collection/collection-line-symbol.svg";
 import { Footer, Header, Icon } from "../../components/common";
 import "./LocationPage.scss";
 
@@ -139,7 +139,10 @@ function LocationPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStoreId, setSelectedStoreId] = useState<number>(locationStores[0].id);
   const [isMapLoadFailed, setIsMapLoadFailed] = useState(false);
+  const [scrollbarThumb, setScrollbarThumb] = useState({ height: 0, top: 0 });
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const listScrollRef = useRef<HTMLUListElement>(null);
+  const scrollbarTrackRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<KakaoMapInstance | null>(null);
   const markersRef = useRef<KakaoMarker[]>([]);
 
@@ -160,6 +163,52 @@ function LocationPage() {
     ? selectedStoreId
     : (filteredStores[0]?.id ?? null);
   const activeStore = locationStores.find((store) => store.id === activeStoreId) ?? locationStores[0];
+
+  useEffect(() => {
+    const listEl = listScrollRef.current;
+    const trackEl = scrollbarTrackRef.current;
+
+    if (!listEl || !trackEl) {
+      return;
+    }
+
+    const updateScrollbar = () => {
+      const { scrollTop, scrollHeight, clientHeight } = listEl;
+      const trackHeight = trackEl.clientHeight;
+      const minThumbHeight = 40;
+
+      if (trackHeight <= 0) {
+        return;
+      }
+
+      if (scrollHeight <= clientHeight) {
+        setScrollbarThumb({ height: trackHeight, top: 0 });
+        return;
+      }
+
+      const thumbHeight = Math.max((clientHeight / scrollHeight) * trackHeight, minThumbHeight);
+      const thumbTravel = trackHeight - thumbHeight;
+      const scrollableDistance = scrollHeight - clientHeight;
+      const top = scrollableDistance > 0 ? (scrollTop / scrollableDistance) * thumbTravel : 0;
+
+      setScrollbarThumb({ height: thumbHeight, top });
+    };
+
+    updateScrollbar();
+
+    listEl.addEventListener("scroll", updateScrollbar, { passive: true });
+    window.addEventListener("resize", updateScrollbar);
+
+    const resizeObserver = new ResizeObserver(updateScrollbar);
+    resizeObserver.observe(listEl);
+    resizeObserver.observe(trackEl);
+
+    return () => {
+      listEl.removeEventListener("scroll", updateScrollbar);
+      window.removeEventListener("resize", updateScrollbar);
+      resizeObserver.disconnect();
+    };
+  }, [filteredStores]);
 
   useEffect(() => {
     const mapContainer = mapContainerRef.current;
@@ -217,21 +266,26 @@ function LocationPage() {
         <Header />
       </div>
 
-      <section
-        className="location-kv"
-        style={{ backgroundImage: `url(${locationKv})` }}
-        aria-label="오시는 길 키비주얼"
-      >
+      <section className="location-kv" aria-label="오시는 길 키비주얼">
         <div className="location-kv__content">
-          <h1 className="location-kv__title ft-64r ink500">오시는길</h1>
-          <div className="location-kv__ornament" aria-hidden="true">
-            <img src={subSymbol} alt="" />
+          <div className="location-kv__text">
+            <div className="location-kv__head">
+              <h1 className="location-kv__title ft-64r ink500">오시는길</h1>
+              <div className="location-kv__ornament" aria-hidden="true">
+                <img src={subSymbol} alt="" />
+              </div>
+              <div className="location-kv__line" aria-hidden="true">
+                <span className="location-kv__line-bar" />
+                <img className="location-kv__line-symbol" src={collectionLineSymbol} alt="" />
+                <span className="location-kv__line-bar" />
+              </div>
+            </div>
+            <p className="location-kv__desc ft-28r ink500">
+              차를 마주하는 모든 순간이
+              <br />
+              하나의 풍경이 되길 바랍니다.
+            </p>
           </div>
-          <p className="location-kv__desc ft-28r ink500">
-            차를 마주하는 모든 순간이
-            <br />
-            하나의 풍경이 되길 바랍니다.
-          </p>
         </div>
       </section>
 
@@ -255,23 +309,33 @@ function LocationPage() {
                 </div>
               </div>
 
-              <ul className="location-map__list-scroll">
-                {filteredStores.map((store) => (
-                  <li key={store.id}>
-                    <button
-                      type="button"
-                      className={`location-map__item${activeStoreId === store.id ? " location-map__item--active" : ""}`}
-                      onClick={() => setSelectedStoreId(store.id)}
-                    >
-                      <span className="location-map__item-head">
-                        <span className="location-map__item-name ft-18r ink500">{store.name}</span>
-                        <span className="location-map__item-type ft-18r han500">{store.type}</span>
-                      </span>
-                      <span className="location-map__item-address ft-16r ink200">{store.address}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
+              <div className="location-map__list-scroll-wrap">
+                <ul ref={listScrollRef} className="location-map__list-scroll">
+                  {filteredStores.map((store) => (
+                    <li key={store.id}>
+                      <button
+                        type="button"
+                        className={`location-map__item${activeStoreId === store.id ? " location-map__item--active" : ""}`}
+                        onClick={() => setSelectedStoreId(store.id)}
+                      >
+                        <span className="location-map__item-head">
+                          <span className="location-map__item-name ft-18r ink500">{store.name}</span>
+                          <span className="location-map__item-type ft-18r han500">{store.type}</span>
+                        </span>
+                        <span className="location-map__item-address ft-16r ink200">{store.address}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <div className="location-map__scrollbar" aria-hidden="true">
+                  <div ref={scrollbarTrackRef} className="location-map__scrollbar-track">
+                    <span
+                      className="location-map__scrollbar-thumb"
+                      style={{ height: `${scrollbarThumb.height}px`, top: `${scrollbarThumb.top}px` }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="location-map__map">
