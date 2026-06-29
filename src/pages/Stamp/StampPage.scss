@@ -71,8 +71,20 @@
   position: absolute;
   top: 50%;
   left: 50%;
+  z-index: 1;
   transform: translate(-50%, -58%);
   color: var(--plum300);
+  pointer-events: none;
+}
+
+.stamp-cup__bujuk {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  width: auto;
+  height: 114px;
+  transform: translate(-50%, -50%);
   pointer-events: none;
 }
 
@@ -92,7 +104,7 @@
 .stamp-benefit__icon {
   display: block;
   width: auto;
-  height: 24px;
+  height: 48px;
   margin-right: 4px;
 }
 

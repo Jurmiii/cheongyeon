@@ -1,18 +1,70 @@
-import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { Button, Calendar, Input } from "../../components/common";
 import { reservationTimeSlots, type ReservationTimeSlot } from "../../data/reservationClasses";
+import { useReservations } from "../../hooks/useReservations";
+import { useUserProfile } from "../../hooks/useUserProfile";
+import { formatReservationSchedule } from "../../utils/reservationFormat";
+import MyPageCancelModal from "../MyPage/MyPageCancelModal";
 import "../Reservation/ReservationPage.scss";
 import "./ReservationEditPage.scss";
 
+const DEFAULT_CLASS_TITLE = "맑은 녹차 다도 클래스";
+
+function isReservationTimeSlot(value: string): value is ReservationTimeSlot {
+  return (reservationTimeSlots as readonly string[]).includes(value);
+}
+
 function ReservationEditPage() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isCancelMode = searchParams.get("mode") === "cancel";
+
+  const { profile } = useUserProfile();
+  const { upcomingReservation, cancelReservation } = useReservations();
+
   const [reservationName, setReservationName] = useState("");
   const [reservationPhone, setReservationPhone] = useState("");
   const [selectedTime, setSelectedTime] = useState<ReservationTimeSlot>(reservationTimeSlots[0]);
   const [guestCount, setGuestCount] = useState(1);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (profile) {
+      setReservationName(profile.name);
+      setReservationPhone(profile.phone);
+    }
+  }, [profile]);
+
+  useEffect(() => {
+    if (!upcomingReservation) {
+      return;
+    }
+
+    if (isReservationTimeSlot(upcomingReservation.time)) {
+      setSelectedTime(upcomingReservation.time);
+    }
+
+    setGuestCount(upcomingReservation.guestCount);
+  }, [upcomingReservation]);
+
+  const classTitle = upcomingReservation?.classTitle ?? DEFAULT_CLASS_TITLE;
+  const scheduleLabel = upcomingReservation
+    ? formatReservationSchedule(upcomingReservation.date, upcomingReservation.time)
+    : `${formatReservationSchedule("2026-07-10", selectedTime)}`;
+
+  const goBackToMyPage = () => {
+    navigate("/mypage");
+  };
+
+  const handleConfirmCancel = () => {
+    if (upcomingReservation) {
+      cancelReservation(upcomingReservation.id);
+    }
+
+    navigate("/mypage");
+  };
 
   const handleGuestDecrease = () => {
     setGuestCount((count) => Math.max(1, count - 1));
@@ -59,7 +111,7 @@ function ReservationEditPage() {
 
           <div className="reservation-edit__block">
             <h2 className="reservation-edit__title ft-36b ink500">예약 일정</h2>
-            <p className="reservation-edit__subtitle ft-22r ink400">맑은 녹차 다도 클래스</p>
+            <p className="reservation-edit__subtitle ft-22r ink400">{classTitle}</p>
 
             <div className="reservation-schedule__grid">
               <div className="reservation-schedule__calendar-wrap">
@@ -121,23 +173,39 @@ function ReservationEditPage() {
           <div className="reservation-edit__actions">
             {isCancelMode ? (
               <>
-                <Button className="reservation-edit__action reservation-edit__action--cancel" variant="btn3" type="button">
+                <Button
+                  className="reservation-edit__action reservation-edit__action--cancel"
+                  variant="btn3"
+                  type="button"
+                  onClick={goBackToMyPage}
+                >
                   돌아가기
                 </Button>
                 <Button
                   className="reservation-edit__action reservation-edit__action--cancel-confirm"
                   variant="btn1"
                   type="button"
+                  onClick={() => setIsCancelModalOpen(true)}
                 >
                   예약취소하기
                 </Button>
               </>
             ) : (
               <>
-                <Button className="reservation-edit__action reservation-edit__action--cancel" variant="btn3" type="button">
+                <Button
+                  className="reservation-edit__action reservation-edit__action--cancel"
+                  variant="btn3"
+                  type="button"
+                  onClick={goBackToMyPage}
+                >
                   수정취소
                 </Button>
-                <Button className="reservation-edit__action reservation-edit__action--submit" variant="btn1" type="button">
+                <Button
+                  className="reservation-edit__action reservation-edit__action--submit"
+                  variant="btn1"
+                  type="button"
+                  onClick={goBackToMyPage}
+                >
                   변경 완료하기
                 </Button>
               </>
@@ -145,6 +213,15 @@ function ReservationEditPage() {
           </div>
         </div>
       </section>
+
+      {isCancelModalOpen ? (
+        <MyPageCancelModal
+          classTitle={classTitle}
+          schedule={scheduleLabel}
+          onConfirm={handleConfirmCancel}
+          onClose={() => setIsCancelModalOpen(false)}
+        />
+      ) : null}
     </main>
   );
 }

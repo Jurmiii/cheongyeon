@@ -95,7 +95,7 @@ export function getReservationStats(reservations: Reservation[]): ReservationSta
   return {
     activeCount,
     completedCount,
-    stampCount: Math.floor(completedCount / 4),
+    stampCount: Math.min(completedCount, 8),
   };
 }
 

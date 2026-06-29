@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { Button, Input } from "../../components/common";
 import { useAuth } from "../../contexts/AuthContext";
+import { validateAccount } from "../../utils/accountStorage";
 import { TEMP_LOGIN_ID, TEMP_LOGIN_PASSWORD, validateTempLogin } from "../../data/tempLoginCredentials";
 import logo from "../../assets/images/00header-footer/logo.svg";
 import "./Login.scss";
@@ -26,14 +27,16 @@ export default function Login() {
       return;
     }
 
-    if (!validateTempLogin(loginId.trim(), password)) {
+    const trimmedId = loginId.trim();
+
+    if (!validateTempLogin(trimmedId, password) && !validateAccount(trimmedId, password)) {
       setInputState("error");
       setErrorMessage("아이디 또는 비밀번호가 올바르지 않습니다.");
       return;
     }
 
     setInputState("success");
-    login(loginId.trim(), keepLogin);
+    login(trimmedId, keepLogin);
     navigate("/");
   };
 

@@ -245,6 +245,89 @@
   font-weight: 700;
 }
 
+.signup-success {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3);
+  background: rgb(35 35 35 / 55%);
+}
+
+.signup-success__dialog {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 545px;
+  max-width: 100%;
+  padding: 40px 40px 46px;
+  border: 1px solid var(--moon500);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  text-align: center;
+}
+
+.signup-success__title {
+  margin: 0;
+  color: var(--ink500);
+}
+
+.signup-success__logo {
+  width: 96px;
+  height: auto;
+  margin-top: 24px;
+}
+
+.signup-success__heading {
+  margin: 24px 0 0;
+  color: var(--ink500);
+}
+
+.signup-success__desc {
+  margin: 16px 0 0;
+  color: var(--ink300);
+  line-height: 1.6;
+}
+
+.signup-success__notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 28px;
+  padding: 16px 15px;
+  border: 1px solid var(--moon500);
+  border-radius: var(--radius-input);
+  background: var(--han50);
+}
+
+.signup-success__notice-icon {
+  font-size: 18px;
+  color: var(--ink300);
+}
+
+.signup-success__notice-text {
+  color: var(--ink400);
+}
+
+.signup-success__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-top: 24px;
+}
+
+.signup-success__button.cy-button {
+  width: 100%;
+  font-size: 18px;
+  font-weight: 700;
+}
+
 @media (max-width: $tablet) {
   .signup-page {
     align-items: flex-start;

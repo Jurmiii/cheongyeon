@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   faCalendarDays,
   faChevronDown,
+  faCircleInfo,
   faEnvelope,
   faEyeSlash,
   faLock,
@@ -12,7 +14,21 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { Button, Input } from "../../components/common";
+import { hasAccount, saveAccount } from "../../utils/accountStorage";
+import { saveUserProfile } from "../../utils/userProfileStorage";
+import logo from "../../assets/images/00header-footer/logo.svg";
 import "./Signup.scss";
+
+function formatPhone(value) {
+  const digits = value.replace(/\D/g, "");
+  if (digits.length === 11) {
+    return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+  }
+  if (digits.length === 10) {
+    return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+  }
+  return value;
+}
 
 function isValidBirth(value) {
   if (!/^\d{8}$/.test(value)) return false;
@@ -71,6 +87,7 @@ const TERM_ITEMS = [
 ];
 
 export default function Signup() {
+  const navigate = useNavigate();
   const [values, setValues] = useState({
     loginId: "",
     password: "",
@@ -80,6 +97,8 @@ export default function Signup() {
     phone: "",
   });
   const [focusedField, setFocusedField] = useState(null);
+  const [submitError, setSubmitError] = useState("");
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [termsOpen, setTermsOpen] = useState(false);
   const [terms, setTerms] = useState(() =>
     Object.fromEntries(TERM_ITEMS.map((item) => [item.id, false]))
@@ -116,6 +135,47 @@ export default function Signup() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    const allFieldsValid = Object.keys(validators).every((field) =>
+      validators[field](values[field])
+    );
+    const requiredTermsAgreed = TERM_ITEMS.filter((item) => item.required).every(
+      (item) => terms[item.id]
+    );
+
+    if (!allFieldsValid) {
+      setSubmitError("입력 정보를 다시 확인해 주세요.");
+      return;
+    }
+
+    if (!requiredTermsAgreed) {
+      setSubmitError("필수 약관에 동의해 주세요.");
+      return;
+    }
+
+    const loginId = values.loginId.trim();
+
+    if (hasAccount(loginId)) {
+      setSubmitError("이미 사용 중인 아이디예요.");
+      return;
+    }
+
+    const name = values.name.trim();
+    const phone = formatPhone(values.phone);
+    const email = values.email.trim();
+
+    saveAccount({
+      loginId,
+      password: values.password,
+      name,
+      phone,
+      email,
+      birth: values.birth,
+    });
+    saveUserProfile({ loginId, name, phone, email });
+
+    setSubmitError("");
+    setIsSuccessOpen(true);
   };
 
   const renderError = (field) =>
@@ -312,11 +372,67 @@ export default function Signup() {
             ) : null}
           </div>
 
+          {submitError ? (
+            <p className="signup-field__error ft-14r" role="alert">
+              {submitError}
+            </p>
+          ) : null}
+
           <Button className="signup-submit" variant="btn1" type="submit">
             가입하기
           </Button>
         </form>
       </section>
+
+      {isSuccessOpen ? (
+        <div className="signup-success" role="presentation">
+          <div
+            className="signup-success__dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="signup-success-title"
+          >
+            <h2 className="signup-success__title ft-28b" id="signup-success-title">
+              청연과 함께하기
+            </h2>
+            <img className="signup-success__logo" src={logo} alt="청연" />
+            <p className="signup-success__heading ft-28b">회원가입이 완료되었습니다</p>
+            <p className="signup-success__desc ft-16r">
+              청연의 회원이 되신 것을 환영합니다.
+              <br />
+              이제 다양한 다도 클래스를 예약해보세요.
+            </p>
+            <div className="signup-success__notice">
+              <FontAwesomeIcon
+                className="signup-success__notice-icon"
+                icon={faCircleInfo}
+                aria-hidden="true"
+              />
+              <span className="signup-success__notice-text ft-16r">
+                가입한 정보가 정상적으로 등록되었습니다.
+              </span>
+            </div>
+            <div className="signup-success__actions">
+              <Button
+                className="signup-success__button"
+                variant="btn1"
+                type="button"
+                onClick={() => navigate("/login")}
+              >
+                로그인하기
+              </Button>
+              <Button
+                className="signup-success__button"
+                variant="btn2"
+                type="button"
+                onClick={() => navigate("/")}
+              >
+                메인으로 가기
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }

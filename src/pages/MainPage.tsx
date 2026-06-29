@@ -396,9 +396,12 @@ function DrawLineSvg({
   );
 }
 
+let hasIntroBeenSeen = false;
+
 export default function MainPage() {
-  const [isIntroEnded, setIsIntroEnded] = useState(false);
-  const [isScrollReleased, setIsScrollReleased] = useState(false);
+  const [hasSeenIntroAtMount] = useState(() => hasIntroBeenSeen);
+  const [isIntroEnded, setIsIntroEnded] = useState(hasIntroBeenSeen);
+  const [isScrollReleased, setIsScrollReleased] = useState(hasIntroBeenSeen);
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
   const [sec1ProgressCycle, setSec1ProgressCycle] = useState<number>(0);
   const [activeSeasons, setActiveSeasons] = useState<Record<SeasonKey, boolean>>(initialActiveSeasons);
@@ -450,6 +453,7 @@ export default function MainPage() {
   const activeSec8Slide = mainEventSlides[activeSec8Index];
 
   const finishIntro = () => {
+    hasIntroBeenSeen = true;
     setIsIntroEnded(true);
   };
 
@@ -1081,24 +1085,30 @@ export default function MainPage() {
 
   return (
     <main className="main-page">
-      <div
-        className={["main-intro", isIntroEnded && "main-intro--hidden"].filter(Boolean).join(" ")}
-        aria-hidden="true"
-      >
-        <video
-          className="main-intro__video"
-          src={mainIntroVideo}
-          autoPlay
-          muted
-          playsInline
-          preload="auto"
-          controls={false}
-          disablePictureInPicture
-          controlsList="nodownload nofullscreen noplaybackrate"
-          onEnded={finishIntro}
-          onError={finishIntro}
-        />
-      </div>
+      {!hasSeenIntroAtMount && (
+        <div
+          className={["main-intro", isIntroEnded && "main-intro--hidden"].filter(Boolean).join(" ")}
+        >
+          <video
+            className="main-intro__video"
+            src={mainIntroVideo}
+            autoPlay
+            muted
+            playsInline
+            preload="auto"
+            controls={false}
+            disablePictureInPicture
+            controlsList="nodownload nofullscreen noplaybackrate"
+            onEnded={finishIntro}
+            onError={finishIntro}
+            aria-hidden="true"
+          />
+          <button className="main-intro__skip ft-18r" type="button" onClick={finishIntro}>
+            Skip
+            <Icon name="angle-right" />
+          </button>
+        </div>
+      )}
       <div className="main-page__header">
         <Header />
       </div>

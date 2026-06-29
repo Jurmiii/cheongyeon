@@ -40,6 +40,8 @@ import MyPageCancelModal, {
 
 } from "./MyPageCancelModal";
 
+import StampModal from "../Stamp/StampModal";
+
 import "./MyPage.scss";
 
 
@@ -93,6 +95,8 @@ function MyPage() {
   const [historyPage, setHistoryPage] = useState(0);
 
   const [cancelTargetId, setCancelTargetId] = useState<string | null>(null);
+
+  const [isStampOpen, setIsStampOpen] = useState(false);
 
 
 
@@ -336,7 +340,26 @@ function MyPage() {
 
                 )}
 
-                <article className="my-page__stat-item" role="listitem">
+                <article
+                  className={
+                    stat.icon === "stamp"
+                      ? "my-page__stat-item my-page__stat-item--clickable"
+                      : "my-page__stat-item"
+                  }
+                  role={stat.icon === "stamp" ? "button" : "listitem"}
+                  tabIndex={stat.icon === "stamp" ? 0 : undefined}
+                  onClick={stat.icon === "stamp" ? () => setIsStampOpen(true) : undefined}
+                  onKeyDown={
+                    stat.icon === "stamp"
+                      ? (event) => {
+                          if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            setIsStampOpen(true);
+                          }
+                        }
+                      : undefined
+                  }
+                >
 
                   <div className="my-page__stat-heading">
 
@@ -398,7 +421,7 @@ function MyPage() {
 
                   type="button"
 
-                  onClick={() => navigate(`/reservation?edit=${upcomingReservation?.id}`)}
+                  onClick={() => navigate("/reservation/edit")}
 
                 >
 
@@ -414,7 +437,7 @@ function MyPage() {
 
                   type="button"
 
-                  onClick={() => setCancelTargetId(upcomingReservation?.id ?? null)}
+                  onClick={() => navigate("/reservation/edit?mode=cancel")}
 
                 >
 
@@ -636,13 +659,13 @@ function MyPage() {
 
             </div>
 
-            <div className="my-page__support-block">
+            <Link className="my-page__support-block my-page__support-block--link" to="/contact">
 
               <h3 className="my-page__support-title ft-22r ink500">1:1 문의하기</h3>
 
               <p className="my-page__support-desc ft-16r ink500">문의사항이 있으신가요?</p>
 
-            </div>
+            </Link>
 
           </div>
 
@@ -667,6 +690,10 @@ function MyPage() {
         />
 
       ) : null}
+
+
+
+      {isStampOpen ? <StampModal onClose={() => setIsStampOpen(false)} /> : null}
 
 
 

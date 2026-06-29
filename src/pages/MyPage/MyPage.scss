@@ -67,14 +67,13 @@
 
 .my-page__greeting-name {
   display: flex;
-  align-items: flex-end;
+  align-items: baseline;
   gap: 1.25rem;
   margin: 0;
 }
 
 .my-page__greeting-name-suffix {
   flex-shrink: 0;
-  transform: translateY(1.5rem);
 }
 
 .my-page__greeting-message {
@@ -364,6 +363,12 @@
   }
 }
 
+.my-page__support-block--link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
 .my-page__support-title {
   margin: 0;
 }
@@ -382,6 +387,10 @@
   border: 1px solid var(--deep500);
   border-radius: var(--radius-2);
   background: transparent;
+}
+
+.my-page__stat-item--clickable {
+  cursor: pointer;
 }
 
 .my-page__stat-item {
@@ -500,7 +509,7 @@
     font-size: 2.25rem;
     font-weight: 700;
     line-height: 3.25rem;
-    transform: translateY(0.25rem);
+    transform: none;
   }
 
   .my-page__greeting-message {
