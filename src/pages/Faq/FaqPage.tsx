@@ -20,13 +20,17 @@ function FaqPage() {
 
       <section className="faq-kv" aria-label="자주 묻는 질문 키비주얼">
         <div className="faq-kv__grid">
-          <h1 className="faq-kv__title ft-64r ink500">자주 묻는 질문</h1>
-          <img className="faq-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
-          <p className="faq-kv__description ft-28r ink500">
-            청연 이용에 필요한 궁금한 내용을
-            <br />
-            한눈에 확인하실 수 있습니다.
-          </p>
+          <div className="faq-kv__content">
+            <div className="faq-kv__head">
+              <h1 className="faq-kv__title ft-64b ink500">자주묻는 질문</h1>
+              <img className="faq-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
+            </div>
+            <p className="faq-kv__description ft-28r ink500">
+              청연 이용에 필요한 궁금한 내용을
+              <br />
+              한눈에 확인하실 수 있습니다.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -49,8 +53,10 @@ function FaqPage() {
                     aria-expanded={isOpen}
                     onClick={() => handleFaqToggle(faq.id)}
                   >
-                    <span className="faq-content__mark faq-content__mark--question ft-28b ink500">Q</span>
-                    <span className="faq-content__question-text ft-28b ink500">{faq.question}</span>
+                    <span className="faq-content__question-body">
+                      <span className="faq-content__mark faq-content__mark--question ft-22b ink500">Q</span>
+                      <span className="faq-content__question-text ft-28b ink500">{faq.question}</span>
+                    </span>
                     <Icon className="faq-content__chevron ink500" name="angle-down" aria-hidden="true" />
                   </button>
 
