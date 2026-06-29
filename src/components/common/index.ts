@@ -8,6 +8,7 @@ export { default as Content6 } from "./Content6/Content6";
 export { default as ContentBox } from "./ContentBox";
 export { contentBoxAliases } from "./ContentBox";
 export type { ContentBoxAlias } from "./ContentBox";
+export { default as CustomModal } from "./CustomModal";
 export { default as Footer } from "./Footer/Footer";
 export { default as Header } from "./Header/Header";
 export { default as Icon } from "./Icon";

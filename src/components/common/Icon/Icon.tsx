@@ -1,3 +1,5 @@
+import { faStamp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { SVGProps } from "react";
 
 export type IconName =
@@ -31,6 +33,17 @@ interface IconProps extends SVGProps<SVGSVGElement> {
 export default function Icon({ name, className = "", ...props }: IconProps) {
   const classes = ["cy-icon", className].filter(Boolean).join(" ");
   const isHidden = props["aria-label"] ? undefined : true;
+
+  if (name === "stamp") {
+    return (
+      <FontAwesomeIcon
+        aria-hidden={isHidden}
+        aria-label={props["aria-label"]}
+        className={classes}
+        icon={faStamp}
+      />
+    );
+  }
 
   return (
     <svg
@@ -154,14 +167,6 @@ export default function Icon({ name, className = "", ...props }: IconProps) {
           <path d="M4 12h16" />
           <path d="m6.3 6.3 11.4 11.4" />
           <path d="m17.7 6.3-11.4 11.4" />
-        </>
-      )}
-      {name === "stamp" && (
-        <>
-          <path d="M9 4h6l1 6H8Z" />
-          <path d="M8 10h8l1.5 5h-11Z" />
-          <path d="M5 20h14" />
-          <path d="M7 15h10v5H7Z" />
         </>
       )}
       {name === "user" && (

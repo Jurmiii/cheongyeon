@@ -1,8 +1,10 @@
+import { useState } from "react";
 import {
   Badge,
   Button,
   Calendar,
   ContentBox,
+  CustomModal,
   Footer,
   Header,
   Icon,
@@ -206,16 +208,19 @@ const icons = [
   "won-circle",
 ];
 
-const svgIcons = [
-  { name: "logo.svg", src: logo, wide: true },
-  { name: "logo-white.svg", src: logoWhite, dark: true, wide: true },
+const imageIcons = [
+  { name: "cha-icon.svg", src: chaIcon },
+  { name: "try-icon.svg", src: tryIcon },
   { name: "github.svg", src: githubIcon },
   { name: "kakao.svg", src: kakaoIcon },
   { name: "naver.svg", src: naverIcon },
+];
+
+const svgIcons = [
+  { name: "logo.svg", src: logo, wide: true },
+  { name: "logo-white.svg", src: logoWhite, dark: true, wide: true },
   { name: "chajeom-icon.svg", src: chajeomIcon },
   { name: "dasil-icon.svg", src: dasilIcon },
-  { name: "cha-icon.svg", src: chaIcon },
-  { name: "try-icon.svg", src: tryIcon },
   { name: "subsymbol.svg", src: subSymbol },
   { name: "symbol1.svg", src: symbol1 },
   { name: "symbol-black.svg", src: symbolBlack },
@@ -252,6 +257,8 @@ const contentBoxes = [
 ];
 
 export default function ComponentPreview() {
+  const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
+
   return (
     <main className="component-preview">
       <section className="component-preview__section component-preview__section--header">
@@ -365,6 +372,12 @@ export default function ComponentPreview() {
               <p className="component-preview__alias ft-14r">{name}</p>
             </div>
           ))}
+          {imageIcons.map(({ name, src }) => (
+            <div className="component-preview__icon-item" key={name}>
+              <img className="component-preview__icon component-preview__image-icon" src={src} alt="" aria-hidden="true" />
+              <p className="component-preview__alias ft-14r">{name}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -429,7 +442,53 @@ export default function ComponentPreview() {
             <Modal2 />
             <p className="component-preview__alias ft-14r">modal2</p>
           </div>
+          <div className="component-preview__item component-preview__custom-modal-preview">
+            <Button variant="btn1" type="button" onClick={() => setIsCustomModalOpen(true)}>
+              커스텀 모달 열기
+            </Button>
+            <p className="component-preview__alias ft-14r">CustomModal / 커스텀 모달</p>
+          </div>
         </div>
+        <CustomModal isOpen={isCustomModalOpen} onClose={() => setIsCustomModalOpen(false)}>
+          <article className="component-preview__custom-modal-sample">
+            <h3 className="ft-28b ink500">커스텀 모달</h3>
+            <p className="component-preview__custom-modal-lead ft-18r ink500">
+              이 모달은 콘텐츠를 직접 갖지 않는 순수 래퍼입니다. 외부에서 전달된 children의 크기를
+              기준으로 자연스럽게 감싸며, 닫기 버튼과 오버레이 클릭, Esc 키로 닫을 수 있습니다.
+            </p>
+            <div className="component-preview__custom-modal-grid">
+              <section className="component-preview__custom-modal-card">
+                <h4 className="ft-22b ink500">텍스트 콘텐츠</h4>
+                <p className="ft-16r ink300">
+                  배경색, 둥근 모서리, 좌측 정렬은 차 컬렉션 모달의 스타일을 기준으로 맞췄습니다.
+                  데스크탑은 80vw/85vh, 태블릿은 90vw/80vh, 모바일은 94vw/75vh를 기준으로 합니다.
+                </p>
+              </section>
+              <section className="component-preview__custom-modal-card">
+                <h4 className="ft-22b ink500">양식 콘텐츠</h4>
+                <label className="component-preview__custom-modal-field ft-14r ink500">
+                  이름
+                  <Input placeholder="이름을 입력하세요" />
+                </label>
+                <label className="component-preview__custom-modal-field ft-14r ink500">
+                  메모
+                  <textarea
+                    className="component-preview__custom-modal-textarea ft-16r ink500"
+                    placeholder="필요한 콘텐츠를 자유롭게 주입할 수 있습니다."
+                    rows={5}
+                  />
+                </label>
+              </section>
+            </div>
+            <ul className="component-preview__custom-modal-list ft-16r ink300">
+              {Array.from({ length: 3 }, (_, index) => (
+                <li key={index + 1}>
+                  샘플 콘텐츠 {index + 1}: 실제 사용처에서는 필요한 마크업을 children으로 전달합니다.
+                </li>
+              ))}
+            </ul>
+          </article>
+        </CustomModal>
       </section>
 
       <section className="component-preview__section">
