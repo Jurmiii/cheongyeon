@@ -25,10 +25,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 970px;
+  width: 60.625rem;
   max-width: 100%;
-  height: 550px;
-  padding-top: 47px;
+  height: 34.375rem;
+  padding-top: 2.9375rem;
   background-image: url("../../assets/images/13my-page/stemp.png");
   background-position: center;
   background-size: cover;
@@ -37,34 +37,34 @@
 
 .stamp-card__logo {
   display: block;
-  width: 135px;
+  width: 8.4375rem;
   height: auto;
 }
 
 .stamp-card__subtitle {
-  margin: 12px 0 0;
+  margin: 0.75rem 0 0;
   color: var(--ink500);
   text-align: center;
 }
 
 .stamp-card__cups {
   display: grid;
-  grid-template-columns: repeat(4, 88px);
-  column-gap: 116px;
-  row-gap: 12px;
-  margin-top: 37px;
+  grid-template-columns: repeat(4, 5.5rem);
+  column-gap: 7.25rem;
+  row-gap: 0.75rem;
+  margin-top: 2.3125rem;
 }
 
 .stamp-cup {
   position: relative;
-  width: 88px;
-  height: 88px;
+  width: 5.5rem;
+  height: 5.5rem;
 }
 
 .stamp-cup__image {
   display: block;
-  width: 88px;
-  height: 88px;
+  width: 5.5rem;
+  height: 5.5rem;
 }
 
 .stamp-cup__number {
@@ -83,17 +83,17 @@
   left: 50%;
   z-index: 2;
   width: auto;
-  height: 114px;
-  transform: translate(-50%, -50%);
+  height: 8.75rem;
+  transform: translate(-50%, -50%) rotate(-45deg);
   pointer-events: none;
 }
 
 .stamp-card__benefits {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.75rem;
   width: fit-content;
-  margin: 40px auto 0;
+  margin: 2.5rem auto 0;
 }
 
 .stamp-benefit {
@@ -104,8 +104,8 @@
 .stamp-benefit__icon {
   display: block;
   width: auto;
-  height: 48px;
-  margin-right: 4px;
+  height: 3rem;
+  margin-right: 0.25rem;
 }
 
 .stamp-benefit__label {
@@ -113,7 +113,7 @@
 }
 
 .stamp-benefit__desc {
-  margin-left: 12px;
+  margin-left: 0.75rem;
   color: var(--ink500);
 }
 

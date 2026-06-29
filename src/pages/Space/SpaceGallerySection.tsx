@@ -17,14 +17,20 @@ export type SpaceGallerySectionProps = {
   cards: readonly SpaceGalleryCard[];
 };
 
-const GALLERY_START_WIDTH = 465;
-const GALLERY_START_HEIGHT = 700;
-const GALLERY_FINAL_WIDTH = 335;
-const GALLERY_FINAL_HEIGHT = 519;
-const GALLERY_CARD_GAP = 24;
-const GALLERY_TITLE_GAP = 70;
+const GALLERY_START_WIDTH_REM = 29.0625;
+const GALLERY_START_HEIGHT_REM = 43.75;
+const GALLERY_FINAL_WIDTH_REM = 20.9375;
+const GALLERY_FINAL_HEIGHT_REM = 32.4375;
+const GALLERY_CARD_GAP_REM = 1.5;
+const GALLERY_TITLE_GAP_REM = 4.375;
 const GALLERY_HOLD_DURATION = 0.5;
 const GALLERY_HOVER_READY_PROGRESS = 1;
+
+const remToPx = (value: number) => {
+  const rootFontSize = Number.parseFloat(window.getComputedStyle(document.documentElement).fontSize);
+
+  return value * (Number.isFinite(rootFontSize) ? rootFontSize : 16);
+};
 
 function SpaceGallerySection({
   blockClass,
@@ -63,7 +69,7 @@ function SpaceGallerySection({
 
     const mm = gsap.matchMedia();
 
-    mm.add("(min-width: 1025px)", () => {
+    mm.add("(min-width: 64.0625rem)", () => {
       let applyInitialState: (() => void) | null = null;
 
       const context = gsap.context(() => {
@@ -73,8 +79,18 @@ function SpaceGallerySection({
           return;
         }
 
+        const getGalleryMetrics = () => ({
+          startWidth: remToPx(GALLERY_START_WIDTH_REM),
+          startHeight: remToPx(GALLERY_START_HEIGHT_REM),
+          finalWidth: remToPx(GALLERY_FINAL_WIDTH_REM),
+          finalHeight: remToPx(GALLERY_FINAL_HEIGHT_REM),
+          cardGap: remToPx(GALLERY_CARD_GAP_REM),
+          titleGap: remToPx(GALLERY_TITLE_GAP_REM),
+        });
+
         const getRowStart = () => {
-          const rowWidth = cardElements.length * GALLERY_FINAL_WIDTH + (cardElements.length - 1) * GALLERY_CARD_GAP;
+          const { cardGap, finalWidth } = getGalleryMetrics();
+          const rowWidth = cardElements.length * finalWidth + (cardElements.length - 1) * cardGap;
           return Math.max(0, (stage.offsetWidth - rowWidth) / 2);
         };
 
@@ -82,18 +98,20 @@ function SpaceGallerySection({
           const stageWidth = stage.offsetWidth;
           const stageCenterX = stageWidth / 2;
           const rowStart = getRowStart();
+          const { cardGap, finalWidth } = getGalleryMetrics();
 
           return cardElements.map((_, index) => {
-            const cardCenterX = rowStart + index * (GALLERY_FINAL_WIDTH + GALLERY_CARD_GAP) + GALLERY_FINAL_WIDTH / 2;
+            const cardCenterX = rowStart + index * (finalWidth + cardGap) + finalWidth / 2;
             return cardCenterX - stageCenterX;
           });
         };
 
         const positionSubtitle = () => {
-          const cardTop = stage.offsetHeight / 2 - GALLERY_FINAL_HEIGHT / 2;
+          const { finalHeight, titleGap } = getGalleryMetrics();
+          const cardTop = stage.offsetHeight / 2 - finalHeight / 2;
 
           gsap.set(head, {
-            top: cardTop - GALLERY_TITLE_GAP - head.offsetHeight,
+            top: cardTop - titleGap - head.offsetHeight,
             left: getRowStart(),
           });
         };
@@ -130,6 +148,7 @@ function SpaceGallerySection({
           });
           positionSubtitle();
           gsap.set(head, { opacity: 0 });
+          const { startHeight, startWidth } = getGalleryMetrics();
 
           cardElements.forEach((card, index) => {
             gsap.set(card, {
@@ -142,8 +161,8 @@ function SpaceGallerySection({
               y: 0,
               rotation: 0,
               scale: 1,
-              width: GALLERY_START_WIDTH,
-              height: GALLERY_START_HEIGHT,
+              width: startWidth,
+              height: startHeight,
               autoAlpha: index === 0 ? 1 : 0,
               transformOrigin: "center center",
               zIndex: cardElements.length - index,
@@ -208,8 +227,8 @@ function SpaceGallerySection({
           .to(
             cardElements,
             {
-              width: GALLERY_FINAL_WIDTH,
-              height: GALLERY_FINAL_HEIGHT,
+              width: () => getGalleryMetrics().finalWidth,
+              height: () => getGalleryMetrics().finalHeight,
               duration: 0.62,
               ease: "sine.inOut",
             },
@@ -251,7 +270,7 @@ function SpaceGallerySection({
       };
     });
 
-    mm.add("(max-width: 1024px)", () => {
+    mm.add("(max-width: 64rem)", () => {
       const context = gsap.context(() => {
         gsap.set(mainTitle, { clearProps: "all" });
         gsap.set(head, { clearProps: "top,left,opacity" });

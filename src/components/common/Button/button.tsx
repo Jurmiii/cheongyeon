@@ -15,26 +15,44 @@ export const buttonAliases: Record<ButtonAlias, ButtonVariant> = {
   btn9: "naver",
 };
 
-export default function Button({
-  children,
-  variant = "payment",
-  className = "",
-  showIcon = true,
-  type = "button",
-  ...props
-}: ButtonProps) {
+export default function Button(props: ButtonProps) {
+  const {
+    children,
+    variant = "payment",
+    className = "",
+    showIcon = true,
+  } = props;
   const resolvedVariant = buttonAliases[variant as ButtonAlias] ?? variant;
   const typographyClass = resolvedVariant === "classMore" ? "ft-18b" : "ft-16b";
   const classes = ["cy-button", `cy-button--${resolvedVariant}`, typographyClass, className]
     .filter(Boolean)
     .join(" ");
 
-  return (
-    <button className={classes} type={type} {...props}>
+  const content = (
+    <>
       {children}
       {showIcon && resolvedVariant === "classMore" && (
-        <Icon name="angle-right" />
+        <Icon name="angle-top" />
       )}
+    </>
+  );
+
+  if (typeof props.href === "string") {
+    const { children: _children, className: _className, rel, showIcon: _showIcon, target, variant: _variant, ...anchorProps } = props;
+    const safeRel = target === "_blank" ? (rel ?? "noreferrer") : rel;
+
+    return (
+      <a className={classes} rel={safeRel} target={target} {...anchorProps}>
+        {content}
+      </a>
+    );
+  }
+
+  const { children: _children, className: _className, showIcon: _showIcon, type = "button", variant: _variant, ...buttonProps } = props;
+
+  return (
+    <button className={classes} type={type} {...buttonProps}>
+      {content}
     </button>
   );
 }

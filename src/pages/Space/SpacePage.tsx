@@ -169,7 +169,7 @@ const spaceMapItems = [
     title: "티 라운지",
     image: spaceMap5,
     marker: mapMarker5,
-    position: { left: "calc(87% - 10px)", top: "80%" },
+    position: { left: "calc(87% - 0.625rem)", top: "80%" },
     description:
       "클래스 전후 여유롭게 머물며 다양한 차를 편안하게 즐길 수 있는 휴식 공간입니다. 차 한 잔과 함께 잠시 쉬어가기 좋은 공간입니다.",
   },

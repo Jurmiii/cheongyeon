@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 
 export type ButtonVariant =
   | "payment"
@@ -13,8 +13,20 @@ export type ButtonVariant =
 
 export type ButtonAlias = "btn1" | "btn2" | "btn3" | "btn4" | "btn5" | "btn6" | "btn7" | "btn8" | "btn9";
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonBaseProps {
   children: ReactNode;
   variant?: ButtonVariant | ButtonAlias;
   showIcon?: boolean;
 }
+
+export type ButtonAsButtonProps = ButtonBaseProps &
+  Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children" | "href"> & {
+    href?: never;
+  };
+
+export type ButtonAsAnchorProps = ButtonBaseProps &
+  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "children" | "type"> & {
+    href: string;
+  };
+
+export type ButtonProps = ButtonAsButtonProps | ButtonAsAnchorProps;

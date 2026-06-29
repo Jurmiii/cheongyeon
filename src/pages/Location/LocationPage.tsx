@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import subSymbol from "../../assets/images/01main/subsymbol.svg";
 import locationKv from "../../assets/images/04location/location-kv.webp";
-import { Footer, Header } from "../../components/common";
+import { Footer, Header, Icon } from "../../components/common";
 import "./LocationPage.scss";
 
 const KAKAO_MAP_APP_KEY = "723edbe830219d6cbf7c015343e297fe";
@@ -245,7 +243,7 @@ function LocationPage() {
             <div className="location-map__list">
               <div className="location-map__search-wrap">
                 <div className="location-map__search">
-                  <FontAwesomeIcon icon={faMagnifyingGlass} className="location-map__search-icon" aria-hidden="true" />
+                  <Icon className="location-map__search-icon" name="magnifying-glass" aria-hidden="true" />
                   <input
                     type="search"
                     className="location-map__search-input ft-16r ink500"

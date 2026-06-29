@@ -811,7 +811,7 @@
   &::before {
     content: "";
     position: absolute;
-    inset: -50px;
+    inset: -3.125rem;
   }
 
   img {
@@ -866,11 +866,11 @@
 @keyframes space-map-marker-float {
   0%,
   100% {
-    transform: translate(-50%, calc(-50% + 0px));
+    transform: translate(-50%, calc(-50% + 0rem));
   }
 
   50% {
-    transform: translate(-50%, calc(-50% - 5px));
+    transform: translate(-50%, calc(-50% - 0.3125rem));
   }
 }
 

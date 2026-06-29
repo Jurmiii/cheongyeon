@@ -24,7 +24,7 @@ export default function ContentCard({
         <div className="content-card__footer ft-14r">
           <span>{date}</span>
           <span>{viewCount}</span>
-          <Icon name="angle-right" />
+          <Icon name="angle-top" />
         </div>
       </div>
     </article>

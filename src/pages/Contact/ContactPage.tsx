@@ -1,8 +1,5 @@
 import { useState } from "react";
 
-import { faImage } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import { Button, Icon, Input } from "../../components/common";
 import "./ContactPage.scss";
 
@@ -40,7 +37,7 @@ function ContactPage() {
               빠르고 정확하게 답변드리겠습니다.
             </p>
             <div className="contact__intro-image" aria-hidden="true">
-              <FontAwesomeIcon icon={faImage} />
+              <Icon name="image" />
             </div>
           </aside>
 

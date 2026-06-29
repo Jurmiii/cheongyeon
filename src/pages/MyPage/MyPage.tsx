@@ -1,9 +1,5 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 
-import { faMugHot, faStamp } from "@fortawesome/free-solid-svg-icons";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import { Link, useNavigate } from "react-router-dom";
 
 
@@ -367,9 +363,9 @@ function MyPage() {
 
                       {stat.icon === "calendar" && <Icon className="my-page__stat-icon-graphic" name="calendar" />}
 
-                      {stat.icon === "mug" && <FontAwesomeIcon className="my-page__stat-icon-graphic" icon={faMugHot} />}
+                      {stat.icon === "mug" && <Icon className="my-page__stat-icon-graphic" name="mug" />}
 
-                      {stat.icon === "stamp" && <FontAwesomeIcon className="my-page__stat-icon-graphic" icon={faStamp} />}
+                      {stat.icon === "stamp" && <Icon className="my-page__stat-icon-graphic" name="stamp" />}
 
                     </div>
 

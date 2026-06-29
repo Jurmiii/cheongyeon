@@ -1,19 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import {
-  faCalendarDays,
-  faChevronDown,
-  faCircleInfo,
-  faEnvelope,
-  faEyeSlash,
-  faLock,
-  faMobileScreenButton,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import { Button, Input } from "../../components/common";
+import { Button, Icon, Input } from "../../components/common";
 import { hasAccount, saveAccount } from "../../utils/accountStorage";
 import { saveUserProfile } from "../../utils/userProfileStorage";
 import logo from "../../assets/images/00header-footer/logo.svg";
@@ -193,7 +181,7 @@ export default function Signup() {
         <form className="signup-form" onSubmit={handleSubmit} noValidate>
           <div className="signup-field">
             <div className="signup-field__control">
-              <FontAwesomeIcon className="signup-field__icon" icon={faUser} aria-hidden="true" />
+              <Icon className="signup-field__icon" name="user" aria-hidden="true" />
               <Input
                 className="signup-field__input"
                 id="signup-id"
@@ -212,7 +200,7 @@ export default function Signup() {
 
           <div className="signup-field">
             <div className="signup-field__control">
-              <FontAwesomeIcon className="signup-field__icon" icon={faLock} aria-hidden="true" />
+              <Icon className="signup-field__icon" name="lock" aria-hidden="true" />
               <Input
                 className="signup-field__input signup-field__input--password"
                 id="signup-password"
@@ -226,14 +214,14 @@ export default function Signup() {
                 onBlur={handleBlur}
                 autoComplete="new-password"
               />
-              <FontAwesomeIcon className="signup-field__icon-right" icon={faEyeSlash} aria-hidden="true" />
+              <Icon className="signup-field__icon-right" name="eye-slash" aria-hidden="true" />
             </div>
             {renderError("password")}
           </div>
 
           <div className="signup-field">
             <div className="signup-field__control">
-              <FontAwesomeIcon className="signup-field__icon" icon={faEnvelope} aria-hidden="true" />
+              <Icon className="signup-field__icon" name="envelope" aria-hidden="true" />
               <Input
                 className="signup-field__input"
                 id="signup-email"
@@ -253,7 +241,7 @@ export default function Signup() {
 
           <div className="signup-field">
             <div className="signup-field__control">
-              <FontAwesomeIcon className="signup-field__icon" icon={faUser} aria-hidden="true" />
+              <Icon className="signup-field__icon" name="user" aria-hidden="true" />
               <Input
                 className="signup-field__input"
                 id="signup-name"
@@ -272,7 +260,7 @@ export default function Signup() {
 
           <div className="signup-field">
             <div className="signup-field__control">
-              <FontAwesomeIcon className="signup-field__icon" icon={faCalendarDays} aria-hidden="true" />
+              <Icon className="signup-field__icon" name="calendar" aria-hidden="true" />
               <Input
                 className="signup-field__input"
                 id="signup-birth"
@@ -294,7 +282,7 @@ export default function Signup() {
           <div className="signup-field">
             <div className="signup-field__phone-row">
               <div className="signup-field__control signup-field__phone-input">
-                <FontAwesomeIcon className="signup-field__icon" icon={faMobileScreenButton} aria-hidden="true" />
+                <Icon className="signup-field__icon" name="mobile" aria-hidden="true" />
                 <Input
                   className="signup-field__input"
                   id="signup-phone"
@@ -338,9 +326,9 @@ export default function Signup() {
                 aria-label="약관 자세히 보기"
                 onClick={() => setTermsOpen((prev) => !prev)}
               >
-                <FontAwesomeIcon
+                <Icon
                   className={`signup-agree__chevron${termsOpen ? " signup-agree__chevron--open" : ""}`}
-                  icon={faChevronDown}
+                  name="angle-down"
                   aria-hidden="true"
                 />
               </button>
@@ -403,9 +391,9 @@ export default function Signup() {
               이제 다양한 다도 클래스를 예약해보세요.
             </p>
             <div className="signup-success__notice">
-              <FontAwesomeIcon
+              <Icon
                 className="signup-success__notice-icon"
-                icon={faCircleInfo}
+                name="circle-info"
                 aria-hidden="true"
               />
               <span className="signup-success__notice-text ft-16r">

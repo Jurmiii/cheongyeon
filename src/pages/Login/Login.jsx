@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { Button, Input } from "../../components/common";
 import { useAuth } from "../../contexts/AuthContext";
@@ -10,6 +10,7 @@ import "./Login.scss";
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
@@ -37,7 +38,9 @@ export default function Login() {
 
     setInputState("success");
     login(trimmedId, keepLogin);
-    navigate("/");
+
+    const redirectTo = location.state?.redirectTo;
+    navigate(typeof redirectTo === "string" && redirectTo.startsWith("/") ? redirectTo : "/", { replace: true });
   };
 
   const handleInputChange = (setter) => (event) => {
@@ -112,11 +115,11 @@ export default function Login() {
             로그인
           </Button>
 
-          <Button variant="kakao" type="button">
+          <Button href="https://www.kakaocorp.com/page/service/service/KakaoTalk" target="_blank" variant="btn8">
             카카오로 시작하기
           </Button>
 
-          <Button variant="naver" type="button">
+          <Button href="https://www.naver.com/" target="_blank" variant="btn9">
             네이버로 시작하기
           </Button>
         </form>

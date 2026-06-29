@@ -174,7 +174,7 @@ function EventDetailModal({ event, onClose }: EventDetailModalProps) {
                       }}
                     >
                       <span>{block.link}</span>
-                      <Icon className="event-modal__inline-link-icon" name="angle-right" />
+                      <Icon className="event-modal__inline-link-icon" name="angle-top" />
                     </button>
                   )}
                 </div>

@@ -18,6 +18,30 @@ import { classes } from "../data/classes";
 import { contents } from "../data/contents";
 import { events } from "../data/events";
 import { reservations } from "../data/reservations";
+import githubIcon from "../assets/images/00header-footer/github.svg";
+import kakaoIcon from "../assets/images/00header-footer/kakao.svg";
+import logo from "../assets/images/00header-footer/logo.svg";
+import logoWhite from "../assets/images/00header-footer/logo-white.svg";
+import naverIcon from "../assets/images/00header-footer/naver.svg";
+import centerLine from "../assets/images/01main/center-line.svg";
+import chajeomIcon from "../assets/images/01main/chajeom-icon.svg";
+import dasilIcon from "../assets/images/01main/dasil-icon.svg";
+import markIcon from "../assets/images/01main/mark.svg";
+import subSymbol from "../assets/images/01main/subsymbol.svg";
+import symbolBlack from "../assets/images/01main/symbol-black.svg";
+import symbolWhite from "../assets/images/01main/symbol-white.svg";
+import symbol1 from "../assets/images/01main/symbol1.svg";
+import mapMarker1 from "../assets/images/03space/1.svg";
+import mapMarker2 from "../assets/images/03space/2.svg";
+import mapMarker3 from "../assets/images/03space/3.svg";
+import mapMarker4 from "../assets/images/03space/4.svg";
+import mapMarker5 from "../assets/images/03space/5.svg";
+import cuser from "../assets/images/03space/cuser.svg";
+import spaceLine from "../assets/images/03space/space-3-line.svg";
+import collectionLineSymbol from "../assets/images/05collection/collection-line-symbol.svg";
+import chaIcon from "../assets/images/09season-class/cha-icon.svg";
+import tryIcon from "../assets/images/09season-class/try-icon.svg";
+import myDividerIcon from "../assets/images/13my-page/my-icon.svg";
 import Login from "./Login/Login";
 import "./ComponentPreview.scss";
 
@@ -159,18 +183,54 @@ const inputSamples = [
 
 const icons = [
   "angle-down",
-  "angle-right",
+  "angle-top",
   "calendar",
   "chevron-left",
   "chevron-right",
+  "circle-info",
   "clock",
   "credit-card",
+  "envelope",
+  "eye-slash",
   "gift",
+  "image",
   "location-dot",
+  "lock",
+  "magnifying-glass",
+  "mobile",
+  "mug",
   "clipboard",
   "star-of-life",
+  "stamp",
   "user",
   "won-circle",
+];
+
+const svgIcons = [
+  { name: "logo.svg", src: logo, wide: true },
+  { name: "logo-white.svg", src: logoWhite, dark: true, wide: true },
+  { name: "github.svg", src: githubIcon },
+  { name: "kakao.svg", src: kakaoIcon },
+  { name: "naver.svg", src: naverIcon },
+  { name: "chajeom-icon.svg", src: chajeomIcon },
+  { name: "dasil-icon.svg", src: dasilIcon },
+  { name: "cha-icon.svg", src: chaIcon },
+  { name: "try-icon.svg", src: tryIcon },
+  { name: "subsymbol.svg", src: subSymbol },
+  { name: "symbol1.svg", src: symbol1 },
+  { name: "symbol-black.svg", src: symbolBlack },
+  { name: "symbol-white.svg", src: symbolWhite, dark: true },
+  { name: "mark.svg", src: markIcon },
+  { name: "center-line.svg", src: centerLine, wide: true },
+  { name: "collection-line-symbol.svg", src: collectionLineSymbol, wide: true },
+  { name: "space-3-line.svg", src: spaceLine, wide: true },
+  { name: "cuser.svg", src: cuser },
+  { name: "space-marker-1.svg", src: mapMarker1 },
+  { name: "space-marker-2.svg", src: mapMarker2 },
+  { name: "space-marker-3.svg", src: mapMarker3 },
+  { name: "space-marker-4.svg", src: mapMarker4 },
+  { name: "space-marker-5.svg", src: mapMarker5 },
+  { name: "my-icon.svg", src: myDividerIcon },
 ];
 
 const cards = [
@@ -302,6 +362,28 @@ export default function ComponentPreview() {
           {icons.map((name) => (
             <div className="component-preview__icon-item" key={name}>
               <Icon className="component-preview__icon ink500" name={name} />
+              <p className="component-preview__alias ft-14r">{name}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="component-preview__section">
+        <h2 className="ft-28b">SVG Icons</h2>
+        <div className="component-preview__icons">
+          {svgIcons.map(({ dark, name, src, wide }) => (
+            <div
+              className={[
+                "component-preview__icon-item",
+                "component-preview__svg-icon-item",
+                dark && "component-preview__svg-icon-item--dark",
+                wide && "component-preview__svg-icon-item--wide",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              key={name}
+            >
+              <img className="component-preview__svg-icon-image" src={src} alt="" aria-hidden="true" />
               <p className="component-preview__alias ft-14r">{name}</p>
             </div>
           ))}
