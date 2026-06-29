@@ -380,7 +380,7 @@ function NoticePage() {
 
                       </time>
 
-                      <Icon className="notice-content__arrow ink500" name="angle-top" aria-hidden="true" />
+                      <Icon className="notice-content__arrow ink500" name="chevron-right" aria-hidden="true" />
 
                     </div>
 

@@ -1125,7 +1125,7 @@ export default function MainPage() {
           />
           <button className="main-intro__skip ft-18r" type="button" onClick={finishIntro}>
             Skip
-            <Icon name="angle-top" />
+            <Icon name="chevron-right" />
           </button>
         </div>
       )}
@@ -1345,7 +1345,7 @@ export default function MainPage() {
                 </p>
                 <Link className="cy-button cy-button--classMore ft-18b main-sec4__button" to="/class/general">
                   클래스 더보기
-                  <Icon name="angle-top" />
+                  <Icon name="chevron-right" />
                 </Link>
               </div>
             </div>
@@ -1379,7 +1379,7 @@ export default function MainPage() {
           </p>
           <Link className="cy-button cy-button--classMore ft-18b main-sec5__button" to="/collection">
             청연의 제품 보기
-            <Icon name="angle-top" />
+            <Icon name="chevron-right" />
           </Link>
         </div>
         <div
@@ -1456,7 +1456,7 @@ export default function MainPage() {
             </p>
             <Link className="cy-button cy-button--classMore ft-18b main-sec6__button" to="/seasontea">
               계절차 더 보기
-              <Icon name="angle-top" />
+              <Icon name="chevron-right" />
             </Link>
           </div>
         </div>
@@ -1481,7 +1481,7 @@ export default function MainPage() {
             </p>
             <Link className="cy-button cy-button--classMore ft-18b main-sec7__button" to="/brand/space">
               차점보기
-              <Icon name="angle-top" />
+              <Icon name="chevron-right" />
             </Link>
           </div>
         </article>
@@ -1497,7 +1497,7 @@ export default function MainPage() {
             </p>
             <Link className="cy-button cy-button--classMore ft-18b main-sec7__button" to="/brand/space">
               다실보기
-              <Icon name="angle-top" />
+              <Icon name="chevron-right" />
             </Link>
           </div>
         </article>
@@ -1542,7 +1542,7 @@ export default function MainPage() {
               onTouchStart={(event) => event.stopPropagation()}
             >
               이벤트 보기
-              <Icon name="angle-top" />
+              <Icon name="chevron-right" />
             </Link>
           </div>
           <div className="main-sec8__indicator" aria-label={`${activeSec8Index + 1} / ${mainEventSlides.length}`}>
@@ -1618,7 +1618,7 @@ export default function MainPage() {
             </p>
             <Link className="cy-button cy-button--classMore ft-18b main-sec10__button" to="/reservation">
               다도 클래스 예약하기
-              <Icon name="angle-top" />
+              <Icon name="chevron-right" />
             </Link>
             <p className="main-sec10__notice ft-14r ink300">* 다도 클래스는 예약제로 운영됩니다.</p>
           </div>

@@ -262,7 +262,7 @@ function ReservationCompleteModal({ isOpen, onClose }: ReservationCompleteModalP
           }}
         >
           <span>예약 정보 확인하기</span>
-          <Icon className="reservation-complete-modal__confirm-icon" name="angle-top" aria-hidden="true" />
+          <Icon className="reservation-complete-modal__confirm-icon" name="chevron-right" aria-hidden="true" />
         </button>
       </div>
     </div>

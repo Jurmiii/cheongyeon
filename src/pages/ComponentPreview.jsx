@@ -185,7 +185,6 @@ const inputSamples = [
 
 const icons = [
   "angle-down",
-  "angle-top",
   "calendar",
   "chevron-left",
   "chevron-right",

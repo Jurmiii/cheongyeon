@@ -32,7 +32,7 @@ export default function Button(props: ButtonProps) {
     <>
       {children}
       {showIcon && resolvedVariant === "classMore" && (
-        <Icon name="angle-top" />
+        <Icon name="chevron-right" />
       )}
     </>
   );

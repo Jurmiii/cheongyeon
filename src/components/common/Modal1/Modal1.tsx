@@ -87,7 +87,7 @@ export default function Modal1() {
                 {block.link && (
                   <button className="modal1__inline-link ft-14r ink500" type="button">
                     <span>{block.link}</span>
-                    <Icon className="modal1__inline-link-icon" name="angle-top" />
+                    <Icon className="modal1__inline-link-icon" name="chevron-right" />
                   </button>
                 )}
               </div>
