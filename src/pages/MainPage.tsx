@@ -394,12 +394,28 @@ function DrawLineSvg({
   );
 }
 
-let hasIntroBeenSeen = false;
+const MAIN_INTRO_SESSION_KEY = "cheongyeon-main-intro-seen";
+
+function hasMainIntroBeenSeen() {
+  try {
+    return window.sessionStorage.getItem(MAIN_INTRO_SESSION_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function markMainIntroAsSeen() {
+  try {
+    window.sessionStorage.setItem(MAIN_INTRO_SESSION_KEY, "true");
+  } catch {
+    // Ignore storage failures and keep the intro behavior in memory only.
+  }
+}
 
 export default function MainPage() {
-  const [hasSeenIntroAtMount] = useState(() => hasIntroBeenSeen);
-  const [isIntroEnded, setIsIntroEnded] = useState(hasIntroBeenSeen);
-  const [isScrollReleased, setIsScrollReleased] = useState(hasIntroBeenSeen);
+  const [hasSeenIntroAtMount] = useState(() => hasMainIntroBeenSeen());
+  const [isIntroEnded, setIsIntroEnded] = useState(hasSeenIntroAtMount);
+  const [isScrollReleased, setIsScrollReleased] = useState(hasSeenIntroAtMount);
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
   const [sec1ProgressCycle, setSec1ProgressCycle] = useState<number>(0);
   const [activeSeasons, setActiveSeasons] = useState<Record<SeasonKey, boolean>>(initialActiveSeasons);
@@ -451,9 +467,15 @@ export default function MainPage() {
   const activeSec8Slide = mainEventSlides[activeSec8Index];
 
   const finishIntro = () => {
-    hasIntroBeenSeen = true;
+    markMainIntroAsSeen();
     setIsIntroEnded(true);
   };
+
+  useEffect(() => {
+    if (!hasSeenIntroAtMount) {
+      markMainIntroAsSeen();
+    }
+  }, [hasSeenIntroAtMount]);
 
   const setSeasonImageRef = (season: SeasonKey) => (node: HTMLDivElement | null) => {
     seasonImageRefs.current[season] = node;

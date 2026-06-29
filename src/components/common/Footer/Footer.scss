@@ -53,14 +53,12 @@
   align-items: center;
   gap: 40px;
   margin-left: 531px;
-  pointer-events: auto;
 }
 
 .site-footer__nav-link {
   display: inline-flex;
   align-items: center;
   color: var(--white);
-  pointer-events: none;
   text-decoration: none;
   white-space: nowrap;
 }
@@ -88,10 +86,6 @@
 .site-footer__sns-link,
 .site-footer__sns-link img {
   display: block;
-}
-
-.site-footer__sns-link {
-  pointer-events: none;
 }
 
 .site-footer__sns-link img {

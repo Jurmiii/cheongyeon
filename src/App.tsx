@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import ClassIntroductionPage from './pages/Class/ClassIntroductionPage'
@@ -25,12 +25,36 @@ import MyPageRoute from './pages/MyPage/MyPageRoute'
 function RouteScrollReset() {
   const { key, pathname, search, hash } = useLocation()
 
+  useEffect(() => {
+    const previousScrollRestoration = window.history.scrollRestoration
+
+    window.history.scrollRestoration = 'manual'
+
+    return () => {
+      window.history.scrollRestoration = previousScrollRestoration
+    }
+  }, [])
+
   useLayoutEffect(() => {
     if (hash) {
       return
     }
 
-    window.scrollTo(0, 0)
+    const previousScrollBehavior = document.documentElement.style.scrollBehavior
+
+    document.documentElement.style.scrollBehavior = 'auto'
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+
+    const restoreScrollBehaviorFrame = window.requestAnimationFrame(() => {
+      document.documentElement.style.scrollBehavior = previousScrollBehavior
+    })
+
+    return () => {
+      window.cancelAnimationFrame(restoreScrollBehaviorFrame)
+      document.documentElement.style.scrollBehavior = previousScrollBehavior
+    }
   }, [key, pathname, search, hash])
 
   return null
