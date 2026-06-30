@@ -78,6 +78,10 @@
   @include font-token(var(--font-body), 0.875rem, 400, 1.375rem);
 }
 
+.ft-10r {
+  @include font-token(var(--font-body), 0.625rem, 400, 1.375rem);
+}
+
 @mixin tablet-typography {
   .ft-64r {
     @include font-token(var(--font-display), 4rem, 400, 5rem);
@@ -138,6 +142,10 @@
   .ft-14r {
     @include font-token(var(--font-body), 0.875rem, 400, 1.375rem);
   }
+
+  .ft-10r {
+    @include font-token(var(--font-body), 0.625rem, 400, 1.375rem);
+  }
 }
 
 @mixin mobile-typography {
@@ -191,6 +199,10 @@
 
   .ft-14b {
     @include font-token(var(--font-body), 0.875rem, 500, 1.375rem);
+  }
+
+  .ft-10r {
+    @include font-token(var(--font-body), 0.625rem, 400, 1.375rem);
   }
 }
 
