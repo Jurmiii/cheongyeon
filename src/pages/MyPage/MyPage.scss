@@ -230,6 +230,7 @@
   display: block;
   width: 13.75rem;
   height: 8.75rem;
+  border: 0;
   object-fit: cover;
 }
 
@@ -267,6 +268,81 @@
 .my-page__history-more-button.cy-button {
   flex-shrink: 0;
   width: 7.625rem;
+}
+
+.my-page__history-modal {
+  box-sizing: border-box;
+  display: flex;
+  width: min(70rem, calc(80vw - 2.5rem));
+  max-height: calc(85vh - 2.5rem);
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.my-page__history-modal-header {
+  box-sizing: border-box;
+  display: flex;
+  min-height: 3rem;
+  align-items: center;
+  padding-right: 3rem;
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--han300);
+}
+
+.my-page__history-modal-title {
+  margin: 0;
+}
+
+.my-page__history-modal-scroll {
+  max-height: calc(85vh - 2.5rem - 3rem - var(--space-3));
+  padding-top: var(--space-4);
+  padding-right: 1.75rem;
+  overflow-y: auto;
+  scrollbar-color: var(--ink500) transparent;
+  scrollbar-width: thin;
+}
+
+.my-page__history-modal-scroll::-webkit-scrollbar {
+  width: 0.75rem;
+}
+
+.my-page__history-modal-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.my-page__history-modal-scroll::-webkit-scrollbar-thumb {
+  border: 0.3125rem solid transparent;
+  border-radius: 999rem;
+  background: var(--ink500);
+  background-clip: content-box;
+}
+
+.my-page__history-modal-scroll::-webkit-scrollbar-button:vertical:start:decrement {
+  display: block;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-right: 0.3125rem solid transparent;
+  border-bottom: 0.4375rem solid var(--ink500);
+  border-left: 0.3125rem solid transparent;
+  background: transparent;
+}
+
+.my-page__history-modal-scroll::-webkit-scrollbar-button:vertical:end:increment {
+  display: block;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-top: 0.4375rem solid var(--ink500);
+  border-right: 0.3125rem solid transparent;
+  border-left: 0.3125rem solid transparent;
+  background: transparent;
+}
+
+.my-page__history-modal-list {
+  gap: var(--space-2);
+}
+
+.my-page__history-modal-card {
+  min-width: 0;
 }
 
 .my-page__profile {
@@ -348,10 +424,14 @@
   height: 10.75rem;
   margin-top: var(--space-6);
   padding-block: 2.5rem;
-  padding-inline: 7.0625rem 1.5rem;
+  padding: 2.5rem;
   border: 1px solid var(--deep500);
   border-radius: var(--radius-2);
-  background: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  overflow: hidden;
+  justify-content: space-between;
 }
 
 .my-page__support-block {
@@ -364,17 +444,16 @@
 }
 
 .my-page__support-block--link {
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
+  justify-content: center;
+}
+
+.my-page__support-block--link .cy-button {
+  width: fit-content;
+  margin: var(--space-1) 0 0;
 }
 
 .my-page__support-title {
   margin: 0;
-}
-
-.my-page__support-desc {
-  margin: var(--space-1) 0 0;
 }
 
 .my-page__stats {

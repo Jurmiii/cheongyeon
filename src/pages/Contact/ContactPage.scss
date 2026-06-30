@@ -11,6 +11,34 @@
   background: var(--han50);
 }
 
+.contact__close-button {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border: 1px solid var(--ink500);
+  border-radius: 50%;
+  background: var(--han50);
+  color: var(--ink500);
+  cursor: pointer;
+  font-size: 2rem;
+  line-height: 1;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.contact__close-button:hover {
+  background: var(--ink500);
+  color: var(--han50);
+}
+
 .contact {
   display: flex;
   justify-content: center;
@@ -32,8 +60,11 @@
   box-sizing: border-box;
   padding: var(--space-4);
   border-radius: var(--radius-lg);
-  background: var(--deep500);
-  color: var(--white);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  color: var(--ink500);
+  overflow: hidden;
 }
 
 .contact__title {
@@ -42,20 +73,7 @@
 
 .contact__description {
   margin: var(--space-2) 0 0;
-  color: rgb(255 255 255 / 80%);
-}
-
-.contact__intro-image {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  justify-content: center;
-  min-height: 16rem;
-  margin-top: var(--space-4);
-  border-radius: var(--radius-md);
-  background: rgb(255 255 255 / 8%);
-  color: rgb(255 255 255 / 35%);
-  font-size: 5rem;
+  color: var(--ink500);
 }
 
 .contact__form {
@@ -112,6 +130,10 @@
 
 .contact__select-wrap--open .contact__select {
   border-color: var(--deep500);
+}
+
+.contact__select--error {
+  border-color: var(--danger);
 }
 
 .contact__select-label {
@@ -202,11 +224,26 @@
   }
 }
 
+.contact__textarea--error {
+  border-color: var(--danger);
+}
+
+.contact__error {
+  margin: 0;
+  color: var(--danger);
+}
+
 .contact__agree {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
   cursor: pointer;
+}
+
+.contact__agree-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
 }
 
 .contact__checkbox {
@@ -227,18 +264,46 @@
   margin: 0;
 }
 
+.contact-complete-modal {
+  display: flex;
+  width: min(26rem, calc(80vw - 2.5rem));
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-3) var(--space-2);
+  text-align: center;
+}
+
+.contact-complete-modal__title,
+.contact-complete-modal__description {
+  margin: 0;
+}
+
+.contact-complete-modal__button.cy-button {
+  min-width: 8rem;
+  margin-top: var(--space-2);
+}
+
 @media (max-width: $laptop) {
   .contact__inner {
     grid-template-columns: 1fr;
     max-width: 40rem;
   }
 
-  .contact__intro-image {
-    min-height: 12rem;
+  .contact__intro {
+    min-height: 20rem;
   }
 }
 
 @media (max-width: $tablet) {
+  .contact__close-button {
+    top: 1rem;
+    right: 1rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1.75rem;
+  }
+
   .contact__row {
     flex-direction: column;
   }

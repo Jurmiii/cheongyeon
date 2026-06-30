@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { Badge, Button, Footer, Header, Icon, Input } from "../../components/common";
 import { useAuth } from "../../contexts/AuthContext";
@@ -17,8 +17,10 @@ import {
   type ReservationBranch,
   type ReservationTimeSlot,
 } from "../../data/reservationClasses";
+import { useReservations } from "../../hooks/useReservations";
+import { useUserProfile } from "../../hooks/useUserProfile";
 import type { Reservation } from "../../types/mypage";
-import { addReservation } from "../../utils/reservationStorage";
+import { addReservation, updateReservation } from "../../utils/reservationStorage";
 import "./ReservationPage.scss";
 
 type PaymentMethod = "card" | "bank";
@@ -34,12 +36,71 @@ const BANK_ACCOUNT = {
   holder: "(주)청연",
 } as const;
 
+const branchAliases: Record<string, ReservationBranch> = {
+  북촌점: "북촌 지점",
+  하동점: "하동 지점",
+  보성점: "보성 지점",
+  강진점: "강진 지점",
+};
+
+function isReservationBranch(value: string): value is ReservationBranch {
+  return (reservationBranches as readonly string[]).includes(value);
+}
+
+function isReservationTimeSlot(value: string): value is ReservationTimeSlot {
+  return (reservationTimeSlots as readonly string[]).includes(value);
+}
+
+function isCardCompany(value: string): value is CardCompany {
+  return (cardCompanies as readonly string[]).includes(value);
+}
+
+function isInstallmentPlan(value: string): value is InstallmentPlan {
+  return (installmentPlans as readonly string[]).includes(value);
+}
+
+function getReservationBranch(value: string) {
+  if (isReservationBranch(value)) {
+    return value;
+  }
+
+  return branchAliases[value] ?? reservationBranches[0];
+}
+
+function getClassIdFromReservation(reservation: Reservation) {
+  const exactMatch = reservationClasses.find((classItem) => classItem.title === reservation.classTitle);
+
+  if (exactMatch) {
+    return exactMatch.id;
+  }
+
+  if (reservation.classTitle.includes("블렌더")) {
+    return reservationClasses.find((classItem) => classItem.title.includes("블랜더"))?.id ?? reservationClasses[0].id;
+  }
+
+  if (reservation.classTitle.includes("계절")) {
+    return reservationClasses[0].id;
+  }
+
+  return reservationClasses[0].id;
+}
+
+function parseReservationDate(date: string, fallback: Date) {
+  const parsed = new Date(`${date}T00:00:00`);
+
+  if (Number.isNaN(parsed.getTime())) {
+    return fallback;
+  }
+
+  return startOfDay(parsed);
+}
+
 /** 계절 클래스(id 1~4)는 메인 사계절 호버 색상, 나머지는 "나만의 차" 색(--deep500) */
 const CLASS_BADGE_SEASON_MODIFIER: Record<number, string> = {
-  1: "reservation-class-card__badge--spring",
-  2: "reservation-class-card__badge--summer",
-  3: "reservation-class-card__badge--autumn",
-  4: "reservation-class-card__badge--winter",
+  5: "reservation-class-card__badge--spring",
+  6: "reservation-class-card__badge--summer",
+  7: "reservation-class-card__badge--autumn",
+  8: "reservation-class-card__badge--winter",
 };
 
 function getClassBadgeModifier(classId: number) {
@@ -108,6 +169,10 @@ interface ReservationCalendarProps {
 function ReservationCalendar({ selectedDate, onSelectedDateChange }: ReservationCalendarProps) {
   const today = useMemo(() => startOfDay(new Date()), []);
   const [currentDate, setCurrentDate] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
+
+  useEffect(() => {
+    setCurrentDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1));
+  }, [selectedDate]);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -192,9 +257,10 @@ function ReservationCalendar({ selectedDate, onSelectedDateChange }: Reservation
 interface ReservationCompleteModalProps {
   isOpen: boolean;
   onClose: () => void;
+  title?: string;
 }
 
-function ReservationCompleteModal({ isOpen, onClose }: ReservationCompleteModalProps) {
+function ReservationCompleteModal({ isOpen, onClose, title = "예약완료" }: ReservationCompleteModalProps) {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -246,7 +312,7 @@ function ReservationCompleteModal({ isOpen, onClose }: ReservationCompleteModalP
 
         <div className="reservation-complete-modal__copy">
           <h2 className="reservation-complete-modal__title ft-48b ink500" id="reservation-complete-title">
-            예약완료
+            {title}
           </h2>
           <p className="reservation-complete-modal__description ft-28r ink500" id="reservation-complete-description">
             소중한 시간을 청연과 함께해 주셔서 감사합니다.
@@ -271,7 +337,24 @@ function ReservationCompleteModal({ isOpen, onClose }: ReservationCompleteModalP
 
 function ReservationPage() {
   const { loginId } = useAuth();
+  const { profile } = useUserProfile();
+  const { reservations, upcomingReservation } = useReservations();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const today = useMemo(() => startOfDay(new Date()), []);
+  const isEditMode = searchParams.get("mode") === "edit";
+  const editReservationId = searchParams.get("reservationId");
+  const editReservation = useMemo(() => {
+    if (!isEditMode) {
+      return null;
+    }
+
+    return (
+      reservations.find((reservation) => reservation.id === editReservationId) ??
+      upcomingReservation ??
+      null
+    );
+  }, [editReservationId, isEditMode, reservations, upcomingReservation]);
   const [selectedBranch, setSelectedBranch] = useState<ReservationBranch>(reservationBranches[0]);
   const [reservationName, setReservationName] = useState("");
   const [reservationPhone, setReservationPhone] = useState("");
@@ -280,6 +363,7 @@ function ReservationPage() {
   const [selectedDate, setSelectedDate] = useState(() => today);
   const [selectedTime, setSelectedTime] = useState<ReservationTimeSlot>(reservationTimeSlots[0]);
   const [guestCount, setGuestCount] = useState(1);
+  const [requestMessage, setRequestMessage] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
   const [selectedCardCompany, setSelectedCardCompany] = useState<CardCompany | null>(null);
   const [selectedInstallment, setSelectedInstallment] = useState<InstallmentPlan>("일시불");
@@ -293,6 +377,7 @@ function ReservationPage() {
   });
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
   const customerInfoRef = useRef<HTMLDivElement>(null);
+  const initializedEditReservationIdRef = useRef<string | null>(null);
 
   const totalClassPages = Math.ceil(reservationClasses.length / RESERVATION_CLASSES_PER_PAGE);
 
@@ -306,6 +391,49 @@ function ReservationPage() {
     () => reservationClasses.find((classItem) => classItem.id === selectedClassId) ?? reservationClasses[0],
     [selectedClassId],
   );
+
+  useEffect(() => {
+    if (isEditMode || !profile) {
+      return;
+    }
+
+    setReservationName((current) => current || profile.name);
+    setReservationPhone((current) => current || profile.phone);
+  }, [isEditMode, profile]);
+
+  useEffect(() => {
+    if (!isEditMode || !editReservation || initializedEditReservationIdRef.current === editReservation.id) {
+      return;
+    }
+
+    const nextClassId = getClassIdFromReservation(editReservation);
+    const nextMaxGuestCount = getMaxGuestCount(nextClassId);
+
+    setSelectedBranch(getReservationBranch(editReservation.branch));
+    setReservationName(editReservation.reserverName ?? profile?.name ?? "");
+    setReservationPhone(editReservation.reserverPhone ?? profile?.phone ?? "");
+    setSelectedClassId(nextClassId);
+    setClassPage(Math.ceil(nextClassId / RESERVATION_CLASSES_PER_PAGE));
+    setSelectedDate(parseReservationDate(editReservation.date, today));
+    setSelectedTime(isReservationTimeSlot(editReservation.time) ? editReservation.time : reservationTimeSlots[0]);
+    setGuestCount(Math.min(Math.max(1, editReservation.guestCount), nextMaxGuestCount));
+    setRequestMessage(editReservation.requestMessage ?? "");
+    setPaymentMethod(editReservation.paymentMethod ?? "card");
+    setSelectedCardCompany(
+      editReservation.cardCompany && isCardCompany(editReservation.cardCompany)
+        ? editReservation.cardCompany
+        : null,
+    );
+    setSelectedInstallment(
+      editReservation.installmentPlan && isInstallmentPlan(editReservation.installmentPlan)
+        ? editReservation.installmentPlan
+        : "일시불",
+    );
+    setSavePaymentMethod(editReservation.savePaymentMethod ?? false);
+    setValidationErrors([]);
+    setFieldErrors({ name: false, phone: false });
+    initializedEditReservationIdRef.current = editReservation.id;
+  }, [editReservation, isEditMode, profile, today]);
 
   const handleGuestDecrease = () => {
     setGuestCount((count) => Math.max(1, count - 1));
@@ -335,6 +463,10 @@ function ReservationPage() {
 
     if (!loginId) {
       errors.push("로그인 후 예약해주세요.");
+    }
+
+    if (isEditMode && !editReservation) {
+      errors.push("변경할 예약 정보를 찾을 수 없습니다.");
     }
 
     if (!selectedBranch) {
@@ -367,7 +499,7 @@ function ReservationPage() {
       errors.push(`인원은 1명에서 ${maxGuestCount}명 사이로 선택해주세요.`);
     }
 
-    if (paymentMethod === "card" && !selectedCardCompany) {
+    if (!isEditMode && paymentMethod === "card" && !selectedCardCompany) {
       errors.push("카드사를 선택해주세요.");
     }
 
@@ -396,20 +528,32 @@ function ReservationPage() {
     setValidationErrors([]);
     setFieldErrors({ name: false, phone: false });
     const nextReservation: Reservation = {
-      id: `reservation-${Date.now()}`,
-      userId: loginId as string,
+      id: editReservation?.id ?? `reservation-${Date.now()}`,
+      userId: editReservation?.userId ?? (loginId as string),
       classTitle: selectedClass.title,
       branch: selectedBranch,
       location: selectedBranch,
       date: formatDateForStorage(selectedDate),
       time: selectedTime,
       guestCount,
-      status: "upcoming",
+      reserverName: reservationName.trim(),
+      reserverPhone: reservationPhone.trim(),
+      requestMessage: requestMessage.trim(),
+      paymentMethod,
+      cardCompany: paymentMethod === "card" ? selectedCardCompany : null,
+      installmentPlan: paymentMethod === "card" ? selectedInstallment : undefined,
+      savePaymentMethod,
+      status: editReservation?.status ?? "upcoming",
       image: selectedClass.image,
-      createdAt: new Date().toISOString(),
+      createdAt: editReservation?.createdAt ?? new Date().toISOString(),
     };
 
-    addReservation(nextReservation);
+    if (isEditMode && editReservation) {
+      updateReservation(nextReservation.userId, editReservation.id, nextReservation);
+    } else {
+      addReservation(nextReservation);
+    }
+
     setIsCompleteModalOpen(true);
   };
 
@@ -423,9 +567,11 @@ function ReservationPage() {
 
       <section className="reservation-hero" aria-label="예약하기 안내">
         <div className="reservation-hero__grid">
-          <h1 className="reservation-hero__title ft-48b ink500">예약하기</h1>
+          <h1 className="reservation-hero__title ft-48b ink500">{isEditMode ? "예약 변경" : "예약하기"}</h1>
           <p className="reservation-hero__description ft-28r ink500">
-            원하시는 지점과 클래스를 고르고, 차 한 잔의 시간을 예약하세요.
+            {isEditMode
+              ? "기존 예약 정보를 확인하고 원하는 일정으로 변경하세요."
+              : "원하시는 지점과 클래스를 고르고, 차 한 잔의 시간을 예약하세요."}
           </p>
           <div className="reservation-notice">
             <button
@@ -714,6 +860,8 @@ function ReservationPage() {
           <textarea
             className="reservation-request__textarea ft-22r"
             placeholder="특이사항이나 요청사항이 있으시면 입력해주세요."
+            value={requestMessage}
+            onChange={(event) => setRequestMessage(event.target.value)}
           />
         </div>
       </section>
@@ -887,20 +1035,31 @@ function ReservationPage() {
             </div>
           )}
           <div className="reservation-payment__actions">
-            <Button
-              className="reservation-payment__action reservation-payment__action--edit"
-              variant="btn2"
-              disabled
-            >
-              예약변경
-            </Button>
+            {isEditMode ? (
+              <Button
+                className="reservation-payment__action reservation-payment__action--edit"
+                variant="btn2"
+                type="button"
+                onClick={() => navigate("/mypage")}
+              >
+                수정취소
+              </Button>
+            ) : (
+              <Button
+                className="reservation-payment__action reservation-payment__action--edit"
+                variant="btn2"
+                disabled
+              >
+                예약변경
+              </Button>
+            )}
             <Button
               className="reservation-payment__action reservation-payment__action--submit"
               variant="btn1"
               type="button"
               onClick={handleReservationSubmit}
             >
-              예약하기
+              {isEditMode ? "변경 완료하기" : "예약하기"}
             </Button>
           </div>
         </div>
@@ -909,6 +1068,7 @@ function ReservationPage() {
       <ReservationCompleteModal
         isOpen={isCompleteModalOpen}
         onClose={() => setIsCompleteModalOpen(false)}
+        title={isEditMode ? "예약변경 완료" : "예약완료"}
       />
 
       <Footer />

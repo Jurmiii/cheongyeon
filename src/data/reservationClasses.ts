@@ -1,11 +1,11 @@
-import eventCardAged from "../assets/images/10reservation/event-card-aged.webp";
-import eventCardAutumn from "../assets/images/10reservation/event-card-autumn.webp";
-import eventCardBasic from "../assets/images/10reservation/event-card-basic.webp";
-import eventCardBlender from "../assets/images/10reservation/event-card-blender.webp";
-import eventCardPrivate from "../assets/images/10reservation/event-card-private.webp";
-import eventCardSpring from "../assets/images/10reservation/event-card-spring.webp";
-import eventCardSummer from "../assets/images/10reservation/event-card-summer.webp";
-import eventCardWinter from "../assets/images/10reservation/event-card-winter.webp";
+import agedTeaClass from "../assets/images/13my-page/aged-tea-class.webp";
+import basicClass from "../assets/images/13my-page/basic-class.webp";
+import fallClass from "../assets/images/13my-page/fall-class.webp";
+import privateClass from "../assets/images/13my-page/private-class.webp";
+import springClass from "../assets/images/13my-page/spring-class.webp";
+import summerClass from "../assets/images/13my-page/summer-class.webp";
+import teablanderClass from "../assets/images/13my-page/teablander-class.webp";
+import winterClass from "../assets/images/13my-page/winter-class.webp";
 
 export interface ReservationClassItem {
   id: number;
@@ -49,54 +49,6 @@ export const RESERVATION_CLASSES_PER_PAGE = 4;
 export const reservationClasses: ReservationClassItem[] = [
   {
     id: 1,
-    badge: "봄 한정",
-    title: "봄 다도클래스",
-    description: "설레는 봄의 시작,\n싱그러운 첫 잎차의 향연",
-    duration: "120분",
-    capacity: "1~4명",
-    maxGuests: 4,
-    price: "45,000원",
-    image: eventCardSpring,
-    imageOverlay: "light",
-  },
-  {
-    id: 2,
-    badge: "여름 한정",
-    title: "여름 다도클래스",
-    description: "푸른 잎이 짙어지는 계절,\n시원한 냉녹차로 만나는 여름",
-    duration: "120분",
-    capacity: "1~4명",
-    maxGuests: 4,
-    price: "45,000원",
-    image: eventCardSummer,
-    imageOverlay: "light",
-  },
-  {
-    id: 3,
-    badge: "가을 한정",
-    title: "가을 다도클래스",
-    description: "단풍이 물드는 시간,\n깊고 풍부한 발효차의 여유",
-    duration: "120분",
-    capacity: "1~4명",
-    maxGuests: 4,
-    price: "45,000원",
-    image: eventCardAutumn,
-    imageOverlay: "light",
-  },
-  {
-    id: 4,
-    badge: "겨울 한정",
-    title: "겨울 다도클래스",
-    description: "찬 바람 부는 날,\n따뜻한 온기로 몸과 마음을 채우는 다회",
-    duration: "120분",
-    capacity: "1~4명",
-    maxGuests: 4,
-    price: "45,000원",
-    image: eventCardWinter,
-    imageOverlay: "light",
-  },
-  {
-    id: 5,
     badge: "입문 추천",
     title: "기본 다도 클래스",
     description: "차 도구의 쓰임과\n기본 다도 흐름을 배우며\n일상 속 차 문화를 시작합니다.",
@@ -104,11 +56,11 @@ export const reservationClasses: ReservationClassItem[] = [
     capacity: "1~8명",
     maxGuests: 8,
     price: "55,000원",
-    image: eventCardBasic,
+    image: basicClass,
     imageOverlay: "light",
   },
   {
-    id: 6,
+    id: 2,
     badge: "깊은 풍미",
     title: "숙성차 클래스",
     description: "오랜 시간 숙성된 차의 향과 맛을 느끼며 차가 지닌\n깊은 여운을 배웁니다.",
@@ -116,11 +68,11 @@ export const reservationClasses: ReservationClassItem[] = [
     capacity: "1~4명",
     maxGuests: 4,
     price: "65,000원",
-    image: eventCardAged,
+    image: agedTeaClass,
     imageOverlay: "light",
   },
   {
-    id: 7,
+    id: 3,
     badge: "나만의 차",
     title: "티 블랜더 클래스",
     description: "다양한 재료의 향과 맛을\n조합해 나만의 블렌딩 티를\n완성합니다.",
@@ -128,11 +80,11 @@ export const reservationClasses: ReservationClassItem[] = [
     capacity: "1~4명",
     maxGuests: 4,
     price: "75,000원",
-    image: eventCardBlender,
+    image: teablanderClass,
     imageOverlay: "light",
   },
   {
-    id: 8,
+    id: 4,
     badge: "1:1 맞춤",
     title: "프라이빗 클래스",
     description: "조용한 공간에서 취향에 맞춰\n차를 깊이 있게 경험하는\n1:1 수업입니다.",
@@ -140,7 +92,55 @@ export const reservationClasses: ReservationClassItem[] = [
     capacity: "1~4명",
     maxGuests: 4,
     price: "75,000원",
-    image: eventCardPrivate,
+    image: privateClass,
+    imageOverlay: "light",
+  },
+  {
+    id: 5,
+    badge: "봄 한정",
+    title: "봄 다도클래스",
+    description: "설레는 봄의 시작,\n싱그러운 첫 잎차의 향연",
+    duration: "120분",
+    capacity: "1~4명",
+    maxGuests: 4,
+    price: "45,000원",
+    image: springClass,
+    imageOverlay: "light",
+  },
+  {
+    id: 6,
+    badge: "여름 한정",
+    title: "여름 다도클래스",
+    description: "푸른 잎이 짙어지는 계절,\n시원한 냉녹차로 만나는 여름",
+    duration: "120분",
+    capacity: "1~4명",
+    maxGuests: 4,
+    price: "45,000원",
+    image: summerClass,
+    imageOverlay: "light",
+  },
+  {
+    id: 7,
+    badge: "가을 한정",
+    title: "가을 다도클래스",
+    description: "단풍이 물드는 시간,\n깊고 풍부한 발효차의 여유",
+    duration: "120분",
+    capacity: "1~4명",
+    maxGuests: 4,
+    price: "45,000원",
+    image: fallClass,
+    imageOverlay: "light",
+  },
+  {
+    id: 8,
+    badge: "겨울 한정",
+    title: "겨울 다도클래스",
+    description: "찬 바람 부는 날,\n따뜻한 온기로 몸과 마음을 채우는 다회",
+    duration: "120분",
+    capacity: "1~4명",
+    maxGuests: 4,
+    price: "45,000원",
+    image: winterClass,
     imageOverlay: "light",
   },
 ];

@@ -183,11 +183,11 @@ function ReservationEditPage() {
                 </Button>
                 <Button
                   className="reservation-edit__action reservation-edit__action--cancel-confirm"
-                  variant="btn1"
+                  variant="btn3"
                   type="button"
                   onClick={() => setIsCancelModalOpen(true)}
                 >
-                  예약취소하기
+                  예약 취소하기
                 </Button>
               </>
             ) : (

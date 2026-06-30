@@ -16,6 +16,13 @@ export interface Reservation {
   date: string;
   time: string;
   guestCount: number;
+  reserverName?: string;
+  reserverPhone?: string;
+  requestMessage?: string;
+  paymentMethod?: "card" | "bank";
+  cardCompany?: string | null;
+  installmentPlan?: string;
+  savePaymentMethod?: boolean;
   status: ReservationStatus;
   image: string;
   createdAt: string;

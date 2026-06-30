@@ -105,3 +105,12 @@ export function addReservation(reservation: Reservation) {
   writeReservations(nextReservations);
   return nextReservations.filter((item) => item.userId === reservation.userId);
 }
+
+export function updateReservation(userId: string, reservationId: string, updatedReservation: Reservation) {
+  const reservations = getReservationsByUser(userId).map((reservation) =>
+    reservation.id === reservationId ? updatedReservation : reservation,
+  );
+
+  saveReservationsForUser(userId, reservations);
+  return reservations;
+}

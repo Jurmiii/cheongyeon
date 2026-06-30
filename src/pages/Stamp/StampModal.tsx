@@ -64,15 +64,15 @@ function StampModal({ count = STAMP_COUNT, onClose }: StampModalProps) {
         <div className="stamp-card__benefits">
           <div className="stamp-benefit">
             <img className="stamp-benefit__icon" src={smbujuk} alt="" aria-hidden="true" />
-            <span className="stamp-benefit__label ft-14r">4개 적립 혜택</span>
-            <span className="stamp-benefit__desc ft-14r">
+            <span className="stamp-benefit__label ft-16r">4개 적립 혜택</span>
+            <span className="stamp-benefit__desc ft-16r">
               원데이 클래스 <strong className="ft-18b">50%</strong> 할인
             </span>
           </div>
           <div className="stamp-benefit">
             <img className="stamp-benefit__icon" src={smbujuk} alt="" aria-hidden="true" />
-            <span className="stamp-benefit__label ft-14r">8개 적립 혜택</span>
-            <span className="stamp-benefit__desc ft-14r">
+            <span className="stamp-benefit__label ft-16r">8개 적립 혜택</span>
+            <span className="stamp-benefit__desc ft-16r">
               원데이 클래스 <strong className="ft-18b">무료체험</strong>
             </span>
           </div>

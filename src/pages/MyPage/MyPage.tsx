@@ -5,10 +5,11 @@ import { Link, useNavigate } from "react-router-dom";
 
 
 import myPageBg from "../../assets/images/13my-page/my-bg.webp";
+import myPageCardBg from "../../assets/images/13my-page/my-page-card.webp";
 
 import myIcon from "../../assets/images/13my-page/my-icon.svg";
 
-import { Badge, Button, Footer, Header, Icon, Input, TeaClassContentBox } from "../../components/common";
+import { Badge, Button, CustomModal, Footer, Header, Icon, Input, TeaClassContentBox } from "../../components/common";
 
 import { useReservations } from "../../hooks/useReservations";
 
@@ -93,6 +94,7 @@ function MyPage() {
   const [cancelTargetId, setCancelTargetId] = useState<string | null>(null);
 
   const [isStampOpen, setIsStampOpen] = useState(false);
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
 
 
 
@@ -174,21 +176,21 @@ function MyPage() {
 
     ? {
 
-        title: upcomingReservation.classTitle,
+      title: upcomingReservation.classTitle,
 
-        image: upcomingReservation.image,
+      image: upcomingReservation.image,
 
-        dateLabel: formatReservationDate(upcomingReservation.date),
+      dateLabel: formatReservationDate(upcomingReservation.date),
 
-        time: upcomingReservation.time,
+      time: upcomingReservation.time,
 
-        guestLabel: formatGuestCount(upcomingReservation.guestCount),
+      guestLabel: formatGuestCount(upcomingReservation.guestCount),
 
-        location: upcomingReservation.location,
+      location: upcomingReservation.location,
 
-        dDayLabel: calculateDDayLabel(upcomingReservation.date),
+      dDayLabel: calculateDDayLabel(upcomingReservation.date),
 
-      }
+    }
 
     : null;
 
@@ -348,11 +350,11 @@ function MyPage() {
                   onKeyDown={
                     stat.icon === "stamp"
                       ? (event) => {
-                          if (event.key === "Enter" || event.key === " ") {
-                            event.preventDefault();
-                            setIsStampOpen(true);
-                          }
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          setIsStampOpen(true);
                         }
+                      }
                       : undefined
                   }
                 >
@@ -417,7 +419,7 @@ function MyPage() {
 
                   type="button"
 
-                  onClick={() => navigate("/reservation/edit")}
+                  onClick={() => navigate(`/reservation?mode=edit&reservationId=${upcomingReservation.id}`)}
 
                 >
 
@@ -478,7 +480,12 @@ function MyPage() {
           <div className="my-page__history-head">
             <h2 className="my-page__history-title ft-48b ink500">예약이력</h2>
             {historyReservations.length > 0 ? (
-              <Button variant="btn7" className="my-page__history-more-button" type="button">
+              <Button
+                variant="btn7"
+                className="my-page__history-more-button"
+                type="button"
+                onClick={() => setIsHistoryModalOpen(true)}
+              >
                 더보기
               </Button>
             ) : null}
@@ -493,33 +500,33 @@ function MyPage() {
                 {pagedHistory.map((item, index) => (
 
                   <Fragment key={item.id}>
-                  <li className="my-page__history-card">
+                    <li className="my-page__history-card">
 
-                    <img className="my-page__history-card-image" src={item.image} alt="" />
+                      <img className="my-page__history-card-image" src={item.image} alt="" />
 
-                    <div className="my-page__history-card-body">
+                      <div className="my-page__history-card-body">
 
-                      <h3 className="my-page__history-card-title ft-36b ink500">{item.classTitle}</h3>
+                        <h3 className="my-page__history-card-title ft-36b ink500">{item.classTitle}</h3>
 
-                      <p className="my-page__history-card-date ft-22r ink400">
+                        <p className="my-page__history-card-date ft-22r ink400">
 
-                        {formatReservationSchedule(item.date, item.time)}
+                          {formatReservationSchedule(item.date, item.time)}
 
-                      </p>
+                        </p>
 
-                    </div>
+                      </div>
 
-                    <Badge variant={getHistoryBadgeVariant(item.status)} className="my-page__history-card-badge">
+                      <Badge variant={getHistoryBadgeVariant(item.status)} className="my-page__history-card-badge">
 
-                      {getHistoryBadgeLabel(item.status)}
+                        {getHistoryBadgeLabel(item.status)}
 
-                    </Badge>
+                      </Badge>
 
-                  </li>
+                    </li>
 
-                  {index < pagedHistory.length - 1 ? (
-                    <li className="my-page__history-divider" aria-hidden="true" />
-                  ) : null}
+                    {index < pagedHistory.length - 1 ? (
+                      <li className="my-page__history-divider" aria-hidden="true" />
+                    ) : null}
 
                   </Fragment>
 
@@ -645,7 +652,7 @@ function MyPage() {
 
           </div>
 
-          <div className="my-page__support-box">
+          <div className="my-page__support-box" style={{ backgroundImage: `url(${myPageCardBg})` }}>
 
             <div className="my-page__support-block">
 
@@ -655,13 +662,13 @@ function MyPage() {
 
             </div>
 
-            <Link className="my-page__support-block my-page__support-block--link" to="/contact">
-
-              <h3 className="my-page__support-title ft-22r ink500">1:1 문의하기</h3>
-
+            <div className="my-page__support-block my-page__support-block--link">
               <p className="my-page__support-desc ft-16r ink500">문의사항이 있으신가요?</p>
 
-            </Link>
+              <Button variant="btn7" type="button" showIcon={false} onClick={() => navigate("/contact")}>
+                1:1 문의하기
+              </Button>
+            </div>
 
           </div>
 
@@ -690,6 +697,42 @@ function MyPage() {
 
 
       {isStampOpen ? <StampModal onClose={() => setIsStampOpen(false)} /> : null}
+
+      <CustomModal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)}>
+        <section className="my-page__history-modal" aria-label="전체 예약 이력">
+          <header className="my-page__history-modal-header">
+            <h2 className="my-page__history-modal-title ft-36b ink500">전체 예약 이력</h2>
+          </header>
+
+          <div className="my-page__history-modal-scroll">
+            <ul className="my-page__history-list my-page__history-modal-list">
+              {historyReservations.map((item, index) => (
+                <Fragment key={item.id}>
+                  <li className="my-page__history-card my-page__history-modal-card">
+                    <img className="my-page__history-card-image" src={item.image} alt="" />
+
+                    <div className="my-page__history-card-body">
+                      <h3 className="my-page__history-card-title ft-36b ink500">{item.classTitle}</h3>
+
+                      <p className="my-page__history-card-date ft-22r ink400">
+                        {formatReservationSchedule(item.date, item.time)}
+                      </p>
+                    </div>
+
+                    <Badge variant={getHistoryBadgeVariant(item.status)} className="my-page__history-card-badge">
+                      {getHistoryBadgeLabel(item.status)}
+                    </Badge>
+                  </li>
+
+                  {index < historyReservations.length - 1 ? (
+                    <li className="my-page__history-divider" aria-hidden="true" />
+                  ) : null}
+                </Fragment>
+              ))}
+            </ul>
+          </div>
+        </section>
+      </CustomModal>
 
 
 

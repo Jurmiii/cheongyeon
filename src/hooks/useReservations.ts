@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { createSeedReservations } from "../data/myPageSeed";
+import { RESERVATION_CLASS_DISPLAY_ITEMS, createSeedReservations } from "../data/myPageSeed";
 import { useAuth } from "../contexts/AuthContext";
 import type { Reservation } from "../types/mypage";
 import {
@@ -9,9 +9,38 @@ import {
   getHistoryReservations,
   getReservationStats,
   getUpcomingReservation,
+  saveReservationsForUser,
   seedReservationsIfEmpty,
   updateReservationStatus,
 } from "../utils/reservationStorage";
+
+function getNormalizedClassIndex(reservation: Reservation, index: number) {
+  if (reservation.classTitle === "차 블렌더 클래스" || reservation.classTitle === "차 블랜더 클래스") {
+    return 2;
+  }
+
+  if (reservation.classTitle === "계절 다도 클래스") {
+    return 4 + (index % 4);
+  }
+
+  const exactIndex = RESERVATION_CLASS_DISPLAY_ITEMS.findIndex(
+    (item) => item.classTitle === reservation.classTitle,
+  );
+
+  return exactIndex >= 0 ? exactIndex : index % RESERVATION_CLASS_DISPLAY_ITEMS.length;
+}
+
+function normalizeReservationDisplayItems(reservations: Reservation[]) {
+  return reservations.map((reservation, index) => {
+    const displayItem = RESERVATION_CLASS_DISPLAY_ITEMS[getNormalizedClassIndex(reservation, index)];
+
+    return {
+      ...reservation,
+      classTitle: displayItem.classTitle,
+      image: displayItem.image,
+    };
+  });
+}
 
 export function useReservations() {
   const { loginId } = useAuth();
@@ -23,7 +52,13 @@ export function useReservations() {
       return;
     }
 
-    const nextReservations = seedReservationsIfEmpty(loginId, createSeedReservations(loginId));
+    const seededReservations = seedReservationsIfEmpty(loginId, createSeedReservations(loginId));
+    const nextReservations = normalizeReservationDisplayItems(seededReservations);
+
+    if (JSON.stringify(seededReservations) !== JSON.stringify(nextReservations)) {
+      saveReservationsForUser(loginId, nextReservations);
+    }
+
     setReservations(nextReservations);
   }, [loginId]);
 
