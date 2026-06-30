@@ -330,7 +330,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
+}
+
+.reservation-schedule__calendar-wrap > .reservation-form__label,
+.reservation-schedule__options .reservation-form__label {
+  width: 100%;
+  max-width: 44.25rem;
+  text-align: left;
 }
 
 .reservation-schedule__calendar {
@@ -366,16 +372,17 @@
 .reservation-schedule__options {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 2rem;
+  align-items: center;
 }
 
 .reservation-schedule__times,
-.reservation-schedule__guests {
+.reservation-schedule__guests,
+.reservation-request {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
   width: 100%;
-  text-align: center;
 }
 
 .reservation-schedule__time-grid {
@@ -456,12 +463,12 @@
 }
 
 .reservation-schedule__guest-note {
-  margin: 1.5rem 0 0;
+  margin: 1rem 0 0;
   text-align: center;
 }
 
 .reservation-request {
-  padding-block: 3rem;
+  padding-block: 0;
 }
 
 .reservation-request__title {
@@ -471,7 +478,8 @@
 .reservation-request__textarea {
   box-sizing: border-box;
   width: 100%;
-  height: 10.40625rem;
+  max-width: 44.25rem;
+  height: 7.1rem;
   padding: 1rem;
   border: calc(var(--space-1) / 8) solid var(--han500);
   border-radius: 0.5rem;

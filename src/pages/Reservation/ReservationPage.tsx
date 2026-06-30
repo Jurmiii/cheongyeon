@@ -846,23 +846,20 @@ function ReservationPage() {
                   <span aria-hidden="true">+</span>
                 </button>
               </div>
-              <p className="reservation-schedule__guest-note ft-18r ink300">
+              <p className="reservation-schedule__guest-note ft-14r ink300">
                 한 클래스 최대 1~{maxGuestCount}인까지 예약 가능합니다.
               </p>
             </div>
+            <div className="reservation-request" aria-label="요청사항">
+              <h2 className="reservation-request__title reservation-form__label ft-18b ink500">요청사항 (선택)</h2>
+              <textarea
+                className="reservation-request__textarea ft-16r"
+                placeholder="특이사항이나 요청사항이 있으시면 입력해주세요."
+                value={requestMessage}
+                onChange={(event) => setRequestMessage(event.target.value)}
+              />
+            </div>
           </div>
-        </div>
-      </section>
-
-      <section className="reservation-request" aria-label="요청사항">
-        <div className="reservation-request__grid">
-          <h2 className="reservation-request__title ft-28b ink500">요청사항 (선택)</h2>
-          <textarea
-            className="reservation-request__textarea ft-22r"
-            placeholder="특이사항이나 요청사항이 있으시면 입력해주세요."
-            value={requestMessage}
-            onChange={(event) => setRequestMessage(event.target.value)}
-          />
         </div>
       </section>
 
