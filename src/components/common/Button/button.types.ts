@@ -17,6 +17,12 @@ interface ButtonBaseProps {
   children: ReactNode;
   variant?: ButtonVariant | ButtonAlias;
   showIcon?: boolean;
+  icon?: ReactNode;
+  iconAlt?: string;
+  iconPosition?: "left" | "right";
+  iconSrc?: string;
+  responsiveSize?: "tablet" | "mobile";
+  responsiveTone?: "primary" | "outline";
 }
 
 export type ButtonAsButtonProps = ButtonBaseProps &

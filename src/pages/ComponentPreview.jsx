@@ -381,13 +381,52 @@ export default function ComponentPreview() {
 
       <section className="component-preview__section">
         <h2 className="ft-28b">Buttons</h2>
-        <div className="component-preview__row">
+        <div className="component-preview__row component-preview__button-list">
           {buttons.map(({ alias, text }) => (
-            <div className="component-preview__item" key={alias}>
+            <div className="component-preview__item component-preview__button-item" key={alias}>
               <Button variant={alias}>{text}</Button>
               <p className="component-preview__alias ft-14r">{alias}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="component-preview__section">
+        <h2 className="ft-28b">Responsive Button System / 반응형 버튼 시스템(Tablet / Mobile)</h2>
+        <div className="component-preview__responsive-buttons">
+          <div className="component-preview__responsive-button-panel component-preview__responsive-button-panel--tablet">
+            <h3 className="ft-22b ink500">Tablet Button</h3>
+            <div className="component-preview__responsive-button-row">
+              <Button responsiveSize="tablet" responsiveTone="primary" type="button">
+                태블릿 버튼
+              </Button>
+              <Button
+                icon={<Icon name="calendar" />}
+                responsiveSize="tablet"
+                responsiveTone="outline"
+                type="button"
+              >
+                일정 확인
+              </Button>
+            </div>
+          </div>
+
+          <div className="component-preview__responsive-button-panel component-preview__responsive-button-panel--mobile">
+            <h3 className="ft-22b ink500">Mobile Button</h3>
+            <div className="component-preview__responsive-button-row">
+              <Button responsiveSize="mobile" responsiveTone="primary" type="button">
+                모바일 버튼
+              </Button>
+              <Button
+                icon={<Icon name="calendar" />}
+                responsiveSize="mobile"
+                responsiveTone="outline"
+                type="button"
+              >
+                일정 확인
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 

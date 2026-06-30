@@ -18,19 +18,42 @@ export const buttonAliases: Record<ButtonAlias, ButtonVariant> = {
 export default function Button(props: ButtonProps) {
   const {
     children,
+    icon,
+    iconAlt = "",
+    iconPosition = "left",
+    iconSrc,
+    responsiveSize,
+    responsiveTone = "primary",
     variant = "payment",
     className = "",
     showIcon = true,
   } = props;
   const resolvedVariant = buttonAliases[variant as ButtonAlias] ?? variant;
-  const typographyClass = resolvedVariant === "classMore" ? "ft-18b" : "ft-16b";
-  const classes = ["cy-button", `cy-button--${resolvedVariant}`, typographyClass, className]
+  const typographyClass = responsiveSize === "mobile" ? "ft-14b" : resolvedVariant === "classMore" ? "ft-18b" : "ft-16b";
+  const injectedIcon = iconSrc ? (
+    <img className="cy-button__icon-image" src={iconSrc} alt={iconAlt} aria-hidden={iconAlt ? undefined : "true"} />
+  ) : icon ? (
+    <span className="cy-button__icon" aria-hidden="true">
+      {icon}
+    </span>
+  ) : null;
+  const classes = [
+    "cy-button",
+    `cy-button--${resolvedVariant}`,
+    responsiveSize && "cy-button--responsive",
+    responsiveSize && `cy-button--responsive-${responsiveSize}`,
+    responsiveSize && `cy-button--responsive-${responsiveTone}`,
+    typographyClass,
+    className,
+  ]
     .filter(Boolean)
     .join(" ");
 
   const content = (
     <>
+      {iconPosition === "left" && injectedIcon}
       {children}
+      {iconPosition === "right" && injectedIcon}
       {showIcon && resolvedVariant === "classMore" && (
         <Icon name="chevron-right" />
       )}
@@ -38,7 +61,21 @@ export default function Button(props: ButtonProps) {
   );
 
   if (typeof props.href === "string") {
-    const { children: _children, className: _className, rel, showIcon: _showIcon, target, variant: _variant, ...anchorProps } = props;
+    const {
+      children: _children,
+      className: _className,
+      icon: _icon,
+      iconAlt: _iconAlt,
+      iconPosition: _iconPosition,
+      iconSrc: _iconSrc,
+      rel,
+      responsiveSize: _responsiveSize,
+      responsiveTone: _responsiveTone,
+      showIcon: _showIcon,
+      target,
+      variant: _variant,
+      ...anchorProps
+    } = props;
     const safeRel = target === "_blank" ? (rel ?? "noreferrer") : rel;
 
     return (
@@ -48,7 +85,20 @@ export default function Button(props: ButtonProps) {
     );
   }
 
-  const { children: _children, className: _className, showIcon: _showIcon, type = "button", variant: _variant, ...buttonProps } = props;
+  const {
+    children: _children,
+    className: _className,
+    icon: _icon,
+    iconAlt: _iconAlt,
+    iconPosition: _iconPosition,
+    iconSrc: _iconSrc,
+    responsiveSize: _responsiveSize,
+    responsiveTone: _responsiveTone,
+    showIcon: _showIcon,
+    type = "button",
+    variant: _variant,
+    ...buttonProps
+  } = props;
 
   return (
     <button className={classes} type={type} {...buttonProps}>
