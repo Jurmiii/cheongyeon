@@ -147,11 +147,11 @@ const mainClassCards: MainClassCard[] = [
 ];
 
 const mainProducts: MainProduct[] = [
-  { id: 1, image: tea1, name: "녹차 (綠茶)", capacity: "100g", price: "54,000원" },
-  { id: 2, image: tea2, name: "백차 (白茶)", capacity: "100g", price: "54,000원" },
-  { id: 3, image: tea3, name: "청차 (靑茶)", capacity: "100g", price: "40,200원" },
-  { id: 4, image: tea4, name: "홍차 (紅茶)", capacity: "100g", price: "25,100원" },
-  { id: 5, image: tea5, name: "흑차 (黑茶)", capacity: "100g", price: "47,800원" },
+  { id: 1, image: tea1, name: "녹차 (綠茶)", capacity: "100g", price: "52,000원" },
+  { id: 2, image: tea2, name: "백차 (白茶)", capacity: "100g", price: "42,000원" },
+  { id: 3, image: tea3, name: "청차 (靑茶)", capacity: "100g", price: "56,000원" },
+  { id: 4, image: tea4, name: "홍차 (紅茶)", capacity: "100g", price: "58,000원" },
+  { id: 5, image: tea5, name: "흑차 (黑茶)", capacity: "100g", price: "62,000원" },
 ];
 
 const mainSeasonTeaSlides: MainSeasonTeaSlide[] = [
