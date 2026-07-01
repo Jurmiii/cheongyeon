@@ -1,5 +1,39 @@
 @use "../../styles/abstracts/breakpoints" as *;
 
+// Tablet: 640px grid + 64px side padding = 768px
+$space-tablet-outer: 48rem;
+$space-tablet-padding: 4rem;
+$space-tablet-columns: 8;
+$space-tablet-gap: 1.5rem;
+
+// Mobile: 370px grid + 16px side padding = 402px
+$space-mobile-outer: 25.125rem;
+$space-mobile-padding: 1rem;
+$space-mobile-columns: 6;
+$space-mobile-gap: 0.875rem;
+
+@mixin space-tablet-grid {
+  display: grid;
+  grid-template-columns: repeat($space-tablet-columns, minmax(0, 1fr));
+  column-gap: $space-tablet-gap;
+  box-sizing: border-box;
+  width: min($space-tablet-outer, calc(100% - #{$space-tablet-padding * 2}));
+  max-width: min($space-tablet-outer, calc(100% - #{$space-tablet-padding * 2}));
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
+@mixin space-mobile-grid {
+  display: grid;
+  grid-template-columns: repeat($space-mobile-columns, minmax(0, 1fr));
+  column-gap: $space-mobile-gap;
+  box-sizing: border-box;
+  width: min($space-mobile-outer, calc(100% - #{$space-mobile-padding * 2}));
+  max-width: min($space-mobile-outer, calc(100% - #{$space-mobile-padding * 2}));
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
 .space {
   position: relative;
   width: 100%;
@@ -62,48 +96,108 @@
   margin: 0;
 }
 
-@media (max-width: $desktop) {
-  .space-kv__content {
-    padding-inline: 1.5rem;
-  }
-}
-
-@media (max-width: $tablet) {
+@media (max-width: $laptop) {
   .space-kv {
     height: 40rem;
     background-position: 70% center;
   }
 
-  .space-kv__title {
-    top: 14rem;
+  .space-kv__content {
+    @include space-tablet-grid;
+    align-content: center;
+    align-items: start;
+    height: 100%;
+  }
+
+  .space-kv__title,
+  .space-kv__ornament,
+  .space-kv__desc {
+    position: static;
+    top: auto;
+    left: auto;
+    grid-column: 1 / -1;
+    justify-self: start;
   }
 
   .space-kv__ornament {
-    top: 19rem;
+    margin-top: 1rem;
   }
 
   .space-kv__desc {
-    top: 21.5rem;
     max-width: 100%;
+  }
+}
+
+@media (min-width: calc($mobile + 1px)) and (max-width: $laptop) {
+  .space-kv__title {
+    font-family: var(--font-headline);
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 3.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  .space-kv__desc {
+    margin-top: 0.5625rem;
+    font-family: var(--font-headline);
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 2.125rem;
   }
 }
 
 @media (max-width: $mobile) {
   .space-kv {
-    height: 36rem;
-    background-position: 80% center;
+    height: auto;
+    min-height: 28rem;
+    background-position: center;
+  }
+
+  .space-kv__content {
+    @include space-mobile-grid;
+    align-content: start;
+    align-items: start;
+    box-sizing: border-box;
+    height: auto;
+    min-height: 28rem;
+    padding-block: 3rem 2.5rem;
+  }
+
+  .space-kv__title,
+  .space-kv__ornament,
+  .space-kv__desc {
+    grid-column: 1 / span 4;
   }
 
   .space-kv__title {
-    top: 12rem;
+    font-family: var(--font-headline);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 2.75rem;
+    letter-spacing: -0.01em;
   }
 
   .space-kv__ornament {
-    top: 16.5rem;
+    margin-top: 0.75rem;
   }
 
   .space-kv__desc {
-    top: 19rem;
+    margin-top: 0.75rem;
+    font-family: var(--font-headline);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.375rem;
+    max-width: 100%;
+  }
+}
+
+@media (min-width: calc($laptop + 1px)) {
+  .space-kv__content {
+    box-sizing: border-box;
+    width: min(90rem, calc(100% - #{$space-tablet-padding * 2}));
+    max-width: min(90rem, calc(100% - #{$space-tablet-padding * 2}));
+    margin-inline: auto;
+    padding-inline: 0;
   }
 }
 
