@@ -33,7 +33,12 @@ export default function Footer() {
             <Link className="site-footer__logo" to="/" aria-label="청연 메인페이지로 이동">
               <img className="site-footer__logo-image" src={logoWhite} alt="청연" />
             </Link>
-            <p className="site-footer__slogan ft-16r text-white">
+            <p className="site-footer__slogan site-footer__slogan--desktop ft-16r text-white">
+              자연이 선물한 차 한 잔,
+              <br />
+              일상에 여유를 더합니다.
+            </p>
+            <p className="site-footer__slogan site-footer__slogan--compact ft-14r text-white">
               자연이 선물한 차 한 잔,
               <br />
               일상에 여유를 더합니다.
@@ -42,14 +47,13 @@ export default function Footer() {
 
           <nav className="site-footer__nav" aria-label="푸터 메뉴">
             {footerLinks.map((link) => (
-              <Link
-                className="site-footer__nav-link ft-18r text-white"
-                key={link.label}
-                to={link.to}
-              >
+              <Link className="site-footer__nav-link ft-18r" key={link.label} to={link.to}>
                 {link.label}
               </Link>
             ))}
+            <Link className="site-footer__nav-link ft-18r" to="/contact">
+              문의하기
+            </Link>
           </nav>
         </div>
 
@@ -74,7 +78,7 @@ export default function Footer() {
 
           <nav className="site-footer__policies" aria-label="푸터 약관">
             {policyLinks.map((link) => (
-              <Link className="site-footer__policy-link ft-14r text-white" key={link.label} to={link.to}>
+              <Link className="site-footer__policy-link ft-14r" key={link.label} to={link.to}>
                 {link.label}
               </Link>
             ))}

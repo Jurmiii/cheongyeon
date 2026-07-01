@@ -102,6 +102,13 @@ function ContactPage() {
               <br />
               빠르고 정확하게 답변드리겠습니다.
             </p>
+            <p className="contact__support ft-14r ink500">
+              고객센터
+              <br />
+              010-1234-5678
+              <br />
+              (운영시간 09:00-18:00)
+            </p>
           </aside>
 
           <form className="contact__form" onSubmit={handleSubmit} noValidate>

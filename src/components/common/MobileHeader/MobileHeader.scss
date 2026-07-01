@@ -1,3 +1,6 @@
+@use "../../../styles/abstracts/breakpoints" as *;
+@use "../../../styles/abstracts/grid" as grid;
+
 .mobile-header-shell {
   position: relative;
   z-index: 20;
@@ -8,19 +11,24 @@
 .mobile-header {
   box-sizing: border-box;
   display: flex;
-  width: min(25.125rem, 100%);
-  min-height: 1.8125rem;
+  width: min(100%, grid.$mobile-grid-outer);
+  max-width: grid.$mobile-grid-outer;
+  min-height: clamp(1.75rem, calc(1.8125rem + (100vw - #{$mobile}) * 0.01), 2rem);
   align-items: center;
   justify-content: space-between;
   margin-inline: auto;
-  padding-inline: 1.25rem;
+  padding-inline: clamp(
+    grid.$mobile-grid-padding,
+    calc(#{grid.$mobile-grid-padding} + (100vw - #{$mobile}) * 0.125),
+    calc(#{grid.$mobile-grid-padding} + 0.5rem)
+  );
   background: transparent;
   color: var(--ink500);
 }
 
 .mobile-header__logo {
-  width: 6.3125rem;
-  height: 3rem;
+  width: clamp(5.5rem, calc(6.3125rem + (100vw - #{$mobile}) * 0.01), 6.3125rem);
+  height: clamp(2.625rem, calc(3rem + (100vw - #{$mobile}) * 0.01), 3rem);
 }
 
 .mobile-header__logo a,
@@ -33,15 +41,6 @@
 .mobile-header__right {
   display: flex;
   align-items: center;
-  gap: 2rem;
-}
-
-.mobile-header__language {
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--ink500);
-  cursor: pointer;
 }
 
 .mobile-header__menu-button,
@@ -49,8 +48,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.1875rem;
-  height: 1.8125rem;
+  width: clamp(1.875rem, calc(2.1875rem + (100vw - #{$mobile}) * 0.005), 2.25rem);
+  height: clamp(1.625rem, calc(1.8125rem + (100vw - #{$mobile}) * 0.005), 2rem);
   padding: 0;
   border: 0;
   background: transparent;
@@ -71,8 +70,8 @@
   left: 50%;
   z-index: 110;
   box-sizing: border-box;
-  width: min(25.125rem, 100vw);
-  min-height: 43.861875rem;
+  width: min(100vw, grid.$mobile-grid-outer);
+  min-height: clamp(43.861875rem, calc(43.861875rem + (100vw - #{$mobile}) * 0.04), 46rem);
   background: var(--han50);
   color: var(--ink500);
   opacity: 0;
@@ -93,8 +92,8 @@
   box-sizing: border-box;
   width: 100%;
   height: fit-content;
-  min-height: 43.861875rem;
-  padding: 2rem;
+  min-height: clamp(43.861875rem, calc(43.861875rem + (100vw - #{$mobile}) * 0.04), 46rem);
+  padding: clamp(1.5rem, calc(2rem + (100vw - #{$mobile}) * 0.02), 2rem);
 }
 
 .mobile-menu__header {
@@ -107,7 +106,7 @@
 .mobile-menu__login {
   display: inline-flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: clamp(1rem, calc(1.5rem + (100vw - #{$mobile}) * 0.02), 1.5rem);
   color: var(--ink500);
   text-decoration: none;
 }
@@ -135,8 +134,8 @@
 .mobile-menu__accordion {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  margin-top: 4.5625rem;
+  gap: clamp(1rem, calc(1.25rem + (100vw - #{$mobile}) * 0.01), 1.25rem);
+  margin-top: clamp(3.5rem, calc(4.5625rem + (100vw - #{$mobile}) * 0.02), 4.5625rem);
 }
 
 .mobile-menu__accordion-item {
@@ -174,9 +173,9 @@
 
 .mobile-menu__accordion-line {
   display: block;
-  width: min(22.0625rem, 100%);
+  width: min(grid.$mobile-grid-inner, 100%);
   height: 1px;
-  margin-top: 1.4375rem;
+  margin-top: clamp(1.125rem, calc(1.4375rem + (100vw - #{$mobile}) * 0.01), 1.4375rem);
   background: var(--han500);
 }
 

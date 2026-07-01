@@ -9,13 +9,9 @@ import {
   Header,
   Icon,
   Input,
-  MobileFooter,
-  MobileHeader,
   Modal1,
   Modal2,
   ReservationInfoEdit,
-  TabletFooter,
-  TabletHeader,
 } from "../components/common";
 import {
   Card,
@@ -266,53 +262,9 @@ export default function ComponentPreview() {
         <Header />
       </section>
 
-      <section className="component-preview__section component-preview__section--tablet-header">
-        <h2 className="ft-28b">Tablet Header / 햄버거 메뉴</h2>
-        <p className="component-preview__description ft-16r ink300">
-          버튼 클릭 시 상단에서 슬라이드 다운되는 태블릿 전용 메뉴입니다. 1댑스 호버, 유저 팝업,
-          언어 팝업 인터랙션을 이 영역에서 확인할 수 있습니다.
-        </p>
-        <div className="component-preview__tablet-header-stage">
-          <TabletHeader />
-        </div>
-      </section>
-
-      <section className="component-preview__section component-preview__section--mobile-header">
-        <h2 className="ft-28b">Mobile Header / 모바일 헤더 및 햄버거 메뉴</h2>
-        <p className="component-preview__description ft-16r ink300">
-          402px 모바일 해상도 기준의 투명 헤더와 위에서 내려오는 아코디언 햄버거 메뉴입니다.
-          버튼을 눌러 헤더 스위칭과 2댑스 펼침 동작을 확인할 수 있습니다.
-        </p>
-        <div className="component-preview__mobile-header-stage">
-          <MobileHeader />
-        </div>
-      </section>
-
       <section className="component-preview__section component-preview__section--full">
         <h2 className="ft-28b">Footer</h2>
         <Footer />
-      </section>
-
-      <section className="component-preview__section">
-        <h2 className="ft-28b">Tablet Footer / 태블릿 푸터(768*250)</h2>
-        <p className="component-preview__description ft-16r ink300">
-          768px x 250px 태블릿 푸터입니다. ta-bg.webp 배경과 640px 구분선, 소셜/약관 영역의
-          지정 좌표를 고정 프레임에서 확인할 수 있습니다.
-        </p>
-        <div className="component-preview__tablet-footer-stage">
-          <TabletFooter />
-        </div>
-      </section>
-
-      <section className="component-preview__section">
-        <h2 className="ft-28b">Mobile Footer / 모바일 푸터(402*250)</h2>
-        <p className="component-preview__description ft-16r ink300">
-          402px x 250px 모바일 푸터입니다. mo-bg.webp 배경 위에서 로고, 카피, 구분선,
-          소셜 아이콘과 약관 링크가 수직 중앙 축 기준으로 정렬됩니다.
-        </p>
-        <div className="component-preview__mobile-footer-stage">
-          <MobileFooter />
-        </div>
       </section>
 
       <section className="component-preview__section">
