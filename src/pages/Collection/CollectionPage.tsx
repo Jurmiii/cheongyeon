@@ -58,10 +58,10 @@ function CollectionPage() {
         </div>
       </section>
 
-      <section className="collection-aroma" aria-label="향으로 만나는 차">
+      <section className="collection-aroma" aria-label="향으로 만나는차">
         <div className="collection-aroma__grid">
           <div className="collection-aroma__content">
-            <h2 className="collection-aroma__title ft-48b ink500">향으로 만나는 차</h2>
+            <h2 className="collection-aroma__title ft-48b ink500">향으로 만나는차</h2>
             <p className="collection-aroma__description ft-28r ink500">
               같은 차라도, 우리는 다른 향을 느낍니다.
               <br />

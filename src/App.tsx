@@ -80,21 +80,18 @@ function App() {
           <Route path="/reservation/apply" element={<ReservationPageRoute />} />
           <Route path="/reservation/edit" element={<ReservationEditPage />} />
           <Route path="/reservation-edit" element={<ReservationEditPage />} />
-          <Route path="/reservation/notice" element={<NoticePage />}>
-            <Route path=":noticeId" />
-          </Route>
+          <Route path="/reservation/notice" element={<NoticePage />} />
+          <Route path="/reservation/notice/:noticeId" element={<Navigate to="/reservation/notice" replace />} />
           <Route path="/reservation/faq" element={<FaqPage />} />
           <Route path="/stamp" element={<StampPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/mypage/stamp" element={<StampPage />} />
           <Route path="/event" element={<EventPage />} />
           <Route path="/event/ongoing" element={<EventPage />} />
-          <Route path="/event/notice" element={<NoticePage />}>
-            <Route path=":noticeId" />
-          </Route>
-          <Route path="/notice" element={<NoticePage />}>
-            <Route path=":noticeId" />
-          </Route>
+          <Route path="/event/notice" element={<NoticePage />} />
+          <Route path="/event/notice/:noticeId" element={<Navigate to="/event/notice" replace />} />
+          <Route path="/notice" element={<NoticePage />} />
+          <Route path="/notice/:noticeId" element={<Navigate to="/notice" replace />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/event/faq" element={<FaqPage />} />
           <Route path="/login" element={<LoginPage />} />

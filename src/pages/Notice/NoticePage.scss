@@ -229,8 +229,12 @@
   padding: 1rem 0;
   border: 0.0625rem solid var(--ink500);
   border-radius: 0.75rem;
+  background: transparent;
   color: inherit;
+  font: inherit;
+  text-align: inherit;
   text-decoration: none;
+  cursor: pointer;
   transition: background-color 0.2s ease;
 
   &:hover {
@@ -470,7 +474,10 @@
 
 .notice-detail__back-link {
   display: inline-flex;
-  text-decoration: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
 }
 
 .notice-detail__back-button.cy-button {
