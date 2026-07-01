@@ -1,3 +1,6 @@
+@use "../../styles/abstracts/breakpoints" as *;
+@use "../../styles/abstracts/grid" as grid;
+
 .stamp-page {
   position: relative;
   width: 100%;

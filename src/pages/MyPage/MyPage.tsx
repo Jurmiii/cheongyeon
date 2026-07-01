@@ -5,7 +5,6 @@ import { Link, useNavigate } from "react-router-dom";
 
 
 import myPageBg from "../../assets/images/13my-page/my-bg.webp";
-import myPageCardBg from "../../assets/images/13my-page/my-page-card.webp";
 
 import myIcon from "../../assets/images/13my-page/my-icon.svg";
 
@@ -665,26 +664,6 @@ function MyPage() {
               </Button>
 
             )}
-
-          </div>
-
-          <div className="my-page__support-box" style={{ backgroundImage: `url(${myPageCardBg})` }}>
-
-            <div className="my-page__support-block">
-
-              <h3 className="my-page__support-title ft-22r ink500">고객센터</h3>
-
-              <p className="my-page__support-desc ft-16r ink500">010-1234-5678 (운영시간 09:00-18:00)</p>
-
-            </div>
-
-            <div className="my-page__support-block my-page__support-block--link">
-              <p className="my-page__support-desc ft-16r ink500">문의사항이 있으신가요?</p>
-
-              <Button variant="btn7" type="button" showIcon={false} onClick={() => navigate("/contact")}>
-                1:1 문의하기
-              </Button>
-            </div>
 
           </div>
 

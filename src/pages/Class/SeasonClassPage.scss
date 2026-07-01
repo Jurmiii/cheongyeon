@@ -1,3 +1,6 @@
+@use "../../styles/abstracts/breakpoints" as *;
+@use "../../styles/abstracts/grid" as grid;
+
 .season-class-page {
   position: relative;
   width: 100%;
@@ -27,7 +30,7 @@
   display: flex;
   align-items: center;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
 }
@@ -58,13 +61,13 @@
   margin: 0;
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .season-class-kv__grid {
     padding-inline: 1.5rem;
   }
 }
 
-@media (max-width: 48rem) {
+@media (max-width: $tablet) {
   .season-class-kv {
     height: 40rem;
     background-position: center center;
@@ -340,13 +343,13 @@
   object-fit: contain;
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .season-scroll__left {
     left: 1.5rem;
   }
 }
 
-@media (max-width: 63.99rem) {
+@media (max-width: #{$laptop - 1px}) {
   .season-scroll {
     height: 100svh;
     max-height: 58.75rem;
@@ -458,13 +461,13 @@
   transform: translateY(-50%);
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .season-promo__content {
     left: 1.5rem;
   }
 }
 
-@media (max-width: 48rem) {
+@media (max-width: $tablet) {
   .season-promo {
     height: auto;
     min-height: 18rem;
@@ -747,7 +750,7 @@
 
 .season-schedule__carousel {
   position: relative;
-  width: 90rem;
+  width: grid.$desktop-grid-outer;
   max-width: 100%;
   height: auto;
   margin: 0.75rem auto 0;
@@ -995,13 +998,13 @@
   text-align: center;
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .season-schedule__carousel {
     width: calc(100% - 3rem);
   }
 }
 
-@media (max-width: 48rem) {
+@media (max-width: $tablet) {
   .season-schedule {
     height: auto;
     padding-bottom: 3rem;
@@ -1075,7 +1078,7 @@
   position: absolute;
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .season-gallery__grid {
     width: calc(100% - 3rem);
     height: auto;
@@ -1113,7 +1116,7 @@
   }
 }
 
-@media (max-width: 48rem) {
+@media (max-width: $tablet) {
   .season-gallery {
     height: auto;
   }

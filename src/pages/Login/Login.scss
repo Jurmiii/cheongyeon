@@ -1,5 +1,6 @@
 @use "../../styles/abstracts/breakpoints" as *;
 
+@use "../../styles/abstracts/grid" as grid;
 .login-page {
   display: flex;
   align-items: center;

@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
 import noticeImg from "../../assets/images/13my-page/notice-img.webp";
-import { Button, CustomModal, Icon, Input } from "../../components/common";
+import { Button, CustomModal, Footer, Header, Icon, Input } from "../../components/common";
 import { isValidEmail, isValidPhone, normalizePhone } from "../../utils/validation";
 import "./ContactPage.scss";
 
@@ -90,9 +90,9 @@ function ContactPage() {
 
   return (
     <main className="contact-page">
-      <button className="contact__close-button" type="button" aria-label="이전 페이지로 이동" onClick={() => navigate(-1)}>
-        <span aria-hidden="true">×</span>
-      </button>
+      <div className="contact-page__header">
+        <Header />
+      </div>
       <section className="contact" aria-label="문의하기">
         <div className="contact__inner">
           <aside className="contact__intro" style={{ backgroundImage: `url(${noticeImg})` }}>
@@ -322,6 +322,8 @@ function ContactPage() {
           </Button>
         </section>
       </CustomModal>
+
+      <Footer />
     </main>
   );
 }

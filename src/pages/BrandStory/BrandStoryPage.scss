@@ -1,5 +1,6 @@
 @use "../../styles/abstracts/breakpoints" as *;
 
+@use "../../styles/abstracts/grid" as grid;
 .brand-story-page {
   position: relative;
   width: 100%;
@@ -29,7 +30,7 @@
 .brand-story-kv__grid {
   position: relative;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
 }
@@ -842,7 +843,7 @@
   display: grid;
   grid-template-columns: 0.72fr 1.28fr;
   align-items: center;
-  width: min(100%, 90rem);
+  width: min(100%, #{grid.$desktop-grid-outer});
   margin-inline: auto;
   padding: 4.5rem 4rem;
   column-gap: 4rem;
@@ -916,7 +917,7 @@
   }
 
   .brand-story-time__image {
-    width: min(100%, 48rem);
+    width: min(100%, #{grid.$tablet-grid-outer});
     max-width: 100%;
     margin-left: 0;
     transform: none;
@@ -964,7 +965,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  width: min(100%, 90rem);
+  width: min(100%, #{grid.$desktop-grid-outer});
   min-height: 35.625rem;
   margin-inline: auto;
   padding: 0 7.5rem;

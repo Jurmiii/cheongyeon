@@ -7,7 +7,7 @@
   min-width: 0;
   overflow-x: clip;
   --collection-page-gutter: clamp(1.5rem, 5vw, 15rem);
-  --collection-content-width: min(90rem, calc(100% - (var(--collection-page-gutter) * 2)));
+  --collection-content-width: min(#{grid.$desktop-grid-outer}, calc(100% - (var(--collection-page-gutter) * 2)));
 }
 
 .collection-page__header {
@@ -111,7 +111,7 @@
   display: inline-block;
 }
 
-@media (min-width: 90rem) {
+@media (min-width: grid.$desktop-grid-outer) {
   .collection-aroma__description-second {
     white-space: nowrap;
   }
@@ -133,7 +133,7 @@
   height: auto;
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .collection-kv__grid {
     grid-template-columns: repeat(12, minmax(0, 1fr));
   }
@@ -228,7 +228,7 @@
   grid-column: 1 / -1;
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .collection-catalog__grid {
     grid-template-columns: repeat(12, minmax(0, 1fr));
   }
@@ -306,44 +306,13 @@
     grid-column: auto;
     width: 100%;
   }
-
-  .collection-page__footer--tablet .tablet-footer {
-    width: 100%;
-    max-width: 48rem;
-    margin-inline: auto;
-  }
 }
 
 /* ══════════════════════════════════════════
    태블릿 ($tablet ~ $laptop, 768px ~ 1024px) — Figma TA 6:48
    PC 스타일은 변경하지 않고 이 구간만 오버라이드
    ══════════════════════════════════════════ */
-.collection-page__header--tablet,
-.collection-page__footer--tablet,
-.collection-page__header--mobile,
-.collection-page__footer--mobile {
-  display: none;
-}
-
 @media (min-width: ($tablet + 1px)) and (max-width: $laptop) {
-  .collection-page__header--desktop,
-  .collection-page__footer--desktop {
-    display: none;
-  }
-
-  .collection-page__header--tablet,
-  .collection-page__footer--tablet {
-    display: block;
-  }
-
-  .collection-page__header--tablet {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 2;
-    width: 100%;
-  }
-
   /* KV — Figma 6:49: 768×600, 타이틀박스 left=64px 세로 중앙 */
   .collection-kv {
     height: 37.5rem;
@@ -431,7 +400,7 @@
 
   .collection-aroma__chart-image {
     width: 100%;
-    max-width: 40rem; /* 640px */
+    max-width: grid.$tablet-grid-inner; /* 640px */
   }
 
   /* Catalog — Figma 6:67: bg #f8f3ea, top=96 left=64 width=640 */
@@ -500,26 +469,6 @@
 @media (max-width: $tablet) {
   .collection-page {
     --collection-page-gutter: clamp(1rem, 5vw, 4rem);
-  }
-
-  .collection-page__header--desktop,
-  .collection-page__header--tablet,
-  .collection-page__footer--desktop,
-  .collection-page__footer--tablet {
-    display: none;
-  }
-
-  .collection-page__header--mobile,
-  .collection-page__footer--mobile {
-    display: block;
-  }
-
-  .collection-page__header--mobile {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 2;
-    width: 100%;
   }
 
   /* KV — 태블릿 높이(37.5rem)에서 모바일(43.75rem)로 자연스럽게 이어짐 */
@@ -716,7 +665,7 @@
 
   .collection-catalog__tabs-inner {
     gap: 0.875rem;
-    max-width: 23.125rem;
+    max-width: grid.$mobile-grid-inner;
   }
 
   .collection-catalog__tab {
@@ -732,6 +681,6 @@
   }
 
   .collection-catalog__content {
-    max-width: 23.125rem;
+    max-width: grid.$mobile-grid-inner;
   }
 }

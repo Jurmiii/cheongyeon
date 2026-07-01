@@ -1,3 +1,6 @@
+@use "../../styles/abstracts/breakpoints" as *;
+@use "../../styles/abstracts/grid" as grid;
+
 .season-tea-detail-modal {
   position: fixed;
   inset: 0;
@@ -265,7 +268,7 @@
   }
 }
 
-@media (max-width: 64rem) {
+@media (max-width: $laptop) {
   .season-tea-detail-modal {
     align-items: flex-start;
   }

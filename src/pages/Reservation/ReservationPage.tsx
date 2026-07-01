@@ -341,7 +341,6 @@ function ReservationPage() {
   const { loginId } = useAuth();
   const { profile } = useUserProfile();
   const { reservations, upcomingReservation } = useReservations();
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const today = useMemo(() => startOfDay(new Date()), []);
   const isEditMode = searchParams.get("mode") === "edit";

@@ -1,14 +1,26 @@
+@use "../../styles/abstracts/breakpoints" as *;
+@use "../../styles/abstracts/grid" as grid;
+
 .reservation-edit-page {
+  position: relative;
   width: 100%;
   min-width: 0;
   min-height: 100svh;
   background: var(--white);
 }
 
+.reservation-edit-page__header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+}
+
 .reservation-edit {
   width: 120rem;
   max-width: 100%;
-  padding-block: 5rem;
+  padding-block: calc(5.625rem + 5rem) 5rem;
   background: var(--white);
 }
 
@@ -17,7 +29,7 @@
   flex-direction: column;
   gap: 4rem;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   margin-inline: auto;
 }
 
@@ -69,13 +81,13 @@
   background: var(--han500);
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .reservation-edit__grid {
     padding-inline: 1.5rem;
   }
 }
 
-@media (max-width: 48rem) {
+@media (max-width: $tablet) {
   .reservation-edit__actions {
     flex-direction: column;
   }

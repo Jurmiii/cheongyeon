@@ -37,7 +37,7 @@
   column-gap: 1.5rem;
   align-items: center;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
 }
@@ -83,7 +83,7 @@
   column-gap: 1.5rem;
   align-items: center;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
 }
@@ -126,7 +126,7 @@
   column-gap: 1.5rem;
   align-items: center;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
 }
@@ -167,7 +167,7 @@
   column-gap: 1.5rem;
   align-items: center;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
 }
@@ -199,7 +199,7 @@
 
 .tea-store-dado__inner {
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   margin-inline: auto;
   padding-block: 7.5rem;
 }
@@ -279,7 +279,7 @@
   column-gap: 1.5rem;
   align-items: center;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
 }
@@ -314,7 +314,7 @@
 
 .tea-store-types__inner {
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   margin-inline: auto;
   padding-block: 7.5rem;
 }
@@ -337,7 +337,7 @@
   display: grid;
   grid-template-columns: repeat(5, 16.8rem);
   gap: 1.5rem;
-  width: 90rem;
+  width: grid.$desktop-grid-outer;
   max-width: 100%;
   margin-inline: auto;
   margin-top: 3rem;
@@ -429,7 +429,7 @@
 
 .tea-store-seasons__inner {
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   margin-inline: auto;
   padding-block: 7.5rem;
 }
@@ -565,7 +565,7 @@
   }
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .tea-store-kv__grid,
   .tea-store-intro__grid,
   .tea-store-culture__grid,
@@ -637,7 +637,7 @@
   }
 }
 
-@media (max-width: 64rem) {
+@media (max-width: $laptop) {
   .tea-store-ceremony {
     height: auto;
     min-height: 28rem;
@@ -721,7 +721,7 @@
   }
 }
 
-@media (max-width: 40rem) {
+@media (max-width: #{grid.$tablet-grid-inner}) {
   .tea-store-dado__gallery {
     grid-template-columns: minmax(0, 1fr);
   }

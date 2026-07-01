@@ -1,5 +1,6 @@
 @use "../../styles/abstracts/breakpoints" as *;
 
+@use "../../styles/abstracts/grid" as grid;
 .signup-page-wrapper {
   display: flex;
   flex-direction: column;
@@ -10,10 +11,20 @@
   background: var(--white);
 }
 
+.signup-page-wrapper__header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+}
+
 .signup-page-wrapper .signup-page {
   flex: 1;
   box-sizing: border-box;
   min-height: auto;
+  padding-top: calc(5.625rem + var(--space-9));
+  padding-bottom: var(--space-5);
 }
 
 @media (max-width: $tablet) {

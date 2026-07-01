@@ -1,5 +1,6 @@
 @use "../styles/abstracts/breakpoints" as *;
 
+@use "../styles/abstracts/grid" as grid;
 .component-preview {
   display: flex;
   flex-direction: column;
@@ -19,7 +20,7 @@
   align-items: flex-start;
   gap: var(--space-3);
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   margin-inline: auto;
 }
 
@@ -31,7 +32,7 @@
 .component-preview__section--header > h2,
 .component-preview__section--full > h2 {
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   margin-inline: auto;
 }
 
@@ -40,7 +41,7 @@
 }
 
 .component-preview__description {
-  max-width: 40rem;
+  max-width: grid.$tablet-grid-inner;
   color: var(--ink300);
 }
 
@@ -75,11 +76,11 @@
 }
 
 .component-preview__responsive-button-panel--tablet {
-  width: min(48rem, 100%);
+  width: min(#{grid.$tablet-grid-outer}, 100%);
 }
 
 .component-preview__responsive-button-panel--mobile {
-  width: min(25.125rem, 100%);
+  width: min(#{grid.$mobile-grid-outer}, 100%);
 }
 
 .component-preview__responsive-button-row {
