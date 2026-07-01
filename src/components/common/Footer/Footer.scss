@@ -1,87 +1,96 @@
+@use "../../../styles/abstracts/breakpoints" as *;
+@use "../../../styles/abstracts/grid" as grid;
+
+@mixin site-footer-lift {
+  transform: translateY(0);
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-0.125rem);
+  }
+}
+
+@mixin site-footer-interactive-text {
+  @include site-footer-lift;
+  transition:
+    transform 0.26s ease,
+    color 0.22s ease;
+}
+
+@mixin site-footer-interactive-icon {
+  @include site-footer-lift;
+  opacity: 0.62;
+  filter: brightness(0.88);
+  transition:
+    transform 0.26s ease,
+    filter 0.22s ease,
+    opacity 0.22s ease;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 1;
+    filter: brightness(1.1);
+  }
+}
+
+// ─── 공통 (모든 뷰포트) ───────────────────────────────────────────────────────
 .site-footer {
-  width: 100%;
-  min-height: 15.625rem;
-  background-image: url("../../../assets/images/00header-footer/footer-bg.webp");
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  align-self: stretch;
+  width: 100vw;
+  min-width: 0;
+  margin-inline: calc(50% - 50vw);
+  overflow-x: clip;
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
 }
 
-.site-footer .text-white {
+.site-footer .site-footer__nav-link,
+.site-footer .site-footer__policy-link {
+  color: rgb(255 255 255 / 62%);
+
+  &:hover,
+  &:focus-visible {
+    color: var(--white);
+  }
+}
+
+.site-footer .text-white:not(.site-footer__nav-link):not(.site-footer__policy-link) {
   color: var(--white);
 }
 
 .site-footer__inner {
+  box-sizing: border-box;
   width: 100%;
-  max-width: 90rem;
   height: 100%;
-  margin-inline: auto;
-  padding-top: 2.5rem;
-}
-
-.site-footer__top {
-  display: flex;
-  align-items: flex-start;
-}
-
-.site-footer__brand {
-  display: flex;
-  align-items: flex-start;
+  min-width: 0;
 }
 
 .site-footer__logo {
   display: block;
-  width: 10.0625rem;
-  height: 5.125rem;
+  margin: 0;
 }
 
 .site-footer__logo-image {
   display: block;
   width: 100%;
   height: 100%;
-}
-
-.site-footer__slogan {
-  margin-left: 1.10625rem;
-  padding-top: 0.9375rem;
-  white-space: nowrap;
-}
-
-.site-footer__nav {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: clamp(1.5rem, 2.7778vw, 2.5rem);
-  margin-left: auto;
+  object-fit: contain;
 }
 
 .site-footer__nav-link {
   display: inline-flex;
   align-items: center;
-  color: var(--white);
   text-decoration: none;
   white-space: nowrap;
+  @include site-footer-interactive-text;
 }
 
 .site-footer__divider {
-  width: 100%;
   height: 1px;
-  margin-top: 1.778125rem;
   background: var(--white);
-}
-
-.site-footer__bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: calc(15.625rem - 2.5rem - 5.125rem - 1.778125rem - 1px);
-}
-
-.site-footer__sns {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
 }
 
 .site-footer__sns-link,
@@ -89,140 +98,483 @@
   display: block;
 }
 
-.site-footer__sns-link img {
-  width: 2rem;
-  height: 2rem;
-  object-fit: contain;
-}
-
-.site-footer__policies {
-  display: flex;
-  align-items: center;
-  gap: 0.6875rem;
+.site-footer__sns-link {
+  display: inline-flex;
+  @include site-footer-interactive-icon;
 }
 
 .site-footer__policy-link {
-  color: var(--white);
+  display: inline-block;
   text-decoration: none;
   white-space: nowrap;
+  @include site-footer-interactive-text;
 }
 
-@media (min-width: 48rem) and (max-width: 63.9375rem) {
+// ─── PC 레이아웃: 1024px 이상만 ─────────────────────────────────────────────
+@media (min-width: $laptop) {
   .site-footer {
-    width: 48rem;
-    height: 15.625rem;
-    min-height: 15.625rem;
+    background-image: url("../../../assets/images/00header-footer/footer-bg.webp");
+  }
+
+  .site-footer .site-footer__nav-link {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+
+  .site-footer__inner {
+    max-width: grid.$desktop-grid-outer;
     margin-inline: auto;
+    padding-top: 2.5rem;
+    padding-inline: grid.$desktop-grid-side-padding;
+  }
+
+  .site-footer__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .site-footer__brand {
+    display: flex;
+    flex: 0 1 auto;
+    align-items: flex-start;
+    min-width: 0;
+  }
+
+  .site-footer__logo {
+    width: 10.0625rem;
+    height: 5.125rem;
+  }
+
+  .site-footer__slogan {
+    margin-left: 1.10625rem;
+    padding-top: 0.9375rem;
+    white-space: nowrap;
+  }
+
+  .site-footer__slogan--compact {
+    display: none;
+  }
+
+  .site-footer__nav {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2.5rem;
+    min-width: 0;
+    max-width: 100%;
+    margin-left: auto;
+  }
+
+  .site-footer__divider {
+    width: 100%;
+    margin-top: 1.778125rem;
+  }
+
+  .site-footer__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    min-width: 0;
+    height: calc(15.625rem - 2.5rem - 5.125rem - 1.778125rem - 1px);
+  }
+
+  .site-footer__sns {
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .site-footer__sns-link img {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .site-footer__policies {
+    display: flex;
+    flex: 0 1 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.6875rem;
+    min-width: 0;
+    margin-left: auto;
+  }
+}
+
+// 1024px~1440px: PC 내부만 비율 축소
+@media (min-width: $laptop) and (max-width: grid.$desktop-grid-outer) {
+  .site-footer__inner {
+    max-width: none;
+    padding-inline: max(
+      grid.$desktop-grid-side-padding,
+      calc((100vw - min(100vw, grid.$desktop-grid-outer)) / 2 + grid.$desktop-grid-side-padding)
+    );
+  }
+
+  .site-footer__top {
+    gap: clamp(1rem, calc(1rem + (100vw - 64rem) * 0.03846), 2rem);
+  }
+
+  .site-footer__nav {
+    gap: clamp(0.75rem, calc(0.75rem + (100vw - 64rem) * 0.06731), 2.5rem);
+    padding-inline-end: clamp(0rem, calc((100vw - 64rem) * 0.09615), 2.5rem);
+  }
+
+  .site-footer .site-footer__nav-link {
+    font-size: clamp(0.875rem, calc(0.875rem + (100vw - 64rem) * 0.00962), 1.125rem);
+    line-height: clamp(1.375rem, calc(1.375rem + (100vw - 64rem) * 0.01442), 1.75rem);
+  }
+
+  .site-footer__bottom {
+    gap: clamp(0.75rem, calc(0.75rem + (100vw - 64rem) * 0.02885), 1.5rem);
+  }
+}
+
+// ─── 태블릿 레이아웃: 768px~1023px (768px 디자인 고정 + 768~1023 유동) ─────
+$footer-tablet-vw-min: 25.0625rem; // 401px (768 미만은 모바일 레이아웃)
+
+@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
+  .site-footer {
+    --footer-pad-x: clamp(
+      1.5rem,
+      calc(1.5rem + (100vw - #{$footer-tablet-vw-min}) * 0.09811),
+      3.75rem
+    );
+    --footer-brand-top: clamp(
+      1.125rem,
+      calc(1.125rem + (100vw - #{$footer-tablet-vw-min}) * 0.02485),
+      1.6875rem
+    );
+    --footer-logo-w: clamp(
+      5.5rem,
+      calc(5.5rem + (100vw - #{$footer-tablet-vw-min}) * 0.1443),
+      8.8125rem
+    );
+    --footer-logo-h: clamp(
+      2.875rem,
+      calc(2.875rem + (100vw - #{$footer-tablet-vw-min}) * 0.0752),
+      4.5975rem
+    );
+    --footer-slogan-mt: clamp(
+      0.1875rem,
+      calc(0.1875rem + (100vw - #{$footer-tablet-vw-min}) * 0.00393),
+      0.2775rem
+    );
+    --footer-nav-top: clamp(
+      3.25rem,
+      calc(3.25rem + (100vw - #{$footer-tablet-vw-min}) * 0.05994),
+      4.625rem
+    );
+    --footer-nav-offset: clamp(
+      0.5rem,
+      calc(0.5rem + (100vw - #{$footer-tablet-vw-min}) * 0.00545),
+      0.625rem
+    );
+    --footer-nav-gap: clamp(
+      0.375rem,
+      calc(0.375rem + (100vw - #{$footer-tablet-vw-min}) * 0.01635),
+      0.75rem
+    );
+    --footer-nav-row-gap: clamp(
+      0.25rem,
+      calc(0.25rem + (100vw - #{$footer-tablet-vw-min}) * 0.0109),
+      0.5rem
+    );
+    --footer-nav-font: clamp(
+      0.625rem,
+      calc(0.625rem + (100vw - #{$footer-tablet-vw-min}) * 0.01635),
+      1rem
+    );
+    --footer-nav-lh: clamp(
+      1rem,
+      calc(1rem + (100vw - #{$footer-tablet-vw-min}) * 0.0218),
+      1.5rem
+    );
+    --footer-divider-top: clamp(
+      9.25rem,
+      calc(9.25rem + (100vw - #{$footer-tablet-vw-min}) * 0.0763),
+      11rem
+    );
+    --footer-after-divider: clamp(
+      1.25rem,
+      calc(1.25rem + (100vw - #{$footer-tablet-vw-min}) * 0.01635),
+      1.625rem
+    );
+    --footer-sns-gap: clamp(
+      1.5rem,
+      calc(1.5rem + (100vw - #{$footer-tablet-vw-min}) * 0.0763),
+      3.25rem
+    );
+    --footer-sns-icon: 1.5rem;
+    --footer-policy-gap: 0.6875rem;
+    --footer-bottom-gap: clamp(
+      0.5rem,
+      calc(0.5rem + (100vw - #{$footer-tablet-vw-min}) * 0.0327),
+      1.25rem
+    );
+    --footer-bottom-zone: clamp(
+      2rem,
+      calc(2rem + (100vw - #{$footer-tablet-vw-min}) * 0.0218),
+      2.5rem
+    );
+    --footer-bottom-top: calc(var(--footer-divider-top) + 1px + var(--footer-after-divider));
+    --footer-height: calc(var(--footer-bottom-top) + var(--footer-bottom-zone));
+
+    width: 100vw;
+    height: var(--footer-height);
+    min-height: var(--footer-height);
     background-image: url("../../../assets/images/00header-footer/ta-bg.webp");
-    background-position: center;
-    background-size: cover;
+  }
+
+  .site-footer .site-footer__nav .site-footer__nav-link {
+    font-size: var(--footer-nav-font);
+    line-height: var(--footer-nav-lh);
   }
 
   .site-footer__inner {
     position: relative;
-    width: 100%;
     max-width: none;
-    height: 100%;
+    margin-inline: 0;
     padding-top: 0;
+    padding-inline: var(--footer-pad-x);
   }
 
   .site-footer__top {
     display: block;
+    height: var(--footer-divider-top);
   }
 
   .site-footer__brand {
     position: absolute;
-    top: 1.6875rem;
-    left: 4rem;
+    top: var(--footer-brand-top);
+    left: var(--footer-pad-x);
     display: block;
   }
 
   .site-footer__logo {
-    width: 8.8125rem;
-    height: 4.5975rem;
+    width: var(--footer-logo-w);
+    height: var(--footer-logo-h);
   }
 
   .site-footer__slogan {
-    margin-top: 0.2775rem;
+    margin-top: var(--footer-slogan-mt);
     margin-left: 0;
     padding-top: 0;
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.375rem;
+    white-space: nowrap;
+  }
+
+  .site-footer__slogan--desktop {
+    display: none;
+  }
+
+  .site-footer__slogan--compact {
+    display: block;
   }
 
   .site-footer__nav {
     position: absolute;
-    top: 4.625rem;
-    left: 19rem;
-    gap: 1.5rem;
+    top: var(--footer-nav-top);
+    right: var(--footer-pad-x);
+    left: calc(var(--footer-pad-x) + var(--footer-logo-w) + var(--footer-nav-offset));
+    z-index: 1;
+    display: flex;
+    flex: none;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-end;
+    row-gap: var(--footer-nav-row-gap);
+    column-gap: var(--footer-nav-gap);
+    max-width: calc(100% - (var(--footer-pad-x) * 2) - var(--footer-logo-w) - var(--footer-nav-offset));
     margin-left: 0;
-  }
-
-  .site-footer__nav-link {
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.375rem;
+    overflow: hidden;
   }
 
   .site-footer__divider {
     position: absolute;
-    top: 11rem;
-    left: 4rem;
-    width: 40rem;
+    top: var(--footer-divider-top);
+    right: var(--footer-pad-x);
+    left: var(--footer-pad-x);
+    width: auto;
     margin-top: 0;
   }
 
   .site-footer__bottom {
     position: absolute;
-    top: calc(11rem + 1px + 1.625rem);
-    left: 4rem;
-    justify-content: flex-start;
-    width: 40rem;
-    height: auto;
+    top: var(--footer-bottom-top);
+    right: var(--footer-pad-x);
+    left: var(--footer-pad-x);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--footer-bottom-gap);
+    width: auto;
+    height: var(--footer-bottom-zone);
+    min-width: 0;
   }
 
   .site-footer__sns {
-    gap: 3.25rem;
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    gap: var(--footer-sns-gap);
   }
 
   .site-footer__sns-link img {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: var(--footer-sns-icon);
+    height: var(--footer-sns-icon);
   }
 
   .site-footer__policies {
-    gap: 0.6875rem;
-    margin-left: 17.1875rem;
+    display: flex;
+    flex: 0 1 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--footer-policy-gap);
+    min-width: 0;
+    margin-left: auto;
   }
 }
 
-@media (max-width: 47.9375rem) {
+// ─── 모바일 레이아웃: ≤767px (402px 디자인 → 320px까지 축소) ─────────────────
+$footer-mobile-vw-min: 20rem; // 320px
+
+@media (max-width: #{$tablet - 1px}) {
   .site-footer {
-    width: min(25.125rem, 100%);
-    height: 15.625rem;
-    min-height: 15.625rem;
-    margin-inline: auto;
+    --footer-pad-x: clamp(
+      1rem,
+      calc(1rem + (100vw - #{$footer-mobile-vw-min}) * 0.00895),
+      1.25rem
+    );
+    --footer-brand-top: clamp(
+      0.5rem,
+      calc(0.5rem + (100vw - #{$footer-mobile-vw-min}) * 0.00895),
+      0.75rem
+    );
+    --footer-logo-w: clamp(
+      5rem,
+      calc(5rem + (100vw - #{$footer-mobile-vw-min}) * 0.02908),
+      5.8125rem
+    );
+    --footer-logo-h: clamp(
+      2.625rem,
+      calc(2.625rem + (100vw - #{$footer-mobile-vw-min}) * 0.01454),
+      3.03125rem
+    );
+    --footer-slogan-mt: clamp(
+      0.1875rem,
+      calc(0.1875rem + (100vw - #{$footer-mobile-vw-min}) * 0.00322),
+      0.2775rem
+    );
+    --footer-slogan-lh: clamp(
+      1.125rem,
+      calc(1.125rem + (100vw - #{$footer-mobile-vw-min}) * 0.00895),
+      1.375rem
+    );
+    --footer-brand-gap: clamp(
+      1rem,
+      calc(1rem + (100vw - #{$footer-mobile-vw-min}) * 0.00895),
+      1.25rem
+    );
+    --footer-divider-top: calc(
+      var(--footer-brand-top) +
+      var(--footer-logo-h) +
+      var(--footer-slogan-mt) +
+      (var(--footer-slogan-lh) * 2) +
+      var(--footer-brand-gap)
+    );
+    --footer-after-divider: clamp(
+      1.125rem,
+      calc(1.125rem + (100vw - #{$footer-mobile-vw-min}) * 0.00671),
+      1.3125rem
+    );
+    --footer-sns-gap: clamp(
+      1.5rem,
+      calc(1.5rem + (100vw - #{$footer-mobile-vw-min}) * 0.02908),
+      2.3125rem
+    );
+    --footer-sns-icon: 1.5rem;
+    --footer-policy-gap: clamp(
+      0.6875rem,
+      calc(0.6875rem + (100vw - #{$footer-mobile-vw-min}) * 0.01118),
+      1rem
+    );
+    --footer-policy-font: clamp(
+      0.625rem,
+      calc(0.625rem + (100vw - #{$footer-mobile-vw-min}) * 0.00895),
+      0.875rem
+    );
+    --footer-policy-lh: clamp(
+      1.125rem,
+      calc(1.125rem + (100vw - #{$footer-mobile-vw-min}) * 0.00895),
+      1.375rem
+    );
+    --footer-policies-mt: clamp(
+      0.75rem,
+      calc(0.75rem + (100vw - #{$footer-mobile-vw-min}) * 0.00895),
+      1rem
+    );
+    --footer-pad-bottom: clamp(
+      0.5rem,
+      calc(0.5rem + (100vw - #{$footer-mobile-vw-min}) * 0.00895),
+      0.75rem
+    );
+    // SNS + 약관(최대 2줄) + 여백 — 콘텐츠 높이에 맞춰 산출
+    --footer-bottom-zone: calc(
+      var(--footer-sns-icon) +
+      var(--footer-policies-mt) +
+      (var(--footer-policy-lh) * 2) +
+      0.375rem
+    );
+    --footer-bottom-top: calc(var(--footer-divider-top) + 1px + var(--footer-after-divider));
+    --footer-height: calc(
+      var(--footer-bottom-top) +
+      var(--footer-bottom-zone) +
+      var(--footer-pad-bottom)
+    );
+
+    width: 100vw;
+    height: var(--footer-height);
+    min-height: var(--footer-height);
     background-image: url("../../../assets/images/00header-footer/mo-bg.webp");
-    background-position: center;
-    background-size: cover;
+  }
+
+  .site-footer .site-footer__slogan--compact.ft-14r {
+    font-size: clamp(
+      0.75rem,
+      calc(0.75rem + (100vw - #{$footer-mobile-vw-min}) * 0.00895),
+      0.875rem
+    );
+    line-height: var(--footer-slogan-lh);
   }
 
   .site-footer__inner {
     position: relative;
-    width: 100%;
     max-width: none;
-    height: 100%;
+    min-height: var(--footer-height);
+    margin-inline: 0;
     padding-top: 0;
+    padding-inline: var(--footer-pad-x);
   }
 
   .site-footer__top {
     display: block;
+    height: var(--footer-divider-top);
   }
 
   .site-footer__brand {
     position: absolute;
-    top: 0.5625rem;
+    top: var(--footer-brand-top);
     left: 50%;
     display: flex;
     flex-direction: column;
@@ -231,18 +583,20 @@
   }
 
   .site-footer__logo {
-    width: 8.8125rem;
-    height: 4.5975rem;
+    width: var(--footer-logo-w);
+    height: var(--footer-logo-h);
   }
 
-  .site-footer__slogan {
-    margin-top: 0.2775rem;
+  .site-footer__slogan--desktop {
+    display: none;
+  }
+
+  .site-footer__slogan--compact {
+    display: block;
+    margin-top: var(--footer-slogan-mt);
     margin-left: 0;
     padding-top: 0;
     color: var(--white);
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.375rem;
     text-align: center;
     white-space: nowrap;
   }
@@ -253,43 +607,52 @@
 
   .site-footer__divider {
     position: absolute;
-    top: 9.3125rem;
-    left: 50%;
-    width: 22.6875rem;
+    top: var(--footer-divider-top);
+    right: var(--footer-pad-x);
+    left: var(--footer-pad-x);
+    width: auto;
     margin-top: 0;
-    transform: translateX(-50%);
   }
 
   .site-footer__bottom {
     position: absolute;
-    top: calc(9.3125rem + 1px + 1.3125rem);
-    left: 0;
+    top: var(--footer-bottom-top);
+    right: var(--footer-pad-x);
+    left: var(--footer-pad-x);
     display: flex;
-    width: 100%;
+    width: auto;
     height: auto;
+    min-height: var(--footer-bottom-zone);
+    padding-bottom: var(--footer-pad-bottom);
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+    box-sizing: border-box;
   }
 
   .site-footer__sns {
-    gap: 2.3125rem;
+    display: flex;
+    align-items: center;
+    gap: var(--footer-sns-gap);
   }
 
   .site-footer__sns-link img {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-
-  .site-footer__policies {
-    gap: 0.6875rem;
-    margin-top: 1rem;
+    width: var(--footer-sns-icon);
+    height: var(--footer-sns-icon);
   }
 
   .site-footer__policy-link {
-    font-family: var(--font-body);
-    font-size: 0.625rem;
-    font-weight: 400;
-    line-height: 1.375rem;
+    font-size: var(--footer-policy-font);
+    line-height: var(--footer-policy-lh);
+  }
+
+  .site-footer__policies {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--footer-policy-gap);
+    margin-top: var(--footer-policies-mt);
+    margin-left: 0;
   }
 }

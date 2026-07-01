@@ -87,9 +87,6 @@ export default function MobileHeader() {
         </h1>
 
         <div className="mobile-header__right">
-          <button className="mobile-header__language ft-18b ink500" type="button" aria-label="언어 선택">
-            KO
-          </button>
           <button
             className="mobile-header__menu-button"
             type="button"

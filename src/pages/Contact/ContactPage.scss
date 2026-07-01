@@ -76,6 +76,11 @@
   color: var(--ink500);
 }
 
+.contact__support {
+  margin: var(--space-2) 0 0;
+  text-align: left;
+}
+
 .contact__form {
   display: flex;
   flex-direction: column;

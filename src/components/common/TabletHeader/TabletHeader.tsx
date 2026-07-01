@@ -65,20 +65,17 @@ export default function TabletHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeMenuIndex, setActiveMenuIndex] = useState(0);
   const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
-  const [isLanguagePopupOpen, setIsLanguagePopupOpen] = useState(false);
 
   const activeMenu = tabletHeaderMenus[activeMenuIndex] ?? tabletHeaderMenus[0];
 
   const toggleMenu = () => {
     setIsMenuOpen((current) => !current);
     setIsUserPopupOpen(false);
-    setIsLanguagePopupOpen(false);
   };
 
   const closeMenu = () => {
     setIsMenuOpen(false);
     setIsUserPopupOpen(false);
-    setIsLanguagePopupOpen(false);
   };
 
   return (
@@ -152,7 +149,6 @@ export default function TabletHeader() {
                 aria-expanded={isUserPopupOpen}
                 onClick={() => {
                   setIsUserPopupOpen((current) => !current);
-                  setIsLanguagePopupOpen(false);
                 }}
               >
                 <Icon name="user" aria-hidden="true" />
@@ -173,35 +169,6 @@ export default function TabletHeader() {
                 <Link className="tablet-menu__popup-link ft-16b ink500" to="/mypage" onClick={closeMenu}>
                   마이페이지
                 </Link>
-              </div>
-            </div>
-
-            <div className="tablet-menu__utility-row tablet-menu__utility-row--language">
-              <button
-                className="tablet-menu__language-button ft-22b ink500"
-                type="button"
-                aria-label="언어 선택"
-                aria-expanded={isLanguagePopupOpen}
-                onClick={() => {
-                  setIsLanguagePopupOpen((current) => !current);
-                  setIsUserPopupOpen(false);
-                }}
-              >
-                KO
-              </button>
-
-              <div
-                className={[
-                  "tablet-menu__language-popup",
-                  isLanguagePopupOpen && "tablet-menu__popup--open",
-                ]
-                  .filter(Boolean)
-                  .join(" ")}
-                aria-hidden={!isLanguagePopupOpen}
-              >
-                <button className="tablet-menu__popup-link ft-16b ink500" type="button">
-                  EN
-                </button>
               </div>
             </div>
           </div>
