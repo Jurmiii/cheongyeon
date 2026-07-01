@@ -38,12 +38,20 @@
   @include font-token(var(--font-headline), 2.25rem, 400, 3.25rem);
 }
 
+.ft-32b {
+  @include font-token(var(--font-headline), 2rem, 700, 2.75rem);
+}
+
 .ft-28b {
   @include font-token(var(--font-headline), 1.75rem, 700, 2.5rem);
 }
 
 .ft-28r {
   @include font-token(var(--font-headline), 1.75rem, 400, 2.5rem);
+}
+
+.ft-24b {
+  @include font-token(var(--font-headline), 1.5rem, 700, 2.125rem);
 }
 
 .ft-22b {

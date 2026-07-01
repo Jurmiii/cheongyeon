@@ -1,5 +1,7 @@
 import type { Reservation, ReservationStats, ReservationStatus } from "../types/mypage";
+import { RESERVATION_SESSION_CAPACITY } from "../data/reservationClasses";
 import { isFutureOrTodayReservation } from "./reservationFormat";
+import { getMockBookedGuestCountForSession } from "./sessionAvailability";
 
 export const RESERVATIONS_STORAGE_KEY = "cheongyeon-reservations";
 export const RESERVATIONS_CHANGED_EVENT = "cheongyeon-reservations-changed";
@@ -113,4 +115,44 @@ export function updateReservation(userId: string, reservationId: string, updated
 
   saveReservationsForUser(userId, reservations);
   return reservations;
+}
+
+type SessionAvailabilityParams = {
+  date: string;
+  time: string;
+  classTitle: string;
+  branch: string;
+  excludeReservationId?: string;
+};
+
+function isActiveSessionReservation(reservation: Reservation) {
+  return reservation.status === "upcoming" && isFutureOrTodayReservation(reservation.date);
+}
+
+export function getBookedGuestCountForSession({
+  date,
+  time,
+  classTitle,
+  branch,
+  excludeReservationId,
+}: SessionAvailabilityParams) {
+  return readReservations()
+    .filter(
+      (reservation) =>
+        isActiveSessionReservation(reservation) &&
+        reservation.date === date &&
+        reservation.time === time &&
+        reservation.classTitle === classTitle &&
+        reservation.branch === branch &&
+        reservation.id !== excludeReservationId,
+    )
+    .reduce((total, reservation) => total + reservation.guestCount, 0);
+}
+
+export function getRemainingSeatsForSession(params: SessionAvailabilityParams) {
+  const mockBookedCount = getMockBookedGuestCountForSession(params);
+  const actualBookedCount = getBookedGuestCountForSession(params);
+  const totalBookedCount = mockBookedCount + actualBookedCount;
+
+  return Math.max(0, RESERVATION_SESSION_CAPACITY - totalBookedCount);
 }

@@ -4,12 +4,19 @@ import seasonClassScheduleCup3 from "../assets/images/09season-class/season-clas
 import seasonClassScheduleCup4 from "../assets/images/09season-class/season-class-schedule-cup4.webp";
 import seasonClassScheduleCup5 from "../assets/images/09season-class/season-class-schedule-cup5.webp";
 import seasonClassScheduleDivider from "../assets/images/09season-class/season-class-schedule-divider.webp";
+import {
+  reservationTimeSlots,
+  type ReservationBranch,
+  type ReservationTimeSlot,
+} from "./reservationClasses";
+import { getRemainingSeatsForSession } from "../utils/reservationStorage";
+import { getMockRemainingSeatsForSession } from "../utils/sessionAvailability";
 
 export type SeatDotState = "filled" | "empty";
 
 export type SeatSlotState = "available" | "closed";
 
-export const SEASON_CLASS_SCHEDULE_TOTAL_SEATS = 5;
+export const SEASON_CLASS_SCHEDULE_TOTAL_SEATS = 6;
 
 export const SEASON_CLASS_SCHEDULE_WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"] as const;
 
@@ -42,11 +49,14 @@ const SEASON_CLASS_SCHEDULE_CUP_IMAGES = [
 
 export function getCupImage(remainingSeats: number) {
   const clamped = Math.max(1, Math.min(SEASON_CLASS_SCHEDULE_TOTAL_SEATS, remainingSeats));
-  const imageIndex = SEASON_CLASS_SCHEDULE_TOTAL_SEATS - clamped;
+  const imageIndex = Math.min(
+    SEASON_CLASS_SCHEDULE_CUP_IMAGES.length - 1,
+    SEASON_CLASS_SCHEDULE_TOTAL_SEATS - clamped,
+  );
   return SEASON_CLASS_SCHEDULE_CUP_IMAGES[imageIndex];
 }
 
-export const SEASON_CLASS_SCHEDULE_TITLE = "청연의 클래스 자리";
+export const SEASON_CLASS_SCHEDULE_TITLE = "시즌 클래스 자리";
 export const SEASON_CLASS_SCHEDULE_DESCRIPTION =
   "소규모 정원제로 운영되어 여유롭고 깊이 있는 수업을 제공합니다";
 
@@ -55,6 +65,48 @@ export const SEASON_CLASS_SCHEDULE_DIVIDER = seasonClassScheduleDivider;
 export function formatScheduleMonthLabel(year: number, month: number) {
   return `${year}.${String(month + 1).padStart(2, "0")}`;
 }
+
+export function formatScheduleDateLabel(date: Date) {
+  return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
+}
+
+export function formatScheduleDateKey(date: Date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+export interface SeasonClassBranch {
+  id: string;
+  shortLabel: string;
+  name: string;
+  address: string;
+}
+
+export const SEASON_CLASS_BRANCHES: SeasonClassBranch[] = [
+  {
+    id: "bukchon",
+    shortLabel: "북촌 지점",
+    name: "청연 북촌 티하우스 본원",
+    address: "서울특별시 종로구 북촌로 58",
+  },
+  {
+    id: "hadong",
+    shortLabel: "하동 지점",
+    name: "청연 하동 티하우스",
+    address: "경상남도 하동군 화개면 612",
+  },
+  {
+    id: "boseong",
+    shortLabel: "보성 지점",
+    name: "청연 보성 티하우스",
+    address: "전라남도 보성군 보성읍 821",
+  },
+  {
+    id: "gangjin",
+    shortLabel: "강진 지점",
+    name: "청연 강진 티하우스",
+    address: "전라남도 강진군 성전면 437",
+  },
+];
 
 export function startOfDay(date: Date) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -106,9 +158,73 @@ export function getSeatDots(remainingSeats: number): SeatDotState[] {
   );
 }
 
+export interface SeasonClassScheduleTimeSlot {
+  id: string;
+  time: ReservationTimeSlot;
+  date: Date;
+  remainingSeats: number;
+  isPast: boolean;
+}
+
+export function isTimeSlotPast(date: Date, time: ReservationTimeSlot, now = new Date()) {
+  if (isBeforeDay(date, now)) {
+    return true;
+  }
+
+  if (!isSameDay(date, startOfDay(now))) {
+    return false;
+  }
+
+  const [hours, minutes] = time.split(":").map(Number);
+  const slotStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), hours, minutes, 0, 0);
+  return slotStart.getTime() <= now.getTime();
+}
+
+export function getScheduleTimeSlots(
+  date: Date,
+  branch: ReservationBranch,
+  classTitle: string,
+  excludeReservationId?: string,
+): SeasonClassScheduleTimeSlot[] {
+  const normalizedDate = startOfDay(date);
+  const now = new Date();
+  const dateKey = formatScheduleDateKey(normalizedDate);
+
+  return reservationTimeSlots.map((time) => {
+    const isPast = isTimeSlotPast(normalizedDate, time, now);
+
+    return {
+      id: `${branch}-${formatScheduleDateLabel(normalizedDate)}-${time}`,
+      time,
+      date: normalizedDate,
+      isPast,
+      remainingSeats: isPast
+        ? 0
+        : getRemainingSeatsForSession({
+            date: dateKey,
+            time,
+            classTitle,
+            branch,
+            excludeReservationId,
+          }),
+    };
+  });
+}
+
+export function getFirstAvailableTimeIndex(slots: SeasonClassScheduleTimeSlot[]) {
+  const index = slots.findIndex((slot) => !slot.isPast);
+  return index >= 0 ? index : 0;
+}
+
 function getRemainingSeatsMock(year: number, month: number, day: number) {
-  const seed = year * 372 + (month + 1) * 31 + day * 7;
-  return (seed % SEASON_CLASS_SCHEDULE_TOTAL_SEATS) + 1;
+  const dateKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+  return getMockRemainingSeatsForSession({
+    date: dateKey,
+    time: "12:00",
+    branch: "북촌 지점",
+    classTitle: "여름 다도클래스",
+  });
 }
 
 export function getFirstAvailableDayIndex(days: SeasonClassScheduleDay[]) {
