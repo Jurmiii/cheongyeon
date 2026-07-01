@@ -1,3 +1,6 @@
+@use "../../styles/abstracts/breakpoints" as *;
+@use "../../styles/abstracts/grid" as grid;
+
 .season-tea-page {
   position: relative;
   width: 100%;
@@ -66,36 +69,49 @@
   }
 }
 
-@media (max-width: 64rem) {
+@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
   .season-tea-kv {
-    height: auto;
-    min-height: 28rem;
-    padding-block: 8rem 3.5rem;
+    @include grid.tablet-kv-section;
+  }
+
+  .season-tea-kv__grid {
+    @include grid.tablet-grid-padded;
+    align-items: center;
+    height: 100%;
   }
 
   .season-tea-kv__content {
     grid-column: 1 / -1;
   }
 
-  .season-tea-kv__title {
-    font-size: 3rem;
-    line-height: 4rem;
+  .season-tea-spring__grid,
+  .season-tea-summer__grid,
+  .season-tea-autumn__grid,
+  .season-tea-winter__grid {
+    @include grid.tablet-grid-padded;
   }
 }
 
-@media (max-width: 30rem) {
+@media (max-width: #{$tablet - 1px}) {
+  .season-tea-kv {
+    @include grid.mobile-kv-section;
+  }
+
   .season-tea-kv__grid {
-    padding-inline: 1rem;
+    @include grid.mobile-kv-container;
+    align-items: center;
+    height: 100%;
   }
 
-  .season-tea-kv__title {
-    font-size: 2.25rem;
-    line-height: 3.25rem;
+  .season-tea-kv__content {
+    grid-column: 1 / -1;
   }
 
-  .season-tea-kv__description {
-    font-size: 1.125rem;
-    line-height: 1.875rem;
+  .season-tea-spring__grid,
+  .season-tea-summer__grid,
+  .season-tea-autumn__grid,
+  .season-tea-winter__grid {
+    @include grid.mobile-grid-padded;
   }
 }
 
@@ -286,37 +302,6 @@
   .season-tea-spring__content {
     grid-column: 1 / -1;
   }
-
-  .season-tea-spring__season {
-    font-size: 3rem;
-    line-height: 4rem;
-  }
-
-  .season-tea-spring__name {
-    font-size: 1.5rem;
-    line-height: 2.25rem;
-  }
-}
-
-@media (max-width: 30rem) {
-  .season-tea-spring__grid {
-    padding-inline: 1rem;
-  }
-
-  .season-tea-spring__season {
-    font-size: 2.25rem;
-    line-height: 3.25rem;
-  }
-
-  .season-tea-spring__lead {
-    font-size: 1.125rem;
-    line-height: 1.875rem;
-  }
-
-  .season-tea-spring__body {
-    font-size: 1rem;
-    line-height: 1.625rem;
-  }
 }
 
 .season-tea-summer {
@@ -410,37 +395,6 @@
     max-width: 28rem;
     aspect-ratio: 177 / 178;
     margin-inline: auto;
-  }
-
-  .season-tea-summer__season {
-    font-size: 3rem;
-    line-height: 4rem;
-  }
-
-  .season-tea-summer__name {
-    font-size: 1.5rem;
-    line-height: 2.25rem;
-  }
-}
-
-@media (max-width: 30rem) {
-  .season-tea-summer__grid {
-    padding-inline: 1rem;
-  }
-
-  .season-tea-summer__season {
-    font-size: 2.25rem;
-    line-height: 3.25rem;
-  }
-
-  .season-tea-summer__lead {
-    font-size: 1.125rem;
-    line-height: 1.875rem;
-  }
-
-  .season-tea-summer__body {
-    font-size: 1rem;
-    line-height: 1.625rem;
   }
 }
 
@@ -544,37 +498,6 @@
   .season-tea-autumn__content {
     grid-column: 1 / -1;
   }
-
-  .season-tea-autumn__season {
-    font-size: 3rem;
-    line-height: 4rem;
-  }
-
-  .season-tea-autumn__name {
-    font-size: 1.5rem;
-    line-height: 2.25rem;
-  }
-}
-
-@media (max-width: 30rem) {
-  .season-tea-autumn__grid {
-    padding-inline: 1rem;
-  }
-
-  .season-tea-autumn__season {
-    font-size: 2.25rem;
-    line-height: 3.25rem;
-  }
-
-  .season-tea-autumn__lead {
-    font-size: 1.125rem;
-    line-height: 1.875rem;
-  }
-
-  .season-tea-autumn__body {
-    font-size: 1rem;
-    line-height: 1.625rem;
-  }
 }
 
 .season-tea-winter {
@@ -668,37 +591,6 @@
     max-width: 28rem;
     aspect-ratio: 177 / 178;
     margin-inline: auto;
-  }
-
-  .season-tea-winter__season {
-    font-size: 3rem;
-    line-height: 4rem;
-  }
-
-  .season-tea-winter__name {
-    font-size: 1.5rem;
-    line-height: 2.25rem;
-  }
-}
-
-@media (max-width: 30rem) {
-  .season-tea-winter__grid {
-    padding-inline: 1rem;
-  }
-
-  .season-tea-winter__season {
-    font-size: 2.25rem;
-    line-height: 3.25rem;
-  }
-
-  .season-tea-winter__lead {
-    font-size: 1.125rem;
-    line-height: 1.875rem;
-  }
-
-  .season-tea-winter__body {
-    font-size: 1rem;
-    line-height: 1.625rem;
   }
 }
 

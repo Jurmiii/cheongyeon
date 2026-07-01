@@ -1,3 +1,6 @@
+@use "../../styles/abstracts/breakpoints" as *;
+@use "../../styles/abstracts/grid" as grid;
+
 .tea-store-page {
   position: relative;
   width: 100%;
@@ -594,8 +597,47 @@
   }
 }
 
+@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
+  .tea-store-kv {
+    @include grid.tablet-kv-section;
+  }
+
+  .tea-store-kv__grid,
+  .tea-store-intro__grid,
+  .tea-store-culture__grid,
+  .tea-store-ceremony__grid,
+  .tea-store-kinds__grid,
+  .tea-store-seasons__grid {
+    @include grid.tablet-grid-padded;
+  }
+
+  .tea-store-kv__grid {
+    align-items: center;
+    height: 100%;
+  }
+}
+
+@media (max-width: #{$tablet - 1px}) {
+  .tea-store-kv {
+    @include grid.mobile-kv-section;
+  }
+
+  .tea-store-kv__grid {
+    @include grid.mobile-kv-container;
+    align-items: center;
+    height: 100%;
+  }
+
+  .tea-store-intro__grid,
+  .tea-store-culture__grid,
+  .tea-store-ceremony__grid,
+  .tea-store-kinds__grid,
+  .tea-store-seasons__grid {
+    @include grid.mobile-grid-padded;
+  }
+}
+
 @media (max-width: 64rem) {
-  .tea-store-kv,
   .tea-store-ceremony {
     height: auto;
     min-height: 28rem;

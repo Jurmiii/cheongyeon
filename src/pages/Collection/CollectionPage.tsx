@@ -49,7 +49,7 @@ function CollectionPage() {
               <br />
               청연만의 다채로운 차 컬렉션
             </p>
-            <p className="collection-kv__description collection-kv__description--tablet ft-28r ink500">
+            <p className="collection-kv__description collection-kv__description--tablet ft-24r ink500">
               서로 다른 찻잎이 만들어내는
               <br />
               향의 깊이를 경험해보세요

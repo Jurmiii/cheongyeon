@@ -62,14 +62,9 @@
 }
 
 /* 태블릿 ($tablet ~ $laptop) — Figma 6:67 카드 308px, gap 24px/64px */
-@media (min-width: $tablet) and (max-width: $laptop) {
+@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
   .collection-category + .collection-category {
     margin-top: 2.8125rem; /* Figma gap 45px */
-  }
-
-  .collection-category__title {
-    font-size: 1.5rem;
-    line-height: 2.125rem;
   }
 
   .collection-category__line {
