@@ -1,3 +1,5 @@
+@use "../styles/abstracts/breakpoints" as *;
+
 .main-page {
   position: relative;
   width: 100%;
@@ -1373,4 +1375,103 @@
 
 .main-sec10__notice {
   margin-top: 1.5rem;
+}
+
+// Tablet / Mobile — KV section only
+.main-sec1__symbol--responsive {
+  display: none;
+}
+
+@media (max-width: $laptop) {
+  .main-page {
+    overflow-x: clip;
+  }
+
+  .main-page__header {
+    z-index: 20;
+    padding-top: clamp(0.75rem, 0.5rem + 0.8vw, 1.25rem);
+  }
+
+  .main-sec1 {
+    width: 100%;
+    height: clamp(40.625rem, 36rem + 8vw, 43.75rem);
+    transition:
+      opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+      height 0.35s ease;
+  }
+
+  .main-sec1__background {
+    background-position: clamp(62%, 28vw + 36%, 78%) 100%;
+    background-size: cover;
+    transition: opacity 0.4s ease;
+  }
+
+  .main-sec1__grid {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: clamp(23.125rem, 92vw, 40rem);
+    padding-inline: clamp(1rem, 4vw, 1.5rem);
+    transition: max-width 0.35s ease;
+  }
+
+  .main-sec1__content {
+    width: 100%;
+    max-width: clamp(23.125rem, 92vw, 40rem);
+    padding-top: clamp(6.75rem, 5rem + 4vw, 7.75rem);
+    transition:
+      max-width 0.35s ease,
+      padding-top 0.35s ease;
+  }
+
+  .main-sec1__kv-title {
+    width: clamp(6.5rem, 4rem + 8vw, 8.625rem);
+    height: auto;
+    transition: width 0.35s ease;
+  }
+
+  .main-sec1__title {
+    margin-top: clamp(1.25rem, 0.75rem + 1.2vw, 1.5rem);
+    transition: margin-top 0.35s ease;
+  }
+
+  .main-sec1__symbol:not(.main-sec1__symbol--responsive) {
+    display: none;
+  }
+
+  .main-sec1__symbol--responsive {
+    display: block;
+    width: clamp(10rem, 6rem + 12vw, 12.5rem);
+    height: auto;
+    margin-top: clamp(1.25rem, 0.75rem + 1.2vw, 1.5rem);
+    transition: width 0.35s ease;
+  }
+
+  .main-sec1__description {
+    margin-top: clamp(1.25rem, 0.75rem + 1.2vw, 1.5rem);
+    transition: margin-top 0.35s ease;
+  }
+
+  .main-sec1__progress {
+    width: clamp(9.375rem, 7rem + 6vw, 10.5rem);
+    margin-top: clamp(1.75rem, 1.25rem + 1.5vw, 2rem);
+    transition: width 0.35s ease;
+  }
+
+  .main-sec1__progress-number {
+    width: clamp(1.5rem, 1rem + 1.2vw, 1.75rem);
+    font-family: var(--font-body);
+    font-size: clamp(0.875rem, 0.75rem + 0.4vw, 1rem);
+    font-weight: 400;
+    line-height: clamp(1.375rem, 1.2rem + 0.5vw, 1.625rem);
+  }
+
+  .main-sec1__progress-line {
+    width: clamp(6.125rem, 4.5rem + 5vw, 6.875rem);
+  }
+}
+
+@media (max-width: $laptop) {
+  .main-sec1--mobile .main-sec1__background {
+    background-position: center bottom;
+  }
 }
