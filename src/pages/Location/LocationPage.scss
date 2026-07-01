@@ -1,12 +1,45 @@
 @use "../../styles/abstracts/breakpoints" as *;
 @use "../../styles/abstracts/grid" as grid;
 
+$location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
+
+@mixin location-desktop-grid {
+  display: grid;
+  grid-template-columns: repeat(grid.$desktop-grid-columns, minmax(0, 1fr));
+  column-gap: grid.$desktop-grid-gap;
+  box-sizing: border-box;
+  width: min(90rem, calc(100% - #{$location-side-inset * 2}));
+  max-width: min(90rem, calc(100% - #{$location-side-inset * 2}));
+  margin-inline: auto;
+}
+
+@mixin location-tablet-grid {
+  display: grid;
+  grid-template-columns: repeat(grid.$tablet-grid-columns, minmax(0, 1fr));
+  column-gap: grid.$tablet-grid-gap;
+  box-sizing: border-box;
+  width: min(grid.$tablet-grid-outer, calc(100% - #{grid.$tablet-grid-padding * 2}));
+  max-width: min(grid.$tablet-grid-outer, calc(100% - #{grid.$tablet-grid-padding * 2}));
+  margin-inline: auto;
+}
+
+@mixin location-mobile-grid {
+  display: grid;
+  grid-template-columns: repeat(grid.$mobile-grid-columns, minmax(0, 1fr));
+  column-gap: grid.$mobile-grid-gap;
+  box-sizing: border-box;
+  width: min(grid.$mobile-grid-outer, calc(100% - #{grid.$mobile-grid-padding * 2}));
+  max-width: min(grid.$mobile-grid-outer, calc(100% - #{grid.$mobile-grid-padding * 2}));
+  margin-inline: auto;
+}
+
 .location {
   position: relative;
   width: 100%;
   min-width: 0;
 }
 
+/* 작업 중 헤더 숨김 — 표시 시 아래 display: none 제거 */
 .location__header {
   position: absolute;
   top: 0;
@@ -18,7 +51,7 @@
 
 .location-kv {
   position: relative;
-  width: 120rem;
+  width: 100%;
   max-width: 100%;
   height: 46.25rem;
   overflow: hidden;
@@ -306,33 +339,97 @@
   text-align: center;
 }
 
-@media (max-width: $tablet) {
-  .location-kv {
-    background-image: url("../../assets/images/04location/ta-story-kv.webp");
-  }
-}
-
-@media (max-width: $laptop) {
-  .location-kv {
-    height: 40rem;
-    background-position: 70% center;
-  }
-
+/* ══════════════════════════════════════════
+   769px ~ 1920px — 12컬럼 + 96px 좌우 여백
+   ══════════════════════════════════════════ */
+@media (min-width: calc($tablet + 1px)) and (max-width: 120rem) {
   .location-kv__content {
-    @include grid.tablet-grid;
+    @include location-desktop-grid;
     align-items: center;
     height: 100%;
   }
 
   .location-kv__text {
     position: static;
-    grid-column: 1 / -1;
+    grid-column: 1 / span 5;
     justify-self: start;
+    max-width: 100%;
+  }
+
+  .location-map {
+    padding-inline: 0;
+  }
+
+  .location-map__inner {
+    @include location-desktop-grid;
+  }
+
+  .location-map__title {
+    grid-column: 1 / -1;
+  }
+
+  .location-map__card {
+    grid-column: 1 / -1;
+    width: 100%;
     max-width: 100%;
   }
 }
 
-@media (min-width: calc($mobile + 1px)) and (max-width: #{$laptop - 1px}) {
+/* 769px+ — PC KV · 지도 가로 배치 */
+@media (min-width: calc($tablet + 1px)) {
+  .location-kv {
+    height: 46.25rem;
+    background-image: url("../../assets/images/04location/location-kv.webp");
+    background-position: center right;
+  }
+
+  .location-map {
+    padding-block: 6.25rem 7.5rem;
+  }
+
+  .location-map__title {
+    margin: 0 0 3rem;
+  }
+
+  .location-map__card {
+    display: flex;
+    height: 36.75rem;
+  }
+}
+
+@media (min-width: calc($tablet + 1px)) and (max-width: $laptop) {
+  .location-kv {
+    height: 40rem;
+    background-position: 70% center;
+  }
+}
+
+/* ══════════════════════════════════════════
+   403px ~ 768px — 8컬럼
+   ══════════════════════════════════════════ */
+@media (min-width: calc($mobile + 1px)) and (max-width: $tablet) {
+  .location-kv {
+    height: 40rem;
+    background-image: url("../../assets/images/04location/ta-story-kv.webp");
+    background-position: 70% center;
+  }
+
+  .location-kv__content {
+    @include location-tablet-grid;
+    align-items: center;
+    height: 100%;
+  }
+
+  .location-kv__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: static;
+    grid-column: 1 / -1;
+    justify-self: start;
+    max-width: 100%;
+  }
+
   .location-kv__head {
     display: inline-grid;
     grid-template-columns: max-content;
@@ -360,54 +457,109 @@
 
   .location-kv__desc {
     margin-top: 1.5rem;
+    width: max-content;
     max-width: none;
-  }
-}
-
-@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
-  .location-map {
-    padding-block: 6rem;
-    padding-inline: 0;
+    word-break: keep-all;
   }
 
   .location-map__inner {
-    @include grid.tablet-grid;
-  }
-
-  .location-map__title {
-    grid-column: 1 / -1;
-    margin: 0 0 2.5rem;
-    letter-spacing: -0.01em;
-  }
-
-  .location-map__card {
-    display: grid;
-    grid-column: 1 / -1;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    column-gap: 0;
-    width: 100%;
-    height: 30.3125rem;
-  }
-
-  .location-map__list {
-    grid-column: 1;
-    width: 100%;
-    min-width: 0;
-    min-height: 0;
-    height: 100%;
-    overflow: hidden;
-    border-right: 1px solid var(--han200);
-    border-bottom: 0;
-  }
-
-  .location-map__map {
-    grid-column: 2;
-    width: 100%;
-    min-width: 0;
-    height: 100%;
+    @include location-tablet-grid;
   }
 }
 
+/* ══════════════════════════════════════════
+   402px 이하 — 6컬럼 · 모바일 KV
+   ══════════════════════════════════════════ */
+@media (max-width: $mobile) {
+  .location-kv {
+    width: 100%;
+    max-width: none;
+    height: auto;
+    @include grid.mobile-kv-section;
+    background-image: url("../../assets/images/04location/ta-story-kv.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .location-kv__content {
+    @include location-mobile-grid;
+    grid-template-rows: 1fr;
+    width: 100%;
+    max-width: grid.$mobile-kv-width;
+    height: 100%;
+    min-height: 100%;
+    padding-inline: clamp(
+      grid.$mobile-grid-padding,
+      calc(#{grid.$mobile-grid-padding} + (100vw - #{grid.$mobile-kv-width}) * 0.125),
+      calc(#{grid.$mobile-grid-padding} + 0.5rem)
+    );
+    align-items: center;
+    padding-block: 0;
+  }
+
+  .location-kv__brand {
+    display: block;
+    grid-column: 6 / -1;
+    grid-row: 1;
+    justify-self: end;
+    align-self: start;
+    width: 5.0625rem;
+    height: auto;
+  }
+
+  .location-kv__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: static;
+    grid-column: 1 / span 5;
+    grid-row: 1;
+    justify-self: start;
+    align-self: center;
+    min-width: 0;
+  }
+
+  .location-kv__title {
+    letter-spacing: -0.01em;
+  }
+
+  .location-kv__head {
+    display: inline-grid;
+    grid-template-columns: max-content;
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .location-kv__title,
+  .location-kv__ornament,
+  .location-kv__line {
+    grid-column: 1;
+  }
+
+  .location-kv__ornament {
+    display: none;
+  }
+
+  .location-kv__line {
+    display: flex;
+    width: 100%;
+    margin-top: 0.75rem;
+  }
+
+  .location-kv__desc {
+    margin-top: 0.75rem;
+    width: max-content;
+    max-width: none;
+    word-break: keep-all;
+  }
+
+  .location-map__inner {
+    @include location-mobile-grid;
+  }
+}
+
+/* 768px 이하 — 지도 세로 스택 */
 @media (max-width: $tablet) {
   .location-map {
     padding-block: var(--space-7) var(--space-8);
@@ -415,7 +567,6 @@
   }
 
   .location-map__inner {
-    @include grid.tablet-grid;
     row-gap: 0;
   }
 
@@ -469,93 +620,36 @@
   }
 }
 
-@media (max-width: $mobile) {
-  .location-kv {
-    height: auto;
-    min-height: 28rem;
-    background-position: center;
-  }
-
+/* 1920px 초과 — 12컬럼 중앙 정렬 */
+@media (min-width: calc(120rem + 1px)) {
   .location-kv__content {
-    @include grid.mobile-grid;
-    align-content: start;
-    align-items: start;
-    height: auto;
-    min-height: 28rem;
-    padding-block: 3rem 2.5rem;
-  }
-
-  .location-kv__brand {
-    display: block;
-    grid-column: 5 / -1;
-    grid-row: 1;
-    justify-self: end;
-    align-self: start;
-    width: 5.0625rem;
-    height: auto;
+    @include location-desktop-grid;
+    width: min(90rem, 100%);
+    max-width: 90rem;
+    align-items: center;
+    height: 100%;
   }
 
   .location-kv__text {
     position: static;
-    grid-column: 1 / span 4;
-    grid-row: 1;
+    grid-column: 1 / span 5;
     justify-self: start;
     max-width: 100%;
   }
 
-  .location-kv__title {
-    letter-spacing: -0.01em;
-  }
-
-  .location-kv__head {
-    display: inline-grid;
-    grid-template-columns: max-content;
-    width: fit-content;
-    max-width: 100%;
-  }
-
-  .location-kv__title,
-  .location-kv__ornament,
-  .location-kv__line {
-    grid-column: 1;
-  }
-
-  .location-kv__ornament {
-    display: none;
-  }
-
-  .location-kv__line {
-    display: flex;
-    width: 100%;
-    margin-top: 0.75rem;
-  }
-
-  .location-kv__desc {
-    margin-top: 0.75rem;
-    max-width: 100%;
-  }
-
   .location-map__inner {
-    @include grid.mobile-grid;
-  }
-}
-
-@media (min-width: calc($laptop + 1px)) {
-  .location-kv__content {
-    box-sizing: border-box;
-    width: min(90rem, calc(100% - #{grid.$tablet-grid-padding * 2}));
-    max-width: min(90rem, calc(100% - #{grid.$tablet-grid-padding * 2}));
-    margin-inline: auto;
-    padding-inline: 0;
-  }
-
-  .location-map {
-    padding-inline: max(grid.$tablet-grid-padding, calc((100% - min(100%, 90rem)) / 2));
-  }
-
-  .location-map__inner {
-    width: 100%;
+    @include location-desktop-grid;
+    width: min(90rem, 100%);
     max-width: 90rem;
-    margin-inline: auto;
+  }
+
+  .location-map__title {
+    grid-column: 1 / -1;
+  }
+
+  .location-map__card {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: 100%;
   }
 }

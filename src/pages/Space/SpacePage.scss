@@ -7,11 +7,13 @@
   min-width: 0;
 }
 
+/* 작업 중 헤더 숨김 — 표시 시 아래 display: none 제거 */
 .space__header {
   position: absolute;
   top: 0;
   left: 0;
   z-index: 2;
+  display: none;
   width: 100%;
 }
 
