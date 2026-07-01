@@ -134,6 +134,47 @@
   .ft-10r {
     @include font-token(var(--font-body), 0.625rem, 400, 1.375rem);
   }
+
+  // Desktop tokens — tablet breakpoint scaling
+  .ft-96r {
+    @include font-token(var(--font-display), 2.5rem, 400, 3.25rem);
+  }
+
+  .ft-64b {
+    @include font-token(var(--font-headline), 2.5rem, 700, 3.25rem);
+  }
+
+  .ft-64r {
+    @include font-token(var(--font-headline), 2.5rem, 400, 3.25rem);
+  }
+
+  .ft-48b {
+    @include font-token(var(--font-headline), 2rem, 700, 2.75rem);
+  }
+
+  .ft-36b {
+    @include font-token(var(--font-headline), 1.5rem, 700, 2.125rem);
+  }
+
+  .ft-36r {
+    @include font-token(var(--font-headline), 1.5rem, 400, 2.125rem);
+  }
+
+  .ft-28b {
+    @include font-token(var(--font-headline), 1.5rem, 700, 2.125rem);
+  }
+
+  .ft-28r {
+    @include font-token(var(--font-headline), 1.5rem, 400, 2.125rem);
+  }
+
+  .ft-22b {
+    @include font-token(var(--font-body), 1.25rem, 500, 2rem);
+  }
+
+  .ft-22r {
+    @include font-token(var(--font-body), 1.25rem, 400, 2rem);
+  }
 }
 
 @mixin mobile-typography {
@@ -192,13 +233,54 @@
   .ft-10r {
     @include font-token(var(--font-body), 0.625rem, 400, 1.375rem);
   }
+
+  // Desktop tokens — mobile breakpoint scaling
+  .ft-96r {
+    @include font-token(var(--font-display), 2rem, 400, 2.75rem);
+  }
+
+  .ft-64b {
+    @include font-token(var(--font-headline), 2rem, 700, 1.875rem);
+  }
+
+  .ft-64r {
+    @include font-token(var(--font-headline), 2rem, 400, 1.875rem);
+  }
+
+  .ft-48b {
+    @include font-token(var(--font-headline), 1.5rem, 700, 2rem);
+  }
+
+  .ft-36b {
+    @include font-token(var(--font-headline), 1.5rem, 700, 2rem);
+  }
+
+  .ft-36r {
+    @include font-token(var(--font-headline), 1.5rem, 400, 2rem);
+  }
+
+  .ft-28b {
+    @include font-token(var(--font-headline), 1.125rem, 500, 1.75rem);
+  }
+
+  .ft-28r {
+    @include font-token(var(--font-headline), 1.125rem, 400, 1.75rem);
+  }
+
+  .ft-22b {
+    @include font-token(var(--font-body), 1.125rem, 500, 1.75rem);
+  }
+
+  .ft-22r {
+    @include font-token(var(--font-body), 1.125rem, 400, 1.75rem);
+  }
 }
 
-@media (min-width: #{$tablet + 1px}) and (max-width: $laptop) {
+@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
   @include tablet-typography;
 }
 
-@media (max-width: $tablet) {
+@media (max-width: #{$tablet - 1px}) {
   @include mobile-typography;
 }
 

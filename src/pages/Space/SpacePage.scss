@@ -1,38 +1,5 @@
 @use "../../styles/abstracts/breakpoints" as *;
-
-// Tablet: 640px grid + 64px side padding = 768px
-$space-tablet-outer: 48rem;
-$space-tablet-padding: 4rem;
-$space-tablet-columns: 8;
-$space-tablet-gap: 1.5rem;
-
-// Mobile: 370px grid + 16px side padding = 402px
-$space-mobile-outer: 25.125rem;
-$space-mobile-padding: 1rem;
-$space-mobile-columns: 6;
-$space-mobile-gap: 0.875rem;
-
-@mixin space-tablet-grid {
-  display: grid;
-  grid-template-columns: repeat($space-tablet-columns, minmax(0, 1fr));
-  column-gap: $space-tablet-gap;
-  box-sizing: border-box;
-  width: min($space-tablet-outer, calc(100% - #{$space-tablet-padding * 2}));
-  max-width: min($space-tablet-outer, calc(100% - #{$space-tablet-padding * 2}));
-  margin-inline: auto;
-  padding-inline: 0;
-}
-
-@mixin space-mobile-grid {
-  display: grid;
-  grid-template-columns: repeat($space-mobile-columns, minmax(0, 1fr));
-  column-gap: $space-mobile-gap;
-  box-sizing: border-box;
-  width: min($space-mobile-outer, calc(100% - #{$space-mobile-padding * 2}));
-  max-width: min($space-mobile-outer, calc(100% - #{$space-mobile-padding * 2}));
-  margin-inline: auto;
-  padding-inline: 0;
-}
+@use "../../styles/abstracts/grid" as grid;
 
 .space {
   position: relative;
@@ -103,7 +70,7 @@ $space-mobile-gap: 0.875rem;
   }
 
   .space-kv__content {
-    @include space-tablet-grid;
+    @include grid.tablet-grid;
     align-content: center;
     align-items: start;
     height: 100%;
@@ -128,21 +95,13 @@ $space-mobile-gap: 0.875rem;
   }
 }
 
-@media (min-width: calc($mobile + 1px)) and (max-width: $laptop) {
+@media (min-width: calc($mobile + 1px)) and (max-width: #{$laptop - 1px}) {
   .space-kv__title {
-    font-family: var(--font-headline);
-    font-size: 2.5rem;
-    font-weight: 700;
-    line-height: 3.25rem;
     letter-spacing: -0.01em;
   }
 
   .space-kv__desc {
     margin-top: 0.5625rem;
-    font-family: var(--font-headline);
-    font-size: 1.5rem;
-    font-weight: 400;
-    line-height: 2.125rem;
   }
 }
 
@@ -154,7 +113,7 @@ $space-mobile-gap: 0.875rem;
   }
 
   .space-kv__content {
-    @include space-mobile-grid;
+    @include grid.mobile-grid;
     align-content: start;
     align-items: start;
     box-sizing: border-box;
@@ -170,10 +129,6 @@ $space-mobile-gap: 0.875rem;
   }
 
   .space-kv__title {
-    font-family: var(--font-headline);
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 2.75rem;
     letter-spacing: -0.01em;
   }
 
@@ -183,10 +138,6 @@ $space-mobile-gap: 0.875rem;
 
   .space-kv__desc {
     margin-top: 0.75rem;
-    font-family: var(--font-headline);
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.375rem;
     max-width: 100%;
   }
 }
@@ -194,8 +145,8 @@ $space-mobile-gap: 0.875rem;
 @media (min-width: calc($laptop + 1px)) {
   .space-kv__content {
     box-sizing: border-box;
-    width: min(90rem, calc(100% - #{$space-tablet-padding * 2}));
-    max-width: min(90rem, calc(100% - #{$space-tablet-padding * 2}));
+    width: min(90rem, calc(100% - #{grid.$tablet-grid-padding * 2}));
+    max-width: min(90rem, calc(100% - #{grid.$tablet-grid-padding * 2}));
     margin-inline: auto;
     padding-inline: 0;
   }

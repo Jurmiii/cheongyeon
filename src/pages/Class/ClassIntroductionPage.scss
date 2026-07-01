@@ -1,4 +1,10 @@
-row.class-intro-page {
+@use "../../styles/abstracts/breakpoints" as *;
+@use "../../styles/abstracts/grid" as grid;
+
+$class-intro-kv-symbol-width: 16.25rem;
+$class-intro-kv-symbol-height: 1.0625rem;
+
+.class-intro-page {
   position: relative;
   width: 100%;
   min-width: 0;
@@ -70,14 +76,96 @@ row.class-intro-page {
   }
 }
 
-@media (max-width: 48rem) {
+@media (max-width: #{$tablet - 1px}) {
   .class-intro-kv {
-    height: 40rem;
+    @include grid.mobile-kv-section;
+    width: 100%;
+    max-width: 100%;
     background-position: center center;
+  }
+
+  .class-intro-kv__grid {
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    padding-inline: 0;
+  }
+
+  .class-intro-kv__content {
+    @include grid.mobile-kv-container;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    width: 100%;
+    height: 100%;
+    text-align: left;
   }
 
   .class-intro-kv__description {
     max-width: 100%;
+  }
+}
+
+@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
+  .class-intro-kv {
+    @include grid.tablet-kv-section;
+    width: 100%;
+    max-width: 100%;
+    background-position: center 26%;
+  }
+
+  .class-intro-kv__grid {
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    padding-inline: 0;
+  }
+
+  .class-intro-kv__content {
+    @include grid.tablet-kv-container;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+  }
+
+  .class-intro-kv__head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .class-intro-kv__title {
+    margin: 0;
+    text-align: left;
+  }
+
+  .class-intro-kv__symbol {
+    display: block;
+    width: clamp(
+      calc(#{$class-intro-kv-symbol-width} * 0.92),
+      calc(#{$class-intro-kv-symbol-width} + (100vw - #{grid.$tablet-kv-width}) * 0.04),
+      $class-intro-kv-symbol-width
+    );
+    height: $class-intro-kv-symbol-height;
+    object-fit: contain;
+    object-position: left center;
+  }
+
+  .class-intro-kv__description {
+    margin: 1.5rem 0 0;
+    max-width: none;
+    text-align: left;
   }
 }
 

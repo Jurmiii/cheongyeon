@@ -1,38 +1,5 @@
 @use "../../styles/abstracts/breakpoints" as *;
-
-// Tablet: 640px grid + 64px side padding = 768px
-$location-tablet-outer: 48rem;
-$location-tablet-padding: 4rem;
-$location-tablet-columns: 8;
-$location-tablet-gap: 1.5rem;
-
-// Mobile: 370px grid + 16px side padding = 402px
-$location-mobile-outer: 25.125rem;
-$location-mobile-padding: 1rem;
-$location-mobile-columns: 6;
-$location-mobile-gap: 0.875rem;
-
-@mixin location-tablet-grid {
-  display: grid;
-  grid-template-columns: repeat($location-tablet-columns, minmax(0, 1fr));
-  column-gap: $location-tablet-gap;
-  box-sizing: border-box;
-  width: min($location-tablet-outer, calc(100% - #{$location-tablet-padding * 2}));
-  max-width: min($location-tablet-outer, calc(100% - #{$location-tablet-padding * 2}));
-  margin-inline: auto;
-  padding-inline: 0;
-}
-
-@mixin location-mobile-grid {
-  display: grid;
-  grid-template-columns: repeat($location-mobile-columns, minmax(0, 1fr));
-  column-gap: $location-mobile-gap;
-  box-sizing: border-box;
-  width: min($location-mobile-outer, calc(100% - #{$location-mobile-padding * 2}));
-  max-width: min($location-mobile-outer, calc(100% - #{$location-mobile-padding * 2}));
-  margin-inline: auto;
-  padding-inline: 0;
-}
+@use "../../styles/abstracts/grid" as grid;
 
 .location {
   position: relative;
@@ -352,7 +319,7 @@ $location-mobile-gap: 0.875rem;
   }
 
   .location-kv__content {
-    @include location-tablet-grid;
+    @include grid.tablet-grid;
     align-items: center;
     height: 100%;
   }
@@ -365,7 +332,7 @@ $location-mobile-gap: 0.875rem;
   }
 }
 
-@media (min-width: calc($mobile + 1px)) and (max-width: $laptop) {
+@media (min-width: calc($mobile + 1px)) and (max-width: #{$laptop - 1px}) {
   .location-kv__head {
     display: inline-grid;
     grid-template-columns: max-content;
@@ -379,10 +346,6 @@ $location-mobile-gap: 0.875rem;
   }
 
   .location-kv__title {
-    font-family: var(--font-headline);
-    font-size: 2.5rem;
-    font-weight: 700;
-    line-height: 3.25rem;
     letter-spacing: -0.01em;
   }
 
@@ -397,31 +360,23 @@ $location-mobile-gap: 0.875rem;
 
   .location-kv__desc {
     margin-top: 1.5rem;
-    font-family: var(--font-headline);
-    font-size: 1.5rem;
-    font-weight: 400;
-    line-height: 2.125rem;
     max-width: none;
   }
 }
 
-@media (min-width: calc($tablet + 1px)) and (max-width: $laptop) {
+@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
   .location-map {
     padding-block: 6rem;
     padding-inline: 0;
   }
 
   .location-map__inner {
-    @include location-tablet-grid;
+    @include grid.tablet-grid;
   }
 
   .location-map__title {
     grid-column: 1 / -1;
     margin: 0 0 2.5rem;
-    font-family: var(--font-headline);
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 2.75rem;
     letter-spacing: -0.01em;
   }
 
@@ -460,7 +415,7 @@ $location-mobile-gap: 0.875rem;
   }
 
   .location-map__inner {
-    @include location-tablet-grid;
+    @include grid.tablet-grid;
     row-gap: 0;
   }
 
@@ -468,10 +423,6 @@ $location-mobile-gap: 0.875rem;
     grid-column: 1 / -1;
     grid-row: 1;
     margin: 0 0 2rem;
-    font-family: var(--font-headline);
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 2.75rem;
     letter-spacing: -0.01em;
     text-align: center;
   }
@@ -526,7 +477,7 @@ $location-mobile-gap: 0.875rem;
   }
 
   .location-kv__content {
-    @include location-mobile-grid;
+    @include grid.mobile-grid;
     align-content: start;
     align-items: start;
     height: auto;
@@ -553,10 +504,6 @@ $location-mobile-gap: 0.875rem;
   }
 
   .location-kv__title {
-    font-family: var(--font-headline);
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 2.75rem;
     letter-spacing: -0.01em;
   }
 
@@ -585,29 +532,25 @@ $location-mobile-gap: 0.875rem;
 
   .location-kv__desc {
     margin-top: 0.75rem;
-    font-family: var(--font-headline);
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.375rem;
     max-width: 100%;
   }
 
   .location-map__inner {
-    @include location-mobile-grid;
+    @include grid.mobile-grid;
   }
 }
 
 @media (min-width: calc($laptop + 1px)) {
   .location-kv__content {
     box-sizing: border-box;
-    width: min(90rem, calc(100% - #{$location-tablet-padding * 2}));
-    max-width: min(90rem, calc(100% - #{$location-tablet-padding * 2}));
+    width: min(90rem, calc(100% - #{grid.$tablet-grid-padding * 2}));
+    max-width: min(90rem, calc(100% - #{grid.$tablet-grid-padding * 2}));
     margin-inline: auto;
     padding-inline: 0;
   }
 
   .location-map {
-    padding-inline: max($location-tablet-padding, calc((100% - min(100%, 90rem)) / 2));
+    padding-inline: max(grid.$tablet-grid-padding, calc((100% - min(100%, 90rem)) / 2));
   }
 
   .location-map__inner {
