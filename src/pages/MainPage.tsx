@@ -10,6 +10,9 @@ import mainCtaBg from "../assets/images/01main/main-cta-bg.webp";
 import mainKv1 from "../assets/images/01main/main-kv1.webp";
 import mainKv2 from "../assets/images/01main/main-kv2.webp";
 import mainKv3 from "../assets/images/01main/main-kv3.webp";
+import moKv1 from "../assets/images/01main/mo-kv1.png";
+import moKv2 from "../assets/images/01main/mo-kv2.png";
+import moKv3 from "../assets/images/01main/mo-kv3.png";
 import eventBanner1 from "../assets/images/01main/event-banner1.webp";
 import eventBanner2 from "../assets/images/01main/event-banner2.webp";
 import eventBanner3 from "../assets/images/01main/event-banner3.webp";
@@ -36,6 +39,7 @@ import tea5 from "../assets/images/01main/tea5.webp";
 import winter from "../assets/images/01main/winter.webp";
 import winterBg from "../assets/images/01main/winter-bg.webp";
 import kvTitle from "../assets/images/01main/kv-title.svg";
+import subsymbol from "../assets/images/01main/subsymbol.svg";
 import centerLine from "../assets/images/01main/center-line.svg";
 import chajeomIcon from "../assets/images/01main/chajeom-icon.svg";
 import dado1 from "../assets/images/01main/dado1.webp";
@@ -60,7 +64,7 @@ import summerBg2 from "../assets/images/01main/summer-bg2.svg";
 import summerPot from "../assets/images/01main/summer-tea.webp";
 import winterBg2 from "../assets/images/01main/winter-bg2.svg";
 import winterPot from "../assets/images/01main/winter-tea.webp";
-import { Footer, Header, Icon } from "../components/common";
+import { Footer, Header, Icon, MobileHeader, TabletHeader } from "../components/common";
 import ProductContentBox from "../components/common/ProductContentBox";
 import "./MainPage.scss";
 
@@ -112,6 +116,12 @@ interface MainReview {
 }
 
 type SeasonKey = "spring" | "summer" | "fall" | "winter";
+
+const mainMoKvSlides: MainKvSlide[] = [
+  { id: 1, image: moKv1 },
+  { id: 2, image: moKv2 },
+  { id: 3, image: moKv3 },
+];
 
 const mainKvSlides: MainKvSlide[] = [
   { id: 1, image: mainKv1 },
@@ -412,6 +422,41 @@ function markMainIntroAsSeen() {
   }
 }
 
+type KvViewport = "desktop" | "tablet" | "mobile";
+
+function getKvViewport(width: number): KvViewport {
+  if (width <= 768) {
+    return "mobile";
+  }
+
+  if (width <= 1024) {
+    return "tablet";
+  }
+
+  return "desktop";
+}
+
+function useKvViewport() {
+  const [viewport, setViewport] = useState<KvViewport>(() =>
+    typeof window !== "undefined" ? getKvViewport(window.innerWidth) : "desktop",
+  );
+
+  useEffect(() => {
+    const updateViewport = () => {
+      setViewport(getKvViewport(window.innerWidth));
+    };
+
+    updateViewport();
+    window.addEventListener("resize", updateViewport, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", updateViewport);
+    };
+  }, []);
+
+  return viewport;
+}
+
 export default function MainPage() {
   const [hasSeenIntroAtMount] = useState(() => hasMainIntroBeenSeen());
   const [isIntroEnded, setIsIntroEnded] = useState(hasSeenIntroAtMount);
@@ -432,6 +477,8 @@ export default function MainPage() {
   const [sec8DragOffset, setSec8DragOffset] = useState<number>(0);
   const [isSec8Dragging, setIsSec8Dragging] = useState<boolean>(false);
   const [sec8AutoPlayResetKey, setSec8AutoPlayResetKey] = useState<number>(0);
+  const kvViewport = useKvViewport();
+  const kvSlides = kvViewport === "mobile" ? mainMoKvSlides : mainKvSlides;
   const [isSec5Dragging, setIsSec5Dragging] = useState<boolean>(false);
   const [isSec9Dragging, setIsSec9Dragging] = useState<boolean>(false);
   const sec4Ref = useRef<HTMLElement | null>(null);
@@ -1130,10 +1177,18 @@ export default function MainPage() {
         </div>
       )}
       <div className="main-page__header">
-        <Header />
+        {kvViewport === "mobile" ? <MobileHeader /> : null}
+        {kvViewport === "tablet" ? <TabletHeader /> : null}
+        {kvViewport === "desktop" ? <Header /> : null}
       </div>
       <section
-        className={["main-sec1", isIntroEnded && "main-sec1--revealed"].filter(Boolean).join(" ")}
+        className={[
+          "main-sec1",
+          kvViewport !== "desktop" && `main-sec1--${kvViewport}`,
+          isIntroEnded && "main-sec1--revealed",
+        ]
+          .filter(Boolean)
+          .join(" ")}
         aria-label="청연 메인 키비주얼"
         onTransitionEnd={(event) => {
           if (event.currentTarget !== event.target || event.propertyName !== "opacity") {
@@ -1146,7 +1201,7 @@ export default function MainPage() {
           }
         }}
       >
-        {mainKvSlides.map((slide, index) => (
+        {kvSlides.map((slide, index) => (
           <div
             className={["main-sec1__background", index === activeSlideIndex && "main-sec1__background--active"]
               .filter(Boolean)
@@ -1159,13 +1214,14 @@ export default function MainPage() {
         <div className="main-sec1__grid">
           <div className="main-sec1__content">
             <img className="main-sec1__kv-title" src={kvTitle} alt="청연" />
-            <h1 className="main-sec1__title ft-48b ink500">
+            <h1 className="main-sec1__title ft-48b ft-40b ft-30b ink500">
               차를 우리는 순간,
               <br />
               시간은 천천히 흐른다
             </h1>
             <img className="main-sec1__symbol" src={symbol1} alt="" aria-hidden="true" />
-            <p className="main-sec1__description ft-28r ink500">
+            <img className="main-sec1__symbol main-sec1__symbol--responsive" src={subsymbol} alt="" aria-hidden="true" />
+            <p className="main-sec1__description ft-28r ft-24r ft-18b ink500">
               계절과 자연이 머무는
               <br />
               프리미엄 티 익스피리언스
