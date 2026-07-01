@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import { Footer, Header, Icon } from "../../components/common";
+import { Footer, Header, Icon, Button } from "../../components/common";
 import subSymbol from "../../assets/images/01main/subsymbol.svg";
 import chaIcon from "../../assets/images/09season-class/cha-icon.svg";
 import tryIcon from "../../assets/images/09season-class/try-icon.svg";
@@ -26,23 +27,30 @@ import {
   type SeasonOrbitPosition,
 } from "../../data/seasonClassItems";
 import {
+  SEASON_CLASS_BRANCHES,
   SEASON_CLASS_SCHEDULE_DESCRIPTION,
   SEASON_CLASS_SCHEDULE_DIVIDER,
   SEASON_CLASS_SCHEDULE_TITLE,
   SEASON_CLASS_SCHEDULE_WEEKDAYS,
   canGoToPreviousMonth,
+  formatScheduleDateKey,
+  formatScheduleDateLabel,
   formatScheduleMonthLabel,
   getCalendarGridDates,
   getCupImage,
   getScheduleDaysForMonth,
-  getScheduleDaysFromDate,
-  getSeatSlots,
+  getScheduleTimeSlots,
+  getFirstAvailableTimeIndex,
+  getSeatDots,
   isBeforeDay,
   isSameDay,
   isSameMonthView,
   startOfDay,
+  type SeasonClassBranch,
   type SeasonClassScheduleDay,
 } from "../../data/seasonClassSchedule";
+import { getActiveSeasonReservationClass } from "../../data/seasonClassReservation";
+import type { ReservationBranch } from "../../data/reservationClasses";
 import "./SeasonClassPage.scss";
 
 const PX_PER_REM = 16;
@@ -542,245 +550,127 @@ function SeasonClassPromoSection() {
   );
 }
 
-// --- SeasonClassScheduleSection helpers ---
+// --- SeasonClassScheduleSection ---
 
-const SCHEDULE_SWIPE_THRESHOLD = 48;
-const SCHEDULE_CARD_GAP_PX = 24;
-const SCHEDULE_CARD_INACTIVE_Y = "4.3125rem";
-const SCHEDULE_SLIDE_DURATION = 0.45;
+type ScheduleFilter = "branch" | "date" | null;
 
 function SeasonClassScheduleSection() {
+  const navigate = useNavigate();
   const today = useMemo(() => startOfDay(new Date()), []);
-  const monthWrapRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const swipeStartRef = useRef<{ x: number; y: number; pointerId: number } | null>(null);
-  const suppressClickRef = useRef(false);
-  const isAnimatingRef = useRef(false);
+  const filtersWrapRef = useRef<HTMLDivElement>(null);
 
-  const [leadDate, setLeadDate] = useState(() => today);
+  const [selectedDate, setSelectedDate] = useState(() => today);
+  const [activeTimeIndex, setActiveTimeIndex] = useState(0);
   const [calendarMonth, setCalendarMonth] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [openFilter, setOpenFilter] = useState<ScheduleFilter>(null);
+  const [selectedBranch, setSelectedBranch] = useState<SeasonClassBranch>(SEASON_CLASS_BRANCHES[0]);
+  const [showReserveButton, setShowReserveButton] = useState(false);
 
-  const visibleDays = useMemo(
-    () => getScheduleDaysFromDate(leadDate, today, 18),
-    [leadDate, today],
+  const seasonReservationClass = useMemo(
+    () => getActiveSeasonReservationClass(selectedDate),
+    [selectedDate],
   );
 
-  const monthLabel = formatScheduleMonthLabel(leadDate.getFullYear(), leadDate.getMonth());
+  const allTimeSlots = useMemo(
+    () =>
+      getScheduleTimeSlots(
+        selectedDate,
+        selectedBranch.shortLabel as ReservationBranch,
+        seasonReservationClass.title,
+      ),
+    [selectedDate, selectedBranch.shortLabel, seasonReservationClass.title],
+  );
+
+  const monthLabel = formatScheduleMonthLabel(calendarMonth.getFullYear(), calendarMonth.getMonth());
+  const dateLabel = formatScheduleDateLabel(selectedDate);
   const calendarDates = useMemo(
     () => getCalendarGridDates(calendarMonth.getFullYear(), calendarMonth.getMonth()),
     [calendarMonth],
   );
 
   const canGoPrevMonth = canGoToPreviousMonth(calendarMonth, today);
-  const currentDay = visibleDays[0];
 
   useEffect(() => {
-    setCalendarMonth(new Date(leadDate.getFullYear(), leadDate.getMonth(), 1));
-  }, [leadDate]);
+    const slots = getScheduleTimeSlots(
+      selectedDate,
+      selectedBranch.shortLabel as ReservationBranch,
+      seasonReservationClass.title,
+    );
+    setActiveTimeIndex(getFirstAvailableTimeIndex(slots));
+    setShowReserveButton(false);
+  }, [selectedDate, selectedBranch.shortLabel, seasonReservationClass.title]);
 
-  const getCardStep = useCallback(() => {
-    const track = trackRef.current;
-    const firstCard = track?.firstElementChild as HTMLElement | undefined;
-    return firstCard ? firstCard.offsetWidth + SCHEDULE_CARD_GAP_PX : 244;
-  }, []);
+  useEffect(() => {
+    setCalendarMonth(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1));
+  }, [selectedDate]);
 
-  const animateToOffset = useCallback(
-    (offset: number, targetDate: Date) => {
-      const track = trackRef.current;
-      const targetDay = visibleDays[offset];
-
-      if (!track || !targetDay || isAnimatingRef.current || offset <= 0) {
+  const selectDate = useCallback(
+    (date: Date) => {
+      if (isBeforeDay(date, today)) {
         return;
       }
 
-      if (!isSameDay(targetDay.date, targetDate)) {
-        return;
-      }
-
-      const cards = Array.from(track.children) as HTMLElement[];
-      const targetCard = cards[offset];
-
-      if (!targetCard) {
-        return;
-      }
-
-      const step = getCardStep();
-      isAnimatingRef.current = true;
-
-      const timeline = gsap.timeline({
-        onComplete: () => {
-          setLeadDate(startOfDay(targetDate));
-          requestAnimationFrame(() => {
-            gsap.set(track, { clearProps: "transform" });
-            gsap.set(cards, { clearProps: "transform,opacity" });
-            isAnimatingRef.current = false;
-          });
-        },
-      });
-
-      timeline.to(
-        track,
-        { x: -step * offset, duration: SCHEDULE_SLIDE_DURATION, ease: "power3.out" },
-        0,
-      );
-      timeline.fromTo(
-        targetCard,
-        { y: SCHEDULE_CARD_INACTIVE_Y, opacity: 0.72 },
-        { y: 0, opacity: 1, duration: SCHEDULE_SLIDE_DURATION, ease: "power3.out", overwrite: "auto" },
-        0,
-      );
-
-      cards.slice(0, offset).forEach((card) => {
-        timeline.to(
-          card,
-          { opacity: 0.35, duration: SCHEDULE_SLIDE_DURATION, ease: "power3.out" },
-          0,
-        );
-      });
+      setSelectedDate(startOfDay(date));
+      setShowReserveButton(false);
     },
-    [getCardStep, visibleDays],
+    [today],
   );
-
-  const animateToNextDay = useCallback(() => {
-    const nextDay = visibleDays[1];
-    if (!nextDay) {
-      return;
-    }
-
-    animateToOffset(1, nextDay.date);
-  }, [animateToOffset, visibleDays]);
-
-  const animateToPrevDay = useCallback(() => {
-    const track = trackRef.current;
-
-    if (!track || isAnimatingRef.current) {
-      return;
-    }
-
-    const prevDate = new Date(leadDate.getFullYear(), leadDate.getMonth(), leadDate.getDate() - 1);
-    if (isBeforeDay(prevDate, today)) {
-      return;
-    }
-
-    isAnimatingRef.current = true;
-    const step = getCardStep();
-
-    setLeadDate(startOfDay(prevDate));
-
-    requestAnimationFrame(() => {
-      const nextTrack = trackRef.current;
-      if (!nextTrack) {
-        isAnimatingRef.current = false;
-        return;
-      }
-
-      const card0 = nextTrack.firstElementChild as HTMLElement | null;
-      if (!card0) {
-        isAnimatingRef.current = false;
-        return;
-      }
-
-      gsap.set(nextTrack, { x: -step });
-      gsap.set(card0, { y: SCHEDULE_CARD_INACTIVE_Y, opacity: 0.72 });
-
-      gsap
-        .timeline({
-          onComplete: () => {
-            gsap.set(nextTrack, { clearProps: "transform" });
-            gsap.set(card0, { clearProps: "transform,opacity" });
-            isAnimatingRef.current = false;
-          },
-        })
-        .to(nextTrack, { x: 0, duration: SCHEDULE_SLIDE_DURATION, ease: "power3.out" }, 0)
-        .to(
-          card0,
-          { y: 0, opacity: 1, duration: SCHEDULE_SLIDE_DURATION, ease: "power3.out" },
-          0,
-        );
-    });
-  }, [getCardStep, leadDate, today]);
-
-  const goToDay = useCallback((date: Date) => {
-    if (isBeforeDay(date, today) || isAnimatingRef.current) {
-      return;
-    }
-
-    setLeadDate(startOfDay(date));
-  }, [today]);
 
   const handleCardClick = useCallback(
-    (date: Date, offset: number) => {
-      if (suppressClickRef.current || isAnimatingRef.current || offset === 0) {
+    (index: number) => {
+      const slot = allTimeSlots[index];
+      if (!slot || slot.isPast) {
         return;
       }
 
-      animateToOffset(offset, date);
+      setActiveTimeIndex(index);
+      setShowReserveButton(true);
     },
-    [animateToOffset],
+    [allTimeSlots],
   );
 
-  const handleSchedulePointerDown = useCallback(
-    (event: React.PointerEvent<HTMLDivElement>) => {
-      if (isAnimatingRef.current) {
+  const handleReserveClick = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+
+      const slot = allTimeSlots[activeTimeIndex];
+      if (!slot || slot.isPast) {
         return;
       }
 
-      const start = { x: event.clientX, y: event.clientY, pointerId: event.pointerId };
-      swipeStartRef.current = start;
+      const params = new URLSearchParams({
+        branch: selectedBranch.shortLabel,
+        date: formatScheduleDateKey(selectedDate),
+        time: slot.time,
+        classId: String(seasonReservationClass.id),
+      });
 
-      const finishSwipe = (upEvent: PointerEvent) => {
-        if (upEvent.pointerId !== start.pointerId) {
-          return;
-        }
-
-        document.removeEventListener("pointerup", finishSwipe);
-        document.removeEventListener("pointercancel", finishSwipe);
-        swipeStartRef.current = null;
-
-        if (isAnimatingRef.current) {
-          return;
-        }
-
-        const deltaX = upEvent.clientX - start.x;
-        const deltaY = upEvent.clientY - start.y;
-
-        if (Math.abs(deltaX) < SCHEDULE_SWIPE_THRESHOLD || Math.abs(deltaX) < Math.abs(deltaY)) {
-          return;
-        }
-
-        suppressClickRef.current = true;
-        window.setTimeout(() => {
-          suppressClickRef.current = false;
-        }, 300);
-
-        if (deltaX < 0) {
-          animateToNextDay();
-        } else {
-          animateToPrevDay();
-        }
-      };
-
-      document.addEventListener("pointerup", finishSwipe);
-      document.addEventListener("pointercancel", finishSwipe);
+      navigate(`/reservation?${params.toString()}`);
     },
-    [animateToNextDay, animateToPrevDay],
+    [
+      activeTimeIndex,
+      allTimeSlots,
+      navigate,
+      seasonReservationClass.id,
+      selectedBranch.shortLabel,
+      selectedDate,
+    ],
   );
 
   useEffect(() => {
-    if (!isCalendarOpen) {
+    if (!openFilter) {
       return;
     }
 
     const handlePointerDown = (event: PointerEvent) => {
-      if (!monthWrapRef.current?.contains(event.target as Node)) {
-        setIsCalendarOpen(false);
+      if (!filtersWrapRef.current?.contains(event.target as Node)) {
+        setOpenFilter(null);
       }
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setIsCalendarOpen(false);
+        setOpenFilter(null);
       }
     };
 
@@ -791,24 +681,21 @@ function SeasonClassScheduleSection() {
       document.removeEventListener("pointerdown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isCalendarOpen]);
+  }, [openFilter]);
 
-  const moveMonth = (offset: number) => {
+  const toggleFilter = useCallback((filter: Exclude<ScheduleFilter, null>) => {
+    setOpenFilter((prev) => (prev === filter ? null : filter));
+  }, []);
+
+  const changeCalendarMonth = (offset: number) => {
     const nextMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + offset, 1);
-
     const currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+
     if (offset < 0 && nextMonth.getTime() < currentMonthStart.getTime()) {
       return;
     }
 
-    const monthDays = getScheduleDaysForMonth(nextMonth.getFullYear(), nextMonth.getMonth(), today);
-    const firstAvailable = monthDays.find((day) => !day.isPast);
-
     setCalendarMonth(nextMonth);
-    if (firstAvailable) {
-      setLeadDate(startOfDay(firstAvailable.date));
-    }
-    setIsCalendarOpen(false);
   };
 
   const selectDay = useCallback(
@@ -817,11 +704,16 @@ function SeasonClassScheduleSection() {
         return;
       }
 
-      goToDay(day.date);
-      setIsCalendarOpen(false);
+      selectDate(day.date);
+      setOpenFilter(null);
     },
-    [goToDay],
+    [selectDate],
   );
+
+  const handleBranchSelect = (branch: SeasonClassBranch) => {
+    setSelectedBranch(branch);
+    setOpenFilter(null);
+  };
 
   const handleCalendarDateSelect = (date: Date) => {
     if (isBeforeDay(date, today)) {
@@ -847,43 +739,102 @@ function SeasonClassScheduleSection() {
         <div className="season-schedule__intro">
           <h2 className="season-schedule__title ft-48b ink500">{SEASON_CLASS_SCHEDULE_TITLE}</h2>
           <p className="season-schedule__desc ft-28r ink500">{SEASON_CLASS_SCHEDULE_DESCRIPTION}</p>
-        </div>
 
-        <div ref={monthWrapRef} className="season-schedule__month-wrap">
-          <div className="season-schedule__month">
-            <div className="season-schedule__month-nav">
+          <div ref={filtersWrapRef} className="season-schedule__filters-wrap">
+          <div className="season-schedule__filters">
+            <div className="season-schedule__filter-item">
               <button
-                className="season-schedule__month-btn"
+                className={[
+                  "season-schedule__filter-tab",
+                  openFilter === "branch" && "season-schedule__filter-tab--open",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
                 type="button"
-                aria-label="이전 달"
-                disabled={!canGoPrevMonth}
-                onClick={() => moveMonth(-1)}
+                aria-expanded={openFilter === "branch"}
+                aria-haspopup="listbox"
+                onClick={() => toggleFilter("branch")}
               >
-                <Icon name="chevron-left" />
+                <span className="season-schedule__filter-label">{selectedBranch.shortLabel}</span>
+                <Icon className="season-schedule__filter-icon" name="angle-down" aria-hidden="true" />
               </button>
-              <span className="season-schedule__month-label">{monthLabel}</span>
-              <button
-                className="season-schedule__month-btn"
-                type="button"
-                aria-label="다음 달"
-                onClick={() => moveMonth(1)}
-              >
-                <Icon name="chevron-right" />
-              </button>
+
+              {openFilter === "branch" && (
+                <div
+                  className="season-schedule__filter-panel season-schedule__filter-panel--branch"
+                  role="listbox"
+                  aria-label="지점 선택"
+                >
+                  {SEASON_CLASS_BRANCHES.map((branch) => {
+                    const isSelected = branch.id === selectedBranch.id;
+
+                    return (
+                      <button
+                        key={branch.id}
+                        type="button"
+                        role="option"
+                        aria-selected={isSelected}
+                        className={[
+                          "season-schedule__branch-option",
+                          isSelected && "season-schedule__branch-option--active",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                        onClick={() => handleBranchSelect(branch)}
+                      >
+                        <span className="season-schedule__branch-name ft-18b ink500">{branch.name}</span>
+                        <span className="season-schedule__branch-address ft-14r ink300">{branch.address}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-            <button
-              className="season-schedule__calendar-btn"
-              type="button"
-              aria-label="달력 펼치기"
-              aria-expanded={isCalendarOpen}
-              onClick={() => setIsCalendarOpen((prev) => !prev)}
-            >
-              <Icon className="season-schedule__calendar-icon ink500" name="calendar" />
-            </button>
-          </div>
 
-          {isCalendarOpen && (
-            <div className="season-schedule__calendar-panel" role="dialog" aria-label={`${monthLabel} 달력`}>
+            <div className="season-schedule__filter-item">
+              <button
+                className={[
+                  "season-schedule__filter-tab",
+                  openFilter === "date" && "season-schedule__filter-tab--open",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                type="button"
+                aria-expanded={openFilter === "date"}
+                aria-haspopup="dialog"
+                onClick={() => toggleFilter("date")}
+              >
+                <span className="season-schedule__filter-label">{dateLabel}</span>
+                <Icon className="season-schedule__filter-icon" name="angle-down" aria-hidden="true" />
+              </button>
+
+              {openFilter === "date" && (
+                <div
+                  className="season-schedule__filter-panel season-schedule__filter-panel--date season-schedule__calendar-panel"
+                  role="dialog"
+                  aria-label={`${monthLabel} 달력`}
+                >
+              <div className="season-schedule__calendar-head">
+                <button
+                  className="season-schedule__calendar-nav-btn"
+                  type="button"
+                  aria-label="이전 달"
+                  disabled={!canGoPrevMonth}
+                  onClick={() => changeCalendarMonth(-1)}
+                >
+                  <Icon name="chevron-left" />
+                </button>
+                <span className="season-schedule__calendar-month">{monthLabel}</span>
+                <button
+                  className="season-schedule__calendar-nav-btn"
+                  type="button"
+                  aria-label="다음 달"
+                  onClick={() => changeCalendarMonth(1)}
+                >
+                  <Icon name="chevron-right" />
+                </button>
+              </div>
+
               <div className="season-schedule__calendar-weekdays" aria-hidden="true">
                 {SEASON_CLASS_SCHEDULE_WEEKDAYS.map((weekday) => (
                   <span key={weekday} className="season-schedule__calendar-weekday ft-14b ink500">
@@ -910,7 +861,7 @@ function SeasonClassScheduleSection() {
                     today,
                   ).find((item) => isSameDay(item.date, date));
                   const isSelectable = Boolean(scheduleDay && !scheduleDay.isPast);
-                  const isSelected = currentDay ? isSameDay(date, currentDay.date) : false;
+                  const isSelected = isSameDay(date, selectedDate);
 
                   return (
                     <button
@@ -925,39 +876,30 @@ function SeasonClassScheduleSection() {
                         .filter(Boolean)
                         .join(" ")}
                       disabled={!isSelectable}
-                      aria-label={
-                        scheduleDay
-                          ? `${date.getDate()}일, 잔여 ${scheduleDay.remainingSeats}석`
-                          : `${date.getDate()}일`
-                      }
+                      aria-label={`${date.getDate()}일`}
                       onClick={() => handleCalendarDateSelect(date)}
                     >
                       <span className="season-schedule__calendar-day ft-18b">{date.getDate()}</span>
-                      {scheduleDay && (
-                        <span className="season-schedule__calendar-seats ft-14r deep400">
-                          {scheduleDay.remainingSeats}석
-                        </span>
-                      )}
                     </button>
                   );
                 })}
               </div>
             </div>
-          )}
+              )}
+            </div>
+          </div>
+          </div>
         </div>
       </header>
 
-      <div
-        className="season-schedule__carousel"
-        aria-label="클래스 일정 스와이퍼"
-        onPointerDown={handleSchedulePointerDown}
-      >
-        {currentDay ? (
-          <div className="season-schedule__track" ref={trackRef}>
-            {visibleDays.map((item, offset) => {
-              const isActive = offset === 0;
-              const seatSlots = getSeatSlots(item.remainingSeats);
-              const cupImage = getCupImage(item.remainingSeats);
+      <div className="season-schedule__carousel" aria-label="클래스 시간 선택">
+        {allTimeSlots.length > 0 ? (
+          <div className="season-schedule__track">
+            {allTimeSlots.map((item, index) => {
+              const isActive = index === activeTimeIndex;
+              const isPast = item.isPast;
+              const seatDots = getSeatDots(item.remainingSeats);
+              const cupImage = getCupImage(isPast ? 1 : item.remainingSeats);
 
               return (
                 <article
@@ -965,53 +907,91 @@ function SeasonClassScheduleSection() {
                   className={[
                     "season-schedule__card",
                     isActive && "season-schedule__card--active",
+                    isActive && showReserveButton && !isPast && "season-schedule__card--reserve",
+                    isPast && "season-schedule__card--past",
                   ]
                     .filter(Boolean)
                     .join(" ")}
-                  aria-hidden={!isActive}
                 >
-                  <button
-                    type="button"
-                    className="season-schedule__card-surface"
-                    aria-label={`${item.day}일 ${item.weekday}, 잔여 ${item.remainingSeats}석`}
-                    aria-current={isActive ? "date" : undefined}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleCardClick(item.date, offset);
-                    }}
+                  <div
+                    className={[
+                      "season-schedule__card-surface",
+                      isActive && "season-schedule__card-surface--active",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
                   >
-                    <div className="season-schedule__card-head">
-                      <p className="season-schedule__day ft-48b deep500">{item.day}</p>
-                      <p className="season-schedule__weekday ft-18r deep500">{item.weekday}</p>
-                    </div>
+                    <div
+                      className="season-schedule__card-body"
+                      role="button"
+                      tabIndex={isPast ? -1 : 0}
+                      aria-disabled={isPast}
+                      aria-label={`${item.time}, 잔여 ${item.remainingSeats}석`}
+                      aria-current={isActive ? "time" : undefined}
+                      onKeyDown={(event) => {
+                        if (isPast) {
+                          return;
+                        }
 
-                    <img
-                      className="season-schedule__divider"
-                      src={SEASON_CLASS_SCHEDULE_DIVIDER}
-                      alt=""
-                      aria-hidden="true"
-                    />
+                        if (event.key !== "Enter" && event.key !== " ") {
+                          return;
+                        }
 
-                    <img className="season-schedule__cup" src={cupImage} alt="" aria-hidden="true" />
-
-                    <div className="season-schedule__seats">
-                      <div className="season-schedule__dots" aria-hidden="true">
-                        {seatSlots.map((state, dotIndex) => (
-                          <span
-                            key={`${item.id}-dot-${dotIndex}`}
-                            className={["season-schedule__dot", `season-schedule__dot--${state}`].join(" ")}
-                          />
-                        ))}
+                        event.preventDefault();
+                        handleCardClick(index);
+                      }}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleCardClick(index);
+                      }}
+                    >
+                      <div className="season-schedule__card-head">
+                        <p className="season-schedule__time-label ft-32b deep500">{item.time}</p>
                       </div>
-                      <p className="season-schedule__remain ft-18r ink500">잔여 {item.remainingSeats}석</p>
+
+                      <img
+                        className="season-schedule__divider"
+                        src={SEASON_CLASS_SCHEDULE_DIVIDER}
+                        alt=""
+                        aria-hidden="true"
+                      />
+
+                      <img className="season-schedule__cup" src={cupImage} alt="" aria-hidden="true" />
+
+                      <div className="season-schedule__seats">
+                        <div className="season-schedule__dots" aria-hidden="true">
+                          {seatDots.map((state, dotIndex) => (
+                            <span
+                              key={`${item.id}-dot-${dotIndex}`}
+                              className={["season-schedule__dot", `season-schedule__dot--${state}`].join(" ")}
+                            />
+                          ))}
+                        </div>
+                        <p className="season-schedule__remain ft-18r ink500">
+                          {isPast ? "마감" : `잔여 ${item.remainingSeats}석`}
+                        </p>
+                      </div>
                     </div>
-                  </button>
+
+                    {isActive && showReserveButton && !isPast ? (
+                      <Button
+                        className="season-schedule__reserve-btn"
+                        variant="btn6"
+                        type="button"
+                        icon={<Icon className="season-schedule__reserve-icon" name="arrow-right" />}
+                        iconPosition="right"
+                        onClick={handleReserveClick}
+                      >
+                        예약하기
+                      </Button>
+                    ) : null}
+                  </div>
                 </article>
               );
             })}
           </div>
         ) : (
-          <p className="season-schedule__empty ft-22r ink500">이번 달 예약 가능한 일정이 없습니다.</p>
+          <p className="season-schedule__empty ft-22r ink500">선택한 날짜에 예약 가능한 시간이 없습니다.</p>
         )}
       </div>
     </section>

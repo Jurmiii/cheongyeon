@@ -5,6 +5,7 @@ import type { SVGProps } from "react";
 export type IconName =
   | "angle-down"
   | "angle-top"
+  | "arrow-right"
   | "calendar"
   | "chevron-left"
   | "chevron-right"
@@ -12,6 +13,7 @@ export type IconName =
   | "credit-card"
   | "circle-info"
   | "envelope"
+  | "eye"
   | "eye-slash"
   | "gift"
   | "image"
@@ -60,6 +62,12 @@ export default function Icon({ name, className = "", ...props }: IconProps) {
     >
       {name === "angle-down" && <path d="m7 10 5 5 5-5" />}
       {name === "angle-top" && <path d="m6 15 6-6 6 6" />}
+      {name === "arrow-right" && (
+        <>
+          <path d="M5 12h14" />
+          <path d="m13 6 6 6-6 6" />
+        </>
+      )}
       {name === "calendar" && (
         <>
           <path d="M7 3v4" />
@@ -94,6 +102,12 @@ export default function Icon({ name, className = "", ...props }: IconProps) {
         <>
           <rect width="18" height="14" x="3" y="5" rx="2" />
           <path d="m3 7 9 6 9-6" />
+        </>
+      )}
+      {name === "eye" && (
+        <>
+          <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+          <circle cx="12" cy="12" r="3" />
         </>
       )}
       {name === "eye-slash" && (

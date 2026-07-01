@@ -5,6 +5,7 @@ import { Badge, Button, Footer, Header, Icon, Input } from "../../components/com
 import { useAuth } from "../../contexts/AuthContext";
 import {
   RESERVATION_CLASSES_PER_PAGE,
+  RESERVATION_SESSION_CAPACITY,
   cardCompanies,
   installmentPlans,
   reservationBranches,
@@ -20,7 +21,8 @@ import {
 import { useReservations } from "../../hooks/useReservations";
 import { useUserProfile } from "../../hooks/useUserProfile";
 import type { Reservation } from "../../types/mypage";
-import { addReservation, updateReservation } from "../../utils/reservationStorage";
+import { addReservation, getRemainingSeatsForSession, updateReservation } from "../../utils/reservationStorage";
+import { parseSeasonReservationClassId } from "../../data/seasonClassReservation";
 import "./ReservationPage.scss";
 
 type PaymentMethod = "card" | "bank";
@@ -109,7 +111,7 @@ function getClassBadgeModifier(classId: number) {
 
 function getMaxGuestCount(classId: number) {
   const classItem = reservationClasses.find((item) => item.id === classId);
-  return classItem?.maxGuests ?? 4;
+  return classItem?.maxGuests ?? 6;
 }
 
 function normalizePhone(value: string) {
@@ -378,6 +380,7 @@ function ReservationPage() {
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
   const customerInfoRef = useRef<HTMLDivElement>(null);
   const initializedEditReservationIdRef = useRef<string | null>(null);
+  const initializedFromQueryRef = useRef(false);
 
   const totalClassPages = Math.ceil(reservationClasses.length / RESERVATION_CLASSES_PER_PAGE);
 
@@ -391,6 +394,61 @@ function ReservationPage() {
     () => reservationClasses.find((classItem) => classItem.id === selectedClassId) ?? reservationClasses[0],
     [selectedClassId],
   );
+  const selectedDateKey = formatDateForStorage(selectedDate);
+
+  const remainingSeatsByTime = useMemo(() => {
+    return reservationTimeSlots.reduce<Record<ReservationTimeSlot, number>>((seatsByTime, time) => {
+      seatsByTime[time] = getRemainingSeatsForSession({
+        date: selectedDateKey,
+        time,
+        classTitle: selectedClass.title,
+        branch: selectedBranch,
+        excludeReservationId: editReservation?.id,
+      });
+
+      return seatsByTime;
+    }, {} as Record<ReservationTimeSlot, number>);
+  }, [selectedBranch, selectedClass.title, selectedDateKey, editReservation?.id, reservations]);
+
+  const selectedRemainingSeats = remainingSeatsByTime[selectedTime] ?? maxGuestCount;
+  const bookableGuestCount = Math.min(maxGuestCount, selectedRemainingSeats);
+
+  useEffect(() => {
+    if (isEditMode || initializedFromQueryRef.current) {
+      return;
+    }
+
+    const branchParam = searchParams.get("branch");
+    const dateParam = searchParams.get("date");
+    const timeParam = searchParams.get("time");
+    const classIdParam = searchParams.get("classId");
+    const hasQueryParams = Boolean(branchParam || dateParam || timeParam || classIdParam);
+
+    if (!hasQueryParams) {
+      initializedFromQueryRef.current = true;
+      return;
+    }
+
+    if (branchParam) {
+      setSelectedBranch(getReservationBranch(branchParam));
+    }
+
+    if (dateParam) {
+      setSelectedDate(parseReservationDate(dateParam.replace(/\./g, "-"), today));
+    }
+
+    if (timeParam && isReservationTimeSlot(timeParam)) {
+      setSelectedTime(timeParam);
+    }
+
+    const seasonClassId = parseSeasonReservationClassId(classIdParam);
+    if (seasonClassId) {
+      setSelectedClassId(seasonClassId);
+      setClassPage(Math.ceil(seasonClassId / RESERVATION_CLASSES_PER_PAGE));
+    }
+
+    initializedFromQueryRef.current = true;
+  }, [isEditMode, searchParams, today]);
 
   useEffect(() => {
     if (isEditMode || !profile) {
@@ -435,12 +493,16 @@ function ReservationPage() {
     initializedEditReservationIdRef.current = editReservation.id;
   }, [editReservation, isEditMode, profile, today]);
 
+  useEffect(() => {
+    setGuestCount((count) => Math.min(count, bookableGuestCount));
+  }, [bookableGuestCount]);
+
   const handleGuestDecrease = () => {
     setGuestCount((count) => Math.max(1, count - 1));
   };
 
   const handleGuestIncrease = () => {
-    setGuestCount((count) => Math.min(maxGuestCount, count + 1));
+    setGuestCount((count) => Math.min(bookableGuestCount, count + 1));
   };
 
   const handlePaymentDropdownToggle = (dropdown: PaymentDropdown) => {
@@ -495,8 +557,12 @@ function ReservationPage() {
       errors.push("시간을 선택해주세요.");
     }
 
-    if (guestCount < 1 || guestCount > maxGuestCount) {
-      errors.push(`인원은 1명에서 ${maxGuestCount}명 사이로 선택해주세요.`);
+    if (guestCount < 1 || guestCount > bookableGuestCount) {
+      errors.push(`인원은 1명에서 ${bookableGuestCount}명 사이로 선택해주세요.`);
+    }
+
+    if (selectedRemainingSeats < 1) {
+      errors.push("선택한 시간의 잔여석이 없습니다. 다른 시간을 선택해주세요.");
     }
 
     if (!isEditMode && paymentMethod === "card" && !selectedCardCompany) {
@@ -581,10 +647,10 @@ function ReservationPage() {
               onClick={() => setIsNoticeOpen((open) => !open)}
             >
               <span className="reservation-notice__toggle-head">
-                <span className="reservation-notice__asterisk ft-22b ink500" aria-hidden="true">
+                <span className="reservation-notice__asterisk ft-14r ink500" aria-hidden="true">
                   *
                 </span>
-                <span className="reservation-notice__toggle-text ft-22b ink500">
+                <span className="reservation-notice__toggle-text ft-14r ink500">
                   {isEditMode ? "예약 변경전 확인해주세요" : "예약 전 꼭 확인해주세요"}
                 </span>
               </span>
@@ -617,7 +683,7 @@ function ReservationPage() {
       <section className="reservation-form" aria-label="예약 정보 입력">
         <div className="reservation-form__grid">
           <div className="reservation-form__section">
-            <h2 className="reservation-form__label ft-18b ink500">* 지점 선택</h2>
+            <h2 className="reservation-form__label ft-16b ink500">* 지점 선택</h2>
             <div className="reservation-form__branch-list" role="radiogroup" aria-label="지점 선택">
               {reservationBranches.map((branch) => (
                 <button
@@ -650,7 +716,7 @@ function ReservationPage() {
 
           <div className="reservation-form__row" ref={customerInfoRef}>
             <div className="reservation-form__field">
-              <label className="reservation-form__label ft-18b ink500" htmlFor="reservation-name">
+              <label className="reservation-form__label ft-16b ink500" htmlFor="reservation-name">
                 * 예약자명
               </label>
               <Input
@@ -666,7 +732,7 @@ function ReservationPage() {
               />
             </div>
             <div className="reservation-form__field">
-              <label className="reservation-form__label ft-18b ink500" htmlFor="reservation-phone">
+              <label className="reservation-form__label ft-16b ink500" htmlFor="reservation-phone">
                 * 연락처
               </label>
               <Input
@@ -751,7 +817,7 @@ function ReservationPage() {
                         setValidationErrors([]);
                       }}
                     >
-                      {isSelected ? "선택됨" : "선택하기"}
+                      {isSelected ? "선택 완료" : "선택하기"}
                     </button>
                   </div>
                 </li>
@@ -787,7 +853,7 @@ function ReservationPage() {
       <section className="reservation-schedule" aria-label="날짜 및 시간 선택">
         <div className="reservation-schedule__grid">
           <div className="reservation-schedule__calendar-wrap">
-            <h2 className="reservation-form__label ft-18b ink500">* 날짜 선택</h2>
+            <h2 className="reservation-form__label ft-16b ink500">* 날짜 선택</h2>
             <div className="reservation-schedule__calendar">
               <ReservationCalendar
                 selectedDate={selectedDate}
@@ -800,34 +866,49 @@ function ReservationPage() {
           </div>
           <div className="reservation-schedule__options">
             <div className="reservation-schedule__times">
-              <h2 className="reservation-form__label ft-18b ink500">* 시간 선택</h2>
+              <h2 className="reservation-form__label ft-16b ink500">* 시간 선택</h2>
               <div className="reservation-schedule__time-grid" role="radiogroup" aria-label="시간 선택">
-                {reservationTimeSlots.map((time) => (
-                  <button
-                    className={[
-                      "reservation-schedule__time",
-                      "ft-14b",
-                      "ink500",
-                      time === selectedTime && "reservation-schedule__time--active",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                    key={time}
-                    type="button"
-                    role="radio"
-                    aria-checked={time === selectedTime}
-                    onClick={() => {
-                      setSelectedTime(time);
-                      setValidationErrors([]);
-                    }}
-                  >
-                    {time}
-                  </button>
-                ))}
+                {reservationTimeSlots.map((time) => {
+                  const remainingSeats = remainingSeatsByTime[time] ?? 0;
+                  const isTimeDisabled = remainingSeats < 1;
+
+                  return (
+                    <div className="reservation-schedule__time-slot" key={time}>
+                      <button
+                        className={[
+                          "reservation-schedule__time",
+                          "ft-14b",
+                          "ink500",
+                          time === selectedTime && "reservation-schedule__time--active",
+                          isTimeDisabled && "reservation-schedule__time--disabled",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                        type="button"
+                        role="radio"
+                        aria-checked={time === selectedTime}
+                        aria-disabled={isTimeDisabled}
+                        disabled={isTimeDisabled}
+                        onClick={() => {
+                          setSelectedTime(time);
+                          setValidationErrors([]);
+                        }}
+                      >
+                        {time}
+                      </button>
+                      <span className="reservation-schedule__time-occupancy">
+                        남은좌석: {remainingSeats}/{RESERVATION_SESSION_CAPACITY}석
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
             <div className="reservation-schedule__guests">
-              <h2 className="reservation-form__label ft-18b ink500">* 인원 선택</h2>
+              <h2 className="reservation-form__label ft-16b ink500">* 인원 선택</h2>
+              <p className="reservation-schedule__guest-note">
+                한 클래스 최대 {maxGuestCount}인까지 예약 가능합니다.
+              </p>
               <div className="reservation-schedule__counter">
                 <button
                   className="reservation-schedule__counter-btn"
@@ -842,18 +923,15 @@ function ReservationPage() {
                   className="reservation-schedule__counter-btn"
                   type="button"
                   aria-label="인원 증가"
-                  disabled={guestCount >= maxGuestCount}
+                  disabled={guestCount >= bookableGuestCount}
                   onClick={handleGuestIncrease}
                 >
                   <span aria-hidden="true">+</span>
                 </button>
               </div>
-              <p className="reservation-schedule__guest-note ft-14r ink300">
-                한 클래스 최대 1~{maxGuestCount}인까지 예약 가능합니다.
-              </p>
             </div>
             <div className="reservation-request" aria-label="요청사항">
-              <h2 className="reservation-request__title reservation-form__label ft-18b ink500">요청사항 (선택)</h2>
+              <h2 className="reservation-request__title reservation-form__label ft-16b ink500">요청사항 (선택)</h2>
               <textarea
                 className="reservation-request__textarea ft-16r"
                 placeholder="특이사항이나 요청사항이 있으시면 입력해주세요."
@@ -867,12 +945,12 @@ function ReservationPage() {
 
       <section className="reservation-payment" aria-label="결제수단">
         <div className="reservation-payment__grid">
-          <h2 className="reservation-payment__title ft-36b ink500">결제수단</h2>
+          <h2 className="reservation-payment__title ft-28b ink500">결제수단</h2>
           <div className="reservation-payment__tabs" role="tablist" aria-label="결제 방식">
             <button
               className={[
                 "reservation-payment__tab",
-                "ft-22b",
+                "ft-18b",
                 paymentMethod === "card" && "reservation-payment__tab--active",
               ]
                 .filter(Boolean)
@@ -890,7 +968,7 @@ function ReservationPage() {
             <button
               className={[
                 "reservation-payment__tab",
-                "ft-22b",
+                "ft-18b",
                 paymentMethod === "bank" && "reservation-payment__tab--active",
               ]
                 .filter(Boolean)
@@ -917,7 +995,7 @@ function ReservationPage() {
                 .join(" ")}
             >
               <button
-                className="reservation-payment__select ft-22b ink500"
+                className="reservation-payment__select ft-18b ink500"
                 type="button"
                 aria-haspopup="listbox"
                 aria-expanded={openPaymentDropdown === "cardCompany"}
@@ -959,7 +1037,7 @@ function ReservationPage() {
                 .join(" ")}
             >
               <button
-                className="reservation-payment__select ft-22b ink500"
+                className="reservation-payment__select ft-18b ink500"
                 type="button"
                 aria-haspopup="listbox"
                 aria-expanded={openPaymentDropdown === "installment"}
@@ -1014,7 +1092,7 @@ function ReservationPage() {
               </dl>
             </div>
           )}
-          <label className="reservation-payment__remember ft-18r ink500">
+          <label className="reservation-payment__remember ft-14r ink500">
             <input
               className="reservation-payment__checkbox"
               type="checkbox"
@@ -1034,26 +1112,8 @@ function ReservationPage() {
             </div>
           )}
           <div className="reservation-payment__actions">
-            {isEditMode ? (
-              <Button
-                className="reservation-payment__action reservation-payment__action--edit"
-                variant="btn2"
-                type="button"
-                onClick={() => navigate("/mypage")}
-              >
-                수정취소
-              </Button>
-            ) : (
-              <Button
-                className="reservation-payment__action reservation-payment__action--edit"
-                variant="btn2"
-                disabled
-              >
-                예약변경
-              </Button>
-            )}
             <Button
-              className="reservation-payment__action reservation-payment__action--submit"
+              className="reservation-payment__action reservation-payment__action--submit ft-22b"
               variant="btn1"
               type="button"
               onClick={handleReservationSubmit}

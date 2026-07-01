@@ -88,6 +88,7 @@ export default function Signup() {
   const [submitError, setSubmitError] = useState("");
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [termsOpen, setTermsOpen] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [terms, setTerms] = useState(() =>
     Object.fromEntries(TERM_ITEMS.map((item) => [item.id, false]))
   );
@@ -205,7 +206,7 @@ export default function Signup() {
                 className="signup-field__input signup-field__input--password"
                 id="signup-password"
                 name="password"
-                type="password"
+                type={isPasswordVisible ? "text" : "password"}
                 placeholder="비밀번호"
                 state={getFieldState("password")}
                 value={values.password}
@@ -214,7 +215,14 @@ export default function Signup() {
                 onBlur={handleBlur}
                 autoComplete="new-password"
               />
-              <Icon className="signup-field__icon-right" name="eye-slash" aria-hidden="true" />
+              <button
+                className="signup-field__icon-right"
+                type="button"
+                aria-label={isPasswordVisible ? "비밀번호 숨기기" : "비밀번호 보기"}
+                onClick={() => setIsPasswordVisible((prev) => !prev)}
+              >
+                <Icon name={isPasswordVisible ? "eye" : "eye-slash"} aria-hidden="true" />
+              </button>
             </div>
             {renderError("password")}
           </div>

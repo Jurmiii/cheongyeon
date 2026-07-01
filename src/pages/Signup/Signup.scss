@@ -53,31 +53,55 @@
   left: 0.9375rem;
   top: 50%;
   transform: translateY(-50%);
-  width: 1.125rem;
-  font-size: 1.125rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 1.5rem;
   color: var(--ink300);
   text-align: center;
   pointer-events: none;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .signup-field__input.cy-input {
   width: 100%;
-  padding-left: 2.5625rem;
+  padding-left: 2.9375rem;
   font-size: 1rem;
 }
 
 .signup-field__input--password.cy-input {
-  padding-right: 2.375rem;
+  padding-right: 2.9375rem;
 }
 
 .signup-field__icon-right {
   position: absolute;
   right: 0.9375rem;
   top: 50%;
-  transform: translateY(-50%);
-  font-size: 0.9375rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--ink300);
+  transform: translateY(-50%);
   cursor: pointer;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  &:hover {
+    color: var(--ink500);
+  }
 }
 
 .signup-field__error {
@@ -133,8 +157,10 @@
 
 .signup-agree__label {
   display: flex;
+  flex: 1;
   align-items: center;
   gap: 0.5rem;
+  min-width: 0;
   cursor: pointer;
 }
 
@@ -181,6 +207,7 @@
 
 .signup-agree__toggle {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   padding: 0.25rem;
@@ -190,9 +217,17 @@
 }
 
 .signup-agree__chevron {
-  font-size: 0.875rem;
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
   color: var(--ink300);
   transition: transform 0.2s ease;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .signup-agree__chevron--open {
@@ -306,8 +341,17 @@
 }
 
 .signup-success__notice-icon {
-  font-size: 1.125rem;
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 1.5rem;
   color: var(--ink300);
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .signup-success__notice-text {

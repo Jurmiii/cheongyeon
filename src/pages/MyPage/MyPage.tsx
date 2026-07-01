@@ -324,8 +324,22 @@ function MyPage() {
 
           <div className="my-page__stats" role="list" aria-label="나의 활동 요약">
 
-            {statsItems.map((stat, index) => (
+            {statsItems.map((stat, index) => {
+              const isClickableStat =
+                stat.id === "stamp" || (stat.id === "class" && historyReservations.length > 0);
 
+              const handleStatClick = () => {
+                if (stat.id === "stamp") {
+                  setIsStampOpen(true);
+                  return;
+                }
+
+                if (stat.id === "class") {
+                  setIsHistoryModalOpen(true);
+                }
+              };
+
+              return (
               <Fragment key={stat.id}>
 
                 {index > 0 && (
@@ -340,19 +354,19 @@ function MyPage() {
 
                 <article
                   className={
-                    stat.icon === "stamp"
+                    isClickableStat
                       ? "my-page__stat-item my-page__stat-item--clickable"
                       : "my-page__stat-item"
                   }
-                  role={stat.icon === "stamp" ? "button" : "listitem"}
-                  tabIndex={stat.icon === "stamp" ? 0 : undefined}
-                  onClick={stat.icon === "stamp" ? () => setIsStampOpen(true) : undefined}
+                  role={isClickableStat ? "button" : "listitem"}
+                  tabIndex={isClickableStat ? 0 : undefined}
+                  onClick={isClickableStat ? handleStatClick : undefined}
                   onKeyDown={
-                    stat.icon === "stamp"
+                    isClickableStat
                       ? (event) => {
                         if (event.key === "Enter" || event.key === " ") {
                           event.preventDefault();
-                          setIsStampOpen(true);
+                          handleStatClick();
                         }
                       }
                       : undefined
@@ -386,8 +400,8 @@ function MyPage() {
                 </article>
 
               </Fragment>
-
-            ))}
+              );
+            })}
 
           </div>
 

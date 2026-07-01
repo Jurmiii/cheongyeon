@@ -193,27 +193,28 @@
   top: 1rem;
   right: 1rem;
   z-index: 1;
+  border-radius: 999px;
 }
 
 .cy-badge.reservation-class-card__badge.cy-badge--confirmed {
+  background: var(--moon600);
+}
+
+/* 시즌 클래스 — season modifier가 confirmed 기본색보다 우선 */
+.cy-badge.reservation-class-card__badge.reservation-class-card__badge--spring.cy-badge--confirmed {
   background: var(--plum500);
 }
 
-/* 계절 클래스 — 메인 사계절 호버 색상 (.cy-badge 보다 높은 우선순위) */
-.cy-badge.reservation-class-card__badge--spring {
-  background: var(--plum500);
-}
-
-.cy-badge.reservation-class-card__badge--summer {
+.cy-badge.reservation-class-card__badge.reservation-class-card__badge--summer.cy-badge--confirmed {
   background: var(--deep400);
 }
 
-.cy-badge.reservation-class-card__badge--autumn {
-  background: var(--fall);
+.cy-badge.reservation-class-card__badge.reservation-class-card__badge--autumn.cy-badge--confirmed {
+  background: var(--han500);
 }
 
-.cy-badge.reservation-class-card__badge--winter {
-  background: var(--winter);
+.cy-badge.reservation-class-card__badge.reservation-class-card__badge--winter.cy-badge--confirmed {
+  background: var(--ink300);
 }
 
 .reservation-class-card__body {
@@ -320,20 +321,23 @@
 }
 
 .reservation-schedule__grid {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
+  align-items: stretch;
 }
 
 .reservation-schedule__calendar-wrap,
 .reservation-schedule__options {
-  flex: 1;
   min-width: 0;
 }
 
 .reservation-schedule__calendar-wrap {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  height: 100%;
+  min-height: 0;
 }
 
 .reservation-schedule__calendar-wrap > .reservation-form__label,
@@ -344,22 +348,38 @@
 }
 
 .reservation-schedule__calendar {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   width: 100%;
   max-width: 44.25rem;
+  min-height: 0;
   margin-top: 1.5rem;
 
   .calendar {
+    box-sizing: border-box;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
     width: 100%;
     max-width: 44.25rem;
-    height: auto;
+    height: 100%;
+    min-height: 0;
     padding: 1rem;
     border-radius: 0.5rem;
+    background: var(--white);
     box-shadow: 0 0 0.15625rem rgb(0 0 0 / 5%);
   }
 
   .calendar__header,
   .calendar__weekdays {
     width: 100%;
+    flex-shrink: 0;
+  }
+
+  .calendar__grid {
+    flex: 1 1 auto;
+    align-content: start;
   }
 
   .calendar__nav:disabled {
@@ -377,32 +397,63 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  align-items: center;
+  align-items: stretch;
+  height: 100%;
+  min-height: 0;
 }
 
 .reservation-schedule__times,
-.reservation-schedule__guests,
-.reservation-request {
+.reservation-schedule__guests {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   width: 100%;
+  flex: 0 0 auto;
+}
+
+.reservation-request {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  min-height: 0;
+  padding-block: 0;
 }
 
 .reservation-schedule__time-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem 1rem;
   width: 100%;
   max-width: 44.25rem;
   margin-top: 1.5rem;
   margin-inline: auto;
 }
 
+.reservation-schedule__time-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.375rem;
+}
+
+.reservation-schedule__time-occupancy {
+  width: 100%;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.125rem;
+  color: var(--ink200);
+  text-align: center;
+}
+
 .reservation-schedule__time {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   height: 2.5rem;
   padding: 0.625rem;
   border: calc(var(--space-1) / 8) solid var(--han300);
@@ -425,6 +476,16 @@
   color: var(--han50);
 }
 
+.reservation-schedule__time--disabled,
+.reservation-schedule__time:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.reservation-schedule__time--active:disabled {
+  opacity: 1;
+}
+
 .reservation-schedule__counter {
   display: flex;
   align-items: center;
@@ -433,7 +494,7 @@
   width: 100%;
   max-width: 44.25rem;
   height: 2.875rem;
-  margin-top: 1.5rem;
+  margin-top: 0.75rem;
   margin-inline: auto;
   padding: 0.625rem;
   border: calc(var(--space-1) / 8) solid var(--han300);
@@ -467,23 +528,33 @@
 }
 
 .reservation-schedule__guest-note {
-  margin: 1rem 0 0;
-  text-align: center;
-}
-
-.reservation-request {
-  padding-block: 0;
+  width: 100%;
+  max-width: 44.25rem;
+  margin: 0.75rem 0 0;
+  margin-inline: auto;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.125rem;
+  color: var(--ink200);
+  text-align: right;
 }
 
 .reservation-request__title {
-  margin: 0 0 1.5rem;
+  width: 100%;
+  max-width: 44.25rem;
+  margin: 0 0 0.5rem;
+  text-align: left;
 }
 
 .reservation-request__textarea {
   box-sizing: border-box;
+  flex: 1 1 auto;
   width: 100%;
   max-width: 44.25rem;
-  height: 7.1rem;
+  min-height: 0;
+  height: auto;
+  margin-inline: auto;
   padding: 1rem;
   border: calc(var(--space-1) / 8) solid var(--han500);
   border-radius: 0.5rem;
@@ -688,7 +759,7 @@
 .reservation-payment__remember {
   display: inline-flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   margin-bottom: 2.5rem;
   cursor: pointer;
 }
@@ -721,25 +792,28 @@
 }
 
 .reservation-payment__checkbox {
-  width: 1.875rem;
-  height: 1.875rem;
+  flex-shrink: 0;
+  width: 0.875rem;
+  height: 0.875rem;
   margin: 0;
   border: calc(var(--space-1) / 8) solid var(--ink500);
+  border-radius: 0.125rem;
   accent-color: var(--deep500);
+  cursor: pointer;
 }
 
 .reservation-payment__actions {
   display: flex;
-  gap: 1.5rem;
+  justify-content: center;
   margin-bottom: 2.5rem;
 }
 
 .reservation-payment__action {
-  flex: 1;
+  flex: 0 1 auto;
+  width: 100%;
+  max-width: calc(50% - 0.75rem);
   min-height: 5rem;
   border-radius: 0.5rem;
-  font-size: 1.375rem;
-  font-weight: 700;
 }
 
 .reservation-payment__action--edit.cy-button:disabled {
@@ -751,8 +825,15 @@
 }
 
 .reservation-payment__action--submit.cy-button {
+  width: 29rem;
+  max-width: 29rem;
   color: var(--white);
   background: var(--deep500);
+  padding: 0.75rem;
+  font-family: var(--font-body);
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 2.25rem;
 }
 
 .reservation-notice {
@@ -871,7 +952,21 @@
   }
 
   .reservation-schedule__grid {
-    flex-direction: column;
+    grid-template-columns: 1fr;
+  }
+
+  .reservation-schedule__options {
+    height: auto;
+  }
+
+  .reservation-request {
+    flex: none;
+  }
+
+  .reservation-request__textarea {
+    flex: none;
+    height: 7.1rem;
+    min-height: 7.1rem;
   }
 
   .reservation-notice__content {
