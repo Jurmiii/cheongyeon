@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import logo from "../../assets/images/00header-footer/logo.svg";
 import subSymbol from "../../assets/images/01main/subsymbol.svg";
 import collectionLineSymbol from "../../assets/images/05collection/collection-line-symbol.svg";
 import { Footer, Header, Icon } from "../../components/common";
@@ -268,6 +269,7 @@ function LocationPage() {
 
       <section className="location-kv" aria-label="오시는 길 키비주얼">
         <div className="location-kv__content">
+          <img className="location-kv__brand" src={logo} alt="" aria-hidden="true" />
           <div className="location-kv__text">
             <div className="location-kv__head">
               <h1 className="location-kv__title ft-64r ink500">오시는길</h1>
