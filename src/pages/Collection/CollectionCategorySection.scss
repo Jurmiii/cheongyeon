@@ -59,10 +59,25 @@
     justify-content: space-between;
     gap: 0.5rem;
   }
+
+  .collection-category__products .content5__body {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .collection-category__products .content5__divider {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .collection-category__products .content5__summary,
+  .collection-category__products .content5__description {
+    margin-top: 0.5rem;
+  }
 }
 
-/* 태블릿 ($tablet ~ $laptop) — Figma 6:67 카드 308px, gap 24px/64px */
-@media (min-width: $tablet) and (max-width: $laptop) {
+/* 태블릿 (769px ~ $laptop) — Figma 6:67 카드 308px, gap 24px/64px */
+@media (min-width: ($tablet + 1px)) and (max-width: $laptop) {
   .collection-category + .collection-category {
     margin-top: 2.8125rem; /* Figma gap 45px */
   }
@@ -78,30 +93,48 @@
 
   .collection-category__products {
     display: grid;
-    grid-template-columns: repeat(2, 19.25rem); /* Figma 308px × 2 */
-    gap: 4rem 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
     margin-top: 1.5rem;
-    justify-content: space-between;
+    justify-content: stretch;
   }
 
   .collection-category__products .content5 {
-    width: 19.25rem;
+    width: 100%;
     height: auto;
     flex: none;
   }
 
   .collection-category__products .content5__image {
     width: 100%;
-    height: 19.25rem;
+    height: auto;
+    aspect-ratio: 1 / 1;
   }
 
   .collection-category__products .content5__body,
   .collection-category__products .content5__divider {
     width: 100%;
   }
+
+  .collection-category__products .content5__title {
+    font-size: 1rem;
+    line-height: 1.625rem;
+  }
+
+  .collection-category__products .content5__meta {
+    font-size: 0.875rem;
+    line-height: 1.375rem;
+  }
+
+  .collection-category__products .content5__summary,
+  .collection-category__products .content5__description {
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+  }
 }
 
-@media (max-width: ($tablet - 1)) {
+/* 모바일 (≤$tablet) — 2열 카드, 유동 너비 */
+@media (max-width: $tablet) {
   .collection-category + .collection-category {
     margin-top: 2rem;
   }
@@ -139,7 +172,6 @@
   .collection-category__products .content5__body,
   .collection-category__products .content5__divider {
     width: 100%;
-    margin-top: 0.5rem;
   }
 
   .collection-category__products .content5__title {
@@ -148,14 +180,12 @@
   }
 
   .collection-category__products .content5__meta {
-    margin-top: 0.5rem;
     font-size: 0.875rem;
     line-height: 1.375rem;
   }
 
   .collection-category__products .content5__summary,
   .collection-category__products .content5__description {
-    margin-top: 0.5rem;
     font-size: 0.75rem;
     line-height: 1.125rem;
   }

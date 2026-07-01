@@ -4,6 +4,9 @@
   position: relative;
   width: 100%;
   min-width: 0;
+  overflow-x: clip;
+  --collection-page-gutter: clamp(1.5rem, 5vw, 15rem);
+  --collection-content-width: min(90rem, calc(100% - (var(--collection-page-gutter) * 2)));
 }
 
 .collection-page__header {
@@ -28,11 +31,11 @@
 
 .collection-kv__grid {
   display: grid;
-  grid-template-columns: repeat(12, 6.125rem);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: 1.5rem;
   align-items: center;
-  width: 100%;
-  max-width: 90rem;
+  width: var(--collection-content-width);
+  max-width: 100%;
   height: 100%;
   margin-inline: auto;
 }
@@ -75,11 +78,11 @@
 
 .collection-aroma__grid {
   display: grid;
-  grid-template-columns: repeat(12, 6.125rem);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: 1.5rem;
   align-items: center;
-  width: 100%;
-  max-width: 90rem;
+  width: var(--collection-content-width);
+  max-width: 100%;
   margin-inline: auto;
 }
 
@@ -131,88 +134,11 @@
 
 @media (max-width: 90rem) {
   .collection-kv__grid {
-    padding-inline: 1.5rem;
     grid-template-columns: repeat(12, minmax(0, 1fr));
   }
 
   .collection-aroma__grid {
-    padding-inline: 1.5rem;
     grid-template-columns: repeat(12, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 64rem) {
-  .collection-kv {
-    height: auto;
-    min-height: 28rem;
-    padding-block: 8rem 3.5rem;
-  }
-
-  .collection-kv__content {
-    grid-column: 1 / -1;
-  }
-
-  .collection-kv__title {
-    font-size: 3rem;
-    line-height: 4rem;
-  }
-
-  .collection-aroma {
-    height: auto;
-    min-height: 0;
-    padding-block: 3.5rem;
-  }
-
-  .collection-aroma__grid {
-    grid-template-columns: 1fr;
-    row-gap: 2.5rem;
-  }
-
-  .collection-aroma__content {
-    grid-column: 1 / -1;
-  }
-
-  .collection-aroma__chart {
-    grid-column: 1 / -1;
-    justify-content: center;
-    min-height: 0;
-  }
-
-  .collection-aroma__title {
-    font-size: 2.25rem;
-    line-height: 3.25rem;
-  }
-}
-
-@media (max-width: 30rem) {
-  .collection-kv__grid {
-    padding-inline: 1rem;
-  }
-
-  .collection-kv__title {
-    font-size: 2.25rem;
-    line-height: 3.25rem;
-  }
-
-  .collection-kv__description {
-    font-size: 1.125rem;
-    line-height: 1.875rem;
-  }
-
-  .collection-aroma__grid {
-    padding-inline: 1rem;
-    padding-block: 3rem;
-  }
-
-  .collection-aroma__title {
-    font-size: 1.75rem;
-    line-height: 2.5rem;
-  }
-
-  .collection-aroma__description {
-    margin-top: 2rem;
-    font-size: 1.125rem;
-    line-height: 1.875rem;
   }
 }
 
@@ -223,10 +149,10 @@
 
 .collection-catalog__grid {
   display: grid;
-  grid-template-columns: repeat(12, 6.125rem);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: 1.5rem;
-  width: 100%;
-  max-width: 90rem;
+  width: var(--collection-content-width);
+  max-width: 100%;
   margin-inline: auto;
   padding-top: 7.5rem;
   padding-bottom: 7.5rem;
@@ -303,66 +229,87 @@
 
 @media (max-width: 90rem) {
   .collection-catalog__grid {
-    padding-inline: 1.5rem;
     grid-template-columns: repeat(12, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 64rem) {
-  .collection-catalog__grid {
-    padding-top: 5rem;
-    padding-bottom: 5rem;
+/* 1024px 이하: PC 12열·subgrid 레이아웃 해제 (PC 스타일 정의 이후에 배치해야 cascade 우선) */
+@media (max-width: $laptop) {
+  .collection-page {
+    --collection-page-gutter: clamp(1rem, 5vw, 4rem);
   }
 
-  .collection-catalog__title {
-    font-size: 2.25rem;
-    line-height: 3.25rem;
+  .collection-kv {
+    height: auto;
+    min-height: 0;
+    padding-block: 0;
+    background-size: cover;
+  }
+
+  .collection-kv__grid,
+  .collection-aroma__grid,
+  .collection-catalog__grid {
+    grid-template-columns: 1fr;
+    width: var(--collection-content-width);
+    max-width: 100%;
+  }
+
+  .collection-kv__content {
+    grid-column: 1 / -1;
+  }
+
+  .collection-aroma {
+    height: auto;
+    min-height: 0;
+    align-items: stretch;
+  }
+
+  .collection-aroma__content,
+  .collection-aroma__chart {
+    grid-column: 1 / -1;
+  }
+
+  .collection-aroma__chart {
+    justify-content: center;
+  }
+
+  .collection-aroma__description {
+    margin-top: 0;
+  }
+
+  .collection-aroma__description-second {
+    white-space: normal;
   }
 
   .collection-catalog__tabs {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+    display: block;
+    grid-template-columns: none;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   .collection-catalog__tabs-inner {
-    grid-column: 1 / -1;
-    justify-content: flex-start;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    display: flex;
+    flex-wrap: wrap;
+    grid-column: auto;
+    width: 100%;
+    min-width: 0;
+    overflow-x: visible;
+    -webkit-overflow-scrolling: auto;
+    scrollbar-width: auto;
   }
 
-  .collection-catalog__tab {
-    flex: 0 0 auto;
-    font-size: 1.125rem;
-    line-height: 1.875rem;
-  }
-}
-
-@media (max-width: 30rem) {
-  .collection-catalog__grid {
-    padding-inline: 1rem;
-    padding-top: 3.5rem;
-    padding-bottom: 3.5rem;
+  .collection-catalog__content {
+    display: block;
+    grid-template-columns: none;
+    grid-column: auto;
+    width: 100%;
   }
 
-  .collection-catalog__title {
-    font-size: 1.75rem;
-    line-height: 2.5rem;
-  }
-
-  .collection-catalog__tabs {
-    margin-top: 1.5rem;
-  }
-
-  .collection-catalog__tab {
-    padding: 1.5rem 0.5rem;
-    font-size: 1rem;
-    line-height: 1.625rem;
+  .collection-page__footer--tablet .tablet-footer {
+    width: 100%;
+    max-width: 48rem;
+    margin-inline: auto;
   }
 }
 
@@ -377,7 +324,7 @@
   display: none;
 }
 
-@media (min-width: $tablet) and (max-width: $laptop) {
+@media (min-width: ($tablet + 1px)) and (max-width: $laptop) {
   .collection-page__header--desktop,
   .collection-page__footer--desktop {
     display: none;
@@ -409,8 +356,9 @@
   }
 
   .collection-kv__grid {
-    padding-inline: 4rem;
+    padding-inline: 0;
     align-items: center;
+    grid-template-columns: 1fr;
   }
 
   .collection-kv__content {
@@ -419,8 +367,8 @@
   }
 
   .collection-kv__title {
-    font-size: 2.5rem;
-    line-height: 3.25rem;
+    font-size: 2.5rem !important;
+    line-height: 3.25rem !important;
     letter-spacing: -0.02em;
   }
 
@@ -443,16 +391,15 @@
   /* Aroma — Figma 6:60: 768×984, content left=64 top=96 width=640 */
   .collection-aroma {
     height: auto;
-    min-height: 61.5rem; /* 984px */
+    min-height: 0;
     padding-block: 6rem;
     background-color: var(--han100);
   }
 
   .collection-aroma__grid {
-    padding-inline: 4rem;
+    padding-inline: 0;
     grid-template-columns: 1fr;
     row-gap: 2.5rem; /* Figma gap 40px */
-    max-width: 48rem; /* 768px */
     margin-inline: auto;
   }
 
@@ -463,16 +410,16 @@
   }
 
   .collection-aroma__title {
-    font-size: 2rem;
-    line-height: 2.75rem;
+    font-size: 2rem !important;
+    line-height: 2.75rem !important;
     letter-spacing: -0.01em;
     text-align: left;
   }
 
   .collection-aroma__description {
     margin-top: 0;
-    font-size: 1.5rem;
-    line-height: 2.125rem;
+    font-size: 1.5rem !important;
+    line-height: 2.125rem !important;
     letter-spacing: -0.02em;
     text-align: left;
   }
@@ -494,17 +441,16 @@
   }
 
   .collection-catalog__grid {
-    padding-inline: 4rem;
+    padding-inline: 0;
     padding-top: 6rem;
     padding-bottom: 6rem;
-    max-width: 48rem;
     margin-inline: auto;
     grid-template-columns: 1fr;
   }
 
   .collection-catalog__title {
-    font-size: 2rem;
-    line-height: 2.75rem;
+    font-size: 2rem !important;
+    line-height: 2.75rem !important;
     letter-spacing: -0.01em;
   }
 
@@ -512,12 +458,15 @@
   .collection-catalog__tabs {
     margin-top: 1.5rem;
     margin-bottom: 2.8125rem;
+    padding: 1rem;
     border-radius: 0;
     background-color: var(--white);
     box-shadow: none;
   }
 
   .collection-catalog__tabs-inner {
+    display: flex;
+    flex-wrap: wrap;
     grid-column: 1 / -1;
     gap: 1.5rem;
     justify-content: center;
@@ -526,22 +475,34 @@
 
   /* Figma ta/Body B/R: 18px/30px, height 60px */
   .collection-catalog__tab {
+    flex: 0 0 auto;
     height: 3.75rem;
     padding: 1.5rem 0.5rem;
     font-size: 1.125rem;
     line-height: 1.875rem;
+    white-space: nowrap;
   }
 
   .collection-catalog__tab--active::after {
     height: 0.125rem; /* Figma border-b-2 */
   }
+
+  .collection-catalog__content {
+    width: 100%;
+    max-width: 100%;
+    margin-inline: auto;
+  }
 }
 
 /* ══════════════════════════════════════════
-   모바일 (~767px) — Figma MO 6:489
-   PC·태블릿 스타일은 변경하지 않고 이 구간만 오버라이드
+   모바일 (≤$tablet, 768px 이하) — Figma MO 6:489
+   PC·태블릿(769px~) 스타일은 변경하지 않고 이 구간만 오버라이드
    ══════════════════════════════════════════ */
-@media (max-width: ($tablet - 1)) {
+@media (max-width: $tablet) {
+  .collection-page {
+    --collection-page-gutter: clamp(1rem, 5vw, 4rem);
+  }
+
   .collection-page__header--desktop,
   .collection-page__header--tablet,
   .collection-page__footer--desktop,
@@ -562,34 +523,40 @@
     width: 100%;
   }
 
-  /* KV — Figma 6:490: 402×700, 세로 중앙, 태블릿과 동일 카피 */
+  /* KV — 태블릿 높이(37.5rem)에서 모바일(43.75rem)로 자연스럽게 이어짐 */
   .collection-kv {
-    height: 43.75rem;
-    min-height: 0;
+    height: auto;
+    min-height: 37.5rem;
     padding-block: 0;
     background-color: #cbb8a4;
     background-image: url("../../assets/images/05collection/collection-kv-mobile.png");
-    background-size: 460% auto;
-    background-position: 84% 42%;
+    background-size: cover;
+    background-position: 72% center;
     background-repeat: no-repeat;
   }
 
   .collection-kv__grid {
+    min-height: 37.5rem;
+  }
+
+  .collection-kv__grid {
     align-items: center;
-    max-width: 25.125rem;
-    padding-inline: 1rem;
+    width: var(--collection-content-width);
+    max-width: 100%;
+    padding-inline: 0;
     margin-inline: auto;
+    grid-template-columns: 1fr;
   }
 
   .collection-kv__content {
     grid-column: 1 / -1;
-    max-width: 16.125rem;
+    max-width: min(16.125rem, 85%);
     margin-right: auto;
   }
 
   .collection-kv__title {
-    font-size: 1.875rem;
-    line-height: 2.5rem;
+    font-size: 1.875rem !important;
+    line-height: 2.5rem !important;
     letter-spacing: -0.01875rem;
   }
 
@@ -612,7 +579,7 @@
   /* Aroma — Figma 6:501: 402×611, content 370px center */
   .collection-aroma {
     height: auto;
-    min-height: 38.1875rem;
+    min-height: 0;
     padding-block: 4rem;
     background-color: var(--han50);
   }
@@ -620,8 +587,9 @@
   .collection-aroma__grid {
     grid-template-columns: 1fr;
     row-gap: 2rem;
-    max-width: 23.125rem;
-    padding-inline: 1rem;
+    width: var(--collection-content-width);
+    max-width: 100%;
+    padding-inline: 0;
     margin-inline: auto;
   }
 
@@ -633,16 +601,16 @@
   }
 
   .collection-aroma__title {
-    font-size: 1.5rem;
-    line-height: 2rem;
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
     letter-spacing: -0.01em;
     text-align: center;
   }
 
   .collection-aroma__description {
     margin-top: 0;
-    font-size: 1rem;
-    line-height: 1.625rem;
+    font-size: 1rem !important;
+    line-height: 1.625rem !important;
     text-align: center;
   }
 
@@ -667,8 +635,9 @@
   }
 
   .collection-catalog__grid {
-    max-width: 25.125rem;
-    padding-inline: 1rem;
+    width: var(--collection-content-width);
+    max-width: 100%;
+    padding-inline: 0;
     padding-top: 4rem;
     padding-bottom: 4rem;
     margin-inline: auto;
@@ -676,42 +645,46 @@
   }
 
   .collection-catalog__title {
-    font-size: 1.5rem;
-    line-height: 2rem;
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
     letter-spacing: -0.01em;
   }
 
   .collection-catalog__tabs {
     margin-top: 2rem;
     margin-bottom: 2rem;
+    padding: 0.75rem 0.5rem;
     border-radius: 0;
     background-color: var(--white);
     box-shadow: none;
   }
 
   .collection-catalog__tabs-inner {
+    display: flex;
     grid-column: 1 / -1;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.875rem;
-    max-width: 23.125rem;
+    gap: clamp(0.875rem, 2.5vw, 1.5rem);
+    width: 100%;
+    max-width: 100%;
     margin-inline: auto;
     overflow-x: visible;
   }
 
   .collection-catalog__tab {
-    flex: 0 0 5.125rem;
-    width: 5.125rem;
+    flex: 0 0 auto;
+    width: auto;
     height: auto;
-    padding: 0.5rem;
+    min-height: 3.75rem;
+    padding: 0.5rem 0.75rem;
     font-size: 1.125rem;
     line-height: 1.625rem;
     white-space: nowrap;
   }
 
   .collection-catalog__tab:last-child {
-    flex: 1 0 5.125rem;
-    min-width: 5.125rem;
+    flex: 0 0 auto;
+    min-width: 0;
   }
 
   .collection-catalog__tab--active::after {
@@ -719,7 +692,48 @@
   }
 
   .collection-catalog__content {
-    max-width: 23.125rem;
+    width: 100%;
+    max-width: 100%;
     margin-inline: auto;
+  }
+}
+
+/* Figma MO 402px — 좁은 화면 세부 조정 */
+@media (max-width: $mobile) {
+  .collection-page {
+    --collection-page-gutter: 1rem;
+  }
+
+  .collection-kv {
+    min-height: 43.75rem;
+  }
+
+  .collection-kv__grid {
+    min-height: 43.75rem;
+  }
+
+  .collection-kv__content {
+    max-width: 16.125rem;
+  }
+
+  .collection-catalog__tabs-inner {
+    gap: 0.875rem;
+    max-width: 23.125rem;
+  }
+
+  .collection-catalog__tab {
+    flex: 0 0 5.125rem;
+    width: 5.125rem;
+    min-height: 0;
+    padding: 0.5rem;
+  }
+
+  .collection-catalog__tab:last-child {
+    flex: 1 0 5.125rem;
+    min-width: 5.125rem;
+  }
+
+  .collection-catalog__content {
+    max-width: 23.125rem;
   }
 }
