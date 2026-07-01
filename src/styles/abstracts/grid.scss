@@ -1,0 +1,156 @@
+// Desktop: 12 columns x 6.125rem + 11 gaps x 1.5rem = 90rem (1440px)
+$desktop-grid-outer: 90rem;
+$desktop-grid-columns: 12;
+$desktop-grid-column-width: 6.125rem;
+$desktop-grid-gap: 1.5rem;
+$desktop-grid-side-padding: 1.5rem;
+$desktop-grid-compact-padding: 1rem;
+
+// Tablet: 640px grid + 64px side padding = 768px
+$tablet-grid-outer: 48rem;
+$tablet-grid-padding: 4rem;
+$tablet-grid-inner: 40rem;
+$tablet-grid-columns: 8;
+$tablet-grid-gap: 1.5rem;
+$tablet-kv-width: $tablet-grid-outer;
+$tablet-kv-height: 37.5rem;
+
+// Mobile: 370px grid + 16px side padding = 402px
+$mobile-grid-outer: 25.125rem;
+$mobile-grid-padding: 1rem;
+$mobile-grid-inner: 23.125rem;
+$mobile-grid-columns: 6;
+$mobile-grid-gap: 0.875rem;
+$mobile-kv-width: $mobile-grid-outer;
+$mobile-kv-height: 43.75rem;
+
+@mixin desktop-grid {
+  display: grid;
+  grid-template-columns: repeat($desktop-grid-columns, $desktop-grid-column-width);
+  column-gap: $desktop-grid-gap;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: $desktop-grid-outer;
+  margin-inline: auto;
+}
+
+@mixin desktop-grid-fluid {
+  display: grid;
+  grid-template-columns: repeat($desktop-grid-columns, minmax(0, 1fr));
+  column-gap: $desktop-grid-gap;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: $desktop-grid-outer;
+  margin-inline: auto;
+}
+
+@mixin desktop-grid-narrow {
+  padding-inline: $desktop-grid-side-padding;
+  grid-template-columns: repeat($desktop-grid-columns, minmax(0, 1fr));
+}
+
+@mixin desktop-page-grid {
+  @include desktop-grid;
+
+  @media (max-width: $desktop-grid-outer) {
+    @include desktop-grid-narrow;
+  }
+}
+
+@mixin desktop-content {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: $desktop-grid-outer;
+  margin-inline: auto;
+}
+
+@mixin desktop-grid-left-var($name: --grid-left) {
+  #{$name}: max(
+    #{$desktop-grid-side-padding},
+    calc((100% - #{$desktop-grid-outer}) / 2)
+  );
+}
+
+@mixin tablet-grid {
+  display: grid;
+  grid-template-columns: repeat($tablet-grid-columns, minmax(0, 1fr));
+  column-gap: $tablet-grid-gap;
+  box-sizing: border-box;
+  width: min($tablet-grid-outer, calc(100% - #{$tablet-grid-padding * 2}));
+  max-width: min($tablet-grid-outer, calc(100% - #{$tablet-grid-padding * 2}));
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
+@mixin tablet-grid-padded {
+  display: grid;
+  grid-template-columns: repeat($tablet-grid-columns, minmax(0, 1fr));
+  column-gap: $tablet-grid-gap;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: $tablet-grid-outer;
+  padding-inline: $tablet-grid-padding;
+  margin-inline: auto;
+}
+
+@mixin mobile-grid {
+  display: grid;
+  grid-template-columns: repeat($mobile-grid-columns, minmax(0, 1fr));
+  column-gap: $mobile-grid-gap;
+  box-sizing: border-box;
+  width: min($mobile-grid-outer, calc(100% - #{$mobile-grid-padding * 2}));
+  max-width: min($mobile-grid-outer, calc(100% - #{$mobile-grid-padding * 2}));
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
+@mixin mobile-grid-padded {
+  display: grid;
+  grid-template-columns: repeat($mobile-grid-columns, minmax(0, 1fr));
+  column-gap: $mobile-grid-gap;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: $mobile-grid-outer;
+  padding-inline: $mobile-grid-padding;
+  margin-inline: auto;
+}
+
+@mixin tablet-kv-section {
+  height: clamp(
+    $tablet-kv-height,
+    calc(#{$tablet-kv-height} + (100vw - #{$tablet-kv-width}) * 0.039),
+    40rem
+  );
+}
+
+@mixin tablet-kv-container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: $tablet-kv-width;
+  margin-inline: auto;
+  padding-inline: clamp(
+    1.5rem,
+    calc(#{$tablet-grid-padding} + (100vw - #{$tablet-kv-width}) * 0.125),
+    calc(#{$tablet-grid-padding} + 1rem)
+  );
+}
+
+@mixin mobile-kv-section {
+  height: clamp(
+    $mobile-kv-height,
+    calc(#{$mobile-kv-height} + (100vw - #{$mobile-kv-width}) * 0.05),
+    46rem
+  );
+}
+
+@mixin mobile-kv-container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: $mobile-kv-width;
+  margin-inline: auto;
+  padding-inline: clamp(
+    $mobile-grid-padding,
+    calc(#{$mobile-grid-padding} + (100vw - #{$mobile-kv-width}) * 0.125),
+    calc(#{$mobile-grid-padding} + 0.5rem)
+  );
+}
