@@ -17,12 +17,17 @@ export type SpaceGallerySectionProps = {
   cards: readonly SpaceGalleryCard[];
 };
 
-const GALLERY_START_WIDTH_REM = 29.0625;
-const GALLERY_START_HEIGHT_REM = 43.75;
-const GALLERY_FINAL_WIDTH_REM = 20.9375;
-const GALLERY_FINAL_HEIGHT_REM = 32.4375;
-const GALLERY_CARD_GAP_REM = 1.5;
-const GALLERY_TITLE_GAP_REM = 4.375;
+const GALLERY_CARD_COUNT = 4;
+const GALLERY_DESIGN = {
+  startWidthRem: 29.0625,
+  startHeightRem: 43.75,
+  finalWidthRem: 20.9375,
+  finalHeightRem: 32.4375,
+  cardGapRem: 1.5,
+  titleGapRem: 4.375,
+} as const;
+const GALLERY_ANIMATION_MIN_WIDTH = "48.0625rem";
+const GALLERY_STATIC_MAX_WIDTH = "48rem";
 const GALLERY_HOLD_DURATION = 0.5;
 const GALLERY_HOVER_READY_PROGRESS = 1;
 
@@ -30,6 +35,40 @@ const remToPx = (value: number) => {
   const rootFontSize = Number.parseFloat(window.getComputedStyle(document.documentElement).fontSize);
 
   return value * (Number.isFinite(rootFontSize) ? rootFontSize : 16);
+};
+
+type GalleryMetrics = {
+  startWidth: number;
+  startHeight: number;
+  finalWidth: number;
+  finalHeight: number;
+  cardGap: number;
+  titleGap: number;
+};
+
+const getGalleryMetrics = (stageWidth: number): GalleryMetrics => {
+  const cardGap = remToPx(GALLERY_DESIGN.cardGapRem);
+  const titleGap = remToPx(GALLERY_DESIGN.titleGapRem);
+  const maxFinalWidth = remToPx(GALLERY_DESIGN.finalWidthRem);
+  const maxStartWidth = remToPx(GALLERY_DESIGN.startWidthRem);
+  const finalAspect = GALLERY_DESIGN.finalWidthRem / GALLERY_DESIGN.finalHeightRem;
+  const startAspect = GALLERY_DESIGN.startWidthRem / GALLERY_DESIGN.startHeightRem;
+  const safeStageWidth = Math.max(stageWidth, 0);
+  const fittedFinalWidth =
+    (safeStageWidth - (GALLERY_CARD_COUNT - 1) * cardGap) / GALLERY_CARD_COUNT;
+  const finalWidth = Math.min(maxFinalWidth, Math.max(0, fittedFinalWidth));
+  const finalHeight = finalWidth / finalAspect;
+  const startWidth = Math.min(maxStartWidth, safeStageWidth * 0.92);
+  const startHeight = startWidth / startAspect;
+
+  return {
+    startWidth,
+    startHeight,
+    finalWidth,
+    finalHeight,
+    cardGap,
+    titleGap,
+  };
 };
 
 function SpaceGallerySection({
@@ -69,7 +108,7 @@ function SpaceGallerySection({
 
     const mm = gsap.matchMedia();
 
-    mm.add("(min-width: 64.0625rem)", () => {
+    mm.add(`(min-width: ${GALLERY_ANIMATION_MIN_WIDTH})`, () => {
       let applyInitialState: (() => void) | null = null;
 
       const context = gsap.context(() => {
@@ -79,17 +118,10 @@ function SpaceGallerySection({
           return;
         }
 
-        const getGalleryMetrics = () => ({
-          startWidth: remToPx(GALLERY_START_WIDTH_REM),
-          startHeight: remToPx(GALLERY_START_HEIGHT_REM),
-          finalWidth: remToPx(GALLERY_FINAL_WIDTH_REM),
-          finalHeight: remToPx(GALLERY_FINAL_HEIGHT_REM),
-          cardGap: remToPx(GALLERY_CARD_GAP_REM),
-          titleGap: remToPx(GALLERY_TITLE_GAP_REM),
-        });
+        const readMetrics = () => getGalleryMetrics(stage.offsetWidth);
 
         const getRowStart = () => {
-          const { cardGap, finalWidth } = getGalleryMetrics();
+          const { cardGap, finalWidth } = readMetrics();
           const rowWidth = cardElements.length * finalWidth + (cardElements.length - 1) * cardGap;
           return Math.max(0, (stage.offsetWidth - rowWidth) / 2);
         };
@@ -98,7 +130,7 @@ function SpaceGallerySection({
           const stageWidth = stage.offsetWidth;
           const stageCenterX = stageWidth / 2;
           const rowStart = getRowStart();
-          const { cardGap, finalWidth } = getGalleryMetrics();
+          const { cardGap, finalWidth } = readMetrics();
 
           return cardElements.map((_, index) => {
             const cardCenterX = rowStart + index * (finalWidth + cardGap) + finalWidth / 2;
@@ -107,13 +139,19 @@ function SpaceGallerySection({
         };
 
         const positionSubtitle = () => {
-          const { finalHeight, titleGap } = getGalleryMetrics();
+          const { finalHeight, titleGap } = readMetrics();
           const cardTop = stage.offsetHeight / 2 - finalHeight / 2;
 
           gsap.set(head, {
             top: cardTop - titleGap - head.offsetHeight,
             left: getRowStart(),
           });
+        };
+
+        const syncStageHeight = () => {
+          const { startHeight } = readMetrics();
+
+          gsap.set(stage, { height: startHeight });
         };
 
         const setHoverEnabled = (enabled: boolean) => {
@@ -126,6 +164,7 @@ function SpaceGallerySection({
 
         applyInitialState = () => {
           setHoverEnabled(false);
+          syncStageHeight();
 
           gsap.set(mainTitle, {
             position: "absolute",
@@ -148,7 +187,7 @@ function SpaceGallerySection({
           });
           positionSubtitle();
           gsap.set(head, { opacity: 0 });
-          const { startHeight, startWidth } = getGalleryMetrics();
+          const { startHeight, startWidth } = readMetrics();
 
           cardElements.forEach((card, index) => {
             gsap.set(card, {
@@ -227,8 +266,8 @@ function SpaceGallerySection({
           .to(
             cardElements,
             {
-              width: () => getGalleryMetrics().finalWidth,
-              height: () => getGalleryMetrics().finalHeight,
+              width: () => readMetrics().finalWidth,
+              height: () => readMetrics().finalHeight,
               duration: 0.62,
               ease: "sine.inOut",
             },
@@ -270,8 +309,9 @@ function SpaceGallerySection({
       };
     });
 
-    mm.add("(max-width: 64rem)", () => {
+    mm.add(`(max-width: ${GALLERY_STATIC_MAX_WIDTH})`, () => {
       const context = gsap.context(() => {
+        gsap.set(stage, { clearProps: "height" });
         gsap.set(mainTitle, { clearProps: "all" });
         gsap.set(head, { clearProps: "top,left,opacity" });
         gsap.set(subtitleEl, { clearProps: "clipPath,WebkitClipPath" });
