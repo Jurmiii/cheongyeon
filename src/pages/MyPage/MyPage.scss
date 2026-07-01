@@ -343,6 +343,26 @@
 
 .my-page__history-modal-card {
   min-width: 0;
+  height: auto;
+  min-height: 6.5rem;
+}
+
+.my-page__history-modal .my-page__history-card-image {
+  width: 11rem;
+  height: 6.5rem;
+}
+
+.my-page__history-modal-card-title {
+  margin: 0;
+}
+
+.my-page__history-modal-card-date {
+  margin: 0.375rem 0 0;
+}
+
+.my-page__history-modal-card-badge {
+  width: 6.5rem;
+  height: 2rem;
 }
 
 .my-page__profile {
