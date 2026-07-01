@@ -584,7 +584,9 @@ function ReservationPage() {
                 <span className="reservation-notice__asterisk ft-22b ink500" aria-hidden="true">
                   *
                 </span>
-                <span className="reservation-notice__toggle-text ft-22b ink500">예약 전 꼭 확인해주세요</span>
+                <span className="reservation-notice__toggle-text ft-22b ink500">
+                  {isEditMode ? "예약 변경전 확인해주세요" : "예약 전 꼭 확인해주세요"}
+                </span>
               </span>
               <Icon
                 className={["reservation-notice__chevron", isNoticeOpen && "reservation-notice__chevron--open"]

@@ -419,7 +419,9 @@ function MyPage() {
 
                   type="button"
 
-                  onClick={() => navigate(`/reservation?mode=edit&reservationId=${upcomingReservation.id}`)}
+                  onClick={() =>
+                    navigate(`/reservation?mode=edit&reservationId=${upcomingReservation!.id}`)
+                  }
 
                 >
 
@@ -701,7 +703,7 @@ function MyPage() {
       <CustomModal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)}>
         <section className="my-page__history-modal" aria-label="전체 예약 이력">
           <header className="my-page__history-modal-header">
-            <h2 className="my-page__history-modal-title ft-36b ink500">전체 예약 이력</h2>
+            <h2 className="my-page__history-modal-title ft-28b ink500">전체 예약 이력</h2>
           </header>
 
           <div className="my-page__history-modal-scroll">
@@ -712,14 +714,19 @@ function MyPage() {
                     <img className="my-page__history-card-image" src={item.image} alt="" />
 
                     <div className="my-page__history-card-body">
-                      <h3 className="my-page__history-card-title ft-36b ink500">{item.classTitle}</h3>
+                      <h3 className="my-page__history-card-title my-page__history-modal-card-title ft-22b ink500">
+                        {item.classTitle}
+                      </h3>
 
-                      <p className="my-page__history-card-date ft-22r ink400">
+                      <p className="my-page__history-card-date my-page__history-modal-card-date ft-16r ink400">
                         {formatReservationSchedule(item.date, item.time)}
                       </p>
                     </div>
 
-                    <Badge variant={getHistoryBadgeVariant(item.status)} className="my-page__history-card-badge">
+                    <Badge
+                      variant={getHistoryBadgeVariant(item.status)}
+                      className="my-page__history-card-badge my-page__history-modal-card-badge ft-14r"
+                    >
                       {getHistoryBadgeLabel(item.status)}
                     </Badge>
                   </li>
