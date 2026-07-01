@@ -84,7 +84,7 @@
 
 @mixin tablet-typography {
   .ft-40b {
-    @include font-token(var(--font-display), 2.5rem, 700, 3.25rem);
+    @include font-token(var(--font-headline), 2.5rem, 700, 3.25rem);
   }
 
   .ft-32b {
