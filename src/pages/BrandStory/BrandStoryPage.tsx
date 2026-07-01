@@ -176,8 +176,6 @@ function BrandStoryPage() {
           return;
         }
 
-        const list = section.querySelector<HTMLElement>(".brand-story-philosophy__list");
-
         const resetScrollState = () => {
           scrolls.forEach((scroll) => {
             const rollTop = scroll.querySelector<HTMLElement>(".brand-story-philosophy__roll-top");
@@ -216,19 +214,60 @@ function BrandStoryPage() {
           );
         });
 
-        const triggerTarget = list ?? section;
+        const triggerTarget = section;
+        let hasLeftSection = true;
+        let sectionOverlapsViewport = false;
+
+        const isSectionFullyOutside = () => {
+          const rect = triggerTarget.getBoundingClientRect();
+          const viewportHeight = window.innerHeight;
+
+          return rect.bottom <= 0 || rect.top >= viewportHeight;
+        };
+
+        const syncSectionPresence = () => {
+          const overlapsViewport = !isSectionFullyOutside();
+
+          if (sectionOverlapsViewport && !overlapsViewport) {
+            hasLeftSection = true;
+            timeline.pause(0);
+            resetScrollState();
+          }
+
+          sectionOverlapsViewport = overlapsViewport;
+        };
 
         const playUnroll = () => {
+          if (!hasLeftSection) {
+            return;
+          }
+
+          hasLeftSection = false;
           timeline.restart(true);
         };
 
+        const isRolledSectionReached = () => {
+          const rect = triggerTarget.getBoundingClientRect();
+          const viewportHeight = window.innerHeight;
+
+          return rect.top <= 1 && rect.bottom >= viewportHeight * 0.55;
+        };
+
         ScrollTrigger.create({
+          id: "brand-story-philosophy-unroll",
           trigger: triggerTarget,
-          start: "top 88%",
+          start: "top top",
           onEnter: playUnroll,
-          onLeaveBack: () => {
-            timeline.pause(0);
-            resetScrollState();
+          invalidateOnRefresh: true,
+        });
+
+        ScrollTrigger.create({
+          id: "brand-story-philosophy-presence",
+          start: 0,
+          end: "max",
+          onUpdate: syncSectionPresence,
+          onRefresh: () => {
+            sectionOverlapsViewport = !isSectionFullyOutside();
           },
           invalidateOnRefresh: true,
         });
@@ -236,14 +275,9 @@ function BrandStoryPage() {
         requestAnimationFrame(() => {
           ScrollTrigger.refresh();
 
-          if (!triggerTarget) {
-            return;
-          }
+          sectionOverlapsViewport = !isSectionFullyOutside();
 
-          const triggerLine = window.innerHeight * 0.88;
-          const isInView = triggerTarget.getBoundingClientRect().top <= triggerLine;
-
-          if (isInView) {
+          if (isRolledSectionReached()) {
             playUnroll();
           }
         });
