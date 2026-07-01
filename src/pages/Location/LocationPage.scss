@@ -122,7 +122,6 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
 
 .location-kv__desc {
   margin: 0.5625rem 0 0;
-  max-width: 32rem;
 }
 
 .location-kv__brand {
@@ -402,6 +401,73 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
     height: 40rem;
     background-position: 70% center;
   }
+
+  .location-kv__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    grid-column: 1 / span 7;
+    max-width: none;
+  }
+
+  .location-kv__head {
+    display: inline-grid;
+    grid-template-columns: max-content;
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .location-kv__title,
+  .location-kv__line {
+    grid-column: 1;
+  }
+
+  .location-kv__ornament {
+    display: none;
+  }
+
+  .location-kv__line {
+    display: flex;
+    width: 100%;
+    margin-top: 0.75rem;
+  }
+
+  .location-kv__desc {
+    margin-top: 1.5rem;
+    word-break: keep-all;
+  }
+}
+
+@media (min-width: calc($laptop + 1px)) and (max-width: 1080px) {
+  .location-kv__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    grid-column: 1 / span 7;
+    max-width: none;
+  }
+
+  .location-kv__head {
+    display: inline-grid;
+    grid-template-columns: max-content;
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .location-kv__ornament {
+    display: none;
+  }
+
+  .location-kv__line {
+    display: flex;
+    width: 100%;
+    margin-top: 0.75rem;
+  }
+
+  .location-kv__desc {
+    margin-top: 1.5rem;
+    word-break: keep-all;
+  }
 }
 
 /* ══════════════════════════════════════════
@@ -457,8 +523,6 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
 
   .location-kv__desc {
     margin-top: 1.5rem;
-    width: max-content;
-    max-width: none;
     word-break: keep-all;
   }
 
@@ -549,8 +613,6 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
 
   .location-kv__desc {
     margin-top: 0.75rem;
-    width: max-content;
-    max-width: none;
     word-break: keep-all;
   }
 
