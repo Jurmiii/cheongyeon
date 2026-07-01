@@ -8,8 +8,8 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
   grid-template-columns: repeat(grid.$desktop-grid-columns, minmax(0, 1fr));
   column-gap: grid.$desktop-grid-gap;
   box-sizing: border-box;
-  width: min(90rem, calc(100% - #{$location-side-inset * 2}));
-  max-width: min(90rem, calc(100% - #{$location-side-inset * 2}));
+  width: min(#{grid.$desktop-grid-outer}, calc(100% - #{$location-side-inset * 2}));
+  max-width: min(#{grid.$desktop-grid-outer}, calc(100% - #{$location-side-inset * 2}));
   margin-inline: auto;
 }
 
@@ -65,7 +65,7 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
 .location-kv__content {
   position: relative;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
 }
@@ -136,7 +136,7 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
 }
 
 .location-map__inner {
-  width: min(100%, 90rem);
+  width: min(100%, #{grid.$desktop-grid-outer});
   margin-inline: auto;
 }
 
@@ -148,7 +148,7 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
 
 .location-map__card {
   display: flex;
-  width: 90rem;
+  width: grid.$desktop-grid-outer;
   max-width: 100%;
   height: 36.75rem;
   margin-inline: auto;
@@ -686,8 +686,8 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
 @media (min-width: calc(120rem + 1px)) {
   .location-kv__content {
     @include location-desktop-grid;
-    width: min(90rem, 100%);
-    max-width: 90rem;
+    width: min(#{grid.$desktop-grid-outer}, 100%);
+    max-width: grid.$desktop-grid-outer;
     align-items: center;
     height: 100%;
   }
@@ -701,8 +701,8 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
 
   .location-map__inner {
     @include location-desktop-grid;
-    width: min(90rem, 100%);
-    max-width: 90rem;
+    width: min(#{grid.$desktop-grid-outer}, 100%);
+    max-width: grid.$desktop-grid-outer;
   }
 
   .location-map__title {

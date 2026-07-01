@@ -34,7 +34,7 @@ $class-intro-kv-symbol-height: 1.0625rem;
   display: flex;
   align-items: center;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
 }
@@ -70,7 +70,7 @@ $class-intro-kv-symbol-height: 1.0625rem;
   margin: 0;
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .class-intro-kv__grid {
     padding-inline: 1.5rem;
   }
@@ -185,7 +185,7 @@ $class-intro-kv-symbol-height: 1.0625rem;
   align-items: center;
   gap: 6.5rem;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   margin-inline: auto;
 }
 
@@ -229,13 +229,13 @@ $class-intro-kv-symbol-height: 1.0625rem;
   margin: 0;
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .class-intro-about {
     padding-inline: 1.5rem;
   }
 }
 
-@media (max-width: 64rem) {
+@media (max-width: $laptop) {
   .class-intro-about {
     min-height: auto;
     padding-block: 3rem;
@@ -273,7 +273,7 @@ $class-intro-kv-symbol-height: 1.0625rem;
 
 .class-intro-scroll__grid {
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   margin-inline: auto;
 }
 
@@ -375,7 +375,7 @@ $class-intro-kv-symbol-height: 1.0625rem;
   }
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .class-intro-scroll {
     padding-inline: 1.5rem;
   }
@@ -387,7 +387,7 @@ $class-intro-kv-symbol-height: 1.0625rem;
   }
 }
 
-@media (max-width: 64rem) {
+@media (max-width: $laptop) {
   .class-intro-scroll {
     min-height: auto;
     padding-block: 3rem;
@@ -430,7 +430,7 @@ $class-intro-kv-symbol-height: 1.0625rem;
   flex-direction: column;
   gap: 3.75rem;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   margin-inline: auto;
 }
 
@@ -556,7 +556,7 @@ $class-intro-kv-symbol-height: 1.0625rem;
   }
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .class-intro-carousel {
     padding-inline: 1.5rem;
   }
@@ -566,7 +566,7 @@ $class-intro-kv-symbol-height: 1.0625rem;
   }
 }
 
-@media (max-width: 64rem) {
+@media (max-width: $laptop) {
   .class-intro-carousel {
     min-height: auto;
     padding-block: 3rem;
@@ -622,7 +622,7 @@ $class-intro-kv-symbol-height: 1.0625rem;
 .class-intro-cta__grid {
   position: relative;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
 }
@@ -667,7 +667,7 @@ $class-intro-kv-symbol-height: 1.0625rem;
   }
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .class-intro-cta__grid {
     padding-inline: 1.5rem;
   }
@@ -677,7 +677,7 @@ $class-intro-kv-symbol-height: 1.0625rem;
   }
 }
 
-@media (max-width: 64rem) {
+@media (max-width: $laptop) {
   .class-intro-cta {
     height: auto;
     min-height: 24rem;
@@ -717,7 +717,7 @@ $class-intro-kv-symbol-height: 1.0625rem;
 
 .class-intro-review__grid {
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   margin-inline: auto;
 }
 
@@ -921,7 +921,7 @@ $class-intro-kv-symbol-height: 1.0625rem;
   transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .class-intro-review {
     padding-inline: 1.5rem;
   }
@@ -931,7 +931,7 @@ $class-intro-kv-symbol-height: 1.0625rem;
   }
 }
 
-@media (max-width: 64rem) {
+@media (max-width: $laptop) {
   .class-intro-review {
     min-height: auto;
     padding-block: 4rem;

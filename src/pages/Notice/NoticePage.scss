@@ -1,3 +1,6 @@
+@use "../../styles/abstracts/breakpoints" as *;
+@use "../../styles/abstracts/grid" as grid;
+
 /* Figma 1471:930 — 공지 목록 */
 .notice-page {
   position: relative;
@@ -28,7 +31,7 @@
 .notice-kv__grid {
   position: relative;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
 }
@@ -61,7 +64,7 @@
 }
 
 .notice-content__grid {
-  width: 90rem;
+  width: grid.$desktop-grid-outer;
   max-width: calc(100% - 3rem);
   margin-inline: auto;
   padding-top: 7.5rem;
@@ -349,13 +352,13 @@
   background: var(--deep500);
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .notice-content__grid {
     width: calc(100% - 3rem);
   }
 }
 
-@media (max-width: 64rem) {
+@media (max-width: $laptop) {
   .notice-content__filters {
     flex-wrap: wrap;
     gap: 1rem;
@@ -410,7 +413,7 @@
 
 .notice-detail__grid {
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   margin-inline: auto;
 }
 
@@ -493,13 +496,13 @@
   color: var(--white);
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .notice-detail__grid {
     padding-inline: 1.5rem;
   }
 }
 
-@media (max-width: 48rem) {
+@media (max-width: $tablet) {
   .notice-detail {
     padding-block: 6rem 5rem;
   }

@@ -64,7 +64,7 @@ import summerBg2 from "../assets/images/01main/summer-bg2.svg";
 import summerPot from "../assets/images/01main/summer-tea.webp";
 import winterBg2 from "../assets/images/01main/winter-bg2.svg";
 import winterPot from "../assets/images/01main/winter-tea.webp";
-import { Footer, Header, Icon, MobileHeader, TabletHeader } from "../components/common";
+import { Footer, Header, Icon } from "../components/common";
 import ProductContentBox from "../components/common/ProductContentBox";
 import "./MainPage.scss";
 
@@ -1177,9 +1177,7 @@ export default function MainPage() {
         </div>
       )}
       <div className="main-page__header">
-        {kvViewport === "mobile" ? <MobileHeader /> : null}
-        {kvViewport === "tablet" ? <TabletHeader /> : null}
-        {kvViewport === "desktop" ? <Header /> : null}
+        <Header />
       </div>
       <section
         className={[

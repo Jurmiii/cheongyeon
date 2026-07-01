@@ -5,7 +5,7 @@
   position: relative;
   width: 100%;
   min-width: 0;
-  --season-tea-grid-left: max(calc((100% - 90rem) / 2), 1.5rem);
+  --season-tea-grid-left: max(calc((100% - #{grid.$desktop-grid-outer}) / 2), 1.5rem);
 }
 
 .season-tea-page__header {
@@ -34,7 +34,7 @@
   column-gap: 1.5rem;
   align-items: center;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
 }
@@ -62,7 +62,7 @@
   margin-top: 1rem;
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .season-tea-kv__grid {
     padding-inline: 1.5rem;
     grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -226,7 +226,7 @@
   column-gap: 1.5rem;
   align-items: center;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   margin-inline: auto;
   padding-block: 5rem;
 }
@@ -276,14 +276,14 @@
   background: var(--plum500);
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .season-tea-spring__grid {
     padding-inline: 1.5rem;
     grid-template-columns: repeat(12, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 64rem) {
+@media (max-width: $laptop) {
   .season-tea-spring__grid {
     grid-template-columns: 1fr;
     row-gap: 2.5rem;
@@ -320,7 +320,7 @@
   column-gap: 1.5rem;
   align-items: center;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   margin-inline: auto;
   padding-block: 5rem;
 }
@@ -370,14 +370,14 @@
   background: var(--deep400);
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .season-tea-summer__grid {
     padding-inline: 1.5rem;
     grid-template-columns: repeat(12, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 64rem) {
+@media (max-width: $laptop) {
   .season-tea-summer__grid {
     grid-template-columns: 1fr;
     row-gap: 2.5rem;
@@ -414,7 +414,7 @@
   column-gap: 1.5rem;
   align-items: center;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   margin-inline: auto;
   padding-block: 5rem;
 }
@@ -472,14 +472,14 @@
   background: var(--fall);
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .season-tea-autumn__grid {
     padding-inline: 1.5rem;
     grid-template-columns: repeat(12, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 64rem) {
+@media (max-width: $laptop) {
   .season-tea-autumn__grid {
     grid-template-columns: 1fr;
     row-gap: 2.5rem;
@@ -516,7 +516,7 @@
   column-gap: 1.5rem;
   align-items: center;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   margin-inline: auto;
   padding-block: 5rem;
 }
@@ -566,14 +566,14 @@
   background: var(--winter);
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .season-tea-winter__grid {
     padding-inline: 1.5rem;
     grid-template-columns: repeat(12, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 64rem) {
+@media (max-width: $laptop) {
   .season-tea-winter__grid {
     grid-template-columns: 1fr;
     row-gap: 2.5rem;
@@ -594,7 +594,7 @@
   }
 }
 
-@media (max-width: 64rem) {
+@media (max-width: $laptop) {
   .season-tea-way-layer {
     display: none;
   }

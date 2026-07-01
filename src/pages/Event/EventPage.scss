@@ -1,3 +1,6 @@
+@use "../../styles/abstracts/breakpoints" as *;
+@use "../../styles/abstracts/grid" as grid;
+
 .event-page {
   position: relative;
   width: 100%;
@@ -28,7 +31,7 @@
   display: flex;
   align-items: center;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
 }
@@ -75,7 +78,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 90rem;
+  max-width: grid.$desktop-grid-outer;
   margin-inline: auto;
   padding: 7.5rem 0 9rem;
 }
@@ -310,7 +313,7 @@
   background: var(--deep500);
 }
 
-@media (max-width: 90rem) {
+@media (max-width: grid.$desktop-grid-outer) {
   .event-kv__grid,
   .event-content__grid {
     padding-inline: 1.5rem;
@@ -322,7 +325,7 @@
   }
 }
 
-@media (max-width: 64rem) {
+@media (max-width: $laptop) {
   .event-list {
     grid-template-columns: minmax(0, 29rem);
   }
@@ -332,7 +335,7 @@
   }
 }
 
-@media (max-width: 48rem) {
+@media (max-width: $tablet) {
   .event-kv {
     height: 36rem;
   }
