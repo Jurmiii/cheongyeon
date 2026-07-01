@@ -150,6 +150,14 @@
   }
 
   .ft-18b {
+    @include font-token(var(--font-headline), 1.125rem, 500, 1.75rem);
+  }
+
+  .ft-18r {
+    @include font-token(var(--font-headline), 1.125rem, 400, 1.75rem);
+  }
+
+  .ft-18b {
     @include font-token(var(--font-body), 1.125rem, 500, 1.75rem);
   }
 
