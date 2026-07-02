@@ -1,12 +1,17 @@
-// Desktop: 12 columns x 6.125rem + 11 gaps x 1.5rem = 90rem (1440px)
+// Desktop: 12 columns x 6.125rem + 11 gaps x 1.5rem = 90rem
+// Viewport 120rem: 12col, 좌우 여백 min 6rem / max 15rem
+// Viewport 80rem: 좌우 여백 min 4rem
 $desktop-grid-outer: 90rem;
 $desktop-grid-columns: 12;
 $desktop-grid-column-width: 6.125rem;
 $desktop-grid-gap: 1.5rem;
 $desktop-grid-side-padding: 1.5rem;
 $desktop-grid-compact-padding: 1rem;
+$desktop-grid-min-inset: 6rem;
+$desktop-grid-max-inset: 15rem;
+$desktop-grid-viewport: 120rem;
 
-// Tablet: 640px grid + 64px side padding = 768px
+// Tablet: 40rem grid + 4rem side padding = 48rem · 8col
 $tablet-grid-outer: 48rem;
 $tablet-grid-padding: 4rem;
 $tablet-grid-inner: 40rem;
@@ -14,8 +19,9 @@ $tablet-grid-columns: 8;
 $tablet-grid-gap: 1.5rem;
 $tablet-kv-width: $tablet-grid-outer;
 $tablet-kv-height: 37.5rem;
+$tablet-grid-viewport: 48rem;
 
-// Mobile: 370px grid + 16px side padding = 402px
+// Mobile: 23.125rem grid + 1rem side padding = 25.125rem · 6col
 $mobile-grid-outer: 25.125rem;
 $mobile-grid-padding: 1rem;
 $mobile-grid-inner: 23.125rem;
@@ -23,6 +29,11 @@ $mobile-grid-columns: 6;
 $mobile-grid-gap: 0.875rem;
 $mobile-kv-width: $mobile-grid-outer;
 $mobile-kv-height: 43.75rem;
+$mobile-grid-viewport: 25.125rem;
+
+// 80rem viewport — 좌우 여백 min 4rem
+$laptop-grid-min-inset: 4rem;
+$laptop-grid-viewport: 80rem;
 
 @mixin desktop-grid {
   display: grid;
@@ -62,6 +73,24 @@ $mobile-kv-height: 43.75rem;
   width: 100%;
   max-width: $desktop-grid-outer;
   margin-inline: auto;
+}
+
+// 120rem — 12col, 좌우 여백 min 6rem / max 15rem (이중 여백 방지: width만 사용)
+@mixin desktop-page-width {
+  box-sizing: border-box;
+  width: min(#{$desktop-grid-outer}, calc(100% - #{$desktop-grid-min-inset * 2}));
+  max-width: min(#{$desktop-grid-outer}, calc(100% - #{$desktop-grid-min-inset * 2}));
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
+// 80rem~ — 좌우 여백 min 4rem
+@mixin laptop-page-width {
+  box-sizing: border-box;
+  width: min(#{$desktop-grid-outer}, calc(100% - #{$laptop-grid-min-inset * 2}));
+  max-width: min(#{$desktop-grid-outer}, calc(100% - #{$laptop-grid-min-inset * 2}));
+  margin-inline: auto;
+  padding-inline: 0;
 }
 
 @mixin desktop-grid-left-var($name: --grid-left) {
