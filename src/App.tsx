@@ -10,6 +10,8 @@ import NoticePage from './pages/Notice/NoticePage'
 import FaqPage from './pages/Faq/FaqPage'
 import EventPage from './pages/Event/EventPage'
 import LoginPage from './pages/Login/LoginPage'
+import AuthCallbackPage from './pages/Auth/AuthCallbackPage'
+import KakaoCallbackPage from './pages/Auth/KakaoCallbackPage'
 import SignupPage from './pages/Signup/SignupPage'
 import ReservationEditPage from './pages/ReservationEdit/ReservationEditPage'
 import StampPage from './pages/Stamp/StampPage'
@@ -95,6 +97,8 @@ function App() {
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/event/faq" element={<FaqPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/auth/callback" element={<AuthCallbackPage />} />
+          <Route path="/auth/kakao/callback" element={<KakaoCallbackPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/sign-up" element={<SignupPage />} />
           <Route path="/seasontea" element={<SeasonTeaPage />} />

@@ -5,6 +5,7 @@ import { Button, Input } from "../../components/common";
 import { useAuth } from "../../contexts/AuthContext";
 import { validateAccount } from "../../utils/accountStorage";
 import { TEMP_LOGIN_ID, TEMP_LOGIN_PASSWORD, validateTempLogin } from "../../data/tempLoginCredentials";
+import { signInWithKakao } from "../../utils/kakaoAuth";
 import logo from "../../assets/images/00header-footer/logo.svg";
 import "./Login.scss";
 
@@ -17,6 +18,7 @@ export default function Login() {
   const [keepLogin, setKeepLogin] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [inputState, setInputState] = useState("default");
+  const [isKakaoLoading, setIsKakaoLoading] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -47,6 +49,22 @@ export default function Login() {
     setter(event.target.value);
     setInputState("default");
     setErrorMessage("");
+  };
+
+  const handleKakaoLogin = async () => {
+    setErrorMessage("");
+    setIsKakaoLoading(true);
+
+    try {
+      const redirectTo = location.state?.redirectTo;
+      const postLoginPath =
+        typeof redirectTo === "string" && redirectTo.startsWith("/") ? redirectTo : "/";
+
+      await signInWithKakao(postLoginPath);
+    } catch {
+      setErrorMessage("카카오 로그인을 시작할 수 없습니다. 잠시 후 다시 시도해 주세요.");
+      setIsKakaoLoading(false);
+    }
   };
 
   return (
@@ -115,8 +133,8 @@ export default function Login() {
             로그인
           </Button>
 
-          <Button href="https://www.kakaocorp.com/page/service/service/KakaoTalk" target="_blank" variant="btn8">
-            카카오로 시작하기
+          <Button type="button" variant="btn8" onClick={handleKakaoLogin} disabled={isKakaoLoading}>
+            {isKakaoLoading ? "카카오 로그인 연결 중..." : "카카오로 로그인하기"}
           </Button>
 
           <Button href="https://www.naver.com/" target="_blank" variant="btn9">
