@@ -5,7 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 export type SpaceGalleryCard = {
   image: string;
   title: string;
-  location: string;
+  location: readonly [string, string];
   feature: string;
 };
 
@@ -374,7 +374,11 @@ function SpaceGallerySection({
 
                 <div className={`${blockClass}__card-content`}>
                   <h4 className={`${blockClass}__card-title ft-28b`}>{card.title}</h4>
-                  <p className={`${blockClass}__card-text ft-16r`}>{card.location}</p>
+                  <p className={`${blockClass}__card-text ft-16r`}>
+                    {card.location[0]}
+                    <br />
+                    {card.location[1]}
+                  </p>
                   <p className={`${blockClass}__card-text ft-16r`}>{card.feature}</p>
                 </div>
               </article>
