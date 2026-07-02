@@ -23,6 +23,15 @@ export function getKakaoRedirectUri() {
   return `${resolveSiteUrl()}/auth/kakao/callback`;
 }
 
+function getKakaoAuthApiUrl() {
+  const configured = import.meta.env.VITE_KAKAO_AUTH_API_URL?.replace(/\/$/, "");
+  if (configured) {
+    return configured;
+  }
+
+  return `${resolveSiteUrl()}/api/kakao-auth`;
+}
+
 export async function signInWithKakao(postLoginPath = "/") {
   const restApiKey = import.meta.env.VITE_KAKAO_REST_API_KEY;
 
@@ -46,33 +55,29 @@ export async function signInWithKakao(postLoginPath = "/") {
 }
 
 export async function completeKakaoLogin(code: string) {
-  const { data, error } = await supabase.functions.invoke("kakao-auth", {
-    body: {
+  const response = await fetch(getKakaoAuthApiUrl(), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
       code,
       redirectUri: getKakaoRedirectUri(),
-    },
+    }),
   });
 
-  if (error) {
-    const isUnreachable =
-      error.name === "FunctionsFetchError" ||
-      /failed to send a request to the edge function/i.test(error.message);
+  const data = (await response.json()) as {
+    token_hash?: string;
+    email?: string;
+    error?: string;
+  };
 
-    if (isUnreachable) {
-      throw new Error(
-        "카카오 로그인 서버(kakao-auth)에 연결할 수 없습니다. Supabase Edge Function 배포가 필요합니다.",
-      );
-    }
-
-    throw error;
+  if (!response.ok) {
+    throw new Error(data.error || "Kakao auth API failed.");
   }
 
-  if (!data || typeof data !== "object" || "error" in data) {
-    const message =
-      data && typeof data === "object" && "error" in data && typeof data.error === "string"
-        ? data.error
-        : "Kakao auth function failed.";
-    throw new Error(message);
+  if (!data || typeof data !== "object" || data.error) {
+    throw new Error(data.error || "Kakao auth API failed.");
   }
 
   const tokenHash = data.token_hash;
