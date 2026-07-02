@@ -41,14 +41,24 @@ function getEnv(name: string) {
   return value || undefined;
 }
 
-function getMissingEnvNames(): string[] {
-  const required = [
-    "KAKAO_REST_API_KEY",
-    "KAKAO_CLIENT_SECRET",
-    "SUPABASE_SERVICE_ROLE_KEY",
-  ] as const;
+function getKakaoRestApiKey() {
+  return getEnv("KAKAO_REST_API_KEY") || getEnv("VITE_KAKAO_REST_API_KEY");
+}
 
-  const missing: string[] = required.filter((name) => !getEnv(name));
+function getMissingEnvNames(): string[] {
+  const missing: string[] = [];
+
+  if (!getKakaoRestApiKey()) {
+    missing.push("KAKAO_REST_API_KEY");
+  }
+
+  if (!getEnv("KAKAO_CLIENT_SECRET")) {
+    missing.push("KAKAO_CLIENT_SECRET");
+  }
+
+  if (!getEnv("SUPABASE_SERVICE_ROLE_KEY")) {
+    missing.push("SUPABASE_SERVICE_ROLE_KEY");
+  }
 
   if (!getEnv("SUPABASE_URL") && !getEnv("VITE_SUPABASE_URL")) {
     missing.push("SUPABASE_URL");
@@ -69,7 +79,7 @@ export async function handleKakaoAuth({
     throw new Error("redirectUri is required.");
   }
 
-  const kakaoRestApiKey = getEnv("KAKAO_REST_API_KEY");
+  const kakaoRestApiKey = getKakaoRestApiKey();
   const kakaoClientSecret = getEnv("KAKAO_CLIENT_SECRET");
   const supabaseUrl = getEnv("SUPABASE_URL") || getEnv("VITE_SUPABASE_URL");
   const serviceRoleKey = getEnv("SUPABASE_SERVICE_ROLE_KEY");

@@ -5,18 +5,19 @@ const KAKAO_AUTHORIZE_URL = "https://kauth.kakao.com/oauth/authorize";
 const KAKAO_OAUTH_SCOPES = "profile_nickname profile_image";
 
 function resolveSiteUrl() {
-  const configuredSiteUrl = import.meta.env.VITE_SITE_URL?.replace(/\/$/, "");
   const runtimeOrigin =
     typeof window !== "undefined" ? window.location.origin.replace(/\/$/, "") : "";
+  const configuredSiteUrl = import.meta.env.VITE_SITE_URL?.replace(/\/$/, "");
 
-  const isLocalConfigured = configuredSiteUrl?.includes("localhost") ?? false;
-  const isLocalRuntime = runtimeOrigin.includes("localhost");
+  if (runtimeOrigin.includes("localhost")) {
+    return runtimeOrigin;
+  }
 
-  if (configuredSiteUrl && !(isLocalConfigured && !isLocalRuntime)) {
+  if (configuredSiteUrl) {
     return configuredSiteUrl;
   }
 
-  return runtimeOrigin || configuredSiteUrl || "";
+  return runtimeOrigin;
 }
 
 export function getKakaoRedirectUri() {

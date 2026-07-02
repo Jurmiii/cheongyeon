@@ -32,10 +32,24 @@ function getEnv(name: string) {
   return value || undefined;
 }
 
+function getKakaoRestApiKey() {
+  return getEnv("KAKAO_REST_API_KEY") || getEnv("VITE_KAKAO_REST_API_KEY");
+}
+
 function getMissingEnvNames(): string[] {
-  const missing: string[] = ["KAKAO_REST_API_KEY", "KAKAO_CLIENT_SECRET", "SUPABASE_SERVICE_ROLE_KEY"].filter(
-    (name) => !getEnv(name),
-  );
+  const missing: string[] = [];
+
+  if (!getKakaoRestApiKey()) {
+    missing.push("KAKAO_REST_API_KEY");
+  }
+
+  if (!getEnv("KAKAO_CLIENT_SECRET")) {
+    missing.push("KAKAO_CLIENT_SECRET");
+  }
+
+  if (!getEnv("SUPABASE_SERVICE_ROLE_KEY")) {
+    missing.push("SUPABASE_SERVICE_ROLE_KEY");
+  }
 
   if (!getEnv("SUPABASE_URL") && !getEnv("VITE_SUPABASE_URL")) {
     missing.push("SUPABASE_URL");
@@ -60,7 +74,7 @@ async function handleKakaoAuth(body: { code?: string; redirectUri?: string }) {
     throw new Error(`Server auth configuration is incomplete: ${missingEnv.join(", ")}`);
   }
 
-  const kakaoRestApiKey = getEnv("KAKAO_REST_API_KEY")!;
+  const kakaoRestApiKey = getKakaoRestApiKey()!;
   const kakaoClientSecret = getEnv("KAKAO_CLIENT_SECRET")!;
   const supabaseUrl = getEnv("SUPABASE_URL") || getEnv("VITE_SUPABASE_URL")!;
   const serviceRoleKey = getEnv("SUPABASE_SERVICE_ROLE_KEY")!;

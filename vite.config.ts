@@ -50,7 +50,8 @@ function kakaoAuthDevApi(): Plugin {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
 
-  process.env.KAKAO_REST_API_KEY = env.KAKAO_REST_API_KEY
+  process.env.KAKAO_REST_API_KEY = env.KAKAO_REST_API_KEY || env.VITE_KAKAO_REST_API_KEY
+  process.env.VITE_KAKAO_REST_API_KEY = env.VITE_KAKAO_REST_API_KEY
   process.env.KAKAO_CLIENT_SECRET = env.KAKAO_CLIENT_SECRET
   process.env.SUPABASE_URL = env.SUPABASE_URL || env.VITE_SUPABASE_URL
   process.env.SUPABASE_SERVICE_ROLE_KEY = env.SUPABASE_SERVICE_ROLE_KEY
