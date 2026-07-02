@@ -1,6 +1,95 @@
 @use "../styles/abstracts/breakpoints" as *;
 
 @use "../styles/abstracts/grid" as grid;
+
+// ─── Main page tablet/mobile grid (KV·sec2 기준 — 이후 섹션 __grid도 동일 mixin/선택자에 추가) ───
+$main-page-tablet-pad-vw-min: 25.0625rem;
+$main-page-mobile-pad-vw-min: 20rem;
+$main-sec3-tablet-image-w: 19.25rem; // 308px
+$main-sec3-tablet-image-h: 14.3125rem; // 229px
+$main-sec3-tablet-spring-text-w: 22.5rem; // 360px — 봄 서브타이틀 2줄 유지
+$main-sec3-mobile-image-w: 11.125rem; // 178px
+$main-sec3-mobile-image-h: 8.25rem; // 132px
+$main-sec3-fluid-vw-min: 25.125rem; // 402px — fluid scaling 기준
+$main-sec3-season-image-ratio: 308 / 229;
+$main-sec3-tablet-title-image-gap: 1.5rem; // 24px — 이미지 ↔ 계절 타이틀 블록
+$main-sec3-mobile-title-image-gap: 0.5rem; // 8px
+$main-page-fluid-vw-min: 25.125rem; // 402px
+$main-page-fluid-tablet-vw: 48rem; // 768px
+$main-page-fluid-laptop-vw: 64rem; // 1024px
+
+@mixin main-fluid-font-3bp(
+  $mobile-fs,
+  $tablet-fs,
+  $desktop-fs,
+  $mobile-lh,
+  $tablet-lh,
+  $desktop-lh,
+  $weight: 700,
+  $family: var(--font-headline)
+) {
+  $mobile-to-tablet-fs-slope: ($tablet-fs - $mobile-fs) / ($main-page-fluid-tablet-vw - $main-page-fluid-vw-min);
+  $mobile-to-tablet-lh-slope: ($tablet-lh - $mobile-lh) / ($main-page-fluid-tablet-vw - $main-page-fluid-vw-min);
+  $tablet-to-desktop-fs-slope: ($desktop-fs - $tablet-fs) / ($main-page-fluid-laptop-vw - $main-page-fluid-tablet-vw);
+  $tablet-to-desktop-lh-slope: ($desktop-lh - $tablet-lh) / ($main-page-fluid-laptop-vw - $main-page-fluid-tablet-vw);
+
+  font-family: $family;
+  font-weight: $weight;
+  font-size: clamp(
+    $mobile-fs,
+    calc(#{$mobile-fs} + (100vw - #{$main-page-fluid-vw-min}) * #{$mobile-to-tablet-fs-slope}),
+    $tablet-fs
+  );
+  line-height: clamp(
+    $mobile-lh,
+    calc(#{$mobile-lh} + (100vw - #{$main-page-fluid-vw-min}) * #{$mobile-to-tablet-lh-slope}),
+    $tablet-lh
+  );
+
+  @media (min-width: $tablet) {
+    font-size: clamp(
+      $tablet-fs,
+      calc(#{$tablet-fs} + (100vw - #{$main-page-fluid-tablet-vw}) * #{$tablet-to-desktop-fs-slope}),
+      $desktop-fs
+    );
+    line-height: clamp(
+      $tablet-lh,
+      calc(#{$tablet-lh} + (100vw - #{$main-page-fluid-tablet-vw}) * #{$tablet-to-desktop-lh-slope}),
+      $desktop-lh
+    );
+  }
+}
+
+@mixin main-page-grid-laptop-reset {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+
+@mixin main-page-grid-mobile-pad {
+  padding-inline: clamp(
+    1rem,
+    calc(1rem + (100vw - #{$main-page-mobile-pad-vw-min}) * 0.00895),
+    1.25rem
+  );
+}
+
+@mixin main-page-grid-tablet-pad {
+  padding-inline: clamp(
+    1.5rem,
+    calc(1.5rem + (100vw - #{$main-page-tablet-pad-vw-min}) * 0.09811),
+    3.75rem
+  );
+}
+
+@mixin main-page-grid-pc-compact {
+  padding-inline: max(
+    grid.$desktop-grid-side-padding,
+    calc((100vw - min(100vw, grid.$desktop-grid-outer)) / 2 + grid.$desktop-grid-side-padding)
+  );
+}
+
 .main-page {
   position: relative;
   width: 100%;
@@ -107,6 +196,22 @@
   max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
+}
+
+// PC compact — 1024px~1440px: 헤더와 동일 그리드 정렬
+@media (min-width: $laptop) and (max-width: grid.$desktop-grid-outer) {
+  .main-sec1__grid {
+    @include main-page-grid-laptop-reset;
+    @include main-page-grid-pc-compact;
+  }
+}
+
+// PC compact KV — 1441px~1920px: 중앙 90rem 그리드 + 좌우 패딩 (헤더 inner과 동일)
+@media (min-width: calc(grid.$desktop-grid-outer + 0.0625rem)) and (max-width: 120rem) {
+  .main-sec1__grid {
+    box-sizing: border-box;
+    padding-inline: grid.$desktop-grid-side-padding;
+  }
 }
 
 .main-sec1__content {
@@ -624,6 +729,34 @@
 
 .main-sec3__draw-mask-rect[data-draw-direction="horizontal"] {
   transform-origin: 0% 50%;
+}
+
+// PC (1441px+) — line·symbol-black 동시 표시
+@media (min-width: calc(grid.$desktop-grid-outer + 0.0625rem)) {
+  .main-sec3__spring-line,
+  .main-sec3__summer-line,
+  .main-sec3__fall-line,
+  .main-sec3__line4,
+  .main-sec3__spring-symbol-black,
+  .main-sec3__summer-symbol-black,
+  .main-sec3__fall-symbol-black,
+  .main-sec3__winter-symbol-black {
+    display: block;
+  }
+}
+
+// 1440px 이하 — line·symbol-black 동시 비표시
+@media (max-width: grid.$desktop-grid-outer) {
+  .main-sec3__spring-line,
+  .main-sec3__summer-line,
+  .main-sec3__fall-line,
+  .main-sec3__line4,
+  .main-sec3__spring-symbol-black,
+  .main-sec3__summer-symbol-black,
+  .main-sec3__fall-symbol-black,
+  .main-sec3__winter-symbol-black {
+    display: none;
+  }
 }
 
 .main-sec4 {
@@ -1378,6 +1511,41 @@
   margin-top: 1.5rem;
 }
 
+// ≤1024px — 모바일·태블릿·소형 PC 구간 유동 타이포 (402→768→1024에서 토큰 크기에 고정)
+@media (max-width: $laptop) {
+  .main-page-type--kv-title.ft-48b {
+    @include main-fluid-font-3bp(1.875rem, 2.5rem, 3rem, 2.375rem, 3.25rem, 4rem);
+  }
+
+  .main-page-type--kv-desc.ft-28r {
+    @include main-fluid-font-3bp(1.125rem, 1.5rem, 1.75rem, 1.75rem, 2.125rem, 2.5rem, 400);
+  }
+
+  .main-page-type--sec2-title.ft-48b {
+    @include main-fluid-font-3bp(1.5rem, 2rem, 3rem, 2rem, 2.75rem, 4rem);
+  }
+
+  .main-page-type--sec2-subtitle.ft-22r {
+    @include main-fluid-font-3bp(0.875rem, 1.25rem, 1.375rem, 1.375rem, 2rem, 2.25rem, 400, var(--font-body));
+  }
+
+  .main-page-type--sec3-title.ft-64b {
+    @include main-fluid-font-3bp(1.5rem, 2rem, 4rem, 2rem, 2.75rem, 4.5rem);
+  }
+
+  .main-page-type--sec3-desc.ft-36r {
+    @include main-fluid-font-3bp(0.875rem, 1.25rem, 2.25rem, 1.375rem, 2rem, 3.25rem, 400);
+  }
+
+  .main-page-type--sec3-season-title.ft-48b {
+    @include main-fluid-font-3bp(1.5rem, 2rem, 3rem, 2rem, 2.75rem, 4rem);
+  }
+
+  .main-page-type--sec3-season-desc.ft-28r {
+    @include main-fluid-font-3bp(0.875rem, 1.25rem, 1.75rem, 1.375rem, 2rem, 2.5rem, 400);
+  }
+}
+
 // Tablet / Mobile — KV section only
 .main-sec1__symbol--responsive {
   display: none;
@@ -1408,16 +1576,13 @@
   }
 
   .main-sec1__grid {
-    box-sizing: border-box;
-    width: 100%;
-    max-width: clamp(#{grid.$mobile-grid-inner}, 92vw, #{grid.$tablet-grid-inner});
-    padding-inline: clamp(1rem, 4vw, 1.5rem);
+    @include main-page-grid-laptop-reset;
     transition: max-width 0.35s ease;
   }
 
   .main-sec1__content {
     width: 100%;
-    max-width: clamp(#{grid.$mobile-grid-inner}, 92vw, #{grid.$tablet-grid-inner});
+    max-width: none;
     padding-top: clamp(6.75rem, 5rem + 4vw, 7.75rem);
     transition:
       max-width 0.35s ease,
@@ -1471,8 +1636,376 @@
   }
 }
 
+// Tablet / Mobile — compact 헤더 pad-x와 동일 그리드 (이후 main-secN__grid 클래스 추가)
+@media (max-width: #{$tablet - 1px}) {
+  .main-sec1__grid,
+  .main-sec2__grid,
+  .main-sec3__grid,
+  .main-sec3__spring,
+  .main-sec3__summer,
+  .main-sec3__fall,
+  .main-sec3__winter {
+    @include main-page-grid-mobile-pad;
+  }
+
+  .main-sec2 {
+    height: 31.25rem;
+  }
+
+  .main-sec2__video {
+    object-position: 38% 42%;
+  }
+
+  .main-sec2__content {
+    padding-bottom: 4rem; // 64px
+  }
+}
+
+@media (min-width: $tablet) and (max-width: $laptop) {
+  .main-sec1__grid,
+  .main-sec2__grid,
+  .main-sec3__grid,
+  .main-sec3__spring,
+  .main-sec3__summer,
+  .main-sec3__fall,
+  .main-sec3__winter {
+    @include main-page-grid-tablet-pad;
+  }
+
+  .main-sec2 {
+    @include grid.tablet-kv-section;
+  }
+
+  .main-sec2__video {
+    object-position: center center;
+  }
+
+  .main-sec2__content {
+    padding-bottom: 6rem; // 96px
+  }
+}
+
+// sec2 — ≤1024px: 그리드 패딩 준수 (absolute right:0은 padding 무시 → flex 레이아웃)
+@media (max-width: $laptop) {
+  .main-sec2 {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .main-sec2__video {
+    inset: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .main-sec2__grid {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: stretch;
+    @include main-page-grid-laptop-reset;
+    height: 100%;
+  }
+
+  .main-sec2__content {
+    position: static;
+    right: auto;
+    bottom: auto;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    align-items: flex-end;
+    text-align: right;
+
+    h2,
+    p {
+      max-width: 100%;
+    }
+  }
+
+  .main-sec2__text-first {
+    margin-top: clamp(1.5rem, 1rem + 2vw, 2rem);
+  }
+
+  .main-sec2__text-second {
+    margin-top: clamp(0.75rem, 0.5rem + 1vw, 1rem);
+  }
+}
+
 @media (max-width: $laptop) {
   .main-sec1--mobile .main-sec1__background {
     background-position: center bottom;
+  }
+}
+
+// 1440px 이하 — line·symbol-black 비표시 구간부터 좌우 교차 그리드 레이아웃 (PC 1441px+ 미변경)
+@media (max-width: grid.$desktop-grid-outer) {
+  .main-sec3 {
+    width: 100%;
+    height: auto;
+    padding-bottom: clamp(3rem, 8vw, 5rem);
+  }
+
+  .main-sec3__grid {
+    @include main-page-grid-laptop-reset;
+    height: auto;
+  }
+
+  .main-sec3__intro {
+    align-items: flex-start;
+    padding-top: clamp(3rem, 8vw, 4.5rem);
+  }
+
+  .main-sec3__intro h2,
+  .main-sec3__description {
+    text-align: left;
+  }
+
+  .main-sec3__description {
+    margin-top: clamp(1rem, 3vw, 1.5rem);
+  }
+
+  .main-sec3__mark {
+    width: clamp(1.5rem, 4vw, 2rem);
+    height: auto;
+    margin-top: clamp(1rem, 3vw, 1.5rem);
+  }
+
+  .main-sec3__spring,
+  .main-sec3__summer,
+  .main-sec3__fall,
+  .main-sec3__winter {
+    position: static;
+    box-sizing: border-box;
+    display: grid;
+    align-items: center;
+    width: 100%;
+    margin-top: clamp(2rem, 5vw, 3.5rem);
+    gap: $main-sec3-tablet-title-image-gap;
+  }
+
+  .main-sec3__spring {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  // 봄·가을: 텍스트 좌 / 이미지 우
+  .main-sec3__spring,
+  .main-sec3__fall {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .main-sec3__spring-text,
+  .main-sec3__fall-text {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: center;
+  }
+
+  .main-sec3__spring-composition,
+  .main-sec3__fall-composition {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  // 여름·겨울: 이미지 좌 / 텍스트 우
+  .main-sec3__summer,
+  .main-sec3__winter {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .main-sec3__summer-composition,
+  .main-sec3__winter-composition {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+  }
+
+  .main-sec3__summer-text,
+  .main-sec3__winter-text {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+  }
+
+  .main-sec3__spring-text,
+  .main-sec3__summer-text,
+  .main-sec3__fall-text,
+  .main-sec3__winter-text {
+    flex: none;
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    max-width: clamp(
+      $main-sec3-mobile-image-w,
+      calc(#{$main-sec3-mobile-image-w} + (100vw - #{$main-sec3-fluid-vw-min}) * 0.355),
+      $main-sec3-tablet-image-w
+    );
+    margin-right: 0;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .main-sec3__spring-description,
+  .main-sec3__summer-description,
+  .main-sec3__fall-description,
+  .main-sec3__winter-description {
+    text-align: center;
+    width: 100%;
+  }
+
+  .main-sec3__spring-symbol,
+  .main-sec3__summer-symbol,
+  .main-sec3__fall-symbol,
+  .main-sec3__winter-symbol {
+    height: auto;
+  }
+
+  .main-sec3__spring-composition,
+  .main-sec3__summer-composition,
+  .main-sec3__fall-composition,
+  .main-sec3__winter-composition {
+    position: relative;
+    flex: none;
+    margin-top: 0;
+    width: clamp(
+      $main-sec3-mobile-image-w,
+      calc(#{$main-sec3-mobile-image-w} + (100vw - #{$main-sec3-fluid-vw-min}) * 0.355),
+      $main-sec3-tablet-image-w
+    );
+    height: auto;
+    aspect-ratio: $main-sec3-season-image-ratio;
+  }
+
+  .main-sec3__spring-composition,
+  .main-sec3__fall-composition,
+  .main-sec3__summer-composition,
+  .main-sec3__winter-composition {
+    display: block;
+    overflow: hidden;
+  }
+
+  .main-sec3__spring-description,
+  .main-sec3__summer-description,
+  .main-sec3__fall-description,
+  .main-sec3__winter-description {
+    max-width: 100%;
+  }
+
+  .main-sec3__spring-ink,
+  .main-sec3__summer-ink,
+  .main-sec3__fall-ink,
+  .main-sec3__winter-ink,
+  .main-sec3__spring-image,
+  .main-sec3__summer-image,
+  .main-sec3__fall-image,
+  .main-sec3__winter-image {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: $main-sec3-season-image-ratio;
+  }
+}
+
+@media (min-width: calc($laptop + 0.0625rem)) and (max-width: grid.$desktop-grid-outer) {
+  .main-sec3__grid,
+  .main-sec3__spring,
+  .main-sec3__summer,
+  .main-sec3__fall,
+  .main-sec3__winter {
+    @include main-page-grid-pc-compact;
+  }
+}
+
+@media (min-width: $tablet) and (max-width: grid.$desktop-grid-outer) {
+  .main-sec3__spring-text,
+  .main-sec3__spring-description {
+    max-width: $main-sec3-tablet-spring-text-w;
+  }
+
+  .main-sec3__summer-text,
+  .main-sec3__fall-text,
+  .main-sec3__winter-text {
+    max-width: $main-sec3-tablet-image-w;
+  }
+
+  .main-sec3__summer-description,
+  .main-sec3__fall-description,
+  .main-sec3__winter-description {
+    max-width: $main-sec3-tablet-image-w;
+  }
+
+  .main-sec3__spring-symbol,
+  .main-sec3__summer-symbol,
+  .main-sec3__fall-symbol,
+  .main-sec3__winter-symbol {
+    width: clamp(3.5rem, 8vw + 1rem, 4.8125rem);
+    margin-top: 0.75rem; // 12px
+  }
+
+  .main-sec3__spring-description,
+  .main-sec3__summer-description,
+  .main-sec3__fall-description,
+  .main-sec3__winter-description {
+    min-height: 4rem; // 32px line-height × 2줄
+    margin-top: 0.75rem; // 12px
+  }
+
+  .main-sec3__spring-ink,
+  .main-sec3__summer-ink,
+  .main-sec3__fall-ink,
+  .main-sec3__winter-ink,
+  .main-sec3__spring-image,
+  .main-sec3__summer-image,
+  .main-sec3__fall-image,
+  .main-sec3__winter-image {
+    aspect-ratio: auto;
+  }
+}
+
+@media (max-width: #{$tablet - 1px}) {
+  .main-sec3__spring,
+  .main-sec3__summer,
+  .main-sec3__fall,
+  .main-sec3__winter {
+    gap: $main-sec3-mobile-title-image-gap;
+  }
+
+  .main-sec3__spring-text,
+  .main-sec3__summer-text,
+  .main-sec3__fall-text,
+  .main-sec3__winter-text {
+    max-width: $main-sec3-mobile-image-w;
+  }
+
+  .main-sec3__spring-symbol,
+  .main-sec3__summer-symbol,
+  .main-sec3__fall-symbol,
+  .main-sec3__winter-symbol {
+    width: clamp(2rem, 12vw + 0.5rem, 2.75rem);
+    margin-top: 0.5rem; // 8px
+  }
+
+  .main-sec3__spring-description,
+  .main-sec3__summer-description,
+  .main-sec3__fall-description,
+  .main-sec3__winter-description {
+    min-height: 0;
+    margin-top: 0.5rem; // 8px
+    text-wrap: balance;
+  }
+
+  .main-sec3__spring-ink,
+  .main-sec3__summer-ink,
+  .main-sec3__fall-ink,
+  .main-sec3__winter-ink,
+  .main-sec3__spring-image,
+  .main-sec3__summer-image,
+  .main-sec3__fall-image,
+  .main-sec3__winter-image {
+    aspect-ratio: auto;
   }
 }
