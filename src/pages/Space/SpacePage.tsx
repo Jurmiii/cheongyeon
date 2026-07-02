@@ -370,11 +370,9 @@ function SpacePage() {
             <div className="space-rooms__head">
               <h2 className="space-rooms__title ft-48b ink500">머무름의 공간</h2>
               <p className="space-rooms__desc ft-22r ink500">
-                고요한 차향이 스며드는 공간에서
+                고요한 차향이 스며드는 공간에서 복잡한 생각은 내려놓고,
                 <br />
-                복잡한 생각은 내려놓고, 음미하며
-                <br />
-                마음의 여백을 채워보세요.
+                음미하며 마음의 여백을 채워보세요.
               </p>
             </div>
 
@@ -387,11 +385,9 @@ function SpacePage() {
             <div className="space-rooms__head">
               <h2 className="space-rooms__title ft-48b ink500">배움의 공간</h2>
               <p className="space-rooms__desc ft-22r ink500">
-                차를 우려내는 과정부터 향과 맛을
+                차를 우려내는 과정부터 향과 맛을 음미하는 순간까지,
                 <br />
-                음미하는 순간까지, 다도의 깊이를
-                <br />
-                천천히 배워가는 특별한 공간입니다.
+                다도의 깊이를 천천히 배워가는 특별한 공간입니다.
               </p>
             </div>
 
