@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { Badge, Button, Footer, Header, Icon, Input } from "../../components/common";
 import { useAuth } from "../../contexts/AuthContext";
 import {
   RESERVATION_CLASSES_PER_PAGE,
-  RESERVATION_SESSION_CAPACITY,
   cardCompanies,
   installmentPlans,
   reservationBranches,
@@ -21,7 +22,13 @@ import {
 import { useReservations } from "../../hooks/useReservations";
 import { useUserProfile } from "../../hooks/useUserProfile";
 import type { Reservation } from "../../types/mypage";
-import { addReservation, getRemainingSeatsForSession, updateReservation } from "../../utils/reservationStorage";
+import { addReservation, getBookedSeatsForSession, getRemainingSeatsForSession, updateReservation } from "../../utils/reservationStorage";
+import {
+  getFirstAvailableReservationTimeSlot,
+  canCancelReservation,
+  isReservationTimeSlotPast,
+} from "../../utils/reservationFormat";
+import { isValidPhone, isValidReserverName, sanitizePhoneInput, sanitizeReserverNameInput } from "../../utils/validation";
 import { parseSeasonReservationClassId } from "../../data/seasonClassReservation";
 import "./ReservationPage.scss";
 
@@ -33,10 +40,15 @@ const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
 
 /** 무통장입금 계좌 정보 */
 const BANK_ACCOUNT = {
-  bank: "국민은행",
-  number: "123456-04-567890",
+  bank: "기업은행",
+  number: "013-130672-01-011",
   holder: "(주)청연",
 } as const;
+
+type ReservationFieldErrors = {
+  name?: string;
+  phone?: string;
+};
 
 const branchAliases: Record<string, ReservationBranch> = {
   북촌점: "북촌 지점",
@@ -114,13 +126,28 @@ function getMaxGuestCount(classId: number) {
   return classItem?.maxGuests ?? 6;
 }
 
-function normalizePhone(value: string) {
-  return value.replace(/\D/g, "");
+function getReservationFieldErrors(name: string, phone: string): ReservationFieldErrors {
+  const errors: ReservationFieldErrors = {};
+  const trimmedName = name.trim();
+  const trimmedPhone = phone.trim();
+
+  if (!trimmedName) {
+    errors.name = "예약자명을 입력해주세요.";
+  } else if (!isValidReserverName(trimmedName)) {
+    errors.name = "예약자명을 올바른 형식으로 입력해주세요.";
+  }
+
+  if (!trimmedPhone) {
+    errors.phone = "연락처를 입력해주세요.";
+  } else if (!isValidPhone(trimmedPhone)) {
+    errors.phone = "연락처를 올바른 형식으로 입력해주세요.";
+  }
+
+  return errors;
 }
 
-function isValidPhone(value: string) {
-  const digits = normalizePhone(value);
-  return digits.length >= 10 && digits.length <= 11;
+function getInitialReservationTime(date: Date, now = new Date()) {
+  return getFirstAvailableReservationTimeSlot(date, now) ?? reservationTimeSlots[reservationTimeSlots.length - 1];
 }
 
 function startOfDay(date: Date) {
@@ -262,6 +289,11 @@ interface ReservationCompleteModalProps {
   title?: string;
 }
 
+const RESERVATION_COMPLETE_NOTICES = [
+  "예약 변경 및 취소는 수업 2일 전까지만 가능합니다.",
+  "예약하신 클래스는 '마이 페이지'에서 확인하실 수 있습니다.",
+] as const;
+
 function ReservationCompleteModal({ isOpen, onClose, title = "예약완료" }: ReservationCompleteModalProps) {
   const navigate = useNavigate();
 
@@ -290,6 +322,16 @@ function ReservationCompleteModal({ isOpen, onClose, title = "예약완료" }: R
     return null;
   }
 
+  const handleGoHome = () => {
+    onClose();
+    navigate("/");
+  };
+
+  const handleGoMyPage = () => {
+    onClose();
+    navigate("/mypage");
+  };
+
   return (
     <div className="reservation-complete-modal" role="presentation" onClick={onClose}>
       <div
@@ -300,38 +342,55 @@ function ReservationCompleteModal({ isOpen, onClose, title = "예약완료" }: R
         aria-describedby="reservation-complete-description"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="reservation-complete-modal__icon-wrap" aria-hidden="true">
-          <svg className="reservation-complete-modal__icon" viewBox="0 0 73 73" fill="none">
-            <path
-              d="M18 37.5 31.5 51 55 24.5"
-              stroke="currentColor"
-              strokeWidth="5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
-
-        <div className="reservation-complete-modal__copy">
-          <h2 className="reservation-complete-modal__title ft-48b ink500" id="reservation-complete-title">
-            {title}
-          </h2>
-          <p className="reservation-complete-modal__description ft-28r ink500" id="reservation-complete-description">
-            소중한 시간을 청연과 함께해 주셔서 감사합니다.
-          </p>
-        </div>
-
         <button
-          className="reservation-complete-modal__confirm ft-18r ink500"
+          className="reservation-complete-modal__close"
           type="button"
-          onClick={() => {
-            onClose();
-            navigate("/mypage");
-          }}
+          aria-label="닫기"
+          onClick={onClose}
         >
-          <span>예약 정보 확인하기</span>
-          <Icon className="reservation-complete-modal__confirm-icon" name="chevron-right" aria-hidden="true" />
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M6 6l12 12M18 6 6 18" />
+          </svg>
         </button>
+
+        <div className="reservation-complete-modal__icon-wrap" aria-hidden="true">
+          <FontAwesomeIcon className="reservation-complete-modal__icon" icon={faCheck} />
+        </div>
+
+        <h2 className="reservation-complete-modal__title ft-40b ink500" id="reservation-complete-title">
+          {title}
+        </h2>
+        <p className="reservation-complete-modal__description ft-16r ink500" id="reservation-complete-description">
+          소중한 시간을 청연과 함께해 주셔서 감사합니다.
+        </p>
+
+        <div className="reservation-complete-modal__actions">
+          <button
+            className="reservation-complete-modal__action reservation-complete-modal__action--home ft-16b ink500"
+            type="button"
+            onClick={handleGoHome}
+          >
+            홈으로 가기
+          </button>
+          <button
+            className="reservation-complete-modal__action reservation-complete-modal__action--mypage ft-16b"
+            type="button"
+            onClick={handleGoMyPage}
+          >
+            예약 내역 조회
+          </button>
+        </div>
+
+        <div className="reservation-complete-modal__notice">
+          <p className="reservation-complete-modal__notice-title ft-16b ink200">* 꼭 알아두세요!</p>
+          <ul className="reservation-complete-modal__notice-list">
+            {RESERVATION_COMPLETE_NOTICES.map((item) => (
+              <li className="reservation-complete-modal__notice-item ft-14r ink200" key={item}>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
@@ -362,7 +421,8 @@ function ReservationPage() {
   const [selectedClassId, setSelectedClassId] = useState<number>(reservationClasses[0].id);
   const [classPage, setClassPage] = useState(1);
   const [selectedDate, setSelectedDate] = useState(() => today);
-  const [selectedTime, setSelectedTime] = useState<ReservationTimeSlot>(reservationTimeSlots[0]);
+  const [scheduleNow, setScheduleNow] = useState(() => new Date());
+  const [selectedTime, setSelectedTime] = useState<ReservationTimeSlot>(() => getInitialReservationTime(today));
   const [guestCount, setGuestCount] = useState(1);
   const [requestMessage, setRequestMessage] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
@@ -372,10 +432,7 @@ function ReservationPage() {
   const [savePaymentMethod, setSavePaymentMethod] = useState(false);
   const [isNoticeOpen, setIsNoticeOpen] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
-  const [fieldErrors, setFieldErrors] = useState<{ name: boolean; phone: boolean }>({
-    name: false,
-    phone: false,
-  });
+  const [fieldErrors, setFieldErrors] = useState<ReservationFieldErrors>({});
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
   const customerInfoRef = useRef<HTMLDivElement>(null);
   const initializedEditReservationIdRef = useRef<string | null>(null);
@@ -395,22 +452,65 @@ function ReservationPage() {
   );
   const selectedDateKey = formatDateForStorage(selectedDate);
 
-  const remainingSeatsByTime = useMemo(() => {
-    return reservationTimeSlots.reduce<Record<ReservationTimeSlot, number>>((seatsByTime, time) => {
-      seatsByTime[time] = getRemainingSeatsForSession({
+  const sessionAvailabilityByTime = useMemo(() => {
+    return reservationTimeSlots.reduce<
+      Record<ReservationTimeSlot, { bookedSeats: number; remainingSeats: number }>
+    >((availabilityByTime, time) => {
+      const sessionParams = {
         date: selectedDateKey,
         time,
         classTitle: selectedClass.title,
         branch: selectedBranch,
+        sessionCapacity: maxGuestCount,
         excludeReservationId: editReservation?.id,
-      });
+      };
 
-      return seatsByTime;
-    }, {} as Record<ReservationTimeSlot, number>);
-  }, [selectedBranch, selectedClass.title, selectedDateKey, editReservation?.id, reservations]);
+      availabilityByTime[time] = {
+        bookedSeats: getBookedSeatsForSession(sessionParams),
+        remainingSeats: getRemainingSeatsForSession(sessionParams),
+      };
 
-  const selectedRemainingSeats = remainingSeatsByTime[selectedTime] ?? maxGuestCount;
+      return availabilityByTime;
+    }, {} as Record<ReservationTimeSlot, { bookedSeats: number; remainingSeats: number }>);
+  }, [selectedBranch, selectedClass.title, selectedDateKey, editReservation?.id, maxGuestCount, reservations]);
+
+  const selectedSessionAvailability = sessionAvailabilityByTime[selectedTime] ?? {
+    bookedSeats: 0,
+    remainingSeats: maxGuestCount,
+  };
+  const isSelectedTimePast = isReservationTimeSlotPast(selectedDate, selectedTime, scheduleNow);
+  const selectedRemainingSeats = isSelectedTimePast ? 0 : selectedSessionAvailability.remainingSeats;
   const bookableGuestCount = Math.min(maxGuestCount, selectedRemainingSeats);
+  const canEditReservation = !isEditMode || !editReservation
+    ? true
+    : canCancelReservation(editReservation.date, editReservation.time, scheduleNow);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setScheduleNow(new Date());
+    }, 30_000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    if (!isReservationTimeSlotPast(selectedDate, selectedTime, scheduleNow)) {
+      return;
+    }
+
+    const nextTime = getFirstAvailableReservationTimeSlot(selectedDate, scheduleNow);
+    if (nextTime) {
+      setSelectedTime(nextTime);
+    }
+  }, [scheduleNow, selectedDate, selectedTime]);
+
+  useEffect(() => {
+    if (!isEditMode || !editReservation || canEditReservation) {
+      return;
+    }
+
+    setValidationErrors(["예약 변경은 수업 시작 2일 전까지만 가능합니다."]);
+  }, [canEditReservation, editReservation, isEditMode]);
 
   useEffect(() => {
     if (isEditMode || initializedFromQueryRef.current) {
@@ -436,8 +536,24 @@ function ReservationPage() {
       setSelectedDate(parseReservationDate(dateParam.replace(/\./g, "-"), today));
     }
 
+    const resolvedDate = dateParam
+      ? parseReservationDate(dateParam.replace(/\./g, "-"), today)
+      : today;
+
     if (timeParam && isReservationTimeSlot(timeParam)) {
-      setSelectedTime(timeParam);
+      if (!isReservationTimeSlotPast(resolvedDate, timeParam)) {
+        setSelectedTime(timeParam);
+      } else {
+        const nextTime = getFirstAvailableReservationTimeSlot(resolvedDate);
+        if (nextTime) {
+          setSelectedTime(nextTime);
+        }
+      }
+    } else if (dateParam) {
+      const nextTime = getFirstAvailableReservationTimeSlot(resolvedDate);
+      if (nextTime) {
+        setSelectedTime(nextTime);
+      }
     }
 
     const seasonClassId = parseSeasonReservationClassId(classIdParam);
@@ -488,7 +604,7 @@ function ReservationPage() {
     );
     setSavePaymentMethod(editReservation.savePaymentMethod ?? false);
     setValidationErrors([]);
-    setFieldErrors({ name: false, phone: false });
+    setFieldErrors({});
     initializedEditReservationIdRef.current = editReservation.id;
   }, [editReservation, isEditMode, profile, today]);
 
@@ -519,6 +635,20 @@ function ReservationPage() {
     setOpenPaymentDropdown(null);
   };
 
+  const validateCustomerFields = (name = reservationName, phone = reservationPhone) => {
+    return getReservationFieldErrors(name, phone);
+  };
+
+  const handleNameBlur = () => {
+    const customerErrors = validateCustomerFields();
+    setFieldErrors((prev) => ({ ...prev, name: customerErrors.name }));
+  };
+
+  const handlePhoneBlur = () => {
+    const customerErrors = validateCustomerFields();
+    setFieldErrors((prev) => ({ ...prev, phone: customerErrors.phone }));
+  };
+
   const validateReservation = () => {
     const errors: string[] = [];
 
@@ -530,12 +660,18 @@ function ReservationPage() {
       errors.push("변경할 예약 정보를 찾을 수 없습니다.");
     }
 
+    if (isEditMode && editReservation && !canCancelReservation(editReservation.date, editReservation.time, scheduleNow)) {
+      errors.push("예약 변경은 수업 시작 2일 전까지만 가능합니다.");
+    }
+
     if (!selectedBranch) {
       errors.push("지점을 선택해주세요.");
     }
 
     if (!reservationName.trim()) {
       errors.push("예약자명을 입력해주세요.");
+    } else if (!isValidReserverName(reservationName)) {
+      errors.push("예약자명을 올바른 형식으로 입력해주세요.");
     }
 
     if (!reservationPhone.trim()) {
@@ -554,6 +690,8 @@ function ReservationPage() {
 
     if (!selectedTime) {
       errors.push("시간을 선택해주세요.");
+    } else if (isReservationTimeSlotPast(selectedDate, selectedTime, scheduleNow)) {
+      errors.push("이미 지난 시간은 예약할 수 없습니다. 다른 시간을 선택해주세요.");
     }
 
     if (guestCount < 1 || guestCount > bookableGuestCount) {
@@ -573,11 +711,7 @@ function ReservationPage() {
 
   const handleReservationSubmit = () => {
     const errors = validateReservation();
-
-    const nextFieldErrors = {
-      name: !reservationName.trim(),
-      phone: !reservationPhone.trim() || !isValidPhone(reservationPhone),
-    };
+    const nextFieldErrors = getReservationFieldErrors(reservationName, reservationPhone);
     setFieldErrors(nextFieldErrors);
 
     if (errors.length > 0) {
@@ -590,8 +724,12 @@ function ReservationPage() {
       return;
     }
 
+    if (isEditMode && editReservation && !canCancelReservation(editReservation.date, editReservation.time, scheduleNow)) {
+      return;
+    }
+
     setValidationErrors([]);
-    setFieldErrors({ name: false, phone: false });
+    setFieldErrors({});
     const nextReservation: Reservation = {
       id: editReservation?.id ?? `reservation-${Date.now()}`,
       userId: editReservation?.userId ?? (loginId as string),
@@ -723,12 +861,22 @@ function ReservationPage() {
                 state={fieldErrors.name ? "in3" : "in1"}
                 placeholder="이름을 입력하세요"
                 value={reservationName}
+                maxLength={20}
+                aria-invalid={Boolean(fieldErrors.name)}
+                aria-describedby={fieldErrors.name ? "reservation-name-error" : undefined}
                 onChange={(event) => {
-                  setReservationName(event.target.value);
+                  const nextName = sanitizeReserverNameInput(event.target.value);
+                  setReservationName(nextName);
                   setValidationErrors([]);
-                  setFieldErrors((prev) => ({ ...prev, name: false }));
+                  setFieldErrors((prev) => ({ ...prev, name: undefined }));
                 }}
+                onBlur={handleNameBlur}
               />
+              {fieldErrors.name ? (
+                <p className="reservation-form__error ft-14r" id="reservation-name-error" role="alert">
+                  {fieldErrors.name}
+                </p>
+              ) : null}
             </div>
             <div className="reservation-form__field">
               <label className="reservation-form__label ft-16b ink500" htmlFor="reservation-phone">
@@ -737,15 +885,27 @@ function ReservationPage() {
               <Input
                 id="reservation-phone"
                 state={fieldErrors.phone ? "in3" : "in1"}
-                placeholder="휴대폰 번호를 입력하세요"
+                placeholder="010-1234-5678"
                 type="tel"
+                inputMode="numeric"
+                autoComplete="tel"
                 value={reservationPhone}
+                maxLength={13}
+                aria-invalid={Boolean(fieldErrors.phone)}
+                aria-describedby={fieldErrors.phone ? "reservation-phone-error" : undefined}
                 onChange={(event) => {
-                  setReservationPhone(event.target.value);
+                  const nextPhone = sanitizePhoneInput(event.target.value);
+                  setReservationPhone(nextPhone);
                   setValidationErrors([]);
-                  setFieldErrors((prev) => ({ ...prev, phone: false }));
+                  setFieldErrors((prev) => ({ ...prev, phone: undefined }));
                 }}
+                onBlur={handlePhoneBlur}
               />
+              {fieldErrors.phone ? (
+                <p className="reservation-form__error ft-14r" id="reservation-phone-error" role="alert">
+                  {fieldErrors.phone}
+                </p>
+              ) : null}
             </div>
           </div>
         </div>
@@ -859,6 +1019,10 @@ function ReservationPage() {
                 onSelectedDateChange={(date) => {
                   setSelectedDate(date);
                   setValidationErrors([]);
+                  const nextTime = getFirstAvailableReservationTimeSlot(date, scheduleNow);
+                  if (nextTime) {
+                    setSelectedTime(nextTime);
+                  }
                 }}
               />
             </div>
@@ -868,8 +1032,13 @@ function ReservationPage() {
               <h2 className="reservation-form__label ft-16b ink500">* 시간 선택</h2>
               <div className="reservation-schedule__time-grid" role="radiogroup" aria-label="시간 선택">
                 {reservationTimeSlots.map((time) => {
-                  const remainingSeats = remainingSeatsByTime[time] ?? 0;
-                  const isTimeDisabled = remainingSeats < 1;
+                  const { bookedSeats, remainingSeats } = sessionAvailabilityByTime[time] ?? {
+                    bookedSeats: 0,
+                    remainingSeats: 0,
+                  };
+                  const isPast = isReservationTimeSlotPast(selectedDate, time, scheduleNow);
+                  const isFull = bookedSeats >= maxGuestCount || remainingSeats < 1;
+                  const isTimeDisabled = isPast || isFull;
 
                   return (
                     <div className="reservation-schedule__time-slot" key={time}>
@@ -878,14 +1047,14 @@ function ReservationPage() {
                           "reservation-schedule__time",
                           "ft-14b",
                           "ink500",
-                          time === selectedTime && "reservation-schedule__time--active",
+                          time === selectedTime && !isTimeDisabled && "reservation-schedule__time--active",
                           isTimeDisabled && "reservation-schedule__time--disabled",
                         ]
                           .filter(Boolean)
                           .join(" ")}
                         type="button"
                         role="radio"
-                        aria-checked={time === selectedTime}
+                        aria-checked={time === selectedTime && !isTimeDisabled}
                         aria-disabled={isTimeDisabled}
                         disabled={isTimeDisabled}
                         onClick={() => {
@@ -896,7 +1065,7 @@ function ReservationPage() {
                         {time}
                       </button>
                       <span className="reservation-schedule__time-occupancy">
-                        남은좌석: {remainingSeats}/{RESERVATION_SESSION_CAPACITY}석
+                        {isPast ? "마감" : `예약현황: ${bookedSeats}/${maxGuestCount}석`}
                       </span>
                     </div>
                   );
@@ -906,7 +1075,9 @@ function ReservationPage() {
             <div className="reservation-schedule__guests">
               <h2 className="reservation-form__label ft-16b ink500">* 인원 선택</h2>
               <p className="reservation-schedule__guest-note">
-                한 클래스 최대 {maxGuestCount}인까지 예약 가능합니다.
+                {bookableGuestCount < maxGuestCount
+                  ? `선택한 시간 기준 최대 ${bookableGuestCount}명까지 예약 가능합니다.`
+                  : `한 클래스 최대 ${maxGuestCount}인까지 예약 가능합니다.`}
               </p>
               <div className="reservation-schedule__counter">
                 <button
@@ -1072,9 +1243,17 @@ function ReservationPage() {
           </div>
           ) : (
             <div className="reservation-payment__bank" role="group" aria-label="무통장입금 계좌 안내">
-              <p className="reservation-payment__bank-guide ft-18r ink500">
-                아래 계좌로 입금해주시면 예약이 확정됩니다.
-              </p>
+              <div className="reservation-payment__bank-messages">
+                <p className="reservation-payment__bank-guide ft-22r ink500">
+                  아래 계좌로 입금해주시면 예약이 확정됩니다.
+                </p>
+                <p className="reservation-payment__bank-notice ft-14r ink300">
+                  <span className="reservation-payment__bank-notice-mark" aria-hidden="true">
+                    *
+                  </span>{" "}
+                  예약 확인을 위해 입금자명은 반드시 예약자명과 동일하게 입력해 주세요.
+                </p>
+              </div>
               <dl className="reservation-payment__bank-info">
                 <div className="reservation-payment__bank-row">
                   <dt className="reservation-payment__bank-term ft-18r ink300">입금 은행</dt>
@@ -1115,6 +1294,7 @@ function ReservationPage() {
               className="reservation-payment__action reservation-payment__action--submit ft-22b"
               variant="btn1"
               type="button"
+              disabled={isEditMode && !canEditReservation}
               onClick={handleReservationSubmit}
             >
               {isEditMode ? "변경 완료하기" : "예약하기"}
