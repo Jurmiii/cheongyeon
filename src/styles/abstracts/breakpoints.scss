@@ -4,5 +4,7 @@ $desktop: 1440px;
 $laptop-lg: 1280px;
 $laptop: 1024px;
 $tablet: 768px;
+$tablet-md: 611px; // 611px ~ 768px — 태블릿 상단 구간
+$tablet-sm-max: 610px; // 403px ~ 610px — 태블릿 하단 / 대형 모바일 구간
 $mobile: 402px;
 $mobile-sm: 350px;

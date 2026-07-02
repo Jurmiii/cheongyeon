@@ -14,6 +14,28 @@ import "./ClassIntroductionPage.scss";
 const AUTO_ADVANCE_MS = 4000;
 const REVIEW_SWIPE_MS = 850;
 const REVIEW_SWIPE_THRESHOLD = 40;
+const CAROUSEL_SCROLL_PLAY_MAX_WIDTH = 1023;
+
+function useCarouselScrollPlayMode() {
+  const [isScrollPlayMode, setIsScrollPlayMode] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(`(max-width: ${CAROUSEL_SCROLL_PLAY_MAX_WIDTH}px)`);
+
+    const syncMode = () => {
+      setIsScrollPlayMode(mediaQuery.matches);
+    };
+
+    syncMode();
+    mediaQuery.addEventListener("change", syncMode);
+
+    return () => {
+      mediaQuery.removeEventListener("change", syncMode);
+    };
+  }, []);
+
+  return isScrollPlayMode;
+}
 
 function getReviewSwipeDirection(from: number, to: number, count: number) {
   if (from === to) {
@@ -129,8 +151,8 @@ function ClassIntroductionScrollSection() {
                 aria-hidden={index !== activeIndex}
               >
                 <div className="class-intro-scroll__copy">
-                  <h3 className="class-intro-scroll__title ft-36b ink500">{slide.title}</h3>
-                  <p className="class-intro-scroll__description ft-22r ink500">{slide.description}</p>
+                  <h3 className="class-intro-scroll__title ink500">{slide.title}</h3>
+                  <p className="class-intro-scroll__description ink500">{slide.description}</p>
                 </div>
 
                 <div className="class-intro-scroll__filters" role="tablist" aria-label="클래스 유형">
@@ -140,7 +162,7 @@ function ClassIntroductionScrollSection() {
                       type="button"
                       role="tab"
                       className={[
-                        "class-intro-scroll__filter ft-16r",
+                        "class-intro-scroll__filter",
                         filterIndex === activeIndex && "class-intro-scroll__filter--active",
                       ]
                         .filter(Boolean)
@@ -162,9 +184,26 @@ function ClassIntroductionScrollSection() {
 }
 
 function ClassIntroductionCarouselSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardRefs = useRef<(HTMLElement | null)[]>([]);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const intersectionRatiosRef = useRef<number[]>(
+    Array.from({ length: classIntroductionCarouselItems.length }, () => 0),
+  );
+
+  const isScrollPlayMode = useCarouselScrollPlayMode();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const activeIndex = hoveredIndex ?? 0;
+  const [scrollActiveIndex, setScrollActiveIndex] = useState(0);
+  const [isSectionVisible, setIsSectionVisible] = useState(true);
+  const activeIndex = isScrollPlayMode ? scrollActiveIndex : hoveredIndex ?? 0;
+
+  useEffect(() => {
+    if (isScrollPlayMode) {
+      setHoveredIndex(null);
+    } else {
+      setIsSectionVisible(true);
+    }
+  }, [isScrollPlayMode]);
 
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
@@ -172,44 +211,162 @@ function ClassIntroductionCarouselSection() {
         return;
       }
 
-      if (index === activeIndex) {
+      if (!isSectionVisible || index !== activeIndex) {
+        video.pause();
         video.currentTime = 0;
-        void video.play().catch(() => undefined);
         return;
       }
 
-      video.pause();
       video.currentTime = 0;
+      void video.play().catch(() => undefined);
     });
-  }, [activeIndex]);
+  }, [activeIndex, isScrollPlayMode, isSectionVisible]);
+
+  useEffect(() => {
+    if (!isScrollPlayMode) {
+      return undefined;
+    }
+
+    const section = sectionRef.current;
+
+    if (!section) {
+      return undefined;
+    }
+
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        const isVisible = Boolean(entries[0]?.isIntersecting);
+        setIsSectionVisible(isVisible);
+
+        if (!isVisible) {
+          videoRefs.current.forEach((video) => {
+            video?.pause();
+          });
+        }
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -8% 0px" },
+    );
+
+    sectionObserver.observe(section);
+
+    requestAnimationFrame(() => {
+      const rect = section.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight * 0.92 && rect.bottom > 0;
+
+      if (inView) {
+        setIsSectionVisible(true);
+      }
+    });
+
+    return () => {
+      sectionObserver.disconnect();
+    };
+  }, [isScrollPlayMode]);
+
+  useEffect(() => {
+    if (!isScrollPlayMode) {
+      return undefined;
+    }
+
+    const cards = cardRefs.current.filter(Boolean) as HTMLElement[];
+
+    if (cards.length === 0) {
+      return undefined;
+    }
+
+    const ratios = intersectionRatiosRef.current;
+
+    const cardObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const index = Number((entry.target as HTMLElement).dataset.carouselIndex);
+
+          if (Number.isNaN(index)) {
+            return;
+          }
+
+          ratios[index] = entry.isIntersecting ? entry.intersectionRatio : 0;
+        });
+
+        const bestIndex = ratios.reduce(
+          (bestIndex, ratio, index) => (ratio > ratios[bestIndex] ? index : bestIndex),
+          0,
+        );
+
+        if (ratios[bestIndex] > 0) {
+          setScrollActiveIndex(bestIndex);
+        }
+      },
+      {
+        threshold: [0, 0.25, 0.5, 0.75, 1],
+        rootMargin: "-18% 0px -18% 0px",
+      },
+    );
+
+    cards.forEach((card) => {
+      cardObserver.observe(card);
+    });
+
+    return () => {
+      cardObserver.disconnect();
+    };
+  }, [isScrollPlayMode]);
+
+  const handleCardActivate = useCallback(
+    (index: number) => {
+      if (isScrollPlayMode) {
+        setScrollActiveIndex(index);
+        return;
+      }
+
+      setHoveredIndex(index);
+    },
+    [isScrollPlayMode],
+  );
+
+  const handleTrackMouseLeave = useCallback(() => {
+    if (!isScrollPlayMode) {
+      setHoveredIndex(null);
+    }
+  }, [isScrollPlayMode]);
 
   return (
-    <section className="class-intro-carousel" aria-label="차를 경험하는 시간">
+    <section ref={sectionRef} className="class-intro-carousel" aria-label="차를 경험하는 시간">
       <div className="class-intro-carousel__grid">
         <h2 className="class-intro-carousel__title ft-48b ink500">차를 경험하는 시간</h2>
 
-        <div
-          className="class-intro-carousel__track"
-          onMouseLeave={() => setHoveredIndex(null)}
-        >
+        <div className="class-intro-carousel__track" onMouseLeave={handleTrackMouseLeave}>
           {classIntroductionCarouselItems.map((item, index) => {
             const isActive = index === activeIndex;
-            const isInactive = hoveredIndex !== null && index !== activeIndex;
+            const isInactive = activeIndex !== index && (isScrollPlayMode || hoveredIndex !== null);
 
             return (
               <article
                 key={item.id}
+                ref={(element) => {
+                  cardRefs.current[index] = element;
+                }}
+                data-carousel-index={index}
                 tabIndex={0}
                 className={[
                   "class-intro-carousel__card",
                   isActive && "class-intro-carousel__card--active",
                   isInactive && "class-intro-carousel__card--inactive",
+                  isScrollPlayMode && "class-intro-carousel__card--scroll-play",
                 ]
                   .filter(Boolean)
                   .join(" ")}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onFocus={() => setHoveredIndex(index)}
-                onClick={() => setHoveredIndex(index)}
+                onMouseEnter={() => {
+                  if (!isScrollPlayMode) {
+                    setHoveredIndex(index);
+                  }
+                }}
+                onFocus={() => {
+                  if (!isScrollPlayMode) {
+                    setHoveredIndex(index);
+                  }
+                }}
+                onClick={() => handleCardActivate(index)}
               >
                 <div className="class-intro-carousel__media">
                   {item.video ? (
@@ -269,11 +426,11 @@ function ClassIntroductionCtaSection() {
     >
       <div className="class-intro-cta__grid">
         <div className="class-intro-cta__content">
-          <h2 className="class-intro-cta__title ft-48b white">
+          <h2 className="class-intro-cta__title">
             <span>한 잔의 차로 머무는 시간</span>
             <span>청연에서 조용히 만나보세요</span>
           </h2>
-          <Link className="class-intro-cta__button ft-22b" to="/reservation">
+          <Link className="class-intro-cta__button" to="/reservation">
             클래스 예약하기
           </Link>
         </div>
@@ -531,7 +688,7 @@ function ClassIntroductionReviewSection() {
           <div className="class-intro-review__content" aria-live="off">
             <div className="class-intro-review__quote-block">
               <blockquote className="class-intro-review__quote-head">
-                <h2 className="class-intro-review__headline ft-36b deep500">
+                <h2 className="class-intro-review__headline">
                   <span className="class-intro-review__quote-mark" aria-hidden="true">
                     "
                   </span>
@@ -553,13 +710,13 @@ function ClassIntroductionReviewSection() {
                 ))}
               </div>
 
-              <p className="class-intro-review__name ft-28b deep500">{review.name}</p>
+              <p className="class-intro-review__name">{review.name}</p>
             </div>
 
-            <p className="class-intro-review__body ft-22r ink500">{review.body}</p>
+            <p className="class-intro-review__body">{review.body}</p>
 
             <div className="class-intro-review__meta">
-              <p className="class-intro-review__date ft-18b deep400">{review.date}</p>
+              <p className="class-intro-review__date">{review.date}</p>
 
               <div className="class-intro-review__nav" aria-label="후기 진행">
                 <div className="class-intro-review__progress">
@@ -621,16 +778,14 @@ function ClassIntroductionPage() {
             />
           </div>
           <div className="class-intro-about__content">
-            <h2 className="class-intro-about__title ft-48b ink500">
+            <h2 className="class-intro-about__title ink500">
               차를 더 가까이 만나는 첫 수업
             </h2>
-            <div className="class-intro-about__description ft-28r ink500">
+            <div className="class-intro-about__description ink500">
               <p className="class-intro-about__description-line">어렵게 느껴졌던 다도를 일상 속에서 </p>
-              <p className="class-intro-about__description-line">
-                즐길 수 있도록 쉽게 풀어냅니다.
-                <br />
-                차 도구의 쓰임과 기본 흐름을 익히며, 나에게 맞는 차의 취향을 발견해 보세요.
-              </p>
+              <p className="class-intro-about__description-line">즐길 수 있도록 쉽게 풀어냅니다.</p>
+              <p className="class-intro-about__description-line">차 도구의 쓰임과 기본 흐름을 익히며, </p>
+              <p className="class-intro-about__description-line">나에게 맞는 차의 취향을 발견해 보세요.</p>
             </div>
           </div>
         </div>

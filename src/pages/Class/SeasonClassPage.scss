@@ -1,6 +1,58 @@
 @use "../../styles/abstracts/breakpoints" as *;
 @use "../../styles/abstracts/grid" as grid;
 
+// KV — ClassIntroductionPage와 동일 규칙
+$season-class-kv-content-top-tablet: 9.375rem;
+$season-class-kv-symbol-width-tablet: 16.25rem;
+$season-class-kv-symbol-height-tablet: 1.0625rem;
+$season-class-kv-head-gap-tablet: 1rem;
+$season-class-kv-desc-gap-tablet: 1.5rem;
+$season-class-kv-title-size-tablet: 2.5rem;
+$season-class-kv-title-line-tablet: 3.25rem;
+$season-class-kv-desc-size-tablet: 1.5rem;
+$season-class-kv-desc-line-tablet: 2.125rem;
+
+$season-class-kv-content-top-mobile: 15rem;
+$season-class-kv-symbol-width-mobile: 12.1875rem;
+$season-class-kv-symbol-height-mobile: 0.958125rem;
+$season-class-kv-head-gap-mobile: 1rem;
+$season-class-kv-desc-gap-mobile: 0.75rem;
+$season-class-kv-title-size-mobile: 1.5rem;
+$season-class-kv-title-line-mobile: 2rem;
+$season-class-kv-desc-size-mobile: 0.875rem;
+$season-class-kv-desc-line-mobile: 1.375rem;
+
+$season-class-kv-height-desktop: 46.25rem;
+
+@function season-class-kv-scaled-tablet($value) {
+  @return calc(#{$value} * var(--season-class-kv-height) / #{grid.$tablet-kv-height});
+}
+
+@function season-class-kv-lerp-mobile-tablet($tablet-value, $mobile-value) {
+  @return calc(
+    #{$tablet-value} +
+      (#{$mobile-value} - #{$tablet-value}) *
+      (#{$tablet} - 100vw) /
+      (#{$tablet - $mobile})
+  );
+}
+
+@mixin season-class-section-grid-tablet {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  padding-inline: grid.$tablet-grid-padding;
+  margin-inline: auto;
+}
+
+@mixin season-class-section-grid-mobile {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  padding-inline: grid.$mobile-grid-padding;
+  margin-inline: auto;
+}
+
 .season-class-page {
   position: relative;
   width: 100%;
@@ -19,10 +71,11 @@
   position: relative;
   width: 120rem;
   max-width: 100%;
-  height: 46.25rem;
+  height: $season-class-kv-height-desktop;
+  --season-class-kv-height: #{$season-class-kv-height-desktop};
   overflow: hidden;
   background-size: cover;
-  background-position: center;
+  background-position: center 26%;
   background-repeat: no-repeat;
 }
 
@@ -44,6 +97,7 @@
 .season-class-kv__head {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 1rem;
 }
 
@@ -54,6 +108,10 @@
 
 .season-class-kv__symbol {
   display: block;
+  width: auto;
+  height: 1.0625rem;
+  object-fit: contain;
+  object-position: left center;
 }
 
 .season-class-kv__description {
@@ -67,14 +125,161 @@
   }
 }
 
-@media (max-width: $tablet) {
+@media (max-width: #{$laptop - 1px}) {
   .season-class-kv {
-    height: 40rem;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
+  .season-class-kv {
+    --season-class-kv-height: calc(
+      #{grid.$tablet-kv-height} +
+        (#{$season-class-kv-height-desktop} - #{grid.$tablet-kv-height}) *
+        (100vw - #{$tablet}) /
+        (#{$laptop - $tablet})
+    );
+    height: var(--season-class-kv-height);
+    background-position: center 26%;
+  }
+}
+
+@media (max-width: #{$tablet - 1px}) {
+  .season-class-kv {
+    --season-class-kv-height: clamp(
+      #{grid.$tablet-kv-height},
+      calc(
+        #{grid.$mobile-kv-height} +
+          (#{grid.$tablet-kv-height} - #{grid.$mobile-kv-height}) *
+          (100vw - #{$mobile}) /
+          (#{$tablet - $mobile})
+      ),
+      #{grid.$mobile-kv-height}
+    );
+    height: var(--season-class-kv-height);
     background-position: center center;
+  }
+}
+
+@media (max-width: #{$laptop - 1px}) {
+  .season-class-kv__grid {
+    align-items: start;
+    align-content: start;
+  }
+
+  .season-class-kv__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    grid-column: 1 / -1;
+    width: 100%;
+    padding-top: season-class-kv-scaled-tablet($season-class-kv-content-top-tablet);
+    text-align: left;
+  }
+
+  .season-class-kv__head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: season-class-kv-scaled-tablet($season-class-kv-head-gap-tablet);
+    width: 100%;
+  }
+
+  .season-class-kv__title {
+    margin: 0;
+    font-size: season-class-kv-scaled-tablet($season-class-kv-title-size-tablet);
+    line-height: season-class-kv-scaled-tablet($season-class-kv-title-line-tablet);
+    font-weight: 700;
+    text-align: left;
+  }
+
+  .season-class-kv__symbol {
+    display: block;
+    width: season-class-kv-scaled-tablet($season-class-kv-symbol-width-tablet);
+    height: season-class-kv-scaled-tablet($season-class-kv-symbol-height-tablet);
+    object-fit: contain;
+    object-position: left center;
   }
 
   .season-class-kv__description {
+    margin: season-class-kv-scaled-tablet($season-class-kv-desc-gap-tablet) 0 0;
+    max-width: none;
+    text-align: left;
+    font-family: var(--font-headline);
+    font-size: season-class-kv-scaled-tablet($season-class-kv-desc-size-tablet);
+    font-weight: 700;
+    line-height: season-class-kv-scaled-tablet($season-class-kv-desc-line-tablet);
+  }
+}
+
+@media (max-width: #{$tablet - 1px}) {
+  .season-class-kv__content {
+    padding-top: season-class-kv-lerp-mobile-tablet(
+      $season-class-kv-content-top-tablet,
+      $season-class-kv-content-top-mobile
+    );
+  }
+
+  .season-class-kv__head {
+    gap: season-class-kv-lerp-mobile-tablet(
+      $season-class-kv-head-gap-tablet,
+      $season-class-kv-head-gap-mobile
+    );
+  }
+
+  .season-class-kv__title {
+    font-size: season-class-kv-lerp-mobile-tablet(
+      $season-class-kv-title-size-tablet,
+      $season-class-kv-title-size-mobile
+    );
+    line-height: season-class-kv-lerp-mobile-tablet(
+      $season-class-kv-title-line-tablet,
+      $season-class-kv-title-line-mobile
+    );
+  }
+
+  .season-class-kv__symbol {
+    width: season-class-kv-lerp-mobile-tablet(
+      $season-class-kv-symbol-width-tablet,
+      $season-class-kv-symbol-width-mobile
+    );
+    height: season-class-kv-lerp-mobile-tablet(
+      $season-class-kv-symbol-height-tablet,
+      $season-class-kv-symbol-height-mobile
+    );
+  }
+
+  .season-class-kv__description {
+    margin-top: season-class-kv-lerp-mobile-tablet(
+      $season-class-kv-desc-gap-tablet,
+      $season-class-kv-desc-gap-mobile
+    );
+    font-size: season-class-kv-lerp-mobile-tablet(
+      $season-class-kv-desc-size-tablet,
+      $season-class-kv-desc-size-mobile
+    );
+    line-height: season-class-kv-lerp-mobile-tablet(
+      $season-class-kv-desc-line-tablet,
+      $season-class-kv-desc-line-mobile
+    );
+  }
+
+  .season-class-kv__grid {
+    @include grid.mobile-grid-padded;
+    width: 100%;
     max-width: 100%;
+    height: 100%;
+  }
+}
+
+@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
+  .season-class-kv__grid {
+    @include grid.tablet-grid-padded;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
   }
 }
 
