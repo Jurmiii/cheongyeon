@@ -14,11 +14,13 @@ import { useReservations } from "../../hooks/useReservations";
 
 import { useUserProfile } from "../../hooks/useUserProfile";
 
-import type { ProfileFormValues } from "../../types/mypage";
+import type { ProfileFormValues, Reservation } from "../../types/mypage";
 
 import {
 
   calculateDDayLabel,
+
+  canCancelReservation,
 
   formatGuestCount,
 
@@ -28,13 +30,9 @@ import {
 
 } from "../../utils/reservationFormat";
 
-import MyPageCancelModal, {
-
-  getHistoryBadgeLabel,
-
-  getHistoryBadgeVariant,
-
-} from "./MyPageCancelModal";
+import MyPageCancelConfirmModal from "./MyPageCancelConfirmModal";
+import MyPageCancelSuccessModal from "./MyPageCancelSuccessModal";
+import { getHistoryBadgeLabel, getHistoryBadgeVariant } from "./myPageHistoryBadges";
 
 import StampModal from "../Stamp/StampModal";
 
@@ -90,7 +88,8 @@ function MyPage() {
 
   const [historyPage, setHistoryPage] = useState(0);
 
-  const [cancelTargetId, setCancelTargetId] = useState<string | null>(null);
+  const [cancelTargetReservation, setCancelTargetReservation] = useState<Reservation | null>(null);
+  const [isCancelSuccessOpen, setIsCancelSuccessOpen] = useState(false);
 
   const [isStampOpen, setIsStampOpen] = useState(false);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
@@ -193,9 +192,9 @@ function MyPage() {
 
     : null;
 
-
-
-  const cancelTargetReservation = upcomingReservation?.id === cancelTargetId ? upcomingReservation : null;
+  const canModifyUpcomingReservation = upcomingReservation
+    ? canCancelReservation(upcomingReservation.date, upcomingReservation.time)
+    : false;
 
 
 
@@ -272,19 +271,25 @@ function MyPage() {
 
 
   const handleConfirmCancel = () => {
-
-    if (!cancelTargetId) {
-
+    if (!cancelTargetReservation) {
       return;
-
     }
 
+    if (!canCancelReservation(cancelTargetReservation.date, cancelTargetReservation.time)) {
+      return;
+    }
 
+    cancelReservation(cancelTargetReservation.id);
+    setCancelTargetReservation(null);
+    setIsCancelSuccessOpen(true);
+  };
 
-    cancelReservation(cancelTargetId);
+  const handleCloseCancelConfirm = () => {
+    setCancelTargetReservation(null);
+  };
 
-    setCancelTargetId(null);
-
+  const handleCloseCancelSuccess = () => {
+    setIsCancelSuccessOpen(false);
   };
 
 
@@ -432,9 +437,13 @@ function MyPage() {
 
                   type="button"
 
-                  onClick={() =>
-                    navigate(`/reservation?mode=edit&reservationId=${upcomingReservation!.id}`)
-                  }
+                  disabled={!canModifyUpcomingReservation}
+
+                  onClick={() => {
+                    if (upcomingReservation && canModifyUpcomingReservation) {
+                      navigate(`/reservation?mode=edit&reservationId=${upcomingReservation.id}`);
+                    }
+                  }}
 
                 >
 
@@ -450,7 +459,13 @@ function MyPage() {
 
                   type="button"
 
-                  onClick={() => navigate("/reservation/edit?mode=cancel")}
+                  disabled={!canModifyUpcomingReservation}
+
+                  onClick={() => {
+                    if (upcomingReservation && canModifyUpcomingReservation) {
+                      setCancelTargetReservation(upcomingReservation);
+                    }
+                  }}
 
                 >
 
@@ -674,20 +689,14 @@ function MyPage() {
 
 
       {cancelTargetReservation ? (
-
-        <MyPageCancelModal
-
-          classTitle={cancelTargetReservation.classTitle}
-
-          schedule={formatReservationSchedule(cancelTargetReservation.date, cancelTargetReservation.time)}
-
+        <MyPageCancelConfirmModal
+          reservation={cancelTargetReservation}
           onConfirm={handleConfirmCancel}
-
-          onClose={() => setCancelTargetId(null)}
-
+          onClose={handleCloseCancelConfirm}
         />
-
       ) : null}
+
+      {isCancelSuccessOpen ? <MyPageCancelSuccessModal onClose={handleCloseCancelSuccess} /> : null}
 
 
 

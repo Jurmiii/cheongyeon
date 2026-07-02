@@ -1,7 +1,6 @@
 import type { Reservation, ReservationStats, ReservationStatus } from "../types/mypage";
-import { RESERVATION_SESSION_CAPACITY } from "../data/reservationClasses";
-import { isFutureOrTodayReservation } from "./reservationFormat";
 import { getMockBookedGuestCountForSession } from "./sessionAvailability";
+import { isFutureOrTodayReservation } from "./reservationFormat";
 
 export const RESERVATIONS_STORAGE_KEY = "cheongyeon-reservations";
 export const RESERVATIONS_CHANGED_EVENT = "cheongyeon-reservations-changed";
@@ -122,6 +121,7 @@ type SessionAvailabilityParams = {
   time: string;
   classTitle: string;
   branch: string;
+  sessionCapacity: number;
   excludeReservationId?: string;
 };
 
@@ -149,10 +149,14 @@ export function getBookedGuestCountForSession({
     .reduce((total, reservation) => total + reservation.guestCount, 0);
 }
 
-export function getRemainingSeatsForSession(params: SessionAvailabilityParams) {
-  const mockBookedCount = getMockBookedGuestCountForSession(params);
+export function getBookedSeatsForSession(params: SessionAvailabilityParams) {
+  const { sessionCapacity } = params;
+  const mockBookedCount = getMockBookedGuestCountForSession(params, sessionCapacity);
   const actualBookedCount = getBookedGuestCountForSession(params);
-  const totalBookedCount = mockBookedCount + actualBookedCount;
 
-  return Math.max(0, RESERVATION_SESSION_CAPACITY - totalBookedCount);
+  return Math.min(sessionCapacity, mockBookedCount + actualBookedCount);
+}
+
+export function getRemainingSeatsForSession(params: SessionAvailabilityParams) {
+  return Math.max(0, params.sessionCapacity - getBookedSeatsForSession(params));
 }
