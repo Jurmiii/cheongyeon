@@ -1,6 +1,7 @@
 @use "../../styles/abstracts/breakpoints" as *;
 
 @use "../../styles/abstracts/grid" as grid;
+
 .collection-category {
   grid-column: 1 / -1;
 }
@@ -37,37 +38,49 @@
 }
 
 .collection-category__products {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 3rem 1.5rem;
   margin-top: 1.5rem;
 }
 
-@media (max-width: $laptop) {
-  .collection-category__products {
-    justify-content: center;
-  }
+.collection-category__products .content5 {
+  width: 100%;
+  height: auto;
+}
+
+.collection-category__products .content5__image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+}
+
+.collection-category__products .content5__body,
+.collection-category__products .content5__divider {
+  width: 100%;
+}
+
+.collection-category__products .content5__meta {
+  width: 100%;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .collection-category__products .content5__description {
-  word-break: keep-all;
+  word-break: normal;
   overflow-wrap: break-word;
 }
 
-@media (max-width: $laptop) {
-  .collection-category__products .content5__meta {
-    width: 100%;
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
+.collection-category__products .content5__description br {
+  display: none;
+}
 
+@media (max-width: $laptop) {
   .collection-category__products .content5__body {
-    width: 100%;
     margin-top: 0.5rem;
   }
 
   .collection-category__products .content5__divider {
-    width: 100%;
     margin-top: 0.5rem;
   }
 
@@ -77,8 +90,8 @@
   }
 }
 
-/* 태블릿 (769px ~ $laptop) — Figma 6:67 카드 308px, gap 24px/64px */
-@media (min-width: ($tablet + 1px)) and (max-width: $laptop) {
+/* 태블릿 (769px ~ $laptop) — Figma 6:67 카드 2열 */
+@media (min-width: $tablet) and (max-width: $laptop) {
   .collection-category + .collection-category {
     margin-top: 2.8125rem; /* Figma gap 45px */
   }
@@ -88,56 +101,16 @@
   }
 
   .collection-category__products {
-    display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem;
     margin-top: 1.5rem;
-    justify-content: stretch;
-  }
-
-  .collection-category__products .content5 {
-    width: 100%;
-    height: auto;
-    flex: none;
-  }
-
-  .collection-category__products .content5__image {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1;
-  }
-
-  .collection-category__products .content5__body,
-  .collection-category__products .content5__divider {
-    width: 100%;
-  }
-
-  .collection-category__products .content5__title {
-    font-size: 1rem;
-    line-height: 1.625rem;
-  }
-
-  .collection-category__products .content5__meta {
-    font-size: 0.875rem;
-    line-height: 1.375rem;
-  }
-
-  .collection-category__products .content5__summary,
-  .collection-category__products .content5__description {
-    font-size: 0.75rem;
-    line-height: 1.125rem;
   }
 }
 
-/* 모바일 (≤$tablet) — 2열 카드, 유동 너비 */
-@media (max-width: $tablet) {
+/* 모바일 (≤$tablet) — 2열 카드 */
+@media (max-width: ($tablet - 1px)) {
   .collection-category + .collection-category {
     margin-top: 2rem;
-  }
-
-  .collection-category__title {
-    font-size: 1.25rem;
-    line-height: 1.75rem;
   }
 
   .collection-category__line {
@@ -146,43 +119,8 @@
   }
 
   .collection-category__products {
-    display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem 0.875rem;
     margin-top: 1rem;
-    justify-content: stretch;
-  }
-
-  .collection-category__products .content5 {
-    width: 100%;
-    height: auto;
-    flex: none;
-  }
-
-  .collection-category__products .content5__image {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1;
-  }
-
-  .collection-category__products .content5__body,
-  .collection-category__products .content5__divider {
-    width: 100%;
-  }
-
-  .collection-category__products .content5__title {
-    font-size: 1rem;
-    line-height: 1.625rem;
-  }
-
-  .collection-category__products .content5__meta {
-    font-size: 0.875rem;
-    line-height: 1.375rem;
-  }
-
-  .collection-category__products .content5__summary,
-  .collection-category__products .content5__description {
-    font-size: 0.75rem;
-    line-height: 1.125rem;
   }
 }

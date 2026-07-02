@@ -30,12 +30,7 @@ function CollectionPage() {
           <div className="collection-kv__content">
             <h1 className="collection-kv__title ft-64b ink500">차 컬렉션</h1>
             <img className="collection-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
-            <p className="collection-kv__description collection-kv__description--desktop ft-28r ink500">
-              자연의 향과 맛을 오롯이 담아낸
-              <br />
-              청연만의 다채로운 차 컬렉션
-            </p>
-            <p className="collection-kv__description collection-kv__description--tablet ft-24r ink500">
+            <p className="collection-kv__description ft-28r ink500">
               서로 다른 찻잎이 만들어내는
               <br />
               향의 깊이를 경험해보세요
@@ -48,7 +43,7 @@ function CollectionPage() {
         <div className="collection-aroma__grid">
           <div className="collection-aroma__content">
             <h2 className="collection-aroma__title ft-48b ink500">향으로 만나는차</h2>
-            <p className="collection-aroma__description ft-28r ink500">
+            <p className="collection-aroma__description ft-22r ink500">
               같은 차라도, 우리는 다른 향을 느낍니다.
               <br />
               <span className="collection-aroma__description-second">
@@ -79,7 +74,7 @@ function CollectionPage() {
                   role="tab"
                   className={[
                     "collection-catalog__tab",
-                    tab.id === activeTab ? "ft-22b" : "ft-22r",
+                    tab.id === activeTab ? "ft-18b" : "ft-18r",
                     tab.id === activeTab && "collection-catalog__tab--active",
                   ]
                     .filter(Boolean)

@@ -5,7 +5,6 @@
   position: relative;
   width: 100%;
   min-width: 0;
-  overflow-x: clip;
   --collection-page-gutter: clamp(1.5rem, 5vw, 15rem);
   --collection-content-width: min(#{grid.$desktop-grid-outer}, calc(100% - (var(--collection-page-gutter) * 2)));
 }
@@ -14,8 +13,14 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 20;
   width: 100%;
+  overflow: visible;
+  pointer-events: none;
+
+  .site-header-shell {
+    pointer-events: auto;
+  }
 }
 
 .collection-kv {
@@ -61,11 +66,7 @@
 }
 
 .collection-kv__description {
-  margin-top: 0.5625rem;
-}
-
-.collection-kv__description--tablet {
-  display: none;
+  margin-top: 1.5rem;
 }
 
 /* Figma 1920×940 */
@@ -145,6 +146,7 @@
 
 .collection-catalog {
   width: 100%;
+  overflow-x: clip;
   background-color: var(--han100);
 }
 
@@ -240,6 +242,10 @@
     --collection-page-gutter: clamp(1rem, 5vw, 4rem);
   }
 
+  .collection-page__header {
+    padding-top: clamp(0.75rem, 0.5rem + 0.8vw, 1.25rem);
+  }
+
   .collection-kv {
     height: auto;
     min-height: 0;
@@ -312,7 +318,11 @@
    태블릿 ($tablet ~ $laptop, 768px ~ 1024px) — Figma TA 6:48
    PC 스타일은 변경하지 않고 이 구간만 오버라이드
    ══════════════════════════════════════════ */
-@media (min-width: ($tablet + 1px)) and (max-width: $laptop) {
+@media (min-width: $tablet) and (max-width: $laptop) {
+  .collection-page {
+    --collection-page-gutter: #{grid.$tablet-grid-padding};
+  }
+
   /* KV — Figma 6:49: 768×600, 타이틀박스 left=64px 세로 중앙 */
   .collection-kv {
     height: 37.5rem;
@@ -326,19 +336,20 @@
   }
 
   .collection-kv__grid {
-    padding-inline: 0;
+    @include grid.tablet-kv-container;
     align-items: center;
+    height: 100%;
     grid-template-columns: 1fr;
   }
 
   .collection-kv__content {
     grid-column: 1 / -1;
+    justify-self: start;
+    align-self: center;
     gap: 0;
   }
 
   .collection-kv__title {
-    font-size: 2.5rem !important;
-    line-height: 3.25rem !important;
     letter-spacing: -0.02em;
   }
 
@@ -346,12 +357,7 @@
     margin-top: 1rem; /* Figma gap 16px */
   }
 
-  .collection-kv__description--desktop {
-    display: none;
-  }
-
-  .collection-kv__description--tablet {
-    display: block;
+  .collection-kv__description {
     margin-top: 1.5rem; /* Figma gap 24px */
     letter-spacing: -0.02em;
   }
@@ -365,30 +371,31 @@
   }
 
   .collection-aroma__grid {
+    width: var(--collection-content-width);
+    max-width: grid.$tablet-grid-inner;
     padding-inline: 0;
     grid-template-columns: 1fr;
-    row-gap: 2.5rem; /* Figma gap 40px */
+    row-gap: 2.5rem;
     margin-inline: auto;
   }
 
   .collection-aroma__content {
     grid-column: 1 / -1;
     align-items: flex-start;
-    gap: 2rem; /* Figma gap 32px */
+    justify-self: start;
+    width: 100%;
+    gap: 2rem;
   }
 
   .collection-aroma__title {
-    font-size: 2rem !important;
-    line-height: 2.75rem !important;
     letter-spacing: -0.01em;
     text-align: left;
   }
 
   .collection-aroma__description {
     margin-top: 0;
-    font-size: 1.5rem !important;
-    line-height: 2.125rem !important;
-    letter-spacing: -0.02em;
+    font-family: var(--font-headline);
+    letter-spacing: -0.025em;
     text-align: left;
   }
 
@@ -409,6 +416,8 @@
   }
 
   .collection-catalog__grid {
+    width: var(--collection-content-width);
+    max-width: grid.$tablet-grid-inner;
     padding-inline: 0;
     padding-top: 6rem;
     padding-bottom: 6rem;
@@ -417,8 +426,6 @@
   }
 
   .collection-catalog__title {
-    font-size: 2rem !important;
-    line-height: 2.75rem !important;
     letter-spacing: -0.01em;
   }
 
@@ -446,8 +453,6 @@
     flex: 0 0 auto;
     height: 3.75rem;
     padding: 1.5rem 0.5rem;
-    font-size: 1.125rem;
-    line-height: 1.875rem;
     white-space: nowrap;
   }
 
@@ -463,18 +468,18 @@
 }
 
 /* ══════════════════════════════════════════
-   모바일 (≤$tablet, 768px 이하) — Figma MO 6:489
-   PC·태블릿(769px~) 스타일은 변경하지 않고 이 구간만 오버라이드
+   모바일 (<$tablet, 767px 이하) — Figma MO 6:489
+   PC·태블릿(768px~) 스타일은 변경하지 않고 이 구간만 오버라이드
    ══════════════════════════════════════════ */
-@media (max-width: $tablet) {
+@media (max-width: ($tablet - 1px)) {
   .collection-page {
-    --collection-page-gutter: clamp(1rem, 5vw, 4rem);
+    --collection-page-gutter: #{grid.$mobile-grid-padding};
   }
 
-  /* KV — 태블릿 높이(37.5rem)에서 모바일(43.75rem)로 자연스럽게 이어짐 */
+  /* KV — Figma MO 1660:1793: 402×700, 타이틀 left=calc(50%-72.5px) 세로 중앙 */
   .collection-kv {
-    height: auto;
-    min-height: 37.5rem;
+    height: 43.75rem;
+    min-height: 43.75rem;
     padding-block: 0;
     background-color: #cbb8a4;
     background-image: url("../../assets/images/05collection/collection-kv-mobile.png");
@@ -484,27 +489,22 @@
   }
 
   .collection-kv__grid {
-    min-height: 37.5rem;
-  }
-
-  .collection-kv__grid {
+    @include grid.mobile-kv-container;
     align-items: center;
-    width: var(--collection-content-width);
-    max-width: 100%;
-    padding-inline: 0;
-    margin-inline: auto;
+    height: 100%;
+    min-height: 43.75rem;
     grid-template-columns: 1fr;
   }
 
   .collection-kv__content {
     grid-column: 1 / -1;
+    justify-self: center;
+    align-self: center;
     max-width: min(16.125rem, 85%);
-    margin-right: auto;
+    margin-right: 4.53125rem;
   }
 
   .collection-kv__title {
-    font-size: 1.875rem !important;
-    line-height: 2.5rem !important;
     letter-spacing: -0.01875rem;
   }
 
@@ -512,15 +512,8 @@
     margin-top: 0.5rem;
   }
 
-  .collection-kv__description--desktop {
-    display: none;
-  }
-
-  .collection-kv__description--tablet {
-    display: block;
+  .collection-kv__description {
     margin-top: 1rem;
-    font-size: 1.125rem;
-    line-height: 1.625rem;
     letter-spacing: -0.02em;
   }
 
@@ -533,33 +526,30 @@
   }
 
   .collection-aroma__grid {
-    @include grid.mobile-grid-padded;
+    width: 100%;
+    max-width: grid.$mobile-grid-inner;
+    padding-inline: 0;
     grid-template-columns: 1fr;
     row-gap: 2rem;
-    width: var(--collection-content-width);
-    max-width: 100%;
-    padding-inline: 0;
     margin-inline: auto;
   }
 
   .collection-aroma__content {
     grid-column: 1 / -1;
     align-items: center;
+    justify-self: center;
+    width: 100%;
     gap: 1rem;
     text-align: center;
   }
 
   .collection-aroma__title {
-    font-size: 1.5rem !important;
-    line-height: 2rem !important;
     letter-spacing: -0.01em;
     text-align: center;
   }
 
   .collection-aroma__description {
     margin-top: 0;
-    font-size: 1rem !important;
-    line-height: 1.625rem !important;
     text-align: center;
   }
 
@@ -584,16 +574,15 @@
   }
 
   .collection-catalog__grid {
-    width: var(--collection-content-width);
-    max-width: 100%;
+    width: 100%;
+    max-width: grid.$mobile-grid-inner;
     padding-inline: 0;
     padding-top: 4rem;
     padding-bottom: 4rem;
+    margin-inline: auto;
   }
 
   .collection-catalog__title {
-    font-size: 1.5rem !important;
-    line-height: 2rem !important;
     letter-spacing: -0.01em;
   }
 
@@ -624,8 +613,6 @@
     height: auto;
     min-height: 3.75rem;
     padding: 0.5rem 0.75rem;
-    font-size: 1.125rem;
-    line-height: 1.625rem;
     white-space: nowrap;
   }
 
@@ -682,5 +669,26 @@
 
   .collection-catalog__content {
     max-width: grid.$mobile-grid-inner;
+  }
+}
+
+/* Tablet/Mobile fluid type scaling (1024px -> 402px) */
+@media (max-width: $laptop) {
+  .collection-kv .ft-64b,
+  .collection-aroma .ft-48b,
+  .collection-catalog .ft-48b {
+    font-size: clamp(1.5rem, 0.857rem + 2.56vw, 2.5rem);
+    line-height: clamp(2rem, 1.357rem + 2.56vw, 3.25rem);
+  }
+
+  .collection-kv .ft-28r,
+  .collection-aroma .ft-22r {
+    font-size: clamp(1.125rem, 1.045rem + 0.32vw, 1.25rem);
+    line-height: clamp(1.75rem, 1.589rem + 0.64vw, 2rem);
+  }
+
+  .collection-catalog .ft-18r,
+  .collection-catalog .ft-18b {
+    line-height: clamp(1.625rem, 1.545rem + 0.32vw, 1.875rem);
   }
 }

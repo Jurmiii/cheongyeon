@@ -1,4 +1,5 @@
 import subSymbol from "../../assets/images/01main/subsymbol.svg";
+import teaStoreLogo from "../../assets/images/06tea-store/logo.webp";
 import { Footer, Header } from "../../components/common";
 import {
   teaStoryDadoItems,
@@ -199,6 +200,9 @@ function TeaStoryPage() {
                 <p className="tea-store-type__description ft-16r ink500">{type.description}</p>
               </article>
             ))}
+            <div className="tea-store-types__logo" aria-hidden="true">
+              <img className="tea-store-types__logo-image" src={teaStoreLogo} alt="" />
+            </div>
           </div>
         </div>
       </section>
