@@ -1,54 +1,18 @@
-import { createClient } from "@supabase/supabase-js";
+const { createClient } = require("@supabase/supabase-js");
 
-interface KakaoTokenResponse {
-  access_token?: string;
-  error?: string;
-  error_description?: string;
-}
-
-interface KakaoUserResponse {
-  id: number;
-  properties?: {
-    nickname?: string;
-    profile_image?: string;
-    thumbnail_image?: string;
-  };
-  kakao_account?: {
-    profile?: {
-      nickname?: string;
-      profile_image_url?: string;
-      thumbnail_image_url?: string;
-    };
-  };
-}
-
-export interface KakaoAuthRequest {
-  code: string;
-  redirectUri: string;
-}
-
-export interface KakaoAuthSuccess {
-  token_hash: string;
-  email: string;
-}
-
-function getSyntheticEmail(kakaoId: string) {
+function getSyntheticEmail(kakaoId) {
   return `kakao_${kakaoId}@cheongyeon.auth`;
 }
 
-function getEnv(name: string) {
+function getEnv(name) {
   const value = process.env[name]?.trim();
   return value || undefined;
 }
 
-function getMissingEnvNames(): string[] {
-  const required = [
-    "KAKAO_REST_API_KEY",
-    "KAKAO_CLIENT_SECRET",
-    "SUPABASE_SERVICE_ROLE_KEY",
-  ] as const;
-
-  const missing: string[] = required.filter((name) => !getEnv(name));
+function getMissingEnvNames() {
+  const missing = ["KAKAO_REST_API_KEY", "KAKAO_CLIENT_SECRET", "SUPABASE_SERVICE_ROLE_KEY"].filter(
+    (name) => !getEnv(name),
+  );
 
   if (!getEnv("SUPABASE_URL") && !getEnv("VITE_SUPABASE_URL")) {
     missing.push("SUPABASE_URL");
@@ -57,10 +21,7 @@ function getMissingEnvNames(): string[] {
   return missing;
 }
 
-export async function handleKakaoAuth({
-  code,
-  redirectUri,
-}: KakaoAuthRequest): Promise<KakaoAuthSuccess> {
+async function handleKakaoAuth({ code, redirectUri }) {
   if (!code || typeof code !== "string") {
     throw new Error("Authorization code is required.");
   }
@@ -69,19 +30,15 @@ export async function handleKakaoAuth({
     throw new Error("redirectUri is required.");
   }
 
-  const kakaoRestApiKey = getEnv("KAKAO_REST_API_KEY");
-  const kakaoClientSecret = getEnv("KAKAO_CLIENT_SECRET");
-  const supabaseUrl = getEnv("SUPABASE_URL") || getEnv("VITE_SUPABASE_URL");
-  const serviceRoleKey = getEnv("SUPABASE_SERVICE_ROLE_KEY");
   const missingEnv = getMissingEnvNames();
-
   if (missingEnv.length > 0) {
     throw new Error(`Server auth configuration is incomplete: ${missingEnv.join(", ")}`);
   }
 
-  if (!kakaoRestApiKey || !kakaoClientSecret || !supabaseUrl || !serviceRoleKey) {
-    throw new Error("Server auth configuration is incomplete.");
-  }
+  const kakaoRestApiKey = getEnv("KAKAO_REST_API_KEY");
+  const kakaoClientSecret = getEnv("KAKAO_CLIENT_SECRET");
+  const supabaseUrl = getEnv("SUPABASE_URL") || getEnv("VITE_SUPABASE_URL");
+  const serviceRoleKey = getEnv("SUPABASE_SERVICE_ROLE_KEY");
 
   const tokenParams = new URLSearchParams({
     grant_type: "authorization_code",
@@ -99,7 +56,7 @@ export async function handleKakaoAuth({
     body: tokenParams.toString(),
   });
 
-  const tokenData = (await tokenResponse.json()) as KakaoTokenResponse;
+  const tokenData = await tokenResponse.json();
 
   if (!tokenResponse.ok || !tokenData.access_token) {
     throw new Error(
@@ -114,7 +71,7 @@ export async function handleKakaoAuth({
     },
   });
 
-  const kakaoUser = (await userResponse.json()) as KakaoUserResponse;
+  const kakaoUser = await userResponse.json();
 
   if (!userResponse.ok || !kakaoUser.id) {
     throw new Error("Failed to load Kakao profile.");
@@ -140,7 +97,7 @@ export async function handleKakaoAuth({
     },
   });
 
-  let userId: string | null = null;
+  let userId = null;
 
   const { data: existingProfile } = await supabaseAdmin
     .from("profiles")
@@ -216,3 +173,41 @@ export async function handleKakaoAuth({
     email: syntheticEmail,
   };
 }
+
+function sendJson(res, statusCode, body) {
+  res.statusCode = statusCode;
+  res.setHeader("Content-Type", "application/json");
+  res.end(JSON.stringify(body));
+}
+
+module.exports = async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "content-type");
+
+  if (req.method === "OPTIONS") {
+    res.statusCode = 204;
+    res.end();
+    return;
+  }
+
+  if (req.method !== "POST") {
+    sendJson(res, 405, { error: "Method not allowed" });
+    return;
+  }
+
+  try {
+    const body =
+      req.body && typeof req.body === "object"
+        ? req.body
+        : typeof req.body === "string" && req.body.length > 0
+          ? JSON.parse(req.body)
+          : {};
+
+    const data = await handleKakaoAuth(body);
+    sendJson(res, 200, data);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unexpected server error.";
+    sendJson(res, 400, { error: message });
+  }
+};

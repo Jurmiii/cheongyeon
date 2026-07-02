@@ -1,3 +1,4 @@
+@use "sass:math";
 @use "../styles/abstracts/breakpoints" as *;
 
 @use "../styles/abstracts/grid" as grid;
@@ -11,7 +12,7 @@ $main-sec3-tablet-spring-text-w: 22.5rem; // 360px — 봄 서브타이틀 2줄 
 $main-sec3-mobile-image-w: 11.125rem; // 178px
 $main-sec3-mobile-image-h: 8.25rem; // 132px
 $main-sec3-fluid-vw-min: 25.125rem; // 402px — fluid scaling 기준
-$main-sec3-season-image-ratio: 308 / 229;
+$main-sec3-season-image-ratio: math.div(308, 229);
 $main-sec3-tablet-title-image-gap: 1.5rem; // 24px — 이미지 ↔ 계절 타이틀 블록
 $main-sec3-mobile-title-image-gap: 0.5rem; // 8px
 $main-page-fluid-vw-min: 25.125rem; // 402px
@@ -28,10 +29,10 @@ $main-page-fluid-laptop-vw: 64rem; // 1024px
   $weight: 700,
   $family: var(--font-headline)
 ) {
-  $mobile-to-tablet-fs-slope: ($tablet-fs - $mobile-fs) / ($main-page-fluid-tablet-vw - $main-page-fluid-vw-min);
-  $mobile-to-tablet-lh-slope: ($tablet-lh - $mobile-lh) / ($main-page-fluid-tablet-vw - $main-page-fluid-vw-min);
-  $tablet-to-desktop-fs-slope: ($desktop-fs - $tablet-fs) / ($main-page-fluid-laptop-vw - $main-page-fluid-tablet-vw);
-  $tablet-to-desktop-lh-slope: ($desktop-lh - $tablet-lh) / ($main-page-fluid-laptop-vw - $main-page-fluid-tablet-vw);
+  $mobile-to-tablet-fs-slope: math.div($tablet-fs - $mobile-fs, $main-page-fluid-tablet-vw - $main-page-fluid-vw-min);
+  $mobile-to-tablet-lh-slope: math.div($tablet-lh - $mobile-lh, $main-page-fluid-tablet-vw - $main-page-fluid-vw-min);
+  $tablet-to-desktop-fs-slope: math.div($desktop-fs - $tablet-fs, $main-page-fluid-laptop-vw - $main-page-fluid-tablet-vw);
+  $tablet-to-desktop-lh-slope: math.div($desktop-lh - $tablet-lh, $main-page-fluid-laptop-vw - $main-page-fluid-tablet-vw);
 
   font-family: $family;
   font-weight: $weight;
