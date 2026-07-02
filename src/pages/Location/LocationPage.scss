@@ -1,7 +1,15 @@
 @use "../../styles/abstracts/breakpoints" as *;
 @use "../../styles/abstracts/grid" as grid;
 
-$location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
+$location-side-inset: 6rem;
+$location-fluid-inset-min: 0.8125rem;
+$location-fluid-viewport-min: 25.1875rem;
+$location-fluid-inset-range: grid.$tablet-grid-padding - $location-fluid-inset-min;
+$location-fluid-viewport-range: grid.$tablet-grid-viewport - $location-fluid-viewport-min;
+$location-break-tablet-up: 48.0625rem;
+$location-break-laptop-up: 64.0625rem;
+$location-kv-text-max: 67.5rem;
+$location-break-desktop-xl-up: 120.0625rem;
 
 @mixin location-desktop-grid {
   display: grid;
@@ -31,6 +39,21 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
   width: min(grid.$mobile-grid-outer, calc(100% - #{grid.$mobile-grid-padding * 2}));
   max-width: min(grid.$mobile-grid-outer, calc(100% - #{grid.$mobile-grid-padding * 2}));
   margin-inline: auto;
+}
+
+/* 25.1875rem ~ 48rem — 좌우 여백 0.8125rem ~ 4rem 유동 */
+@mixin location-fluid-inset-grid {
+  display: grid;
+  grid-template-columns: repeat(grid.$tablet-grid-columns, minmax(0, 1fr));
+  column-gap: grid.$tablet-grid-gap;
+  box-sizing: border-box;
+  width: 100%;
+  margin-inline: 0;
+  padding-inline: clamp(
+    $location-fluid-inset-min,
+    calc(#{$location-fluid-inset-min} + (100vw - #{$location-fluid-viewport-min}) * #{($location-fluid-inset-range / $location-fluid-viewport-range)}),
+    #{grid.$tablet-grid-padding}
+  );
 }
 
 .location {
@@ -338,10 +361,8 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
   text-align: center;
 }
 
-/* ══════════════════════════════════════════
-   769px ~ 1920px — 12컬럼 + 96px 좌우 여백
-   ══════════════════════════════════════════ */
-@media (min-width: calc($tablet + 1px)) and (max-width: 120rem) {
+/* 48.0625rem ~ 120rem — 12컬럼 + 6rem 좌우 여백 */
+@media (min-width: $location-break-tablet-up) and (max-width: 120rem) {
   .location-kv__content {
     @include location-desktop-grid;
     align-items: center;
@@ -374,8 +395,8 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
   }
 }
 
-/* 769px+ — PC KV · 지도 가로 배치 */
-@media (min-width: calc($tablet + 1px)) {
+/* 48.0625rem+ — PC KV · 지도 가로 배치 */
+@media (min-width: $location-break-tablet-up) {
   .location-kv {
     height: 46.25rem;
     background-image: url("../../assets/images/04location/location-kv.webp");
@@ -396,7 +417,7 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
   }
 }
 
-@media (min-width: calc($tablet + 1px)) and (max-width: $laptop) {
+@media (min-width: $location-break-tablet-up) and (max-width: $laptop) {
   .location-kv {
     height: 40rem;
     background-position: 70% center;
@@ -438,7 +459,7 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
   }
 }
 
-@media (min-width: calc($laptop + 1px)) and (max-width: 1080px) {
+@media (min-width: $location-break-laptop-up) and (max-width: $location-kv-text-max) {
   .location-kv__text {
     display: flex;
     flex-direction: column;
@@ -470,10 +491,8 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
   }
 }
 
-/* ══════════════════════════════════════════
-   403px ~ 768px — 8컬럼
-   ══════════════════════════════════════════ */
-@media (min-width: calc($mobile + 1px)) and (max-width: $tablet) {
+/* 25.1875rem ~ 48rem — 8컬럼 */
+@media (min-width: $location-fluid-viewport-min) and (max-width: $tablet) {
   .location-kv {
     height: 40rem;
     background-image: url("../../assets/images/04location/ta-story-kv.webp");
@@ -481,7 +500,7 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
   }
 
   .location-kv__content {
-    @include location-tablet-grid;
+    @include location-fluid-inset-grid;
     align-items: center;
     height: 100%;
   }
@@ -527,13 +546,11 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
   }
 
   .location-map__inner {
-    @include location-tablet-grid;
+    @include location-fluid-inset-grid;
   }
 }
 
-/* ══════════════════════════════════════════
-   402px 이하 — 6컬럼 · 모바일 KV
-   ══════════════════════════════════════════ */
+/* 25.125rem 이하 — 6컬럼 · 모바일 KV */
 @media (max-width: $mobile) {
   .location-kv {
     width: 100%;
@@ -549,16 +566,9 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
   .location-kv__content {
     @include location-mobile-grid;
     grid-template-rows: 1fr;
-    width: 100%;
-    max-width: grid.$mobile-kv-width;
+    align-items: center;
     height: 100%;
     min-height: 100%;
-    padding-inline: clamp(
-      grid.$mobile-grid-padding,
-      calc(#{grid.$mobile-grid-padding} + (100vw - #{grid.$mobile-kv-width}) * 0.125),
-      calc(#{grid.$mobile-grid-padding} + 0.5rem)
-    );
-    align-items: center;
     padding-block: 0;
   }
 
@@ -621,10 +631,10 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
   }
 }
 
-/* 768px 이하 — 지도 세로 스택 */
+/* 48rem 이하 — 지도 세로 스택 */
 @media (max-width: $tablet) {
   .location-map {
-    padding-block: var(--space-7) var(--space-8);
+    padding-block: var(--space-7);
     padding-inline: 0;
   }
 
@@ -682,8 +692,14 @@ $location-side-inset: 6rem; // 96px — 769px~1920px 최소 좌우 여백
   }
 }
 
-/* 1920px 초과 — 12컬럼 중앙 정렬 */
-@media (min-width: calc(120rem + 1px)) {
+@media (max-width: $mobile) {
+  .location-map {
+    padding-block: var(--space-7);
+  }
+}
+
+/* 120.0625rem 초과 — 12컬럼 중앙 정렬 */
+@media (min-width: $location-break-desktop-xl-up) {
   .location-kv__content {
     @include location-desktop-grid;
     width: min(#{grid.$desktop-grid-outer}, 100%);

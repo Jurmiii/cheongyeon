@@ -52,25 +52,25 @@ const stayGalleryData = {
     {
       image: spaceGallery1,
       title: "청연 남산 티하우스",
-      location: "위치: 서울특별시 중구 소파로 42",
+      location: ["위치: 서울특별시", "중구 소파로 42"],
       feature: "특징: 도심형 티하우스",
     },
     {
       image: spaceGallery2,
       title: "청연 구례 티하우스",
-      location: "위치: 전라남도 구례군 마산면 214",
+      location: ["위치: 전라남도 구례군", "마산면 214"],
       feature: "특징: 자연 속 휴식 공간",
     },
     {
       image: spaceGallery3,
       title: "청연 경주 티하우스",
-      location: "위치: 경상북도 경주시 첨성로 177",
+      location: ["위치: 경상북도 경주시", "첨성로 177"],
       feature: "특징: 한옥 공간",
     },
     {
       image: spaceGallery4,
       title: "청연 제주 티하우스",
-      location: "위치: 제주도 서귀포시 안덕면 128",
+      location: ["위치: 제주도 서귀포시 안덕", "면 128"],
       feature: "특징: 제주 차밭 인근",
     },
   ],
@@ -85,25 +85,25 @@ const learningGalleryData = {
     {
       image: spaceLearning1,
       title: "청연 북촌 티하우스",
-      location: "위치: 서울특별시 종로구 북촌로 58",
-      feature: "특징: 청연 본점 브랜드 쇼룸",
+      location: ["위치: 서울특별시", "종로구 북촌로 58"],
+      feature: "특징: 청연 브랜드 쇼룸",
     },
     {
       image: spaceLearning2,
       title: "청연 보성 티하우스",
-      location: "위치: 전라남도 보성군 보성읍 821",
+      location: ["위치: 전라남도 보성군", "보성읍 821"],
       feature: "특징: 보성 차밭 인접",
     },
     {
       image: spaceLearning3,
       title: "청연 강진 티하우스",
-      location: "위치: 전라남도 강진군 강진읍 437",
+      location: ["위치: 전라남도 강진군", "성전면 437"],
       feature: "특징: 한국 전통 다도 문화권",
     },
     {
       image: spaceLearning4,
       title: "청연 하동 티하우스",
-      location: "위치: 경상남도 하동군 화개면 612",
+      location: ["위치: 경상남도 하동군", "화개면 612"],
       feature: "특징: 지리산 야생차 문화권",
     },
   ],
@@ -350,11 +350,20 @@ function SpacePage() {
               머무는 것입니다.
             </h2>
             <p className="space-about__desc ft-28r ink500">
-              청연은 동양화의 고요함을 담은
-              <br />
-              공간입니다. 바쁜 일상 속에서 잠시
-              <br />
-              멈추어, 나와 마주하는 시간을 선물합니다.
+              <span className="space-about__desc-lines space-about__desc-lines--desktop">
+                청연은 동양화의 고요함을 담은
+                <br />
+                공간입니다. 바쁜 일상 속에서 잠시
+                <br />
+                멈추어, 나와 마주하는 시간을 선물합니다.
+              </span>
+              <span className="space-about__desc-lines space-about__desc-lines--mobile">
+                청연은 동양화의 고요함을 담은 공간입니다.
+                <br />
+                바쁜 일상 속에서 잠시 멈추어,
+                <br />
+                나와 마주하는 시간을 선물합니다.
+              </span>
             </p>
           </div>
 
@@ -370,9 +379,9 @@ function SpacePage() {
             <div className="space-rooms__head">
               <h2 className="space-rooms__title ft-48b ink500">머무름의 공간</h2>
               <p className="space-rooms__desc ft-22r ink500">
-                고요한 차향이 스며드는 공간에서 복잡한 생각은 내려놓고,
+                고요한 차향이 스며드는 공간에서 복잡한
                 <br />
-                음미하며 마음의 여백을 채워보세요.
+                생각은 내려놓고, 음미하며 마음의 여백을 채워보세요.
               </p>
             </div>
 
@@ -454,32 +463,18 @@ function SpacePage() {
 
       <section className="space-map" aria-label="청연 본점 공간 안내" onClick={handleMapSectionClick}>
         <div className="space-map__inner">
-          <div className="space-map__content">
-            {!showMapDetail ? (
-              <div className="space-map__intro">
-                <h2 className="space-map__title ft-48b ink500">청연 본점 공간 안내</h2>
-                <p className="space-map__subtitle ft-28r ink500">
-                  청연은 자연의 흐름을 따라
-                  <br />
-                  다실, 중정, 전시 공간이 조화를 이루는
-                  <br />
-                  구성으로 이루어져 있습니다.
-                </p>
-              </div>
-            ) : (
-              <div key={selectedSpace} className="space-map__detail">
-                <img
-                  src={activeSpace.image}
-                  alt={activeSpace.title}
-                  className="space-map__detail-image"
-                />
-                <div className="space-map__detail-head">
-                  <span className="space-map__detail-number ft-48b">{activeSpace.number}</span>
-                  <h3 className="space-map__detail-title ft-48b ink500">{activeSpace.title}</h3>
-                </div>
-                <p className="space-map__detail-desc ft-22r ink500">{activeSpace.description}</p>
-              </div>
-            )}
+          <div
+            className={`space-map__intro${showMapDetail ? " space-map__intro--hidden" : ""}`}
+          >
+            <h2 className="space-map__title ft-48b ink500">청연 본점 공간 안내</h2>
+            <p className="space-map__subtitle ft-28r ink500">
+              청연은 자연의 흐름을 따라
+              <br />
+              다실, 중정, 전시 공간이 조화를 이루는
+              <br />
+              구성으로 이루어져 있습니다.
+            </p>
+            <p className="space-map__hint ft-16r ink400">* 번호를 눌러 공간을 확인해보세요</p>
           </div>
 
           <div className="space-map__blueprint">
@@ -493,10 +488,10 @@ function SpacePage() {
                     type="button"
                     className={`space-map__marker${selectedSpace === item.id ? " space-map__marker--active" : ""}`}
                     style={{
-                    left: item.position.left,
-                    top: item.position.top,
-                    animationDelay: `${(item.id - 1) * 0.18}s`,
-                  }}
+                      left: item.position.left,
+                      top: item.position.top,
+                      animationDelay: `${(item.id - 1) * 0.18}s`,
+                    }}
                     onClick={(event) => handleMapMarkerClick(item.id, event)}
                     aria-label={item.title}
                     aria-pressed={selectedSpace === item.id}
@@ -507,6 +502,21 @@ function SpacePage() {
               </div>
             </div>
           </div>
+
+          {showMapDetail && (
+            <div key={selectedSpace} className="space-map__detail">
+              <img
+                src={activeSpace.image}
+                alt={activeSpace.title}
+                className="space-map__detail-image"
+              />
+              <div className="space-map__detail-head">
+                <span className="space-map__detail-number ft-48b">{activeSpace.number}</span>
+                <h3 className="space-map__detail-title ft-48b ink500">{activeSpace.title}</h3>
+              </div>
+              <p className="space-map__detail-desc ft-22r ink500">{activeSpace.description}</p>
+            </div>
+          )}
         </div>
       </section>
 
