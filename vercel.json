@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/kakao-auth.ts": {
+      "includeFiles": "server/**"
+    }
+  },
   "rewrites": [
     {
       "source": "/((?!api/).*)",

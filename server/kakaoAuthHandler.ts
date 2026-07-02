@@ -37,7 +37,24 @@ function getSyntheticEmail(kakaoId: string) {
 }
 
 function getEnv(name: string) {
-  return process.env[name];
+  const value = process.env[name]?.trim();
+  return value || undefined;
+}
+
+function getMissingEnvNames() {
+  const required = [
+    "KAKAO_REST_API_KEY",
+    "KAKAO_CLIENT_SECRET",
+    "SUPABASE_SERVICE_ROLE_KEY",
+  ] as const;
+
+  const missing = required.filter((name) => !getEnv(name));
+
+  if (!getEnv("SUPABASE_URL") && !getEnv("VITE_SUPABASE_URL")) {
+    missing.push("SUPABASE_URL");
+  }
+
+  return missing;
 }
 
 export async function handleKakaoAuth({
@@ -56,6 +73,11 @@ export async function handleKakaoAuth({
   const kakaoClientSecret = getEnv("KAKAO_CLIENT_SECRET");
   const supabaseUrl = getEnv("SUPABASE_URL") || getEnv("VITE_SUPABASE_URL");
   const serviceRoleKey = getEnv("SUPABASE_SERVICE_ROLE_KEY");
+  const missingEnv = getMissingEnvNames();
+
+  if (missingEnv.length > 0) {
+    throw new Error(`Server auth configuration is incomplete: ${missingEnv.join(", ")}`);
+  }
 
   if (!kakaoRestApiKey || !kakaoClientSecret || !supabaseUrl || !serviceRoleKey) {
     throw new Error("Server auth configuration is incomplete.");

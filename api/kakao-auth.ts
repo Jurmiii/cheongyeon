@@ -1,27 +1,67 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { handleKakaoAuth } from "./_lib/kakaoAuthHandler";
+import { handleKakaoAuth } from "../server/kakaoAuthHandler";
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+interface ApiRequest {
+  method?: string;
+  body?: unknown;
+  on(event: "data", listener: (chunk: Buffer) => void): void;
+  on(event: "end", listener: () => void): void;
+  on(event: "error", listener: (error: Error) => void): void;
+}
+
+interface ApiResponse {
+  statusCode: number;
+  setHeader(name: string, value: string): void;
+  end(body?: string): void;
+}
+
+async function readJsonBody(req: ApiRequest) {
+  if (req.body && typeof req.body === "object") {
+    return req.body;
+  }
+
+  if (typeof req.body === "string" && req.body.length > 0) {
+    return JSON.parse(req.body);
+  }
+
+  const chunks: Buffer[] = [];
+  await new Promise<void>((resolve, reject) => {
+    req.on("data", (chunk: Buffer) => chunks.push(chunk));
+    req.on("end", () => resolve());
+    req.on("error", reject);
+  });
+
+  const rawBody = Buffer.concat(chunks).toString("utf8");
+  return rawBody ? JSON.parse(rawBody) : {};
+}
+
+export default async function handler(req: ApiRequest, res: ApiResponse) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "content-type");
 
   if (req.method === "OPTIONS") {
-    res.status(204).end();
+    res.statusCode = 204;
+    res.end();
     return;
   }
 
   if (req.method !== "POST") {
-    res.status(405).json({ error: "Method not allowed" });
+    res.statusCode = 405;
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify({ error: "Method not allowed" }));
     return;
   }
 
   try {
-    const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-    const data = await handleKakaoAuth(body);
-    res.status(200).json(data);
+    const body = await readJsonBody(req);
+    const data = await handleKakaoAuth(body as { code: string; redirectUri: string });
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(data));
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unexpected server error.";
-    res.status(400).json({ error: message });
+    res.statusCode = 400;
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify({ error: message }));
   }
 }

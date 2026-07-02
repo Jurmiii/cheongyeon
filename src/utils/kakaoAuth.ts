@@ -73,7 +73,7 @@ export async function completeKakaoLogin(code: string) {
   };
 
   if (!response.ok) {
-    throw new Error(data.error || "Kakao auth API failed.");
+    throw new Error(data.error || `Kakao auth API failed (${response.status}).`);
   }
 
   if (!data || typeof data !== "object" || data.error) {

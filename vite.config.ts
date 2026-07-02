@@ -29,7 +29,7 @@ function kakaoAuthDevApi(): Plugin {
           })
 
           const body = JSON.parse(Buffer.concat(chunks).toString('utf8'))
-          const { handleKakaoAuth } = await import('./api/_lib/kakaoAuthHandler')
+          const { handleKakaoAuth } = await import('./server/kakaoAuthHandler')
           const data = await handleKakaoAuth(body)
 
           res.statusCode = 200
