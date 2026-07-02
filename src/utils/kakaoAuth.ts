@@ -4,9 +4,23 @@ const OAUTH_REDIRECT_KEY = "cheongyeon-oauth-redirect";
 const KAKAO_AUTHORIZE_URL = "https://kauth.kakao.com/oauth/authorize";
 const KAKAO_OAUTH_SCOPES = "profile_nickname profile_image";
 
+function resolveSiteUrl() {
+  const configuredSiteUrl = import.meta.env.VITE_SITE_URL?.replace(/\/$/, "");
+  const runtimeOrigin =
+    typeof window !== "undefined" ? window.location.origin.replace(/\/$/, "") : "";
+
+  const isLocalConfigured = configuredSiteUrl?.includes("localhost") ?? false;
+  const isLocalRuntime = runtimeOrigin.includes("localhost");
+
+  if (configuredSiteUrl && !(isLocalConfigured && !isLocalRuntime)) {
+    return configuredSiteUrl;
+  }
+
+  return runtimeOrigin || configuredSiteUrl || "";
+}
+
 export function getKakaoRedirectUri() {
-  const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
-  return `${siteUrl.replace(/\/$/, "")}/auth/kakao/callback`;
+  return `${resolveSiteUrl()}/auth/kakao/callback`;
 }
 
 export async function signInWithKakao(postLoginPath = "/") {
