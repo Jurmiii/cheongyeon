@@ -121,7 +121,7 @@ Deno.serve(async (req) => {
       kakaoUser.kakao_account?.profile?.profile_image_url ||
       kakaoUser.properties?.profile_image ||
       kakaoUser.kakao_account?.profile?.thumbnail_image_url ||
-      kakaoUser.properties?.thumbnail_image_url ||
+      kakaoUser.properties?.thumbnail_image ||
       null;
 
     const syntheticEmail = getSyntheticEmail(kakaoId);
@@ -143,8 +143,11 @@ Deno.serve(async (req) => {
     if (existingProfile?.id) {
       userId = existingProfile.id;
     } else {
-      const { data: existingUser } = await supabaseAdmin.auth.admin.getUserByEmail(syntheticEmail);
-      userId = existingUser.user?.id ?? null;
+      const { data: listData } = await supabaseAdmin.auth.admin.listUsers({
+        page: 1,
+        perPage: 1000,
+      });
+      userId = listData?.users.find((user) => user.email === syntheticEmail)?.id ?? null;
     }
 
     const userMetadata = {

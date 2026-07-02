@@ -54,6 +54,16 @@ export async function completeKakaoLogin(code: string) {
   });
 
   if (error) {
+    const isUnreachable =
+      error.name === "FunctionsFetchError" ||
+      /failed to send a request to the edge function/i.test(error.message);
+
+    if (isUnreachable) {
+      throw new Error(
+        "카카오 로그인 서버(kakao-auth)에 연결할 수 없습니다. Supabase Edge Function 배포가 필요합니다.",
+      );
+    }
+
     throw error;
   }
 
