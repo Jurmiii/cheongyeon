@@ -13,6 +13,8 @@ import mainKv3 from "../assets/images/01main/main-kv3.webp";
 import moKv1 from "../assets/images/01main/mo-kv1.png";
 import moKv2 from "../assets/images/01main/mo-kv2.png";
 import moKv3 from "../assets/images/01main/mo-kv3.png";
+import sec10MobileBg from "../assets/images/01main/sec10-mo-bg.webp";
+import sec10TabletBg from "../assets/images/01main/sec10-ta-bg.webp";
 import eventBanner1 from "../assets/images/01main/event-banner1.webp";
 import eventBanner2 from "../assets/images/01main/event-banner2.webp";
 import eventBanner3 from "../assets/images/01main/event-banner3.webp";
@@ -57,7 +59,15 @@ import line3Raw from "../assets/images/01main/line3.svg?raw";
 import line4Raw from "../assets/images/01main/line4.svg?raw";
 import mark from "../assets/images/01main/mark.svg";
 import springBg2 from "../assets/images/01main/spring-bg2.svg";
+import springBg2Mobile from "../assets/images/01main/spring-bg2-mo.svg";
+import springBg2Tablet from "../assets/images/01main/spring-bg2-ta.svg";
 import springPot from "../assets/images/01main/spring-tea.webp";
+import review1 from "../assets/images/01main/review1.webp";
+import review2 from "../assets/images/01main/review2.webp";
+import review3 from "../assets/images/01main/review3.webp";
+import review4 from "../assets/images/01main/review4.webp";
+import review5 from "../assets/images/01main/review5.webp";
+import review6 from "../assets/images/01main/review6.webp";
 import symbolBlack from "../assets/images/01main/symbol-black.svg";
 import symbol1 from "../assets/images/01main/symbol1.svg";
 import summerBg2 from "../assets/images/01main/summer-bg2.svg";
@@ -155,6 +165,44 @@ const mainClassCards: MainClassCard[] = [
     description: "1:1 맞춤 지도 깊이 있는 다도를 경험하는 시간",
   },
 ];
+
+const SEC4_MOBILE_SLIDE_STEP_REM = 15.125 + 0.75;
+const SEC4_TABLET_SLIDE_STEP_REM = 29.5 + 1.5;
+
+const getSec4CompactSlideStepRem = (viewport: KvViewport) =>
+  viewport === "mobile" ? SEC4_MOBILE_SLIDE_STEP_REM : SEC4_TABLET_SLIDE_STEP_REM;
+
+const getSec4CompactCenteredIndex = (
+  activeIndex: number,
+  dragOffsetPx: number,
+  cardCount: number,
+  slideStepRem: number,
+): number => {
+  const rootFontSize =
+    typeof document !== "undefined" ? Number.parseFloat(getComputedStyle(document.documentElement).fontSize) : 16;
+  const slideStepPx = slideStepRem * rootFontSize;
+  const centeredIndex = activeIndex - Math.round(dragOffsetPx / slideStepPx);
+
+  return Math.max(0, Math.min(cardCount - 1, centeredIndex));
+};
+
+const getSec4CompactDragThresholdPx = (viewport: KvViewport) => {
+  if (typeof document === "undefined") {
+    return 40;
+  }
+
+  const rootFontSize = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+
+  return getSec4CompactSlideStepRem(viewport) * rootFontSize * 0.14;
+};
+
+const renderSec6Description = (description: string, keyPrefix: string) =>
+  description.split("\n").map((line, index, lines) => (
+    <span key={`${keyPrefix}-${index}`}>
+      {line}
+      {index < lines.length - 1 && <br />}
+    </span>
+  ));
 
 const mainProducts: MainProduct[] = [
   { id: 1, image: tea1, name: "녹차 (綠茶)", capacity: "100g", price: "52,000원" },
@@ -319,25 +367,32 @@ function ProductCard({ product }: { product: MainProduct }) {
   );
 }
 
-function ReviewCard({ review }: { review: MainReview }) {
+const compactReviewImages = [review1, review2, review3, review4, review5, review6];
+
+function ReviewCard({ review, viewport }: { review: MainReview; viewport: KvViewport }) {
+  const isCompactViewport = viewport !== "desktop";
+  const reviewImage = isCompactViewport ? compactReviewImages[review.id - 1] ?? review.image : review.image;
+
   return (
     <article className="main-sec9__review-card">
-      <img className="main-sec9__review-image" src={review.image} alt="" aria-hidden="true" />
-      <div className="main-sec9__review-overlay ft-18r white">
-        <p>{review.category}</p>
-        <div className="main-sec9__review-meta">
-          <span>★★★★★</span>
-          <span>{review.author}</span>
+      <img className="main-sec9__review-image" src={reviewImage} alt="" aria-hidden="true" />
+      {!isCompactViewport && (
+        <div className="main-sec9__review-overlay ft-18r white">
+          <p>{review.category}</p>
+          <div className="main-sec9__review-meta">
+            <span>★★★★★</span>
+            <span>{review.author}</span>
+          </div>
+          <p className="main-sec9__review-text">
+            {review.review.split("\n").map((line, index) => (
+              <span key={`${review.id}-${index}`}>
+                {line}
+                {index < review.review.split("\n").length - 1 && <br />}
+              </span>
+            ))}
+          </p>
         </div>
-        <p className="main-sec9__review-text">
-          {review.review.split("\n").map((line, index) => (
-            <span key={`${review.id}-${index}`}>
-              {line}
-              {index < review.review.split("\n").length - 1 && <br />}
-            </span>
-          ))}
-        </p>
-      </div>
+      )}
     </article>
   );
 }
@@ -369,8 +424,8 @@ function getDrawLineSvg(svgSource: string, maskId: string, direction: DrawLineDi
   const svgOpenTag = svgOpenMatch[0];
   const viewBox = getSvgViewBox(svgOpenTag);
   const revealMask = direction === "horizontal"
-    ? `<defs><mask id="${maskId}" maskUnits="userSpaceOnUse"><rect class="main-sec3__draw-mask-rect" data-draw-direction="${direction}" data-reveal-width="${viewBox.width}" x="${viewBox.x}" y="${viewBox.y}" width="0" height="${viewBox.height}" fill="#fff" /></mask></defs><g mask="url(#${maskId})">`
-    : `<defs><mask id="${maskId}" maskUnits="userSpaceOnUse"><rect class="main-sec3__draw-mask-rect" data-draw-direction="${direction}" data-reveal-height="${viewBox.height}" x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.width}" height="0" fill="#fff" /></mask></defs><g mask="url(#${maskId})">`;
+    ? `<defs><mask id="${maskId}" maskUnits="userSpaceOnUse"><rect class="main-sec3__draw-mask-rect" data-draw-direction="${direction}" data-reveal-width="${viewBox.width}" x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.width}" height="${viewBox.height}" fill="#fff" /></mask></defs><g mask="url(#${maskId})">`
+    : `<defs><mask id="${maskId}" maskUnits="userSpaceOnUse"><rect class="main-sec3__draw-mask-rect" data-draw-direction="${direction}" data-reveal-height="${viewBox.height}" x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.width}" height="${viewBox.height}" fill="#fff" /></mask></defs><g mask="url(#${maskId})">`;
   const svgWithAttributes = svgSource.replace(
     svgOpenTag,
     svgOpenTag.replace("<svg", '<svg class="main-sec3__line-inner" aria-hidden="true" focusable="false"'),
@@ -425,7 +480,7 @@ function markMainIntroAsSeen() {
 type KvViewport = "desktop" | "tablet" | "mobile";
 
 function getKvViewport(width: number): KvViewport {
-  if (width <= 768) {
+  if (width < 768) {
     return "mobile";
   }
 
@@ -473,16 +528,25 @@ export default function MainPage() {
     translate: 0,
   });
   const [activeSec6Index, setActiveSec6Index] = useState<number>(0);
+  const [activeSec6CompactIndex, setActiveSec6CompactIndex] = useState<number>(0);
+  const [sec6CompactDragOffset, setSec6CompactDragOffset] = useState<number>(0);
+  const [isSec6CompactDragging, setIsSec6CompactDragging] = useState<boolean>(false);
+  const [sec6TabletSlideWidth, setSec6TabletSlideWidth] = useState<number>(0);
   const [activeSec8Index, setActiveSec8Index] = useState<number>(0);
   const [sec8DragOffset, setSec8DragOffset] = useState<number>(0);
   const [isSec8Dragging, setIsSec8Dragging] = useState<boolean>(false);
   const [sec8AutoPlayResetKey, setSec8AutoPlayResetKey] = useState<number>(0);
+  const [activeSec4MobileIndex, setActiveSec4MobileIndex] = useState<number>(0);
+  const [sec4MobileDragOffset, setSec4MobileDragOffset] = useState<number>(0);
+  const [isSec4MobileDragging, setIsSec4MobileDragging] = useState<boolean>(false);
   const kvViewport = useKvViewport();
   const kvSlides = kvViewport === "mobile" ? mainMoKvSlides : mainKvSlides;
   const [isSec5Dragging, setIsSec5Dragging] = useState<boolean>(false);
   const [isSec9Dragging, setIsSec9Dragging] = useState<boolean>(false);
   const sec4Ref = useRef<HTMLElement | null>(null);
   const sec4TrackRef = useRef<HTMLDivElement | null>(null);
+  const sec4MobileDragStartXRef = useRef<number>(0);
+  const sec4MobileLatestDragXRef = useRef<number>(0);
   const sec5ProductGroupRef = useRef<HTMLDivElement | null>(null);
   const sec5AnimationFrameRef = useRef<number>(0);
   const sec5StartTimeRef = useRef<number>(0);
@@ -502,6 +566,9 @@ export default function MainPage() {
   const sec3Ref = useRef<HTMLElement | null>(null);
   const sec6Ref = useRef<HTMLElement | null>(null);
   const sec6OrbitRef = useRef<HTMLDivElement | null>(null);
+  const sec6TabletViewportRef = useRef<HTMLDivElement | null>(null);
+  const sec6CompactDragStartXRef = useRef<number>(0);
+  const sec6CompactLatestDragXRef = useRef<number>(0);
   const seasonImageRefs = useRef<Record<SeasonKey, HTMLDivElement | null>>({
     spring: null,
     summer: null,
@@ -549,6 +616,88 @@ export default function MainPage() {
   const moveSec8Slide = (direction: 1 | -1) => {
     setActiveSec8Index((currentIndex) => (currentIndex + direction + mainEventSlides.length) % mainEventSlides.length);
     setSec8AutoPlayResetKey((currentKey) => currentKey + 1);
+  };
+
+  const startSec4MobileDrag = (clientX: number) => {
+    sec4MobileDragStartXRef.current = clientX;
+    sec4MobileLatestDragXRef.current = clientX;
+    setIsSec4MobileDragging(true);
+    setSec4MobileDragOffset(0);
+  };
+
+  const moveSec4MobileDrag = (clientX: number) => {
+    if (!isSec4MobileDragging) {
+      return;
+    }
+
+    sec4MobileLatestDragXRef.current = clientX;
+    setSec4MobileDragOffset(clientX - sec4MobileDragStartXRef.current);
+  };
+
+  const endSec4MobileDrag = () => {
+    if (!isSec4MobileDragging) {
+      return;
+    }
+
+    const deltaX = sec4MobileLatestDragXRef.current - sec4MobileDragStartXRef.current;
+    const dragThreshold = getSec4CompactDragThresholdPx(kvViewport);
+    const centeredIndex = getSec4CompactCenteredIndex(
+      activeSec4MobileIndex,
+      sec4MobileDragOffset,
+      mainClassCards.length,
+      sec4SlideStepRem,
+    );
+
+    if (Math.abs(deltaX) > dragThreshold) {
+      setActiveSec4MobileIndex(() => {
+        if (centeredIndex !== activeSec4MobileIndex) {
+          return centeredIndex;
+        }
+
+        return Math.max(0, Math.min(mainClassCards.length - 1, activeSec4MobileIndex + (deltaX < 0 ? 1 : -1)));
+      });
+    }
+
+    setIsSec4MobileDragging(false);
+    setSec4MobileDragOffset(0);
+  };
+
+  const moveSec6CompactSlide = (direction: 1 | -1) => {
+    setActiveSec6CompactIndex((currentIndex) =>
+      Math.max(0, Math.min(mainSeasonTeaSlides.length - 1, currentIndex + direction)),
+    );
+  };
+
+  const startSec6CompactDrag = (clientX: number) => {
+    sec6CompactDragStartXRef.current = clientX;
+    sec6CompactLatestDragXRef.current = clientX;
+    setIsSec6CompactDragging(true);
+    setSec6CompactDragOffset(0);
+  };
+
+  const moveSec6CompactDrag = (clientX: number) => {
+    if (!isSec6CompactDragging) {
+      return;
+    }
+
+    sec6CompactLatestDragXRef.current = clientX;
+    setSec6CompactDragOffset(clientX - sec6CompactDragStartXRef.current);
+  };
+
+  const endSec6CompactDrag = () => {
+    if (!isSec6CompactDragging) {
+      return;
+    }
+
+    const deltaX = sec6CompactLatestDragXRef.current - sec6CompactDragStartXRef.current;
+    const dragThreshold = Math.max(sec6TabletSlideWidth * 0.14, 40);
+
+    if (Math.abs(deltaX) > dragThreshold) {
+      moveSec6CompactSlide(deltaX < 0 ? 1 : -1);
+    }
+
+    setIsSec6CompactDragging(false);
+    setSec6CompactDragOffset(0);
   };
 
   const startSec8Drag = (clientX: number) => {
@@ -604,12 +753,24 @@ export default function MainPage() {
 
   const getRootFontSize = () => parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
 
+  const getSec5CarouselTrackGapPx = () => {
+    const track = sec5ProductGroupRef.current?.parentElement;
+
+    if (!track) {
+      return carouselGroupGapRem * getRootFontSize();
+    }
+
+    const trackGap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap);
+
+    return Number.isNaN(trackGap) ? carouselGroupGapRem * getRootFontSize() : trackGap;
+  };
+
   const getSec5LoopWidth = () => {
     if (!sec5ProductGroupRef.current) {
       return 0;
     }
 
-    return sec5ProductGroupRef.current.offsetWidth + carouselGroupGapRem * getRootFontSize();
+    return sec5ProductGroupRef.current.offsetWidth + getSec5CarouselTrackGapPx();
   };
 
   const getSec9LoopWidth = () => {
@@ -859,10 +1020,12 @@ export default function MainPage() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const context = gsap.context(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 1441px)", () => {
       const section = sec3Ref.current;
 
-      if (!section || !window.matchMedia("(min-width: 1441px)").matches) {
+      if (!section) {
         return;
       }
 
@@ -890,56 +1053,81 @@ export default function MainPage() {
         const isHorizontal = drawDirection === "horizontal";
 
         gsap.set(rect, {
-          attr: isHorizontal ? { width: 0 } : { height: 0 },
+          transformBox: "fill-box",
           transformOrigin: isHorizontal ? "0% 50%" : "50% 0%",
+          scaleX: isHorizontal ? 0 : 1,
+          scaleY: isHorizontal ? 1 : 0,
+          force3D: true,
         });
       });
 
       const lineTimeline = gsap.timeline({
         scrollTrigger: {
           trigger: drawLines[0].lineElement,
-          start: "top 78%",
+          start: "top 88%",
           endTrigger: drawLines[drawLines.length - 1].lineElement,
-          end: "bottom 58%",
-          scrub: 0.45,
+          end: "bottom 22%",
+          scrub: 1.4,
           invalidateOnRefresh: true,
         },
       });
 
       drawLines.forEach(({ rect }) => {
         const drawDirection = rect.dataset.drawDirection as DrawLineDirection | undefined;
-        const revealHeight = Number(rect.dataset.revealHeight ?? 0);
-        const revealWidth = Number(rect.dataset.revealWidth ?? 0);
         const isHorizontal = drawDirection === "horizontal";
 
         lineTimeline.to(
           rect,
           {
-            attr: isHorizontal ? { width: revealWidth } : { height: revealHeight },
+            [isHorizontal ? "scaleX" : "scaleY"]: 1,
             ease: "none",
             duration: 1,
           },
         );
       });
-    }, sec3Ref);
+
+      const syncLineTimeline = () => {
+        const scrollTrigger = lineTimeline.scrollTrigger;
+
+        if (scrollTrigger) {
+          lineTimeline.progress(scrollTrigger.progress);
+        }
+      };
+
+      ScrollTrigger.addEventListener("refresh", syncLineTimeline);
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(syncLineTimeline);
+      });
+
+      return () => {
+        ScrollTrigger.removeEventListener("refresh", syncLineTimeline);
+      };
+    });
 
     return () => {
-      context.revert();
+      mm.revert();
     };
   }, []);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const context = gsap.context(() => {
-      const section = sec4Ref.current;
+    const section = sec4Ref.current;
+
+    if (!section) {
+      return;
+    }
+
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 1025px)", () => {
       const track = sec4TrackRef.current;
 
-      if (!section || !track) {
+      if (!track) {
         return;
       }
 
-      const cards = gsap.utils.toArray<HTMLElement>(".main-sec4__card", section);
+      const cards = gsap.utils.toArray<HTMLElement>(".main-sec4__viewport--pc .main-sec4__card", section);
       const getTravelDistance = () => {
         const previousCard = cards[cards.length - 2];
         const lastCard = cards[cards.length - 1];
@@ -994,12 +1182,120 @@ export default function MainPage() {
           duration: holdDuration,
         },
       );
-    }, sec4Ref);
+
+      window.requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+
+      return () => {
+        gsap.set(track, { clearProps: "transform" });
+      };
+    });
 
     return () => {
-      context.revert();
+      mm.revert();
     };
   }, []);
+
+  useEffect(() => {
+    if (!isSec4MobileDragging) {
+      return;
+    }
+
+    const handleMouseMove = (event: globalThis.MouseEvent) => {
+      moveSec4MobileDrag(event.clientX);
+    };
+    const handleMouseUp = () => {
+      endSec4MobileDrag();
+    };
+    const handleTouchMove = (event: globalThis.TouchEvent) => {
+      const touch = event.touches[0];
+
+      if (touch) {
+        moveSec4MobileDrag(touch.clientX);
+      }
+    };
+    const handleTouchEnd = () => {
+      endSec4MobileDrag();
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [isSec4MobileDragging, kvViewport]);
+
+  useEffect(() => {
+    if (!isSec6CompactDragging) {
+      return;
+    }
+
+    const handleMouseMove = (event: globalThis.MouseEvent) => {
+      moveSec6CompactDrag(event.clientX);
+    };
+    const handleMouseUp = () => {
+      endSec6CompactDrag();
+    };
+    const handleTouchMove = (event: globalThis.TouchEvent) => {
+      const touch = event.touches[0];
+
+      if (touch) {
+        moveSec6CompactDrag(touch.clientX);
+      }
+    };
+    const handleTouchEnd = () => {
+      endSec6CompactDrag();
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [isSec6CompactDragging, sec6TabletSlideWidth]);
+
+  useEffect(() => {
+    const viewport = sec6TabletViewportRef.current;
+
+    if (!viewport) {
+      return;
+    }
+
+    const updateSlideWidth = () => {
+      setSec6TabletSlideWidth(viewport.offsetWidth);
+    };
+
+    updateSlideWidth();
+    const resizeObserver = new ResizeObserver(updateSlideWidth);
+    resizeObserver.observe(viewport);
+    window.addEventListener("resize", updateSlideWidth, { passive: true });
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateSlideWidth);
+    };
+  }, [kvViewport]);
+
+  useEffect(() => {
+    if (kvViewport === "desktop") {
+      return;
+    }
+
+    ScrollTrigger.refresh();
+  }, [kvViewport]);
 
   useEffect(() => {
     const animateCarousel = (timestamp: number) => {
@@ -1058,7 +1354,9 @@ export default function MainPage() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const context = gsap.context(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 1025px)", () => {
       const section = sec6Ref.current;
       const orbit = sec6OrbitRef.current;
 
@@ -1066,50 +1364,60 @@ export default function MainPage() {
         return;
       }
 
-      const getStableIndex = (progress: number) => Math.min(
-        mainSeasonTeaSlides.length - 1,
-        Math.max(0, Math.round(progress * (mainSeasonTeaSlides.length - 1))),
-      );
-      let currentIndex = 0;
+      const context = gsap.context(() => {
+        const getStableIndex = (progress: number) => Math.min(
+          mainSeasonTeaSlides.length - 1,
+          Math.max(0, Math.round(progress * (mainSeasonTeaSlides.length - 1))),
+        );
+        let currentIndex = 0;
 
-      gsap.set(orbit, { rotate: 0, force3D: true });
+        gsap.set(orbit, { rotate: 0, force3D: true });
 
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        end: "+=2400",
-        pin: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        snap: {
-          snapTo: (progress) => getStableIndex(progress) / (mainSeasonTeaSlides.length - 1),
-          delay: 0.08,
-          duration: { min: 0.28, max: 0.42 },
-          ease: "power3.out",
-          inertia: false,
-        },
-        onUpdate: (self) => {
-          const nextIndex = getStableIndex(self.progress);
+        ScrollTrigger.create({
+          trigger: section,
+          start: "top top",
+          end: "+=2400",
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          snap: {
+            snapTo: (progress) => getStableIndex(progress) / (mainSeasonTeaSlides.length - 1),
+            delay: 0.08,
+            duration: { min: 0.28, max: 0.42 },
+            ease: "power3.out",
+            inertia: false,
+          },
+          onUpdate: (self) => {
+            const nextIndex = getStableIndex(self.progress);
 
-          if (nextIndex === currentIndex) {
-            return;
-          }
+            if (nextIndex === currentIndex) {
+              return;
+            }
 
-          currentIndex = nextIndex;
-          setActiveSec6Index(nextIndex);
-          gsap.to(orbit, {
-            rotate: -90 * nextIndex,
-            duration: 0.9,
-            ease: "power3.inOut",
-            overwrite: "auto",
-            force3D: true,
-          });
-        },
-      });
-    }, sec6Ref);
+            currentIndex = nextIndex;
+            setActiveSec6Index(nextIndex);
+            gsap.to(orbit, {
+              rotate: -90 * nextIndex,
+              duration: 0.9,
+              ease: "power3.inOut",
+              overwrite: "auto",
+              force3D: true,
+            });
+          },
+        });
+
+        window.requestAnimationFrame(() => {
+          ScrollTrigger.refresh();
+        });
+      }, sec6Ref);
+
+      return () => {
+        context.revert();
+      };
+    });
 
     return () => {
-      context.revert();
+      mm.revert();
     };
   }, []);
 
@@ -1149,6 +1457,74 @@ export default function MainPage() {
       window.removeEventListener("load", scheduleRefresh);
     };
   }, []);
+
+  const sec4SlideStepRem = getSec4CompactSlideStepRem(kvViewport);
+  const sec4MobileCenteredIndex = getSec4CompactCenteredIndex(
+    activeSec4MobileIndex,
+    sec4MobileDragOffset,
+    mainClassCards.length,
+    sec4SlideStepRem,
+  );
+  const sec4MobileDisplayIndex = isSec4MobileDragging ? sec4MobileCenteredIndex : activeSec4MobileIndex;
+  const sec4MobileActiveCard = mainClassCards[sec4MobileDisplayIndex];
+  const isSec5CompactLayout = kvViewport !== "desktop";
+  const activeSec6CompactSlide = mainSeasonTeaSlides[activeSec6CompactIndex];
+  const sec6SectionSeasonKey = kvViewport === "desktop" ? activeSec6Slide.key : activeSec6CompactSlide.key;
+  const sec10Bg = kvViewport === "mobile" ? sec10MobileBg : kvViewport === "tablet" ? sec10TabletBg : mainCtaBg;
+  const getSec6FloatingBgSrc = (slide: MainSeasonTeaSlide) => {
+    if (slide.key !== "spring") {
+      return slide.floatingBg;
+    }
+
+    if (kvViewport === "mobile") {
+      return springBg2Mobile;
+    }
+
+    if (kvViewport === "tablet") {
+      return springBg2Tablet;
+    }
+
+    return springBg2;
+  };
+  const sec6TabletTranslate = -activeSec6CompactIndex * sec6TabletSlideWidth + sec6CompactDragOffset;
+
+  const renderSec5Carousel = (attachProductGroupRef: boolean) => (
+    <div
+      className={["main-sec5__carousel", isSec5Dragging && "main-sec5__carousel--dragging"].filter(Boolean).join(" ")}
+      onMouseEnter={pauseSec5Carousel}
+      onMouseLeave={() => {
+        endSec5CarouselDrag();
+        resumeSec5Carousel();
+      }}
+      onMouseDown={(event) => {
+        event.preventDefault();
+        startSec5CarouselDrag(event.clientX);
+      }}
+      onMouseMove={(event) => moveSec5CarouselDrag(event.clientX)}
+      onMouseUp={endSec5CarouselDrag}
+      onTouchStart={(event) => startSec5CarouselDrag(event.touches[0].clientX)}
+      onTouchMove={(event) => moveSec5CarouselDrag(event.touches[0].clientX)}
+      onTouchEnd={endSec5CarouselDrag}
+    >
+      <div className="main-sec5__carousel-viewport">
+        <div
+          className="main-sec5__carousel-track"
+          style={{ transform: `translate3d(-${sec5Carousel.translate}px, 0, 0)` }}
+        >
+          <div className="main-sec5__product-group" ref={attachProductGroupRef ? sec5ProductGroupRef : null}>
+            {mainProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+          <div className="main-sec5__product-group" aria-hidden="true">
+            {mainProducts.map((product) => (
+              <ProductCard key={`clone-${product.id}`} product={product} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <main className="main-page">
@@ -1272,7 +1648,14 @@ export default function MainPage() {
               <br />
               원데이 클래스
             </h2>
-            <p className="main-sec3__description main-page-type--sec3-desc ft-36r ink500">
+            <p
+              className={[
+                "main-sec3__description",
+                "main-page-type--sec3-desc",
+                kvViewport === "mobile" ? "ft-16r" : "ft-36r",
+                "ink500",
+              ].join(" ")}
+            >
               계절의 흐름을 따라 차와 함께하는 하루,
               <br />
               자연의 색과 향을 오롯이 느끼는 시간입니다.
@@ -1284,7 +1667,14 @@ export default function MainPage() {
           <div className="main-sec3__spring-text">
             <p className="main-page-type--sec3-season-title ft-48b ink500">봄</p>
             <img className="main-sec3__spring-symbol" src={symbol1} alt="" aria-hidden="true" />
-            <p className="main-sec3__spring-description main-page-type--sec3-season-desc ft-28r ink500">
+            <p
+              className={[
+                "main-sec3__spring-description",
+                "main-page-type--sec3-season-desc",
+                kvViewport === "mobile" ? "ft-16r" : kvViewport === "tablet" ? "ft-20r" : "ft-28r",
+                "ink500",
+              ].join(" ")}
+            >
               {kvViewport === "mobile" ? (
                 <>
                   새싹이 돋는 계절, 향기로운
@@ -1322,7 +1712,14 @@ export default function MainPage() {
           <div className="main-sec3__summer-text">
             <p className="main-page-type--sec3-season-title ft-48b ink500">여름</p>
             <img className="main-sec3__summer-symbol" src={symbol1} alt="" aria-hidden="true" />
-            <p className="main-sec3__summer-description main-page-type--sec3-season-desc ft-28r ink500">
+            <p
+              className={[
+                "main-sec3__summer-description",
+                "main-page-type--sec3-season-desc",
+                kvViewport === "mobile" ? "ft-16r" : kvViewport === "tablet" ? "ft-20r" : "ft-28r",
+                "ink500",
+              ].join(" ")}
+            >
               {kvViewport === "mobile" ? (
                 <>
                   더위에 지친 마음을 맑게
@@ -1359,7 +1756,14 @@ export default function MainPage() {
           <div className="main-sec3__fall-text">
             <p className="main-page-type--sec3-season-title ft-48b ink500">가을</p>
             <img className="main-sec3__fall-symbol" src={symbol1} alt="" aria-hidden="true" />
-            <p className="main-sec3__fall-description main-page-type--sec3-season-desc ft-28r ink500">
+            <p
+              className={[
+                "main-sec3__fall-description",
+                "main-page-type--sec3-season-desc",
+                kvViewport === "mobile" ? "ft-16r" : kvViewport === "tablet" ? "ft-20r" : "ft-28r",
+                "ink500",
+              ].join(" ")}
+            >
               {kvViewport === "mobile" ? (
                 <>
                   익어가는 계절, 깊고
@@ -1397,7 +1801,14 @@ export default function MainPage() {
           <div className="main-sec3__winter-text">
             <p className="main-page-type--sec3-season-title ft-48b ink500">겨울</p>
             <img className="main-sec3__winter-symbol" src={symbol1} alt="" aria-hidden="true" />
-            <p className="main-sec3__winter-description main-page-type--sec3-season-desc ft-28r ink500">
+            <p
+              className={[
+                "main-sec3__winter-description",
+                "main-page-type--sec3-season-desc",
+                kvViewport === "mobile" ? "ft-16r" : kvViewport === "tablet" ? "ft-20r" : "ft-28r",
+                "ink500",
+              ].join(" ")}
+            >
               {kvViewport === "mobile" ? (
                 <>
                   몸과 마음을 녹이고
@@ -1433,7 +1844,7 @@ export default function MainPage() {
         />
       </section>
       <section className="main-sec4" ref={sec4Ref} style={{ backgroundImage: `url(${mainBg3})` }} aria-label="클래스 소개">
-        <div className="main-sec4__viewport">
+        <div className="main-sec4__viewport main-sec4__viewport--pc">
           <div className="main-sec4__track" ref={sec4TrackRef}>
             <div className="main-sec4__intro-panel">
               <div className="main-sec4__intro">
@@ -1466,106 +1877,354 @@ export default function MainPage() {
             ))}
           </div>
         </div>
-      </section>
-      <section className="main-sec5" aria-label="청연 제품 소개">
-        <div className="main-sec5__left">
-          <h2 className="ft-48b ink500">깊고 맑은 차의 시작</h2>
-          <p className="main-sec5__description ft-28r ink500">
-            청연은 좋은 산지의 찻잎과
-            <br />
-            시간이 빚어낸 풍미를 담아
-            <br />
-            한 잔의 여백을 전합니다.
-          </p>
-          <Link className="cy-button cy-button--classMore ft-18b main-sec5__button" to="/collection">
-            청연의 제품 보기
-            <Icon name="chevron-right" />
-          </Link>
-        </div>
-        <div
-          className={["main-sec5__carousel", isSec5Dragging && "main-sec5__carousel--dragging"].filter(Boolean).join(" ")}
-          onMouseEnter={pauseSec5Carousel}
-          onMouseLeave={() => {
-            endSec5CarouselDrag();
-            resumeSec5Carousel();
-          }}
-          onMouseDown={(event) => {
-            event.preventDefault();
-            startSec5CarouselDrag(event.clientX);
-          }}
-          onMouseMove={(event) => moveSec5CarouselDrag(event.clientX)}
-          onMouseUp={endSec5CarouselDrag}
-          onTouchStart={(event) => startSec5CarouselDrag(event.touches[0].clientX)}
-          onTouchMove={(event) => moveSec5CarouselDrag(event.touches[0].clientX)}
-          onTouchEnd={endSec5CarouselDrag}
-        >
-          <div className="main-sec5__carousel-viewport">
-            <div className="main-sec5__carousel-track" style={{ transform: `translate3d(-${sec5Carousel.translate}px, 0, 0)` }}>
-              <div className="main-sec5__product-group" ref={sec5ProductGroupRef}>
-                {mainProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
+
+        <div className="main-sec4__compact">
+          <div className="main-sec4__compact-inner">
+            <div className="main-sec4__intro-responsive">
+              <h2 className="main-page-type--sec4-title ft-64r white">클래스 소개</h2>
+              <p
+                className={[
+                  "main-page-type--sec4-desc",
+                  "main-sec4__description-responsive",
+                  kvViewport === "mobile" ? "ft-16r" : "ft-28r",
+                  "white",
+                ].join(" ")}
+              >
+                {kvViewport === "mobile" ? (
+                  <>
+                    차의 깊은 향과 마음을 다스리는
+                    <br />
+                    시간 다양한 경험을 통해
+                    <br />
+                    나만의 취향을 찾아보세요
+                  </>
+                ) : (
+                  <>
+                    차의 깊은 향과 마음을 다스리는 시간
+                    <br />
+                    다양한 경험을 통해 나만의 취향을 찾아보세요
+                  </>
+                )}
+              </p>
+              <Link
+                className="cy-button cy-button--classMore main-sec4__button-responsive main-page-type--sec4-btn ft-16b white"
+                to="/class/general"
+                onMouseDown={(event) => event.stopPropagation()}
+                onTouchStart={(event) => event.stopPropagation()}
+              >
+                클래스 더보기
+                <Icon name="chevron-right" />
+              </Link>
+            </div>
+
+            <div
+              className={["main-sec4__cards-slider", isSec4MobileDragging && "main-sec4__cards-slider--dragging"]
+                .filter(Boolean)
+                .join(" ")}
+              aria-label="클래스 카드 슬라이더"
+              onMouseDown={(event) => {
+                event.preventDefault();
+                startSec4MobileDrag(event.clientX);
+              }}
+              onTouchStart={(event) => startSec4MobileDrag(event.touches[0].clientX)}
+              onTouchMove={(event) => moveSec4MobileDrag(event.touches[0].clientX)}
+              onTouchEnd={endSec4MobileDrag}
+            >
+              <div className="main-sec4__slider-viewport">
+                <div
+                  className="main-sec4__slider-track"
+                  style={{
+                    transform: `translate3d(calc(-${activeSec4MobileIndex} * ${sec4SlideStepRem}rem + ${sec4MobileDragOffset}px), 0, 0)`,
+                  }}
+                >
+                  {mainClassCards.map((card) => (
+                    <article className="main-sec4__card-compact main-sec4__card-compact--slide" key={`slide-${card.id}`}>
+                      <img className="main-sec4__card-compact-image" src={card.image} alt="" aria-hidden="true" />
+                    </article>
+                  ))}
+                </div>
               </div>
-              <div className="main-sec5__product-group" aria-hidden="true">
-                {mainProducts.map((product) => (
-                  <ProductCard key={`clone-${product.id}`} product={product} />
+              <div className="main-sec4__slider-caption">
+                <h3
+                  className={[
+                    kvViewport === "mobile"
+                      ? "main-page-type--sec4-card-title-slide"
+                      : "main-page-type--sec4-card-title-tablet",
+                    kvViewport === "mobile" ? "ft-24b" : "ft-32b",
+                    "white",
+                  ].join(" ")}
+                >
+                  {sec4MobileActiveCard.title}
+                </h3>
+                <p
+                  className={[
+                    kvViewport === "mobile" ? "main-page-type--sec4-card-desc" : "",
+                    kvViewport === "mobile" ? "ft-16r" : "ft-22r",
+                    "white",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                >
+                  {sec4MobileActiveCard.description}
+                </p>
+              </div>
+              <div
+                className="main-sec4__progress"
+                aria-label={`${activeSec4MobileIndex + 1} / ${mainClassCards.length}`}
+              >
+                {mainClassCards.map((card, index) => (
+                  <span
+                    className={["main-sec4__progress-segment", index === activeSec4MobileIndex && "is-active"]
+                      .filter(Boolean)
+                      .join(" ")}
+                    key={`sec4-progress-${card.id}`}
+                  />
                 ))}
               </div>
             </div>
           </div>
         </div>
       </section>
-      <section className={`main-sec6 main-sec6--${activeSec6Slide.key}`} ref={sec6Ref} aria-label="사계절 계절차">
-        {mainSeasonTeaSlides.map((slide, index) => (
-          <div
-            className={["main-sec6__base-bg", index === activeSec6Index && "is-active"].filter(Boolean).join(" ")}
-            key={slide.key}
-            style={{ backgroundImage: `url(${slide.baseBg})` }}
-            aria-hidden="true"
-          />
-        ))}
-        {mainSeasonTeaSlides.map((slide, index) => (
-          <img
-            className={["main-sec6__floating-bg", index === activeSec6Index && "is-active"].filter(Boolean).join(" ")}
-            key={`${slide.key}-floating`}
-            src={slide.floatingBg}
-            alt=""
-            aria-hidden="true"
-          />
-        ))}
-        <div className="main-sec6__title ft-96r" aria-label={activeSec6Slide.verticalTitle}>
-          {activeSec6Slide.verticalTitle.split("").map((letter, index) => (
-            <span key={`${letter}-${index}`}>{letter}</span>
-          ))}
-        </div>
-        <div className="main-sec6__info">
-          <div className="main-sec6__progress">
-            <span className="ft-28b ink500">{activeSec6Slide.page}</span>
-            <span className="main-sec6__progress-line ink500" aria-hidden="true" />
-            <span className="ft-28b ink500">04</span>
-          </div>
-          <div className="main-sec6__copy">
-            <h2 className="ft-36b ink500">{activeSec6Slide.title}</h2>
-            <p className="main-sec6__description ft-22r ink500">
-              {activeSec6Slide.description.split("\n").map((line, index) => (
-                <span key={`${activeSec6Slide.key}-${index}`}>
-                  {line}
-                  {index < activeSec6Slide.description.split("\n").length - 1 && <br />}
-                </span>
-              ))}
+      <section className="main-sec5" aria-label="청연 제품 소개">
+        <div className="main-sec5__viewport--pc">
+          <div className="main-sec5__left">
+            <h2 className="ft-48b ink500">깊고 맑은 차의 시작</h2>
+            <p className="main-sec5__description ft-28r ink500">
+              청연은 좋은 산지의 찻잎과
+              <br />
+              시간이 빚어낸 풍미를 담아
+              <br />
+              한 잔의 여백을 전합니다.
             </p>
-            <Link className="cy-button cy-button--classMore ft-18b main-sec6__button" to="/seasontea">
-              계절차 더 보기
+            <Link className="cy-button cy-button--classMore ft-18b main-sec5__button" to="/collection">
+              청연의 제품 보기
               <Icon name="chevron-right" />
             </Link>
           </div>
+          {renderSec5Carousel(!isSec5CompactLayout)}
         </div>
-        <div className="main-sec6__orbit" ref={sec6OrbitRef} aria-hidden="true">
-          {mainSeasonTeaSlides.map((slide) => (
-            <div className={`main-sec6__pot-item main-sec6__pot-item--${slide.key}`} key={`${slide.key}-pot`}>
-              <img className="main-sec6__pot-image" src={slide.pot} alt="" />
+
+        <div className="main-sec5__compact">
+          <div className="main-sec5__compact-inner">
+            <div className="main-sec5__intro-responsive">
+              <h2 className="main-page-type--sec5-title ft-48b ink500">깊고 맑은 차의 시작</h2>
+              <p className="main-page-type--sec5-desc main-sec5__description-responsive main-sec5__description-responsive--tablet ft-28r ink500">
+                청연은 좋은 산지의 찻잎과
+                <br />
+                시간이 빚어낸 풍미를 담아
+                <br />
+                한 잔의 여백을 전합니다.
+              </p>
+              <p className="main-page-type--sec5-desc main-sec5__description-responsive main-sec5__description-responsive--mobile ft-28r ink500">
+                청연은 좋은 산지의 찻잎과 시간이 빚어낸
+                <br />
+                풍미를 담아 한 잔의 여백을 전합니다.
+              </p>
+              <Link
+                className="cy-button cy-button--classMore main-sec5__button-responsive main-page-type--sec5-btn ft-18b"
+                to="/collection"
+              >
+                청연의 제품 보기
+                <Icon name="chevron-right" />
+              </Link>
             </div>
+            {renderSec5Carousel(isSec5CompactLayout)}
+          </div>
+        </div>
+      </section>
+      <section
+        className={`main-sec6 main-sec6--${sec6SectionSeasonKey}`}
+        ref={sec6Ref}
+        aria-label="사계절 계절차"
+      >
+        <div className="main-sec6__viewport--pc">
+          {mainSeasonTeaSlides.map((slide, index) => (
+            <div
+              className={["main-sec6__base-bg", index === activeSec6Index && "is-active"].filter(Boolean).join(" ")}
+              key={slide.key}
+              style={{ backgroundImage: `url(${slide.baseBg})` }}
+              aria-hidden="true"
+            />
           ))}
+          {mainSeasonTeaSlides.map((slide, index) => (
+            <img
+              className={["main-sec6__floating-bg", index === activeSec6Index && "is-active"].filter(Boolean).join(" ")}
+              key={`${slide.key}-floating`}
+              src={getSec6FloatingBgSrc(slide)}
+              alt=""
+              aria-hidden="true"
+            />
+          ))}
+          <div className="main-sec6__title ft-96r" aria-label={activeSec6Slide.verticalTitle}>
+            {activeSec6Slide.verticalTitle.split("").map((letter, index) => (
+              <span key={`${letter}-${index}`}>{letter}</span>
+            ))}
+          </div>
+          <div className="main-sec6__info">
+            <div className="main-sec6__progress">
+              <span className="ft-28b ink500">{activeSec6Slide.page}</span>
+              <span className="main-sec6__progress-line ink500" aria-hidden="true" />
+              <span className="ft-28b ink500">04</span>
+            </div>
+            <div className="main-sec6__copy">
+              <h2 className="ft-36b ink500">{activeSec6Slide.title}</h2>
+              <p className="main-sec6__description ft-22r ink500">
+                {renderSec6Description(activeSec6Slide.description, activeSec6Slide.key)}
+              </p>
+              <Link className="cy-button cy-button--classMore ft-18b main-sec6__button" to="/seasontea">
+                계절차 더 보기
+                <Icon name="chevron-right" />
+              </Link>
+            </div>
+          </div>
+          <div className="main-sec6__orbit" ref={sec6OrbitRef} aria-hidden="true">
+            {mainSeasonTeaSlides.map((slide) => (
+              <div className={`main-sec6__pot-item main-sec6__pot-item--${slide.key}`} key={`${slide.key}-pot`}>
+                <img className="main-sec6__pot-image" src={slide.pot} alt="" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="main-sec6__compact">
+          <div className="main-sec6__compact-tablet">
+            {mainSeasonTeaSlides.map((slide, index) => (
+              <div
+                className={["main-sec6__compact-base-bg", index === activeSec6CompactIndex && "is-active"]
+                  .filter(Boolean)
+                  .join(" ")}
+                key={`tablet-bg-${slide.key}`}
+                style={{ backgroundImage: `url(${slide.baseBg})` }}
+                aria-hidden="true"
+              />
+            ))}
+            <div className="main-sec6__compact-tablet-inner">
+              <div
+                className={["main-sec6__compact-slider", isSec6CompactDragging && "main-sec6__compact-slider--dragging"]
+                  .filter(Boolean)
+                  .join(" ")}
+                onMouseDown={(event) => {
+                  event.preventDefault();
+                  startSec6CompactDrag(event.clientX);
+                }}
+                onTouchStart={(event) => startSec6CompactDrag(event.touches[0].clientX)}
+                onTouchMove={(event) => moveSec6CompactDrag(event.touches[0].clientX)}
+                onTouchEnd={endSec6CompactDrag}
+              >
+                <div className="main-sec6__compact-slider-viewport" ref={sec6TabletViewportRef}>
+                  <div
+                    className="main-sec6__compact-slider-track"
+                    style={{ transform: `translate3d(${sec6TabletTranslate}px, 0, 0)` }}
+                  >
+                    {mainSeasonTeaSlides.map((slide, index) => (
+                      <article
+                        className={[
+                          "main-sec6__compact-slide",
+                          index === activeSec6CompactIndex && "is-current",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                        key={`tablet-slide-${slide.key}`}
+                        style={
+                          sec6TabletSlideWidth
+                            ? {
+                                width: sec6TabletSlideWidth,
+                                flex: `0 0 ${sec6TabletSlideWidth}px`,
+                              }
+                            : undefined
+                        }
+                      >
+                        <div className="main-sec6__compact-media">
+                          <img
+                            className={[
+                              "main-sec6__compact-floating",
+                              "is-active",
+                              `main-sec6__compact-floating--${slide.key}`,
+                            ].join(" ")}
+                            src={getSec6FloatingBgSrc(slide)}
+                            alt=""
+                            aria-hidden="true"
+                          />
+                          <img className="main-sec6__compact-pot" src={slide.pot} alt="" aria-hidden="true" />
+                        </div>
+                        <div className="main-sec6__compact-copy">
+                          <h2 className="main-sec6__compact-main-title ft-40b">{slide.verticalTitle}</h2>
+                          <h3 className="main-sec6__compact-subtitle ft-24b ink500">{slide.title}</h3>
+                          <p className="main-sec6__compact-description ft-18r ink500">
+                            {renderSec6Description(slide.description, `tablet-${slide.key}`)}
+                          </p>
+                          <Link
+                            className="cy-button cy-button--classMore main-sec6__compact-button ft-16b ink500"
+                            to="/seasontea"
+                          >
+                            계절차 더 보기
+                            <Icon name="chevron-right" />
+                          </Link>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div
+                className="main-sec6__compact-progress"
+                aria-label={`${activeSec6CompactIndex + 1} / ${mainSeasonTeaSlides.length}`}
+              >
+                {mainSeasonTeaSlides.map((slide, index) => (
+                  <span
+                    className={[
+                      "main-sec6__compact-progress-segment",
+                      index === activeSec6CompactIndex && "is-active",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    key={`sec6-tablet-progress-${slide.key}`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="main-sec6__compact-mobile">
+            {mainSeasonTeaSlides.map((slide) => (
+              <article className={`main-sec6__mobile-season main-sec6__mobile-season--${slide.key}`} key={slide.key}>
+                <div
+                  className="main-sec6__mobile-base-bg"
+                  style={{ backgroundImage: `url(${slide.baseBg})` }}
+                  aria-hidden="true"
+                />
+                <div className="main-sec6__mobile-inner">
+                  <h2 className={`main-sec6__mobile-main-title main-sec6__mobile-main-title--${slide.key} ft-30b`}>
+                    {slide.verticalTitle}
+                  </h2>
+                  <div className="main-sec6__compact-media main-sec6__compact-media--mobile">
+                    <img
+                      className={[
+                        "main-sec6__compact-floating",
+                        "is-active",
+                        `main-sec6__compact-floating--${slide.key}`,
+                      ].join(" ")}
+                      src={getSec6FloatingBgSrc(slide)}
+                      alt=""
+                      aria-hidden="true"
+                    />
+                    <img className="main-sec6__compact-pot" src={slide.pot} alt="" aria-hidden="true" />
+                  </div>
+                  <h3 className="main-sec6__compact-subtitle ft-24b ink500">{slide.title}</h3>
+                  <p className="main-sec6__compact-description ft-16r ink500">
+                    {renderSec6Description(slide.description, `mobile-${slide.key}`)}
+                  </p>
+                  <Link
+                    className="cy-button cy-button--classMore main-sec6__compact-button main-sec6__compact-button--mobile ft-14b ink500"
+                    to="/seasontea"
+                  >
+                    계절차 더 보기
+                    <Icon name="chevron-right" />
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
       <section className="main-sec7" aria-label="차점과 다실">
@@ -1626,8 +2285,21 @@ export default function MainPage() {
         ))}
         <div className="main-sec8__grid">
           <div className="main-sec8__content" key={activeSec8Slide.id}>
-            <h2 className="ft-48b white">{activeSec8Slide.title}</h2>
-            <p className="main-sec8__description ft-22b white">
+            <h2
+              className={[
+                kvViewport === "mobile" ? "ft-20b" : kvViewport === "tablet" ? "ft-24b" : "ft-48b",
+                "white",
+              ].join(" ")}
+            >
+              {activeSec8Slide.title}
+            </h2>
+            <p
+              className={[
+                "main-sec8__description",
+                kvViewport === "mobile" ? "ft-14r" : kvViewport === "tablet" ? "ft-16r" : "ft-22b",
+                "white",
+              ].join(" ")}
+            >
               {activeSec8Slide.description.split("\n").map((line, index) => (
                 <span key={`${activeSec8Slide.id}-${index}`}>
                   {line}
@@ -1636,7 +2308,12 @@ export default function MainPage() {
               ))}
             </p>
             <Link
-              className="cy-button cy-button--classMore ft-18b main-sec8__button"
+              className={[
+                "cy-button",
+                "cy-button--classMore",
+                "main-sec8__button",
+                kvViewport === "mobile" ? "ft-14b" : kvViewport === "tablet" ? "ft-16b" : "ft-18b",
+              ].join(" ")}
               to="/event/ongoing"
               onMouseDown={(event) => event.stopPropagation()}
               onTouchStart={(event) => event.stopPropagation()}
@@ -1670,10 +2347,12 @@ export default function MainPage() {
         </div>
         <div
           className={["main-sec9__carousel", isSec9Dragging && "main-sec9__carousel--dragging"].filter(Boolean).join(" ")}
-          onMouseEnter={pauseSec9Carousel}
+          onMouseEnter={kvViewport === "desktop" ? pauseSec9Carousel : undefined}
           onMouseLeave={() => {
             endSec9CarouselDrag();
-            resumeSec9Carousel();
+            if (kvViewport === "desktop") {
+              resumeSec9Carousel();
+            }
           }}
           onMouseDown={(event) => {
             event.preventDefault();
@@ -1689,38 +2368,66 @@ export default function MainPage() {
             <div className="main-sec9__carousel-track" style={{ transform: `translate3d(-${sec9Carousel.translate}px, 0, 0)` }}>
               <div className="main-sec9__review-group" ref={sec9ReviewGroupRef}>
                 {mainReviews.map((review) => (
-                  <ReviewCard key={review.id} review={review} />
+                  <ReviewCard key={review.id} review={review} viewport={kvViewport} />
                 ))}
               </div>
               <div className="main-sec9__review-group" aria-hidden="true">
                 {mainReviews.map((review) => (
-                  <ReviewCard key={`clone-${review.id}`} review={review} />
+                  <ReviewCard key={`clone-${review.id}`} review={review} viewport={kvViewport} />
                 ))}
               </div>
             </div>
           </div>
         </div>
       </section>
-      <section className="main-sec10" style={{ backgroundImage: `url(${mainCtaBg})` }} aria-label="다도 클래스 예약 안내">
+      <section
+        className={["main-sec10", kvViewport !== "desktop" && `main-sec10--${kvViewport}`].filter(Boolean).join(" ")}
+        style={{ backgroundImage: `url(${sec10Bg})` }}
+        aria-label="다도 클래스 예약 안내"
+      >
         <div className="main-sec10__grid">
           <div className="main-sec10__content">
-            <h2 className="ft-48b ink500">
+            <h2
+              className={[
+                "main-sec10__title",
+                kvViewport === "mobile" ? "ft-24b" : kvViewport === "tablet" ? "ft-32b" : "ft-48b",
+                "ink500",
+              ].join(" ")}
+            >
               청연에서의 한 시간,
               <br />
               일상이 달라지는 경험
             </h2>
-            <p className="main-sec10__description ft-28r ink500">
+            <p
+              className={[
+                "main-sec10__description",
+                kvViewport === "desktop" ? "ft-28r" : "ft-16r",
+                "ink500",
+              ].join(" ")}
+            >
               바쁜 일상에서 잠시 벗어나
               <br />
               차를 내리고 향을 음미하며 나에게
               <br />
               집중하는 시간을 경험해보세요.
             </p>
-            <Link className="cy-button cy-button--classMore ft-18b main-sec10__button" to="/reservation">
+            <Link
+              className={[
+                "cy-button",
+                "cy-button--classMore",
+                "main-sec10__button",
+                kvViewport === "mobile" ? "ft-14b" : kvViewport === "tablet" ? "ft-16b" : "ft-18b",
+              ].join(" ")}
+              to="/reservation"
+            >
               다도 클래스 예약하기
               <Icon name="chevron-right" />
             </Link>
-            <p className="main-sec10__notice ft-14r ink300">* 다도 클래스는 예약제로 운영됩니다.</p>
+            <p
+              className={["main-sec10__notice", "ft-14r", kvViewport === "mobile" ? "ink500" : "ink300"].join(" ")}
+            >
+              * 다도 클래스는 예약제로 운영됩니다.
+            </p>
           </div>
         </div>
       </section>
