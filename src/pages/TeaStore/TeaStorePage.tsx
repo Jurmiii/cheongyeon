@@ -147,15 +147,15 @@ function TeaStoryPage() {
             ref={kindsReveal.ref}
             className={`tea-store-kinds__content ${revealClass(kindsReveal.isVisible, "from-right")}`}
           >
-            <h2 className="tea-store-kinds__title ft-48b ink500">차의 종류</h2>
-            <p className="tea-store-kinds__description ft-22r ink500">
+            <h2 className="tea-store-kinds__title ft-48b white">차의 종류</h2>
+            <p className="tea-store-kinds__description ft-22r white">
               차는 발효 정도와 제조 방식에 따라 다양한 종류로 나뉩니다.
               <br />
               각각의 차는 고유의 향, 맛, 색을 가지고 있어 다양한 매력을
               <br />
               느낄 수 있습니다.
             </p>
-            <p className="tea-store-kinds__description ft-22r ink500">
+            <p className="tea-store-kinds__description ft-22r white">
               청연은 한국의 자연에서 자란 찻잎으로 정성을 다해
               <br />
               다양한 차를 만듭니다.

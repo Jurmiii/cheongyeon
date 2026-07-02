@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import subSymbol from "../../assets/images/01main/subsymbol.svg";
+import collectionLineSymbol from "../../assets/images/05collection/collection-line-symbol.svg";
 import springTeaImage from "../../assets/images/07season-tea/sec2-tea.webp";
 import wayImage from "../../assets/images/07season-tea/way.webp";
 import summerTeaImage from "../../assets/images/07season-tea/sec3-tea.webp";
@@ -145,9 +145,13 @@ function SeasonTeaPage() {
       <section className="season-tea-kv" aria-label="계절의 차 키비주얼">
         <div className="season-tea-kv__grid">
           <div className="season-tea-kv__content">
-            <h1 className="season-tea-kv__title ft-64b ink500">계절의 차</h1>
-            <img className="season-tea-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
-            <p className="season-tea-kv__description ft-28r ink500">
+            <h1 className="season-tea-kv__title ft-64b white">계절의 차</h1>
+            <div className="season-tea-kv__symbol-line" aria-hidden="true">
+              <span className="season-tea-kv__line-bar" />
+              <img className="season-tea-kv__line-symbol" src={collectionLineSymbol} alt="" />
+              <span className="season-tea-kv__line-bar" />
+            </div>
+            <p className="season-tea-kv__description ft-28r white">
               계절이 머문 향과 풍미를 담아,
               <br />
               가장 아름다운 순간을 전합니다.

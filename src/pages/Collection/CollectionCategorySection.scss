@@ -1,6 +1,6 @@
 @use "../../styles/abstracts/breakpoints" as *;
-
 @use "../../styles/abstracts/grid" as grid;
+@use "../../styles/abstracts/product-responsive" as pr;
 
 .collection-category {
   grid-column: 1 / -1;
@@ -90,10 +90,16 @@
   }
 }
 
-/* 태블릿 (769px ~ $laptop) — Figma 6:67 카드 2열 */
+/* 태블릿 (769px ~ $laptop) — Figma 1660:1906 */
 @media (min-width: $tablet) and (max-width: $laptop) {
   .collection-category + .collection-category {
     margin-top: 2.8125rem; /* Figma gap 45px */
+  }
+
+  .collection-category__title.ft-36r {
+    font-size: 1.5rem;
+    line-height: 2.125rem;
+    letter-spacing: -0.03em;
   }
 
   .collection-category__line {
@@ -102,13 +108,120 @@
 
   .collection-category__products {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.5rem;
+    gap: 4rem 1.5rem;
     margin-top: 1.5rem;
+  }
+
+  .collection-category__products .content5__title.ft-22r {
+    font-size: 1.125rem;
+    line-height: 1.875rem;
+  }
+
+  .collection-category__products .content5__meta.ft-16r {
+    font-size: 1rem;
+    line-height: 1.625rem;
+  }
+
+  .collection-category__products .content5__summary.ft-16r,
+  .collection-category__products .content5__description.ft-16r {
+    font-size: 0.875rem;
+    line-height: 1.375rem;
+  }
+
+  .collection-category__products .content5__body {
+    margin-top: 1rem;
+  }
+
+  .collection-category__products .content5__meta {
+    margin-top: 0.5rem;
+  }
+
+  .collection-category__products .content5__divider {
+    margin-top: 1rem;
+  }
+
+  .collection-category__products .content5__summary,
+  .collection-category__products .content5__description {
+    margin-top: 1rem;
   }
 }
 
-/* 모바일 (≤$tablet) — 2열 카드 */
+/* 모바일 (≤767px) — Figma 1660:1792 */
 @media (max-width: ($tablet - 1px)) {
+  .collection-category + .collection-category {
+    margin-top: 2rem;
+  }
+
+  .collection-category__title.ft-36r {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .collection-category__line {
+    margin-top: 0.5rem;
+    gap: 1rem;
+  }
+
+  .collection-category__products {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 0.875rem;
+    margin-top: 1rem;
+  }
+
+  .collection-category__products .content5__title.ft-22r {
+    font-size: 1rem;
+    line-height: 1.625rem;
+  }
+
+  .collection-category__products .content5__meta.ft-16r {
+    font-size: 0.875rem;
+    line-height: 1.375rem;
+  }
+
+  .collection-category__products .content5__summary.ft-16r,
+  .collection-category__products .content5__description.ft-16r {
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+  }
+
+  .collection-category__products .content5__body {
+    margin-top: 0.5rem;
+  }
+
+  .collection-category__products .content5__meta {
+    margin-top: 0.5rem;
+  }
+
+  .collection-category__products .content5__divider {
+    margin-top: 0.5rem;
+  }
+
+  .collection-category__products .content5__summary,
+  .collection-category__products .content5__description {
+    margin-top: 0.5rem;
+  }
+}
+
+/* 611px ~ 767px */
+@media (min-width: $tablet-md) and (max-width: #{$tablet - 1px}) {
+  .collection-category + .collection-category {
+    margin-top: 2rem;
+  }
+
+  .collection-category__products {
+    gap: clamp(1.25rem, 0.75rem + 1.5vw, 1.5rem) 0.875rem;
+  }
+}
+
+/* 403px ~ 610px */
+@media (min-width: #{$mobile + 1px}) and (max-width: $tablet-sm-max) {
+  .collection-category__products {
+    gap: clamp(1.25rem, 0.75rem + 1.2vw, 1.5rem) 0.875rem;
+  }
+}
+
+/* 402px 이하 — Figma MO 앵커 */
+@media (max-width: $mobile) {
   .collection-category + .collection-category {
     margin-top: 2rem;
   }
@@ -119,7 +232,6 @@
   }
 
   .collection-category__products {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem 0.875rem;
     margin-top: 1rem;
   }

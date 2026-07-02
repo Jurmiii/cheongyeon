@@ -1,5 +1,6 @@
 @use "../../styles/abstracts/breakpoints" as *;
 @use "../../styles/abstracts/grid" as grid;
+@use "../../styles/abstracts/product-responsive" as pr;
 
 .tea-store-page {
   position: relative;
@@ -261,7 +262,7 @@
   margin: 0;
 }
 
-/* Section 6 — Figma 1920×690 */
+/* Section 6 — Figma 1920×690 / TA 1662:2152 */
 .tea-store-kinds {
   position: relative;
   width: 100%;
@@ -272,6 +273,14 @@
   background-size: cover;
   background-position: left center;
   background-repeat: no-repeat;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / 40%);
+    pointer-events: none;
+  }
 }
 
 .tea-store-kinds__grid {
@@ -286,6 +295,8 @@
 }
 
 .tea-store-kinds__content {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -294,6 +305,7 @@
   justify-self: start;
   width: 100%;
   max-width: 36.625rem;
+  color: var(--han50);
 }
 
 .tea-store-kinds__title,
@@ -599,50 +611,84 @@
   }
 }
 
-@media (min-width: $tablet) and (max-width: $laptop) {
-  .tea-store-kv {
-    @include grid.tablet-kv-section;
-  }
-
-  .tea-store-kv__grid,
-  .tea-store-intro__grid,
-  .tea-store-culture__grid,
-  .tea-store-ceremony__grid,
-  .tea-store-kinds__grid,
-  .tea-store-seasons__grid {
-    @include grid.tablet-grid-padded;
-  }
-
-  .tea-store-kv__grid {
-    align-items: center;
-    height: 100%;
-  }
-}
-
-@media (max-width: #{$tablet - 1px}) {
-  .tea-store-kv {
-    @include grid.mobile-kv-section;
-  }
-
-  .tea-store-kv__grid {
-    @include grid.mobile-kv-container;
-    align-items: center;
-    height: 100%;
-  }
-
-  .tea-store-intro__grid,
-  .tea-store-culture__grid,
-  .tea-store-ceremony__grid,
-  .tea-store-kinds__grid,
-  .tea-store-seasons__grid {
-    @include grid.mobile-grid-padded;
-  }
-}
-
 /* ══════════════════════════════════════════
-   차 이야기 — Tablet / Mobile (Figma TA 1662:2100, MO 1662:1982)
-   PC(1025px~) 스타일은 변경하지 않음
+   차 이야기 — PC / Tablet / Mobile (Figma TA 1662:2100, MO 1662:1982)
    ══════════════════════════════════════════ */
+
+/* PC 1025px+ — 1920px↔1024px clamp (1024px = laptop 밴드 상단과 연속) */
+@media (min-width: #{$laptop + 1px}) {
+  .tea-store-kv {
+    @include pr.pr-fluid-kv-height-desktop(pr.$pr-desktop-kv-height, pr.$pr-kv-laptop-end);
+  }
+
+  .tea-store-intro,
+  .tea-store-culture,
+  .tea-store-ceremony,
+  .tea-store-kinds {
+    @include pr.pr-fluid-section-height-desktop(pr.$pr-section-laptop-end, pr.$pr-section-laptop-end);
+  }
+
+  .tea-store-kv__content,
+  .tea-store-intro__content,
+  .tea-store-ceremony__content {
+    max-width: pr.pr-lerp-desktop(31.25rem, 25.125rem);
+  }
+
+  .tea-store-culture__content,
+  .tea-store-kinds__content {
+    max-width: pr.pr-lerp-desktop(31.25rem, 19.25rem);
+  }
+
+  .tea-store-intro__content,
+  .tea-store-culture__content,
+  .tea-store-ceremony__content,
+  .tea-store-kinds__content {
+    gap: pr.pr-lerp-desktop(3rem, 2.25rem);
+  }
+
+  .tea-store-dado__inner,
+  .tea-store-types__inner,
+  .tea-store-seasons__inner {
+    padding-block: pr.pr-lerp-desktop(7.5rem, 6rem);
+  }
+
+  .tea-store-kv .ft-64b {
+    font-size: pr.pr-lerp-desktop(4rem, 2.5rem);
+    line-height: pr.pr-lerp-desktop(4.5rem, 3.25rem);
+  }
+
+  .tea-store-kv .ft-28r {
+    font-size: pr.pr-lerp-desktop(1.75rem, 1.5rem);
+    line-height: pr.pr-lerp-desktop(2.5rem, 2.125rem);
+  }
+
+  .tea-store-intro .ft-48b,
+  .tea-store-culture .ft-48b,
+  .tea-store-ceremony .ft-48b,
+  .tea-store-kinds .ft-48b,
+  .tea-store-seasons .ft-48b {
+    font-size: pr.pr-lerp-desktop(3rem, 2rem);
+    line-height: pr.pr-lerp-desktop(4rem, 2.75rem);
+  }
+
+  .tea-store-intro .ft-22r,
+  .tea-store-culture .ft-22r,
+  .tea-store-ceremony .ft-22r,
+  .tea-store-kinds .ft-22r,
+  .tea-store-dado .ft-22r,
+  .tea-store-types .ft-22r,
+  .tea-store-seasons .ft-22r {
+    font-size: pr.pr-lerp-desktop(1.375rem, 1.125rem);
+    line-height: pr.pr-lerp-desktop(2.25rem, 1.875rem);
+  }
+
+  .tea-store-dado .ft-36b,
+  .tea-store-types .ft-36b {
+    font-size: pr.pr-lerp-desktop(2.25rem, 1.5rem);
+    line-height: pr.pr-lerp-desktop(2.75rem, 2rem);
+  }
+}
+
 @media (max-width: $laptop) {
   .tea-store-page__header {
     z-index: 20;
@@ -651,47 +697,68 @@
 }
 
 @media (min-width: $tablet) and (max-width: $laptop) {
-  /* KV — Figma 768×600 */
+  /* KV — Figma 1662:2101 TA 768×600, text left 64px 세로 중앙 */
   .tea-store-kv {
-    @include grid.tablet-kv-section;
-    height: 37.5rem;
+    height: 37.5rem; /* 600px */
     min-height: 37.5rem;
     padding-block: 0;
     background-image: url("../../assets/images/06tea-store/kv-bg-tablet.webp");
     background-size: cover;
-    background-position: center 40%;
+    background-position: center center;
   }
 
   .tea-store-kv__grid {
-    @include grid.tablet-kv-container;
-    align-items: center;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    column-gap: 1.5rem;
+    width: 100%;
+    max-width: 48rem; /* 768px */
     height: 100%;
+    margin-inline: auto;
+    padding-inline: 4rem; /* 64px */
+    align-items: center;
   }
 
   .tea-store-kv__content {
-    max-width: 25.125rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    grid-column: 1 / -1;
+    justify-self: start;
+    align-self: center;
+    max-width: none;
+    width: 100%;
   }
 
   .tea-store-kv__title {
+    font-size: 2.5rem; /* 40px */
+    line-height: 3.25rem; /* 52px */
     letter-spacing: -0.05rem;
     color: var(--ink500) !important;
   }
 
+  .tea-store-kv__symbol {
+    width: 1.875rem; /* 30px */
+    height: auto;
+    margin-top: 1rem; /* 16px */
+  }
+
   .tea-store-kv__description {
+    font-size: 1.5rem; /* 24px */
+    line-height: 2.125rem; /* 34px */
     letter-spacing: -0.03rem;
     color: var(--ink500) !important;
+    margin-top: 1.5rem; /* 24px */
   }
 
-  .tea-store-kv__symbol {
-    margin-top: 1rem;
-  }
-
-  /* 섹션 2~4, 6 — Figma 768×500 */
+  /* 섹션 2~4, 6 — Figma TA 768×500 */
   .tea-store-intro,
   .tea-store-culture,
   .tea-store-ceremony,
   .tea-store-kinds {
-    height: 31.25rem;
+    height: 31.25rem; /* 500px */
     min-height: 31.25rem;
     padding-block: 0;
   }
@@ -728,65 +795,89 @@
   .tea-store-culture__grid,
   .tea-store-ceremony__grid,
   .tea-store-kinds__grid {
-    align-items: center;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    column-gap: 1.5rem;
+    width: 100%;
+    max-width: 48rem; /* 768px */
     height: 100%;
+    margin-inline: auto;
+    padding-inline: 4rem; /* 64px */
+    align-items: center;
+  }
+
+  .tea-store-intro__content,
+  .tea-store-ceremony__content {
+    gap: 1.5rem; /* 24px */
+    grid-column: 1 / span 4;
+    justify-self: start;
+    align-self: center;
+    align-items: flex-start;
+    max-width: none;
+    width: 100%;
   }
 
   .tea-store-intro__content {
-    gap: 1.5rem;
-    grid-column: 1 / -1;
-    justify-self: start;
-    align-items: flex-start;
-    max-width: 19.25rem;
     color: var(--ink500);
   }
 
   .tea-store-culture__content {
-    gap: 1.5rem;
-    grid-column: 1 / -1;
-    justify-self: end;
+    gap: 1.5rem; /* 24px */
+    grid-column: 5 / -1;
+    justify-self: start;
+    align-self: center;
     align-items: flex-start;
-    max-width: 19.25rem;
+    max-width: none;
+    width: 100%;
     text-align: left;
     color: var(--ink500);
   }
 
   .tea-store-ceremony__content {
-    gap: 1.5rem;
-    grid-column: 1 / -1;
-    justify-self: start;
-    align-items: flex-start;
-    max-width: 19.25rem;
     color: var(--han50);
   }
 
   .tea-store-kinds__content {
     position: relative;
     z-index: 1;
-    gap: 1.5rem;
-    grid-column: 1 / -1;
-    justify-self: end;
-    align-items: flex-end;
-    max-width: 19.25rem;
-    text-align: right;
+    gap: 1.5rem; /* 24px */
+    grid-column: 5 / -1;
+    justify-self: start;
+    align-self: center;
+    align-items: flex-start;
+    max-width: none;
+    width: 100%;
+    text-align: left;
     color: var(--han50);
   }
 
   .tea-store-intro__title,
   .tea-store-culture__title {
+    font-size: 2rem; /* 32px */
+    line-height: 2.75rem; /* 44px */
     color: var(--ink500) !important;
   }
 
   .tea-store-ceremony__title,
-  .tea-store-kinds__title,
-  .tea-store-ceremony__description,
-  .tea-store-kinds__description {
+  .tea-store-kinds__title {
+    font-size: 2rem; /* 32px */
+    line-height: 2.75rem; /* 44px */
     color: inherit !important;
   }
 
   .tea-store-intro__description,
   .tea-store-culture__description {
+    font-size: 1.25rem; /* 20px */
+    line-height: 2.125rem; /* 34px */
     color: var(--ink500) !important;
+  }
+
+  .tea-store-ceremony__description,
+  .tea-store-kinds__description {
+    font-size: 1.25rem; /* 20px */
+    line-height: 2.125rem; /* 34px */
+    color: inherit !important;
   }
 
   .tea-store-intro__title,
@@ -802,23 +893,38 @@
   }
 
   .tea-store-dado__inner {
-    padding-block: 6rem;
+    padding-top: 6rem; /* 96px */
+    padding-bottom: 6rem; /* 96px */
+    padding-inline: 4rem; /* 64px */
   }
 
   .tea-store-dado__head {
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
-    padding-inline: 4rem;
+    gap: 1.5rem; /* 24px */
+    margin-bottom: 2.5rem; /* 40px, Figma 264px from top = 96(padding) + 96(title+gap) + 40(gap) + 32(card margin) */
+    padding-inline: 0;
+    width: 100%;
+    max-width: 40rem; /* 640px */
+    margin-inline: auto;
+    text-align: center;
+    align-items: center;
   }
 
   .tea-store-dado__title {
+    font-size: 2rem; /* 32px */
+    line-height: 2.75rem; /* 44px */
     letter-spacing: -0.02rem;
+  }
+
+  .tea-store-dado__subtitle {
+    font-size: 1.25rem; /* 20px */
+    line-height: 2.125rem; /* 34px */
   }
 
   .tea-store-dado__gallery {
     grid-template-columns: minmax(0, 1fr);
-    gap: 1.5rem;
-    width: min(40rem, calc(100% - 8rem));
+    gap: 1.5rem; /* 24px */
+    width: 100%;
+    max-width: 40rem; /* 640px */
     margin-inline: auto;
   }
 
@@ -827,9 +933,19 @@
   }
 
   .tea-store-dado-card__body {
-    gap: 1rem;
-    padding: 1.5rem;
+    gap: 1rem; /* 16px */
+    padding: 1.5rem; /* 24px */
     background: linear-gradient(180deg, rgb(0 0 0 / 0%) 0%, rgb(0 0 0 / 81%) 100%);
+  }
+
+  .tea-store-dado-card__title {
+    font-size: 1.375rem; /* 22px */
+    line-height: 2.25rem; /* 36px */
+  }
+
+  .tea-store-dado-card__description {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.875rem; /* 30px */
   }
 
   /* 차의 기본 분류 — Figma 2열 308px */
@@ -838,30 +954,44 @@
   }
 
   .tea-store-types__inner {
-    padding-block: 6rem;
+    padding-top: 6rem; /* 96px */
+    padding-bottom: 6rem; /* 96px */
+    padding-inline: 4rem; /* 64px */
   }
 
   .tea-store-types__head {
-    gap: 1.5rem;
-    padding-inline: 4rem;
+    gap: 1.5rem; /* 24px */
+    padding-inline: 0;
+    width: 100%;
+    max-width: 40rem; /* 640px */
+    margin-inline: auto;
   }
 
   .tea-store-types__title {
+    font-size: 2rem; /* 32px */
+    line-height: 2.75rem; /* 44px */
     letter-spacing: -0.02rem;
+  }
+
+  .tea-store-types__subtitle {
+    font-size: 1.25rem; /* 20px */
+    line-height: 2.125rem; /* 34px */
   }
 
   .tea-store-types__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.5rem;
-    width: min(40rem, calc(100% - 8rem));
+    gap: 1.5rem; /* 24px */
+    width: 100%;
+    max-width: 40rem; /* 640px */
     padding-inline: 0;
-    margin-top: 2.5rem;
+    margin-inline: auto;
+    margin-top: 2.5rem; /* 40px */
   }
 
   .tea-store-type {
     width: 100%;
     min-height: 0;
-    padding: 1rem;
+    padding: 1rem; /* 16px */
     gap: 0;
     box-shadow: none;
     transform: none;
@@ -874,14 +1004,24 @@
   }
 
   .tea-store-type__head {
-    gap: 0.5rem;
-    padding-bottom: 0.5rem;
+    gap: 0.5rem; /* 8px */
+    padding-bottom: 0.5rem; /* 8px */
+  }
+
+  .tea-store-type__name {
+    font-size: 1.375rem; /* 22px */
+    line-height: 2.25rem; /* 36px */
+  }
+
+  .tea-store-type__tagline {
+    font-size: 1rem; /* 16px */
+    line-height: 1.625rem; /* 26px */
   }
 
   .tea-store-type__visual {
     position: relative;
     aspect-ratio: auto;
-    height: 15.4375rem;
+    height: 15.4375rem; /* 247px */
     margin-block: 0;
   }
 
@@ -915,19 +1055,21 @@
   }
 
   .tea-store-type__description {
-    padding-top: 1rem;
+    padding-top: 1rem; /* 16px */
+    font-size: 1rem; /* 16px */
+    line-height: 1.625rem; /* 26px */
   }
 
   .tea-store-types__logo {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 30.72rem;
+    min-height: 30.72rem; /* 491.52px */
   }
 
   .tea-store-types__logo-image {
     display: block;
-    width: min(15.894rem, 82%);
+    width: 15.894rem; /* 254.304px */
     height: auto;
     object-fit: contain;
   }
@@ -948,27 +1090,46 @@
   .tea-store-seasons__inner {
     position: relative;
     z-index: 1;
-    padding-block: 6rem;
+    padding-top: 6rem; /* 96px */
+    padding-bottom: 6rem; /* 96px */
+    padding-inline: 4rem; /* 64px */
   }
 
   .tea-store-seasons__grid {
-    row-gap: 2.5rem;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    column-gap: 1.5rem;
+    row-gap: 2.5rem; /* 40px */
+    width: 100%;
+    max-width: 48rem; /* 768px */
+    margin-inline: auto;
+    padding-inline: 0;
   }
 
   .tea-store-seasons__head {
-    align-items: center;
-    text-align: center;
+    grid-column: 1 / -1;
+    align-items: flex-start;
+    text-align: left;
   }
 
   .tea-store-seasons__title {
+    font-size: 2rem; /* 32px */
+    line-height: 2.75rem; /* 44px */
     letter-spacing: -0.02rem;
+  }
+
+  .tea-store-seasons__subtitle {
+    font-size: 1.25rem; /* 20px */
+    line-height: 2.125rem; /* 34px */
   }
 
   .tea-store-seasons__cards {
     display: grid;
+    grid-column: 1 / -1;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 1.5rem;
-    row-gap: 1.625rem;
+    column-gap: 1.5rem; /* 24px */
+    row-gap: 1.625rem; /* 26px */
   }
 
   .tea-store-season {
@@ -977,10 +1138,13 @@
 
   .tea-store-season__image-wrap {
     max-width: none;
+    width: 100%;
   }
 
   .tea-store-season__description {
-    margin-top: 1rem;
+    margin-top: 1rem; /* 16px */
+    font-size: 1.375rem; /* 22px */
+    line-height: 2.25rem; /* 36px */
   }
 
   /* Figma TA 1662:2100 — 텍스트 박스 left/right 64px, 세로 중앙 */
@@ -1014,37 +1178,7 @@
     grid-column: 1 / -1;
     justify-self: start;
     align-self: center;
-    width: auto;
     max-width: 25.125rem;
-  }
-
-  .tea-store-intro__content,
-  .tea-store-ceremony__content {
-    grid-column: 1 / span 4;
-    justify-self: start;
-    align-self: center;
-    width: auto;
-    max-width: none;
-  }
-
-  .tea-store-culture__content {
-    grid-column: 5 / -1;
-    justify-self: end;
-    align-self: center;
-    align-items: flex-start;
-    text-align: left;
-    width: 19.25rem;
-    max-width: 19.25rem;
-  }
-
-  .tea-store-kinds__content {
-    grid-column: 5 / -1;
-    justify-self: end;
-    align-self: center;
-    align-items: flex-end;
-    text-align: right;
-    width: 19.25rem;
-    max-width: 19.25rem;
   }
 
   .tea-store-seasons__grid {
@@ -1089,61 +1223,80 @@
 }
 
 @media (max-width: ($tablet - 1px)) {
-  /* KV — Figma 402×700, 타이틀 left=calc(50%-30.5px) 세로 중앙 */
+  /* KV — Figma MO 1662:1983, 402×700 */
   .tea-store-kv {
-    @include grid.mobile-kv-section;
-    height: 43.75rem;
+    height: 43.75rem; /* 700px */
     min-height: 43.75rem;
     padding-block: 0;
     background-image: url("../../assets/images/06tea-store/kv-bg-mobile.webp");
     background-size: cover;
-    background-position: center 35%;
+    background-position: center center;
   }
 
   .tea-store-kv__grid {
-    @include grid.mobile-kv-container;
-    align-items: center;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 25.125rem; /* 402px */
     height: 100%;
+    margin-inline: auto;
+    padding-inline: 1rem; /* 16px */
+    align-items: center;
   }
 
   .tea-store-kv__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
     justify-self: center;
     align-self: center;
-    max-width: min(19.3125rem, 85%);
-    margin-right: 1.90625rem;
+    width: 100%;
+    max-width: 19.3125rem; /* 309px */
+    transform: translateX(-1.90625rem); /* -30.5px, Figma left calc(50% - 30.5px) */
   }
 
   .tea-store-kv__title {
-    letter-spacing: -0.01875rem;
-    color: var(--ink500) !important;
-  }
-
-  .tea-store-kv__description {
+    font-size: 1.875rem; /* 30px */
+    line-height: 2.5rem; /* 40px */
+    letter-spacing: -0.01875rem; /* -0.3px */
     color: var(--ink500) !important;
   }
 
   .tea-store-kv__symbol {
-    margin-top: 0.5rem;
+    width: 1.5rem; /* 24px */
+    height: auto;
+    margin-top: 0.5rem; /* 8px */
   }
 
-  /* 섹션 2~4, 6 — Figma 402×650, 텍스트 bottom=64px */
+  .tea-store-kv__description {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.625rem; /* 26px */
+    color: var(--ink500) !important;
+    margin-top: 1rem; /* 16px */
+  }
+
+  /* 섹션 2~4, 6 — Figma MO 402×650, 하단 정렬 64px */
   .tea-store-intro,
   .tea-store-culture,
   .tea-store-ceremony,
   .tea-store-kinds {
-    height: 40.625rem;
+    height: 40.625rem; /* 650px */
     min-height: 40.625rem;
     padding-block: 0;
   }
 
   .tea-store-intro {
     background-image: url("../../assets/images/06tea-store/sec2-bg-mobile.webp");
-    background-position: 72% center;
+    background-size: 455% auto;
+    background-position: 28% center;
   }
 
   .tea-store-culture {
     background-image: url("../../assets/images/06tea-store/sec3-bg-mobile.webp");
-    background-position: 28% center;
+    background-size: 316% auto;
+    background-position: 73% center;
   }
 
   .tea-store-ceremony {
@@ -1153,7 +1306,8 @@
 
   .tea-store-kinds {
     background-image: url("../../assets/images/06tea-store/sec6-bg-mobile.webp");
-    background-position: 35% center;
+    background-size: 391% auto;
+    background-position: 36% center;
   }
 
   .tea-store-intro,
@@ -1172,9 +1326,16 @@
   .tea-store-culture__grid,
   .tea-store-ceremony__grid,
   .tea-store-kinds__grid {
-    align-items: end;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 25.125rem; /* 402px */
     height: 100%;
-    padding-bottom: 4rem;
+    margin-inline: auto;
+    padding-inline: 1rem; /* 16px */
+    padding-bottom: 4rem; /* 64px */
+    align-items: end;
   }
 
   .tea-store-intro__content,
@@ -1183,7 +1344,7 @@
   .tea-store-kinds__content {
     position: relative;
     z-index: 1;
-    gap: 1.5rem;
+    gap: 1.5rem; /* 24px */
     align-self: end;
     color: var(--han50);
   }
@@ -1191,8 +1352,9 @@
   /* intro — bottom 64px, left=calc(50%-20px) */
   .tea-store-intro__content {
     justify-self: center;
-    margin-right: 1.25rem;
-    max-width: min(19.3125rem, calc(100% - 2rem));
+    margin-right: 1.25rem; /* 20px */
+    max-width: 19.3125rem; /* 309px */
+    width: 100%;
     align-items: flex-start;
     text-align: left;
   }
@@ -1200,8 +1362,9 @@
   /* culture — bottom 64px, right=56px */
   .tea-store-culture__content {
     justify-self: end;
-    margin-right: 3.5rem;
-    max-width: min(17.5rem, calc(100% - 2rem));
+    margin-right: 3.5rem; /* 56px */
+    max-width: 17.5rem; /* 280px */
+    width: 100%;
     align-items: flex-start;
     text-align: left;
   }
@@ -1209,7 +1372,8 @@
   /* ceremony — bottom 64px, left=16px */
   .tea-store-ceremony__content {
     justify-self: start;
-    max-width: min(23.125rem, calc(100% - 2rem));
+    max-width: 23.125rem; /* 370px */
+    width: 100%;
     align-items: flex-start;
     text-align: left;
   }
@@ -1217,8 +1381,9 @@
   /* kinds — bottom 64px, left=calc(50%-31px), width 308px */
   .tea-store-kinds__content {
     justify-self: center;
-    margin-right: 1.9375rem;
-    max-width: 19.25rem;
+    margin-right: 1.9375rem; /* 31px */
+    max-width: 19.25rem; /* 308px */
+    width: 100%;
     align-items: flex-start;
     text-align: left;
   }
@@ -1238,33 +1403,54 @@
   .tea-store-culture__title,
   .tea-store-ceremony__title,
   .tea-store-kinds__title {
+    font-size: 1.875rem; /* 30px */
+    line-height: 2.5rem; /* 40px */
     letter-spacing: -0.01875rem;
   }
 
-  /* 다도란 무엇인가 — Figma 402×986 */
+  .tea-store-intro__description,
+  .tea-store-culture__description,
+  .tea-store-ceremony__description,
+  .tea-store-kinds__description {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.875rem; /* 30px */
+  }
+
+  /* 다도란 무엇인가 — Figma MO 402×986 */
   .tea-store-dado {
     background-color: var(--han300);
   }
 
   .tea-store-dado__inner {
-    padding-block: 4rem;
-    padding-inline: grid.$mobile-grid-padding;
+    padding-top: 4rem; /* 64px */
+    padding-bottom: 4rem; /* 64px */
+    padding-inline: 1rem; /* 16px */
   }
 
   .tea-store-dado__head {
-    gap: 1rem;
-    margin-bottom: 2rem;
+    gap: 1rem; /* 16px */
+    margin-bottom: 2.5rem; /* 40px = 234px - 64px - 130px (타이틀+gap+첫카드) */
     padding-inline: 0;
     width: 100%;
-    max-width: grid.$mobile-grid-inner;
+    max-width: 23.125rem; /* 370px */
     margin-inline: auto;
+  }
+
+  .tea-store-dado__title {
+    font-size: 1.5rem; /* 24px */
+    line-height: 2rem; /* 32px */
+  }
+
+  .tea-store-dado__subtitle {
+    font-size: 1rem; /* 16px */
+    line-height: 1.625rem; /* 26px */
   }
 
   .tea-store-dado__gallery {
     grid-template-columns: minmax(0, 1fr);
-    gap: 1rem;
+    gap: 1rem; /* 16px */
     width: 100%;
-    max-width: grid.$mobile-grid-inner;
+    max-width: 23.125rem; /* 370px */
     margin-inline: auto;
   }
 
@@ -1273,44 +1459,65 @@
   }
 
   .tea-store-dado-card__body {
-    gap: 0.5rem;
-    padding: 1rem;
+    gap: 0.5rem; /* 8px */
+    padding: 1rem; /* 16px */
     background: linear-gradient(180deg, rgb(0 0 0 / 0%) 0%, rgb(0 0 0 / 81%) 100%);
   }
 
-  /* 차의 기본 분류 — Figma 2열 178px */
+  .tea-store-dado-card__title {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.625rem; /* 26px */
+  }
+
+  .tea-store-dado-card__description {
+    font-size: 1rem; /* 16px */
+    line-height: 1.625rem; /* 26px */
+  }
+
+  /* 차의 기본 분류 — Figma MO 402×1192, 2열 178px */
   .tea-store-types {
     background-color: var(--han300);
   }
 
   .tea-store-types__inner {
-    padding-block: 4rem;
-    padding-inline: grid.$mobile-grid-padding;
+    padding-top: 4rem; /* 64px */
+    padding-bottom: 4rem; /* 64px */
+    padding-inline: 1rem; /* 16px */
   }
 
   .tea-store-types__head {
-    gap: 1rem;
+    gap: 1rem; /* 16px */
     padding-inline: 0;
     width: 100%;
-    max-width: grid.$mobile-grid-inner;
+    max-width: 23.125rem; /* 370px */
     margin-inline: auto;
+  }
+
+  .tea-store-types__title {
+    font-size: 1.5rem; /* 24px */
+    line-height: 2rem; /* 32px */
+  }
+
+  .tea-store-types__subtitle {
+    font-size: 1rem; /* 16px */
+    line-height: 1.625rem; /* 26px */
   }
 
   .tea-store-types__grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.875rem;
+    gap: 0.875rem; /* 14px */
     width: 100%;
-    max-width: grid.$mobile-grid-inner;
+    max-width: 23.125rem; /* 370px */
     padding-inline: 0;
     margin-inline: auto;
-    margin-top: 2.5rem;
+    margin-top: 2.5rem; /* 40px */
   }
 
   .tea-store-type {
     width: 100%;
     min-height: 0;
-    padding: 0.5rem;
+    padding: 0.5rem; /* 8px */
     gap: 0;
     box-shadow: none;
     transform: none;
@@ -1323,14 +1530,24 @@
   }
 
   .tea-store-type__head {
-    gap: 0.25rem;
-    padding-bottom: 0.25rem;
+    gap: 0.25rem; /* 4px */
+    padding-bottom: 0.25rem; /* 4px */
+  }
+
+  .tea-store-type__name {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.875rem; /* 30px */
+  }
+
+  .tea-store-type__tagline {
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.375rem; /* 22px */
   }
 
   .tea-store-type__visual {
     position: relative;
     aspect-ratio: auto;
-    height: 7.5rem;
+    height: 7.5rem; /* 120px */
     margin-block: 0;
   }
 
@@ -1366,26 +1583,32 @@
   }
 
   .tea-store-type__description {
-    padding-top: 0.5rem;
+    padding-top: 0.5rem; /* 8px */
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.375rem; /* 22px */
   }
 
   .tea-store-types__logo {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 11.5rem;
+    min-height: 11.5rem; /* 184px */
   }
 
   .tea-store-types__logo-image {
     display: block;
-    width: min(11.5rem, 78%);
+    width: 11.5rem; /* 184px */
     height: auto;
     object-fit: contain;
   }
 
-  /* 사계의 찻자리 — Figma 2×2 */
+  /* 사계의 찻자리 — Figma MO 402×863 */
   .tea-store-seasons__inner {
-    padding-block: 4rem;
+    position: relative;
+    z-index: 1;
+    padding-top: 4rem; /* 64px */
+    padding-bottom: 4rem; /* 64px */
+    padding-inline: 1rem; /* 16px */
   }
 
   .tea-store-seasons {
@@ -1400,25 +1623,39 @@
     }
   }
 
-  .tea-store-seasons__inner {
-    position: relative;
-    z-index: 1;
-  }
-
   .tea-store-seasons__grid {
-    row-gap: 2rem;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 1rem; /* 16px */
+    width: 100%;
+    max-width: 23.125rem; /* 370px */
+    margin-inline: auto;
+    padding-inline: 0;
   }
 
   .tea-store-seasons__head {
+    grid-column: 1 / -1;
     align-items: center;
     text-align: center;
   }
 
+  .tea-store-seasons__title {
+    font-size: 1.5rem; /* 24px */
+    line-height: 2rem; /* 32px */
+  }
+
+  .tea-store-seasons__subtitle {
+    font-size: 1rem; /* 16px */
+    line-height: 1.625rem; /* 26px */
+  }
+
   .tea-store-seasons__cards {
     display: grid;
+    grid-column: 1 / -1;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 0.875rem;
-    row-gap: 0.875rem;
+    column-gap: 0.875rem; /* 14px */
+    row-gap: 0.875rem; /* 14px */
   }
 
   .tea-store-season {
@@ -1427,10 +1664,28 @@
 
   .tea-store-season__image-wrap {
     max-width: none;
+    width: 100%;
   }
 
   .tea-store-season__description {
-    margin-top: 1rem;
+    margin-top: 1rem; /* 16px */
+    font-size: 1rem; /* 16px */
+    line-height: 1.625rem; /* 26px */
+  }
+}
+
+/* 402px 이하 — 모바일 앵커 (고정값) */
+@media (max-width: $mobile) {
+  .tea-store-kv {
+    height: 43.75rem; /* 700px 고정 */
+  }
+
+  .tea-store-intro,
+  .tea-store-culture,
+  .tea-store-ceremony,
+  .tea-store-kinds {
+    height: 40.625rem; /* 650px 고정 */
+    min-height: 40.625rem;
   }
 }
 
@@ -1476,67 +1731,101 @@
   }
 }
 
-/* Tablet/Mobile fluid type scaling (1024px -> 402px) */
-@media (max-width: $laptop) {
+/* Tablet/Mobile fluid type — 구간별 clamp lerp */
+@media (min-width: $tablet) and (max-width: $laptop) {
+  .tea-store-kv .ft-64b {
+    font-size: pr.pr-lerp-laptop-tablet(2.5rem, 1.875rem);
+    line-height: pr.pr-lerp-laptop-tablet(3.25rem, 2.5rem);
+  }
+
+  .tea-store-kv .ft-28r {
+    font-size: pr.pr-lerp-laptop-tablet(1.5rem, 1.125rem);
+    line-height: pr.pr-lerp-laptop-tablet(2.125rem, 1.625rem);
+  }
+
+  .tea-store-intro .ft-48b,
+  .tea-store-culture .ft-48b,
+  .tea-store-ceremony .ft-48b,
+  .tea-store-kinds .ft-48b,
+  .tea-store-seasons .ft-48b {
+    font-size: pr.pr-lerp-laptop-tablet(2rem, 1.875rem);
+    line-height: pr.pr-lerp-laptop-tablet(2.75rem, 2.5rem);
+  }
+
+  .tea-store-intro .ft-22r,
+  .tea-store-culture .ft-22r,
+  .tea-store-ceremony .ft-22r,
+  .tea-store-kinds .ft-22r,
+  .tea-store-dado .ft-22r,
+  .tea-store-types .ft-22r,
+  .tea-store-seasons .ft-22r {
+    font-size: pr.pr-lerp-laptop-tablet(1.25rem, 1.125rem);
+    line-height: pr.pr-lerp-laptop-tablet(2.125rem, 1.875rem);
+  }
+
+  .tea-store-dado .ft-36b,
+  .tea-store-types .ft-36b {
+    font-size: pr.pr-lerp-laptop-tablet(2rem, 1.5rem);
+    line-height: pr.pr-lerp-laptop-tablet(2.75rem, 2rem);
+  }
+}
+
+@media (max-width: #{$tablet - 1px}) {
   .tea-store-kv .ft-64b,
   .tea-store-intro .ft-48b,
   .tea-store-culture .ft-48b,
   .tea-store-ceremony .ft-48b,
   .tea-store-kinds .ft-48b,
   .tea-store-seasons .ft-48b {
-    font-size: clamp(1.5rem, 0.857rem + 2.56vw, 2.5rem);
-    line-height: clamp(2rem, 1.357rem + 2.56vw, 3.25rem);
+    font-size: pr.pr-lerp-mobile-tablet(2rem, 1.875rem);
+    line-height: pr.pr-lerp-mobile-tablet(2.75rem, 2.5rem);
   }
 
   .tea-store-kv .ft-28r,
-  .tea-store-dado .ft-22r,
-  .tea-store-types .ft-22r,
-  .tea-store-seasons .ft-22r,
   .tea-store-intro .ft-22r,
   .tea-store-culture .ft-22r,
   .tea-store-ceremony .ft-22r,
-  .tea-store-kinds .ft-22r {
-    font-size: clamp(1.125rem, 1.045rem + 0.32vw, 1.25rem);
-    line-height: clamp(1.75rem, 1.589rem + 0.64vw, 2rem);
+  .tea-store-kinds .ft-22r,
+  .tea-store-dado .ft-22r,
+  .tea-store-types .ft-22r,
+  .tea-store-seasons .ft-22r {
+    font-size: pr.pr-lerp-mobile-tablet(1.5rem, 1.125rem);
+    line-height: pr.pr-lerp-mobile-tablet(2.125rem, 1.875rem);
+  }
+
+  .tea-store-dado .ft-36b,
+  .tea-store-types .ft-36b {
+    font-size: pr.pr-lerp-mobile-tablet(2rem, 1.5rem);
+    line-height: pr.pr-lerp-mobile-tablet(2.75rem, 2rem);
+  }
+
+  .tea-store-seasons .ft-48b {
+    font-size: pr.pr-lerp-mobile-tablet(2rem, 1.5rem);
+    line-height: pr.pr-lerp-mobile-tablet(2.75rem, 2rem);
   }
 
   .tea-store-dado .ft-18r,
   .tea-store-type .ft-16r {
-    line-height: clamp(1.625rem, 1.545rem + 0.32vw, 1.875rem);
+    line-height: pr.pr-lerp-mobile-tablet(1.875rem, 1.75rem);
+  }
+}
+
+@media (min-width: $tablet-md) and (max-width: #{$tablet - 1px}) {
+  .tea-store-kv .ft-64b {
+    font-size: pr.pr-lerp-tablet-md-range(1.875rem, 2.5rem);
+    line-height: pr.pr-lerp-tablet-md-range(2.5rem, 3.25rem);
+  }
+
+  .tea-store-kv .ft-28r {
+    font-size: pr.pr-lerp-tablet-md-range(1.125rem, 1.5rem);
+    line-height: pr.pr-lerp-tablet-md-range(1.625rem, 2.125rem);
   }
 }
 
 @media (max-width: ($tablet - 1px)) {
-  .tea-store-kv__content {
-    width: 100%;
-    max-width: 19.3125rem;
-  }
-
   .tea-store-kv__description {
     max-width: 100%;
     text-wrap: pretty;
-  }
-
-  .tea-store-intro__content {
-    width: 100%;
-    max-width: 19.3125rem;
-  }
-
-  .tea-store-culture__content {
-    width: 100%;
-    max-width: 17.5rem;
-    margin-right: 2.5rem;
-  }
-
-  .tea-store-ceremony__content {
-    width: 100%;
-    max-width: 23.125rem;
-  }
-
-  .tea-store-kinds__content {
-    width: 100%;
-    max-width: 19.25rem;
-    margin-left: 0;
   }
 
   .tea-store-intro__description,
@@ -1588,6 +1877,8 @@
     width: 100%;
     white-space: pre-line;
     text-wrap: pretty;
+    font-size: 1rem;
+    line-height: 1.625rem;
   }
 
   .tea-store-type__description {

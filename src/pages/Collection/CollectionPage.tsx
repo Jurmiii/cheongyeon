@@ -1,5 +1,5 @@
 import { useState } from "react";
-import subSymbol from "../../assets/images/01main/subsymbol.svg";
+import collectionLineSymbol from "../../assets/images/05collection/collection-line-symbol.svg";
 import aromaGraph from "../../assets/images/05collection/graph.webp";
 import { Footer, Header, Modal2 } from "../../components/common";
 import type { TeaCollectionModalData } from "../../components/common/TeaCollectionModal/teaCollectionModal.types";
@@ -29,7 +29,11 @@ function CollectionPage() {
         <div className="collection-kv__grid">
           <div className="collection-kv__content">
             <h1 className="collection-kv__title ft-64b ink500">차 컬렉션</h1>
-            <img className="collection-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
+            <div className="collection-kv__symbol-line" aria-hidden="true">
+              <span className="collection-kv__line-bar" />
+              <img className="collection-kv__line-symbol" src={collectionLineSymbol} alt="" />
+              <span className="collection-kv__line-bar" />
+            </div>
             <p className="collection-kv__description ft-28r ink500">
               서로 다른 찻잎이 만들어내는
               <br />
