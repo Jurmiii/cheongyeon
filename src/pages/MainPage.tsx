@@ -862,7 +862,7 @@ export default function MainPage() {
     const context = gsap.context(() => {
       const section = sec3Ref.current;
 
-      if (!section) {
+      if (!section || !window.matchMedia("(min-width: 1441px)").matches) {
         return;
       }
 
@@ -1212,14 +1212,14 @@ export default function MainPage() {
         <div className="main-sec1__grid">
           <div className="main-sec1__content">
             <img className="main-sec1__kv-title" src={kvTitle} alt="청연" />
-            <h1 className="main-sec1__title ft-48b ft-40b ft-30b ink500">
+            <h1 className="main-sec1__title main-page-type--kv-title ft-48b ink500">
               차를 우리는 순간,
               <br />
               시간은 천천히 흐른다
             </h1>
             <img className="main-sec1__symbol" src={symbol1} alt="" aria-hidden="true" />
             <img className="main-sec1__symbol main-sec1__symbol--responsive" src={subsymbol} alt="" aria-hidden="true" />
-            <p className="main-sec1__description ft-28r ft-24r ft-18b ink500">
+            <p className="main-sec1__description main-page-type--kv-desc ft-28r ink500">
               계절과 자연이 머무는
               <br />
               프리미엄 티 익스피리언스
@@ -1241,17 +1241,17 @@ export default function MainPage() {
         <video className="main-sec2__video" src={aboutVideo} autoPlay loop muted playsInline aria-hidden="true" />
         <div className="main-sec2__grid">
           <div className="main-sec2__content">
-            <h2 className="ft-48b ink50">
+            <h2 className="main-page-type--sec2-title ft-48b ink50">
               차와 함께하는
               <br />
               고요한 쉼
             </h2>
-            <p className="main-sec2__text-first ft-22r ink50">
+            <p className="main-sec2__text-first main-page-type--sec2-subtitle ft-22r ink50">
               차는 단순한 음료가 아니라
               <br />
               삶의 여유입니다.
             </p>
-            <p className="main-sec2__text-second ft-22r ink50">
+            <p className="main-sec2__text-second main-page-type--sec2-subtitle ft-22r ink50">
               지금 이 순간을 온전히
               <br />
               느껴보세요.
@@ -1267,12 +1267,12 @@ export default function MainPage() {
       >
         <div className="main-sec3__grid">
           <div className="main-sec3__intro">
-            <h2 className="ft-64b ink500">
+            <h2 className="main-page-type--sec3-title ft-64b ink500">
               사계절 다도
               <br />
               원데이 클래스
             </h2>
-            <p className="main-sec3__description ft-36r ink500">
+            <p className="main-sec3__description main-page-type--sec3-desc ft-36r ink500">
               계절의 흐름을 따라 차와 함께하는 하루,
               <br />
               자연의 색과 향을 오롯이 느끼는 시간입니다.
@@ -1282,12 +1282,24 @@ export default function MainPage() {
         </div>
         <div className="main-sec3__spring">
           <div className="main-sec3__spring-text">
-            <p className="ft-48b ink500">봄</p>
+            <p className="main-page-type--sec3-season-title ft-48b ink500">봄</p>
             <img className="main-sec3__spring-symbol" src={symbol1} alt="" aria-hidden="true" />
-            <p className="main-sec3__spring-description ft-28r ink500">
-              새싹이 돋는 계절, 향기로운 봄내음이
-              <br />
-              몸과 마음에 생기를 더합니다.
+            <p className="main-sec3__spring-description main-page-type--sec3-season-desc ft-28r ink500">
+              {kvViewport === "mobile" ? (
+                <>
+                  새싹이 돋는 계절, 향기로운
+                  <br />
+                  봄내음이 몸과 마음에
+                  <br />
+                  생기를 더합니다.
+                </>
+              ) : (
+                <>
+                  새싹이 돋는 계절, 향기로운 봄내음이
+                  <br />
+                  몸과 마음에 생기를 더합니다.
+                </>
+              )}
             </p>
           </div>
           <div className="main-sec3__spring-composition">
@@ -1308,12 +1320,22 @@ export default function MainPage() {
         </div>
         <div className="main-sec3__summer">
           <div className="main-sec3__summer-text">
-            <p className="ft-48b ink500">여름</p>
+            <p className="main-page-type--sec3-season-title ft-48b ink500">여름</p>
             <img className="main-sec3__summer-symbol" src={symbol1} alt="" aria-hidden="true" />
-            <p className="main-sec3__summer-description ft-28r ink500">
-              더위에 지친 마음을 맑게 씻어주는
-              <br />
-              시원함을 가득 안겨드립니다
+            <p className="main-sec3__summer-description main-page-type--sec3-season-desc ft-28r ink500">
+              {kvViewport === "mobile" ? (
+                <>
+                  더위에 지친 마음을 맑게
+                  <br />
+                  씻어주는 시원함을 가득 안겨드립니다
+                </>
+              ) : (
+                <>
+                  더위에 지친 마음을 맑게 씻어주는
+                  <br />
+                  시원함을 가득 안겨드립니다
+                </>
+              )}
             </p>
           </div>
           <div className="main-sec3__summer-composition">
@@ -1335,12 +1357,24 @@ export default function MainPage() {
         </div>
         <div className="main-sec3__fall">
           <div className="main-sec3__fall-text">
-            <p className="ft-48b ink500">가을</p>
+            <p className="main-page-type--sec3-season-title ft-48b ink500">가을</p>
             <img className="main-sec3__fall-symbol" src={symbol1} alt="" aria-hidden="true" />
-            <p className="main-sec3__fall-description ft-28r ink500">
-              익어가는 계절, 깊고 풍부한 차향이
-              <br />
-              내면의 여유와 성찰을 선물합니다.
+            <p className="main-sec3__fall-description main-page-type--sec3-season-desc ft-28r ink500">
+              {kvViewport === "mobile" ? (
+                <>
+                  익어가는 계절, 깊고
+                  <br />
+                  풍부한 차향이 내면의
+                  <br />
+                  여유와 성찰을 선물합니다.
+                </>
+              ) : (
+                <>
+                  익어가는 계절, 깊고 풍부한 차향이
+                  <br />
+                  내면의 여유와 성찰을 선물합니다.
+                </>
+              )}
             </p>
           </div>
           <div className="main-sec3__fall-composition">
@@ -1361,12 +1395,24 @@ export default function MainPage() {
         </div>
         <div className="main-sec3__winter">
           <div className="main-sec3__winter-text">
-            <p className="ft-48b ink500">겨울</p>
+            <p className="main-page-type--sec3-season-title ft-48b ink500">겨울</p>
             <img className="main-sec3__winter-symbol" src={symbol1} alt="" aria-hidden="true" />
-            <p className="main-sec3__winter-description ft-28r ink500">
-              몸과 마음을 녹이고 새로운 계절을
-              <br />
-              준비하는 시간을 갖습니다.
+            <p className="main-sec3__winter-description main-page-type--sec3-season-desc ft-28r ink500">
+              {kvViewport === "mobile" ? (
+                <>
+                  몸과 마음을 녹이고
+                  <br />
+                  새로운 계절을 준비하는
+                  <br />
+                  시간을 갖습니다.
+                </>
+              ) : (
+                <>
+                  몸과 마음을 녹이고 새로운 계절을
+                  <br />
+                  준비하는 시간을 갖습니다.
+                </>
+              )}
             </p>
           </div>
           <div className="main-sec3__winter-composition">
