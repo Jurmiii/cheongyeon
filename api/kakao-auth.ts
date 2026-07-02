@@ -1,16 +1,39 @@
-const { createClient } = require("@supabase/supabase-js");
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+import { createClient } from "@supabase/supabase-js";
 
-function getSyntheticEmail(kakaoId) {
+interface KakaoTokenResponse {
+  access_token?: string;
+  error?: string;
+  error_description?: string;
+}
+
+interface KakaoUserResponse {
+  id: number;
+  properties?: {
+    nickname?: string;
+    profile_image?: string;
+    thumbnail_image?: string;
+  };
+  kakao_account?: {
+    profile?: {
+      nickname?: string;
+      profile_image_url?: string;
+      thumbnail_image_url?: string;
+    };
+  };
+}
+
+function getSyntheticEmail(kakaoId: string) {
   return `kakao_${kakaoId}@cheongyeon.auth`;
 }
 
-function getEnv(name) {
+function getEnv(name: string) {
   const value = process.env[name]?.trim();
   return value || undefined;
 }
 
-function getMissingEnvNames() {
-  const missing = ["KAKAO_REST_API_KEY", "KAKAO_CLIENT_SECRET", "SUPABASE_SERVICE_ROLE_KEY"].filter(
+function getMissingEnvNames(): string[] {
+  const missing: string[] = ["KAKAO_REST_API_KEY", "KAKAO_CLIENT_SECRET", "SUPABASE_SERVICE_ROLE_KEY"].filter(
     (name) => !getEnv(name),
   );
 
@@ -21,7 +44,9 @@ function getMissingEnvNames() {
   return missing;
 }
 
-async function handleKakaoAuth({ code, redirectUri }) {
+async function handleKakaoAuth(body: { code?: string; redirectUri?: string }) {
+  const { code, redirectUri } = body;
+
   if (!code || typeof code !== "string") {
     throw new Error("Authorization code is required.");
   }
@@ -35,10 +60,10 @@ async function handleKakaoAuth({ code, redirectUri }) {
     throw new Error(`Server auth configuration is incomplete: ${missingEnv.join(", ")}`);
   }
 
-  const kakaoRestApiKey = getEnv("KAKAO_REST_API_KEY");
-  const kakaoClientSecret = getEnv("KAKAO_CLIENT_SECRET");
-  const supabaseUrl = getEnv("SUPABASE_URL") || getEnv("VITE_SUPABASE_URL");
-  const serviceRoleKey = getEnv("SUPABASE_SERVICE_ROLE_KEY");
+  const kakaoRestApiKey = getEnv("KAKAO_REST_API_KEY")!;
+  const kakaoClientSecret = getEnv("KAKAO_CLIENT_SECRET")!;
+  const supabaseUrl = getEnv("SUPABASE_URL") || getEnv("VITE_SUPABASE_URL")!;
+  const serviceRoleKey = getEnv("SUPABASE_SERVICE_ROLE_KEY")!;
 
   const tokenParams = new URLSearchParams({
     grant_type: "authorization_code",
@@ -56,7 +81,7 @@ async function handleKakaoAuth({ code, redirectUri }) {
     body: tokenParams.toString(),
   });
 
-  const tokenData = await tokenResponse.json();
+  const tokenData = (await tokenResponse.json()) as KakaoTokenResponse;
 
   if (!tokenResponse.ok || !tokenData.access_token) {
     throw new Error(
@@ -71,7 +96,7 @@ async function handleKakaoAuth({ code, redirectUri }) {
     },
   });
 
-  const kakaoUser = await userResponse.json();
+  const kakaoUser = (await userResponse.json()) as KakaoUserResponse;
 
   if (!userResponse.ok || !kakaoUser.id) {
     throw new Error("Failed to load Kakao profile.");
@@ -97,7 +122,7 @@ async function handleKakaoAuth({ code, redirectUri }) {
     },
   });
 
-  let userId = null;
+  let userId: string | null = null;
 
   const { data: existingProfile } = await supabaseAdmin
     .from("profiles")
@@ -174,25 +199,18 @@ async function handleKakaoAuth({ code, redirectUri }) {
   };
 }
 
-function sendJson(res, statusCode, body) {
-  res.statusCode = statusCode;
-  res.setHeader("Content-Type", "application/json");
-  res.end(JSON.stringify(body));
-}
-
-module.exports = async function handler(req, res) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "content-type");
 
   if (req.method === "OPTIONS") {
-    res.statusCode = 204;
-    res.end();
+    res.status(204).end();
     return;
   }
 
   if (req.method !== "POST") {
-    sendJson(res, 405, { error: "Method not allowed" });
+    res.status(405).json({ error: "Method not allowed" });
     return;
   }
 
@@ -205,9 +223,9 @@ module.exports = async function handler(req, res) {
           : {};
 
     const data = await handleKakaoAuth(body);
-    sendJson(res, 200, data);
+    res.status(200).json(data);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unexpected server error.";
-    sendJson(res, 400, { error: message });
+    res.status(400).json({ error: message });
   }
-};
+}
