@@ -201,7 +201,7 @@
   top: 1rem;
   right: 1rem;
   z-index: 1;
-  border-radius: 999px;
+  border-radius: 62.4375rem;
 }
 
 .cy-badge.reservation-class-card__badge.cy-badge--confirmed {
@@ -1005,16 +1005,48 @@
 }
 
 @media (max-width: 75rem) {
+  .reservation-hero__grid,
+  .reservation-form__grid,
+  .reservation-classes__grid,
+  .reservation-schedule__grid,
+  .reservation-payment__grid {
+    max-width: 64rem;
+  }
+
   .reservation-classes__list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .reservation-schedule__grid {
     grid-template-columns: 1fr;
+    gap: 2rem;
   }
 
   .reservation-schedule__options {
     height: auto;
+  }
+
+  .reservation-schedule__calendar-wrap > .reservation-form__label,
+  .reservation-schedule__options .reservation-form__label,
+  .reservation-schedule__calendar,
+  .reservation-schedule__calendar .calendar,
+  .reservation-schedule__time-grid,
+  .reservation-schedule__counter,
+  .reservation-schedule__guest-note,
+  .reservation-request__title,
+  .reservation-request__textarea {
+    max-width: none;
+    width: 100%;
+    margin-inline: 0;
+  }
+
+  .reservation-schedule__times,
+  .reservation-schedule__guests {
+    align-items: stretch;
+  }
+
+  .reservation-request {
+    align-items: stretch;
   }
 
   .reservation-request {
@@ -1032,9 +1064,263 @@
   }
 }
 
-@media (max-width: $tablet) {
+@media (min-width: ($tablet + 1px)) and (max-width: 75rem) {
   .reservation-hero {
-    padding-top: calc(5.625rem + 10rem);
+    padding-top: calc(5.625rem + 6rem);
+    padding-bottom: 4rem;
+  }
+
+  .reservation-form__branch-list {
+    gap: 1rem;
+  }
+
+  .reservation-form__branch {
+    flex: 1 1 calc(50% - 0.5rem);
+    min-width: 0;
+  }
+
+  .reservation-form__row {
+    gap: 1rem;
+  }
+
+  .reservation-class-card__image-wrap {
+    height: 13.5rem;
+  }
+
+  .reservation-payment__tabs,
+  .reservation-payment__selects {
+    gap: 1rem;
+  }
+
+  .reservation-payment__action--submit.cy-button {
+    width: 100%;
+    max-width: 27rem;
+  }
+}
+
+@media (min-width: ($mobile + 1px)) and (max-width: $tablet) {
+  .reservation-hero {
+    padding-top: calc(5.625rem + 6rem);
+    padding-bottom: 4rem;
+  }
+
+  .reservation-hero__grid,
+  .reservation-form__grid,
+  .reservation-classes__grid,
+  .reservation-schedule__grid,
+  .reservation-payment__grid {
+    padding-inline: grid.$tablet-grid-padding;
+  }
+
+  .reservation-hero__title {
+    font-family: var(--font-body);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .reservation-hero__description {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.625rem;
+  }
+
+  .reservation-form__label,
+  .reservation-request__title {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.375rem;
+  }
+
+  .reservation-form__branch-list {
+    gap: 0.75rem;
+  }
+
+  .reservation-form__branch {
+    flex: 1 1 calc(25% - 0.5625rem);
+    min-width: 0;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.625rem;
+  }
+
+  .reservation-form__branch-address {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.125rem;
+  }
+
+  .reservation-form__row {
+    margin-top: 2rem;
+  }
+
+  .reservation-form__field .cy-input,
+  .reservation-form__field .cy-input::placeholder,
+  .reservation-request__textarea,
+  .reservation-request__textarea::placeholder {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.125rem;
+  }
+
+  .reservation-form__error,
+  .reservation-schedule__guest-note,
+  .reservation-schedule__time-occupancy,
+  .reservation-payment__remember,
+  .reservation-payment__bank-notice {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.125rem;
+  }
+
+  .reservation-classes__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .reservation-class-card__title {
+    font-family: var(--font-body);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.875rem;
+  }
+
+  .reservation-class-card__description {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.625rem;
+  }
+
+  .reservation-class-card__meta {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.375rem;
+  }
+
+  .reservation-class-card__select {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.625rem;
+  }
+
+  .reservation-schedule__time-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .calendar__title {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.75rem;
+  }
+
+  .calendar__weekday,
+  .reservation-schedule__time,
+  .reservation-schedule__counter-value {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.375rem;
+  }
+
+  .reservation-payment__title {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.75rem;
+  }
+
+  .reservation-payment__tabs {
+    flex-direction: row;
+  }
+
+  .reservation-payment__selects {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .reservation-payment__tab,
+  .reservation-payment__select-option,
+  .reservation-payment__bank-term {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.625rem;
+  }
+
+  .reservation-payment__select {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.125rem;
+  }
+
+  .reservation-payment__bank-guide {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.625rem;
+  }
+
+  .reservation-payment__bank-desc {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.625rem;
+  }
+
+  .reservation-payment__actions {
+    flex-direction: row;
+  }
+
+  .reservation-payment__action--submit.cy-button {
+    width: 100%;
+    max-width: 27rem;
+  }
+}
+
+@media (max-width: $mobile) {
+  .reservation-hero {
+    padding-top: calc(5.625rem + 4rem);
+    padding-bottom: 3rem;
+  }
+
+  .reservation-hero__grid,
+  .reservation-form__grid,
+  .reservation-classes__grid,
+  .reservation-schedule__grid,
+  .reservation-payment__grid {
+    padding-inline: 1rem;
+  }
+
+  .reservation-hero__title {
+    font-family: var(--font-body);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .reservation-hero__description {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.625rem;
+  }
+
+  .reservation-form__label,
+  .reservation-request__title {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.375rem;
   }
 
   .reservation-form__row,
@@ -1044,22 +1330,151 @@
     flex-direction: column;
   }
 
+  .reservation-form__branch-list {
+    gap: 0.5rem;
+  }
+
   .reservation-form__branch {
-    flex-basis: calc(50% - 0.75rem);
+    flex: 1 1 calc(50% - 0.25rem);
+    min-width: 0;
+    padding-inline: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.625rem;
+  }
+
+  .reservation-form__branch-address {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.125rem;
+  }
+
+  .reservation-form__row {
+    margin-top: 1.5rem;
+  }
+
+  .reservation-form__field .cy-input,
+  .reservation-form__field .cy-input::placeholder,
+  .reservation-request__textarea,
+  .reservation-request__textarea::placeholder {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.125rem;
+  }
+
+  .reservation-form__error,
+  .reservation-schedule__guest-note,
+  .reservation-schedule__time-occupancy,
+  .reservation-payment__remember,
+  .reservation-payment__bank-notice {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.125rem;
   }
 
   .reservation-classes__list {
     grid-template-columns: 1fr;
   }
 
+  .reservation-class-card__title {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.75rem;
+  }
+
+  .reservation-class-card__description {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.625rem;
+  }
+
+  .reservation-class-card__badge.cy-badge {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.125rem;
+  }
+
+  .reservation-class-card__meta {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.375rem;
+  }
+
+  .reservation-class-card__select {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.625rem;
+  }
+
   .reservation-schedule__time-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-}
 
-@media (max-width: 30rem) {
-  .reservation-form__branch {
-    flex-basis: 100%;
+  .calendar__title {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.75rem;
+  }
+
+  .calendar__weekday,
+  .reservation-schedule__time,
+  .reservation-schedule__counter-value {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.375rem;
+  }
+
+  .reservation-payment__title {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.75rem;
+  }
+
+  .reservation-payment__tab,
+  .reservation-payment__select-option,
+  .reservation-payment__bank-term {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.625rem;
+  }
+
+  .reservation-payment__select {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.125rem;
+  }
+
+  .reservation-payment__bank-guide {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.625rem;
+  }
+
+  .reservation-payment__bank-desc {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.625rem;
+  }
+
+  .reservation-payment__action--submit.cy-button {
+    width: 100%;
+    max-width: none;
   }
 }
 
@@ -1084,7 +1499,7 @@
   max-width: 100%;
   height: 24rem;
   padding: 1.5rem;
-  border: 1px solid var(--moon500);
+  border: 0.0625rem solid var(--moon500);
   border-radius: var(--radius-2);
   background: var(--white);
   text-align: center;
@@ -1125,8 +1540,8 @@
   justify-content: center;
   width: 3.125rem;
   height: 3.125rem;
-  border: 1px solid var(--deep500);
-  border-radius: 999px;
+  border: 0.0625rem solid var(--deep500);
+  border-radius: 62.4375rem;
   background: transparent;
   color: var(--deep500);
 }

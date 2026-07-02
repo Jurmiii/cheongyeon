@@ -33,3 +33,19 @@
     padding-inline: var(--space-2);
   }
 }
+
+// Tablet: PC와 동일 — 가운데 정렬 유지
+@media (min-width: ($mobile + 1px)) and (max-width: $tablet) {
+  .signup-page-wrapper .signup-page {
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+// Mobile (370px 기준)
+@media (max-width: $mobile) {
+  .signup-page-wrapper .signup-page {
+    align-items: center;
+    justify-content: center;
+  }
+}
