@@ -1040,24 +1040,88 @@
   }
 }
 
-// 넓은 태블릿 (611px ~ 768px)
-@media (min-width: 611px) and (max-width: $tablet) {
+// 넓은 태블릿 (612px ~ 768px) — 다가오는 찻자리 시안 2번
+@media (min-width: ($tablet-md + 1px)) and (max-width: $tablet) {
+  .my-page__upcoming-box {
+    display: grid;
+    grid-template-columns: 18.9375rem minmax(0, 1fr);
+    grid-template-areas:
+      "image content"
+      "cancel change";
+    align-items: start;
+    column-gap: var(--space-1);
+    row-gap: var(--space-2);
+    padding: 0;
+    border: none;
+    border-radius: 0;
+  }
+
   .my-page .tea-class-content-box--upcoming {
-    flex-direction: row;
-    align-items: flex-start;
+    display: contents;
 
     .tea-class-content-box__image {
-      flex: 0 0 calc(50% - var(--space-1));
-      width: calc(50% - var(--space-1));
-      max-width: 12.5rem;
+      grid-area: image;
+      flex: none;
+      width: 18.9375rem;
+      max-width: 100%;
       height: auto;
-      aspect-ratio: 1 / 1;
+      aspect-ratio: 345 / 285;
+      border-radius: var(--radius-2);
+    }
+
+    .tea-class-content-box__content {
+      grid-area: content;
+      display: flex;
+      flex-direction: column;
+      margin-left: 0;
+    }
+
+    .tea-class-content-box__title-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-1);
+      margin-bottom: var(--space-1);
+
+      .cy-badge {
+        order: -1;
+      }
+    }
+
+    .tea-class-content-box__meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: var(--space-1);
     }
 
     .tea-class-content-box__meta-item span {
+      font-family: var(--font-body);
       font-size: 1.25rem;
       font-weight: 500;
       line-height: 2rem;
+    }
+  }
+
+  .my-page__upcoming-actions {
+    display: contents;
+  }
+
+  .my-page__upcoming-button {
+    flex: none;
+    width: 18.9375rem;
+    height: 3rem;
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.875rem;
+
+    &:first-child {
+      grid-area: change;
+    }
+
+    &:last-child {
+      grid-area: cancel;
     }
   }
 
