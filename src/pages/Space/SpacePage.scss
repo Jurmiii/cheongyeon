@@ -817,7 +817,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    padding: var(--space-1);
+    padding: var(--space-3);
+    text-align: center;
   }
 
   .space-learning__card-content,
@@ -827,8 +828,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    padding-block: var(--space-1);
-    padding-inline: var(--space-1) 0.375rem;
+    padding: var(--space-3);
+    text-align: center;
   }
 
   .space-gallery__card-title,
@@ -837,15 +838,13 @@
     font-size: 1.125rem;
     font-weight: 700;
     line-height: 1.75rem;
-    margin-bottom: var(--space-1);
+    margin-bottom: 0;
+    white-space: nowrap;
   }
 
   .space-gallery__card-text,
   .space-learning__card-text {
-    font-family: var(--font-body);
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.375rem;
+    display: none;
   }
 }
 

@@ -474,11 +474,11 @@ function SpacePage() {
               <br />
               구성으로 이루어져 있습니다.
             </p>
-            <p className="space-map__hint ft-16r ink400">* 번호를 눌러 공간을 확인해보세요</p>
+            <p className="space-map__hint ft-16r ink400">* 번호를 눌러 공간을 확인해보세요.</p>
           </div>
 
           <div className="space-map__blueprint">
-            <p className="space-map__guide ft-16r ink400">공간 번호 선택하기</p>
+            <p className="space-map__guide ft-16r ink400">* 번호를 눌러 공간을 확인해보세요.</p>
             <div className="space-map__blueprint-stage">
               <img src={blueprint} alt="" className="space-map__blueprint-image" aria-hidden="true" />
               <div className="space-map__markers">
