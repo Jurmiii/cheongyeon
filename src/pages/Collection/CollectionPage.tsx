@@ -1,7 +1,7 @@
 import { useState } from "react";
 import collectionLineSymbol from "../../assets/images/05collection/collection-line-symbol.svg";
 import aromaGraph from "../../assets/images/05collection/graph.webp";
-import { Footer, Header, Modal2 } from "../../components/common";
+import { Footer, Header, MobileFooter, MobileHeader, Modal2, TabletFooter, TabletHeader } from "../../components/common";
 import type { TeaCollectionModalData } from "../../components/common/TeaCollectionModal/teaCollectionModal.types";
 import { collectionTabs } from "./collectionTabs";
 import type { CollectionTabId } from "./collectionTabs";
@@ -21,8 +21,14 @@ function CollectionPage() {
 
   return (
     <main className="collection-page">
-      <div className="collection-page__header">
+      <div className="collection-page__header collection-page__header--desktop">
         <Header />
+      </div>
+      <div className="collection-page__header collection-page__header--tablet">
+        <TabletHeader />
+      </div>
+      <div className="collection-page__header collection-page__header--mobile">
+        <MobileHeader />
       </div>
 
       <section className="collection-kv" aria-label="차 컬렉션 키비주얼">
@@ -35,9 +41,7 @@ function CollectionPage() {
               <span className="collection-kv__line-bar" />
             </div>
             <p className="collection-kv__description ft-28r ink500">
-              서로 다른 찻잎이 만들어내는
-              <br />
-              향의 깊이를 경험해보세요
+              서로 다른 찻잎이 만들어내는 향의 깊이를 경험해보세요
             </p>
           </div>
         </div>
@@ -113,7 +117,15 @@ function CollectionPage() {
         data={selectedModalData ?? undefined}
       />
 
-      <Footer />
+      <div className="collection-page__footer collection-page__footer--desktop">
+        <Footer />
+      </div>
+      <div className="collection-page__footer collection-page__footer--tablet">
+        <TabletFooter />
+      </div>
+      <div className="collection-page__footer collection-page__footer--mobile">
+        <MobileFooter />
+      </div>
     </main>
   );
 }
