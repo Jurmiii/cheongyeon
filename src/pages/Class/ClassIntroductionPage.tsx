@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { Footer, Header, SubKvSymbolLine } from "../../components/common";
@@ -14,6 +14,17 @@ const AUTO_ADVANCE_MS = 4000;
 const REVIEW_SWIPE_MS = 850;
 const REVIEW_SWIPE_THRESHOLD = 40;
 const CAROUSEL_SCROLL_PLAY_MAX_WIDTH = 1023;
+
+function renderReviewLineBreaks(text: string) {
+  const lines = text.split("\n");
+
+  return lines.map((line, index) => (
+    <span key={`${index}-${line}`}>
+      {index > 0 ? <br /> : null}
+      {line.trim()}
+    </span>
+  ));
+}
 
 function useCarouselScrollPlayMode() {
   const [isScrollPlayMode, setIsScrollPlayMode] = useState(false);
@@ -641,6 +652,11 @@ function ClassIntroductionReviewSection() {
   }, [advanceReview, revealed, reviewCount]);
 
   const review = classIntroductionReviews[activeIndex];
+  const reviewProgressRatio =
+    reviewCount <= 1 ? 1 : activeIndex / (reviewCount - 1);
+  const reviewProgressStyle = {
+    "--review-progress-ratio": reviewProgressRatio,
+  } as CSSProperties;
 
   return (
     <section
@@ -649,49 +665,50 @@ function ClassIntroductionReviewSection() {
       style={{ backgroundImage: `url(${reviewBg})` }}
       aria-label="클래스 수강 후기"
     >
-      <div className="class-intro-review__grid">
-        <div
-          className="class-intro-review__layout"
-          aria-label="후기 스와이퍼"
-          onPointerDown={handleReviewPointerDown}
-          onPointerUp={handleReviewPointerUp}
-          onPointerCancel={handleReviewPointerCancel}
-        >
-          <div className="class-intro-review__media">
-            <div
-              className="class-intro-review__figure"
-              aria-live="polite"
-              aria-label="후기 이미지"
-            >
-              {classIntroductionReviews.map((item, index) => (
-                <img
-                  key={item.id}
-                  ref={(element) => {
-                    imageRefs.current[index] = element;
-                  }}
-                  className={[
-                    "class-intro-review__image",
-                    revealed && index === activeIndex && "is-active",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  src={item.image}
-                  alt=""
-                  aria-hidden={index !== activeIndex}
-                  draggable={false}
-                />
-              ))}
-            </div>
+      <div
+        className="class-intro-review__grid"
+        aria-label="후기 스와이퍼"
+        onPointerDown={handleReviewPointerDown}
+        onPointerUp={handleReviewPointerUp}
+        onPointerCancel={handleReviewPointerCancel}
+      >
+        <div className="class-intro-review__media">
+          <div
+            className="class-intro-review__figure"
+            aria-live="polite"
+            aria-label="후기 이미지"
+          >
+            {classIntroductionReviews.map((item, index) => (
+              <img
+                key={item.id}
+                ref={(element) => {
+                  imageRefs.current[index] = element;
+                }}
+                className={[
+                  "class-intro-review__image",
+                  revealed && index === activeIndex && "is-active",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                src={item.image}
+                alt=""
+                aria-hidden={index !== activeIndex}
+                draggable={false}
+              />
+            ))}
           </div>
+        </div>
 
-          <div className="class-intro-review__content" aria-live="off">
+        <div className="class-intro-review__content" aria-live="off">
             <div className="class-intro-review__quote-block">
               <blockquote className="class-intro-review__quote-head">
                 <h2 className="class-intro-review__headline">
                   <span className="class-intro-review__quote-mark" aria-hidden="true">
                     "
                   </span>
-                  <span className="class-intro-review__headline-text">{review.headline}</span>
+                  <span className="class-intro-review__headline-text">
+                    {renderReviewLineBreaks(review.headline)}
+                  </span>
                   <span
                     className="class-intro-review__quote-mark class-intro-review__quote-mark--close"
                     aria-hidden="true"
@@ -712,33 +729,45 @@ function ClassIntroductionReviewSection() {
               <p className="class-intro-review__name">{review.name}</p>
             </div>
 
-            <p className="class-intro-review__body">{review.body}</p>
+            {review.bodyBelowLaptop ? (
+              <>
+                <p className="class-intro-review__body class-intro-review__body--from-laptop">
+                  {renderReviewLineBreaks(review.body)}
+                </p>
+                <p className="class-intro-review__body class-intro-review__body--below-laptop">
+                  {renderReviewLineBreaks(review.bodyBelowLaptop)}
+                </p>
+              </>
+            ) : (
+              <p className="class-intro-review__body">
+                {renderReviewLineBreaks(review.body)}
+              </p>
+            )}
 
             <div className="class-intro-review__meta">
               <p className="class-intro-review__date">{review.date}</p>
 
               <div className="class-intro-review__nav" aria-label="후기 진행">
-                <div className="class-intro-review__progress">
-                  <span className="class-intro-review__count" aria-live="polite">
-                    <span className="class-intro-review__count-current">
-                      {String(activeIndex + 1).padStart(2, "0")}
-                    </span>
-                    <span className="class-intro-review__count-sep">/</span>
-                    <span className="class-intro-review__count-total">
-                      {String(reviewCount).padStart(2, "0")}
-                    </span>
+                <div
+                  className="class-intro-review__progress"
+                  style={reviewProgressStyle}
+                >
+                  <span
+                    className="class-intro-review__count class-intro-review__count--current"
+                    aria-live="polite"
+                  >
+                    {String(activeIndex + 1).padStart(2, "0")}
                   </span>
                   <span className="class-intro-review__progress-track" aria-hidden="true">
-                    <span
-                      className="class-intro-review__progress-fill"
-                      style={{ width: `${((activeIndex + 1) / reviewCount) * 100}%` }}
-                    />
+                    <span className="class-intro-review__progress-fill" />
+                  </span>
+                  <span className="class-intro-review__count class-intro-review__count--total">
+                    {String(reviewCount).padStart(2, "0")}
                   </span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
       </div>
     </section>
   );

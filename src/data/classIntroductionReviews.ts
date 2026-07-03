@@ -11,6 +11,8 @@ export interface ClassIntroductionReview {
   headline: string;
   name: string;
   body: string;
+  /** 1023px 이하에서만 사용하는 본문 (줄바꿈 등 반응형 조정) */
+  bodyBelowLaptop?: string;
   date: string;
 }
 
@@ -31,6 +33,8 @@ export const classIntroductionReviews: ClassIntroductionReview[] = [
     name: "S○○○ 님",
     body:
       "처음 한국에 놀러 왔는데, 한국 문화를 알고 싶어 검색하다가 \n 찾게 되었어요. 전통 차 문화를 배우니 마음도 차분해지고 몸도 따뜻해지는 좋은 시간이었어요. 클래스 선생님이 영어 수업이 \n 가능하셔서 편하게 경험했습니다.",
+    bodyBelowLaptop:
+      "처음 한국에 놀러 왔는데, 한국 문화를 알고 싶어 검색하다가 \n 찾게 되었어요. 전통 차 문화를 배우니 마음도 차분해지고 몸도 따뜻해지는 좋은 시간이었어요.\n클래스 선생님이 영어 수업이 \n 가능하셔서 편하게 경험했습니다.",
     date: "2026.06.22",
   },
   {
