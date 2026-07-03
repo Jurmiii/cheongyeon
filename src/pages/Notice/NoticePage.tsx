@@ -204,8 +204,8 @@ function NoticePage() {
                         </Badge>
 
                         <div className="notice-content__card-text">
-                          <h3 className="notice-content__card-title ft-22b ink500">{notice.title}</h3>
-                          <p className="notice-content__card-description ft-18r ink500">{notice.description}</p>
+                          <h3 className="notice-content__card-title ft-36b ink500">{notice.title}</h3>
+                          <p className="notice-content__card-description ft-22r ink500">{notice.description}</p>
                         </div>
                       </div>
 

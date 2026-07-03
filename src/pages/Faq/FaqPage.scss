@@ -216,14 +216,14 @@
   }
 
   .faq-kv__title {
-    font-family: var(--font-body);
+    font-family: var(--font-headline);
     font-size: 2.5rem;
     font-weight: 700;
     line-height: 1.4;
   }
 
   .faq-kv__description {
-    font-family: var(--font-body);
+    font-family: var(--font-headline);
     font-size: 1.5rem;
     font-weight: 400;
     line-height: 2.25rem;
@@ -237,11 +237,12 @@
     line-height: 1.625rem;
   }
 
-  .faq-content__answer-text {
+  // ft-16r — 답변 (나눔스퀘어 16px Regular)
+  .faq-page .faq-content__answer-text.ft-22r {
     font-family: var(--font-body);
-    font-size: 0.875rem;
+    font-size: 1rem;
     font-weight: 400;
-    line-height: 1.375rem;
+    line-height: 1.625rem;
   }
 
   .faq-content__question {
@@ -288,7 +289,7 @@
   }
 
   .faq-kv__title {
-    font-family: var(--font-body);
+    font-family: var(--font-headline);
     font-size: 1.875rem;
     font-weight: 700;
     line-height: 1.4;
@@ -296,7 +297,7 @@
 
   .faq-kv__description {
     max-width: 100%;
-    font-family: var(--font-body);
+    font-family: var(--font-headline);
     font-size: 1.25rem;
     font-weight: 400;
     line-height: 1.75rem;
@@ -329,12 +330,21 @@
     align-items: center;
   }
 
-  .faq-content__question-text,
-  .faq-content__mark {
+  // ft-16b — 질문 (나눔스퀘어 16px Bold)
+  .faq-page .faq-content__question-text.ft-28b,
+  .faq-page .faq-content__mark--question.ft-22b {
     font-family: var(--font-body);
-    font-size: 0.875rem;
-    font-weight: 700;
-    line-height: 1.375rem;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.625rem;
+  }
+
+  .faq-content__mark--question,
+  .faq-content__mark--answer {
+    width: 0.9375rem;
+    height: 1.25rem;
+    min-width: 0.9375rem;
+    min-height: 1.25rem;
   }
 
   .faq-content__chevron {
@@ -356,11 +366,12 @@
     padding-bottom: 0.75rem;
   }
 
-  .faq-content__answer-text {
+  // ft-14r — 답변 (나눔스퀘어 14px Regular)
+  .faq-page .faq-content__answer-text.ft-22r {
     max-width: none;
     font-family: var(--font-body);
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     font-weight: 400;
-    line-height: 1.125rem;
+    line-height: 1.375rem;
   }
 }
