@@ -158,129 +158,139 @@ function BrandStoryPage() {
     gsap.registerPlugin(ScrollTrigger);
 
     let context: gsap.Context | null = null;
+    let philosophyMedia: gsap.MatchMedia | null = null;
 
     const initPhilosophyAnimation = () => {
       context?.revert();
+      philosophyMedia?.revert();
 
-      context = gsap.context(() => {
-        const section = philosophySectionRef.current;
+      philosophyMedia = gsap.matchMedia();
 
-        if (!section) {
-          return;
-        }
+      philosophyMedia.add("(min-width: 64.0625rem)", () => {
+        context = gsap.context(() => {
+          const section = philosophySectionRef.current;
 
-        const scrolls = scrollRefs.current.filter(Boolean) as HTMLElement[];
+          if (!section) {
+            return;
+          }
 
-        if (scrolls.length === 0) {
-          return;
-        }
+          const scrolls = scrollRefs.current.filter(Boolean) as HTMLElement[];
 
-        const resetScrollState = () => {
-          scrolls.forEach((scroll) => {
-            const rollTop = scroll.querySelector<HTMLElement>(".brand-story-philosophy__roll-top");
+          if (scrolls.length === 0) {
+            return;
+          }
+
+          const resetScrollState = () => {
+            scrolls.forEach((scroll) => {
+              const rollTop = scroll.querySelector<HTMLElement>(".brand-story-philosophy__roll-top");
+              const bodyWrap = scroll.querySelector<HTMLElement>(".brand-story-philosophy__roll-body-wrap");
+
+              if (!rollTop || !bodyWrap) {
+                return;
+              }
+
+              gsap.set(rollTop, { autoAlpha: 1 });
+              gsap.set(bodyWrap, { height: 0 });
+            });
+          };
+
+          resetScrollState();
+
+          const timeline = gsap.timeline({
+            paused: true,
+          });
+
+          scrolls.forEach((scroll, index) => {
             const bodyWrap = scroll.querySelector<HTMLElement>(".brand-story-philosophy__roll-body-wrap");
 
-            if (!rollTop || !bodyWrap) {
+            if (!bodyWrap) {
               return;
             }
 
-            gsap.set(rollTop, { autoAlpha: 1 });
-            gsap.set(bodyWrap, { height: 0 });
+            const offset = index * 0.2;
+            const unrollHeight = getRollUnrollHeightPx(scroll);
+
+            timeline.fromTo(
+              bodyWrap,
+              { height: 0 },
+              { height: unrollHeight, duration: 1.5, ease: "power2.inOut" },
+              offset,
+            );
           });
-        };
 
-        resetScrollState();
+          const triggerTarget = section;
+          let hasLeftSection = true;
+          let sectionOverlapsViewport = false;
 
-        const timeline = gsap.timeline({
-          paused: true,
-        });
+          const isSectionFullyOutside = () => {
+            const rect = triggerTarget.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
 
-        scrolls.forEach((scroll, index) => {
-          const bodyWrap = scroll.querySelector<HTMLElement>(".brand-story-philosophy__roll-body-wrap");
+            return rect.bottom <= 0 || rect.top >= viewportHeight;
+          };
 
-          if (!bodyWrap) {
-            return;
-          }
+          const syncSectionPresence = () => {
+            const overlapsViewport = !isSectionFullyOutside();
 
-          const offset = index * 0.2;
-          const unrollHeight = getRollUnrollHeightPx(scroll);
+            if (sectionOverlapsViewport && !overlapsViewport) {
+              hasLeftSection = true;
+              timeline.pause(0);
+              resetScrollState();
+            }
 
-          timeline.fromTo(
-            bodyWrap,
-            { height: 0 },
-            { height: unrollHeight, duration: 1.5, ease: "power2.inOut" },
-            offset,
-          );
-        });
+            sectionOverlapsViewport = overlapsViewport;
+          };
 
-        const triggerTarget = section;
-        let hasLeftSection = true;
-        let sectionOverlapsViewport = false;
+          const playUnroll = () => {
+            if (!hasLeftSection) {
+              return;
+            }
 
-        const isSectionFullyOutside = () => {
-          const rect = triggerTarget.getBoundingClientRect();
-          const viewportHeight = window.innerHeight;
+            hasLeftSection = false;
+            timeline.restart(true);
+          };
 
-          return rect.bottom <= 0 || rect.top >= viewportHeight;
-        };
+          const isRolledSectionReached = () => {
+            const rect = triggerTarget.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
 
-        const syncSectionPresence = () => {
-          const overlapsViewport = !isSectionFullyOutside();
+            return rect.top <= 1 && rect.bottom >= viewportHeight * 0.55;
+          };
 
-          if (sectionOverlapsViewport && !overlapsViewport) {
-            hasLeftSection = true;
-            timeline.pause(0);
-            resetScrollState();
-          }
+          ScrollTrigger.create({
+            id: "brand-story-philosophy-unroll",
+            trigger: triggerTarget,
+            start: "top top",
+            onEnter: playUnroll,
+            invalidateOnRefresh: true,
+          });
 
-          sectionOverlapsViewport = overlapsViewport;
-        };
+          ScrollTrigger.create({
+            id: "brand-story-philosophy-presence",
+            start: 0,
+            end: "max",
+            onUpdate: syncSectionPresence,
+            onRefresh: () => {
+              sectionOverlapsViewport = !isSectionFullyOutside();
+            },
+            invalidateOnRefresh: true,
+          });
 
-        const playUnroll = () => {
-          if (!hasLeftSection) {
-            return;
-          }
+          requestAnimationFrame(() => {
+            ScrollTrigger.refresh();
 
-          hasLeftSection = false;
-          timeline.restart(true);
-        };
-
-        const isRolledSectionReached = () => {
-          const rect = triggerTarget.getBoundingClientRect();
-          const viewportHeight = window.innerHeight;
-
-          return rect.top <= 1 && rect.bottom >= viewportHeight * 0.55;
-        };
-
-        ScrollTrigger.create({
-          id: "brand-story-philosophy-unroll",
-          trigger: triggerTarget,
-          start: "top top",
-          onEnter: playUnroll,
-          invalidateOnRefresh: true,
-        });
-
-        ScrollTrigger.create({
-          id: "brand-story-philosophy-presence",
-          start: 0,
-          end: "max",
-          onUpdate: syncSectionPresence,
-          onRefresh: () => {
             sectionOverlapsViewport = !isSectionFullyOutside();
-          },
-          invalidateOnRefresh: true,
-        });
 
-        requestAnimationFrame(() => {
-          ScrollTrigger.refresh();
+            if (isRolledSectionReached()) {
+              playUnroll();
+            }
+          });
+        }, philosophySectionRef);
 
-          sectionOverlapsViewport = !isSectionFullyOutside();
-
-          if (isRolledSectionReached()) {
-            playUnroll();
-          }
-        });
-      }, philosophySectionRef);
+        return () => {
+          context?.revert();
+        };
+      });
 
       ScrollTrigger.refresh();
     };
@@ -300,6 +310,7 @@ function BrandStoryPage() {
     if (pendingImages.length === 0) {
       initPhilosophyAnimation();
       return () => {
+        philosophyMedia?.revert();
         context?.revert();
       };
     }
@@ -324,6 +335,7 @@ function BrandStoryPage() {
         image.removeEventListener("load", handleImageReady);
         image.removeEventListener("error", handleImageReady);
       });
+      philosophyMedia?.revert();
       context?.revert();
     };
   }, []);
@@ -342,7 +354,7 @@ function BrandStoryPage() {
         <div className="brand-story-kv__grid">
           <div className="brand-story-kv__head">
             <h1 className="brand-story-kv__title ft-64r ink500">브랜드 스토리</h1>
-            <SubKvSymbolLine blockClass="brand-story-kv" />
+            <SubKvSymbolLine blockClass="brand-story-kv" tone="responsive" />
           </div>
           <p className="brand-story-kv__description ft-28r ink500">
             <span className="brand-story-kv__description-line">자연이 만든 시간을 차에 담고,</span>
@@ -447,6 +459,27 @@ function BrandStoryPage() {
                   </div>
                   <img className="brand-story-philosophy__roll-bottom" src={rollBottomImage} alt="" aria-hidden="true" />
                 </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="brand-story-philosophy__tablet-list">
+            {philosophyItems.map((item) => (
+              <article className="brand-story-philosophy__tablet-card" key={`tablet-${item.id}`}>
+                <img
+                  className="brand-story-philosophy__tablet-character"
+                  src={item.characterImage}
+                  alt=""
+                  aria-hidden="true"
+                />
+                <h3 className="brand-story-philosophy__tablet-subtitle ft-28b ink500">{item.subtitle}</h3>
+                <p className="brand-story-philosophy__tablet-desc ft-18r ink500">
+                  {item.lines.map((line, lineIndex) => (
+                    <span className="brand-story-philosophy__tablet-desc-line" key={`tablet-${item.id}-${lineIndex}`}>
+                      {line}
+                    </span>
+                  ))}
+                </p>
               </article>
             ))}
           </div>
