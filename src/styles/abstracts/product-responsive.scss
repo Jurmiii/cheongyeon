@@ -2,15 +2,15 @@
 @use "breakpoints" as *;
 @use "grid" as grid;
 
-// 구간 폭(단위 없는 숫자) — calc() 분모는 반드시 unitless 여야 나눗셈이 유효함
-$pr-laptop-tablet-span: math.div($laptop - $tablet, 1px);
-$pr-mobile-tablet-span: math.div($tablet - $mobile, 1px);
-$pr-tablet-md-span: math.div($tablet - $tablet-md, 1px);
-$pr-tablet-sm-span: math.div($tablet-sm-max - ($mobile + 1px), 1px);
+$pr-base-px: 16px;
+
+// px → rem (뷰포트 앵커용)
+@function pr-to-rem($px) {
+  @return math.div($px, $pr-base-px) * 1rem;
+}
 
 // PC 상단 앵커 — 이 폭에서 데스크톱 값을 유지, 좁아질수록 랩톱(1024px) 값으로 수렴
 $pr-desktop-max: 1920px;
-$pr-desktop-span: math.div($pr-desktop-max - $laptop, 1px); // 896
 
 // PC 앵커 (차이야기·컬렉션·계절의차 공통 KV)
 $pr-desktop-kv-height: 46.25rem; // 740px @ 1920
@@ -24,31 +24,77 @@ $pr-season-laptop-end: 58.75rem; // 계절 섹션 상단
   @return clamp(#{min($a, $b)}, #{$preferred}, #{max($a, $b)});
 }
 
+@function pr-vw-span-px($vw-min-px, $vw-max-px) {
+  @return math.div($vw-max-px - $vw-min-px, 1px);
+}
+
+// rem·% 등 Sass 호환 단위 — calc 나눗셈 (width·transform·background 등)
+@function pr-lerp-vw-asc-calc-div($start, $end, $vw-min-px, $vw-max-px) {
+  @return calc(
+    #{$start} +
+      (#{$end} - #{$start}) *
+      (100vw - #{$vw-min-px}) /
+      #{pr-vw-span-px($vw-min-px, $vw-max-px)}
+  );
+}
+
+@function pr-lerp-vw-desc-calc-div($wide-value, $narrow-value, $vw-min-px, $vw-max-px) {
+  @return calc(
+    #{$wide-value} +
+      (#{$narrow-value} - #{$wide-value}) *
+      (#{$vw-max-px} - 100vw) /
+      #{pr-vw-span-px($vw-min-px, $vw-max-px)}
+  );
+}
+
+// rem 전용 — 나눗셈 없이 (100vw - Nrem) * coeff (font-size·height, Lightning CSS 호환)
+@function pr-lerp-vw-asc-rem($start, $end, $vw-min-px, $vw-max-px) {
+  $vw-min-rem: pr-to-rem($vw-min-px);
+  $vw-max-rem: pr-to-rem($vw-max-px);
+  $coeff: math.div($end - $start, $vw-max-rem - $vw-min-rem);
+
+  @return calc(#{$start} + (100vw - #{$vw-min-rem}) * #{$coeff});
+}
+
+@function pr-lerp-vw-desc-rem($wide-value, $narrow-value, $vw-min-px, $vw-max-px) {
+  $vw-min-rem: pr-to-rem($vw-min-px);
+  $vw-max-rem: pr-to-rem($vw-max-px);
+  $coeff: math.div($narrow-value - $wide-value, $vw-max-rem - $vw-min-rem);
+
+  @return calc(#{$wide-value} + (#{$vw-max-rem} - 100vw) * #{$coeff});
+}
+
+// Sass에서 단위 호환 시 rem 곱셈식, rem↔% 혼합 등은 calc 나눗셈식
+@function pr-lerp-vw-asc($start, $end, $vw-min-px, $vw-max-px) {
+  @if math.compatible($start, $end) and unit($start) == "rem" {
+    @return pr-lerp-vw-asc-rem($start, $end, $vw-min-px, $vw-max-px);
+  }
+
+  @return pr-lerp-vw-asc-calc-div($start, $end, $vw-min-px, $vw-max-px);
+}
+
+@function pr-lerp-vw-desc($wide-value, $narrow-value, $vw-min-px, $vw-max-px) {
+  @if math.compatible($wide-value, $narrow-value) and unit($wide-value) == "rem" {
+    @return pr-lerp-vw-desc-rem($wide-value, $narrow-value, $vw-min-px, $vw-max-px);
+  }
+
+  @return pr-lerp-vw-desc-calc-div($wide-value, $narrow-value, $vw-min-px, $vw-max-px);
+}
+
 // 1920px ↔ 1024px — PC 구간 보간
-// 넓을수록 $desktop-value, 1024px 로 좁아질수록 $laptop-value 로 수렴 (clamp 유동)
 @function pr-lerp-desktop($desktop-value, $laptop-value) {
   @return pr-clamp-between(
     $laptop-value,
-  calc(
-    #{$laptop-value} +
-      (#{$desktop-value} - #{$laptop-value}) *
-      (100vw - #{$laptop}) /
-      #{$pr-desktop-span}
-  ),
+    pr-lerp-vw-asc($laptop-value, $desktop-value, $laptop, $pr-desktop-max),
     $desktop-value
   );
 }
 
-// 1024px ↔ 768px — PC·소형 PC 구간 보간 (clamp로 구간 밖 extrapolation 방지)
+// 1024px ↔ 768px — clamp 유동 (font-size·height 공통)
 @function pr-lerp-laptop-tablet($laptop-value, $tablet-value) {
   @return pr-clamp-between(
     $tablet-value,
-  calc(
-    #{$tablet-value} +
-      (#{$laptop-value} - #{$tablet-value}) *
-      (100vw - #{$tablet}) /
-      #{$pr-laptop-tablet-span}
-  ),
+    pr-lerp-vw-asc($tablet-value, $laptop-value, $tablet, $laptop),
     $laptop-value
   );
 }
@@ -57,12 +103,7 @@ $pr-season-laptop-end: 58.75rem; // 계절 섹션 상단
 @function pr-lerp-mobile-tablet($tablet-value, $mobile-value) {
   @return pr-clamp-between(
     $mobile-value,
-  calc(
-    #{$tablet-value} +
-      (#{$mobile-value} - #{$tablet-value}) *
-      (#{$tablet} - 100vw) /
-      #{$pr-mobile-tablet-span}
-  ),
+    pr-lerp-vw-desc($tablet-value, $mobile-value, $mobile, $tablet),
     $tablet-value
   );
 }
@@ -71,12 +112,7 @@ $pr-season-laptop-end: 58.75rem; // 계절 섹션 상단
 @function pr-lerp-tablet-md-range($value-at-tablet-md, $value-at-tablet) {
   @return pr-clamp-between(
     $value-at-tablet-md,
-  calc(
-    #{$value-at-tablet-md} +
-      (#{$value-at-tablet} - #{$value-at-tablet-md}) *
-      (100vw - #{$tablet-md}) /
-      #{$pr-tablet-md-span}
-  ),
+    pr-lerp-vw-asc($value-at-tablet-md, $value-at-tablet, $tablet-md, $tablet),
     $value-at-tablet
   );
 }
@@ -85,12 +121,7 @@ $pr-season-laptop-end: 58.75rem; // 계절 섹션 상단
 @function pr-lerp-tablet-sm-range($value-at-mobile-plus, $value-at-tablet-sm-max) {
   @return pr-clamp-between(
     $value-at-mobile-plus,
-  calc(
-    #{$value-at-mobile-plus} +
-      (#{$value-at-tablet-sm-max} - #{$value-at-mobile-plus}) *
-      (100vw - #{$mobile + 1px}) /
-      #{$pr-tablet-sm-span}
-  ),
+    pr-lerp-vw-asc($value-at-mobile-plus, $value-at-tablet-sm-max, $mobile + 1px, $tablet-sm-max),
     $value-at-tablet-sm-max
   );
 }
@@ -113,25 +144,33 @@ $pr-season-laptop-end: 58.75rem; // 계절 섹션 상단
   @return pr-lerp-desktop($desktop-height, $laptop-height);
 }
 
-@function pr-kv-height-at-viewport($vw) {
+@function pr-kv-height-at-viewport(
+  $vw,
+  $tablet-height: grid.$tablet-kv-height,
+  $mobile-height: grid.$mobile-kv-height
+) {
   $ratio: math.div($tablet - $vw, $tablet - $mobile);
-  @return calc(
-    #{grid.$tablet-kv-height} +
-      (#{grid.$mobile-kv-height} - #{grid.$tablet-kv-height}) * #{$ratio}
-  );
+
+  @return $tablet-height + ($mobile-height - $tablet-height) * $ratio;
 }
 
-@function pr-fluid-kv-height-tablet-md() {
+@function pr-fluid-kv-height-tablet-md(
+  $tablet-height: grid.$tablet-kv-height,
+  $mobile-height: grid.$mobile-kv-height
+) {
   @return pr-lerp-tablet-md-range(
-    pr-kv-height-at-viewport($tablet-md),
-    grid.$tablet-kv-height
+    pr-kv-height-at-viewport($tablet-md, $tablet-height, $mobile-height),
+    $tablet-height
   );
 }
 
-@function pr-fluid-kv-height-tablet-sm() {
+@function pr-fluid-kv-height-tablet-sm(
+  $tablet-height: grid.$tablet-kv-height,
+  $mobile-height: grid.$mobile-kv-height
+) {
   @return pr-lerp-tablet-sm-range(
-    grid.$mobile-kv-height,
-    pr-kv-height-at-viewport($tablet-sm-max)
+    $mobile-height,
+    pr-kv-height-at-viewport($tablet-sm-max, $tablet-height, $mobile-height)
   );
 }
 
@@ -152,10 +191,8 @@ $pr-season-laptop-end: 58.75rem; // 계절 섹션 상단
 
 @function pr-section-height-at-viewport($tablet-height, $mobile-height, $vw) {
   $ratio: math.div($tablet - $vw, $tablet - $mobile);
-  @return calc(
-    #{$tablet-height} +
-      (#{$mobile-height} - #{$tablet-height}) * #{$ratio}
-  );
+
+  @return $tablet-height + ($mobile-height - $tablet-height) * $ratio;
 }
 
 @function pr-fluid-section-height-tablet-md($tablet-height, $mobile-height) {
@@ -214,19 +251,139 @@ $pr-season-laptop-end: 58.75rem; // 계절 섹션 상단
   min-height: pr-fluid-kv-height-desktop($desktop-height, $laptop-height);
 }
 
-@mixin pr-segmented-kv-height-tablet-md {
-  height: pr-fluid-kv-height-tablet-md();
-  min-height: pr-fluid-kv-height-tablet-md();
+@mixin pr-segmented-kv-height-tablet-md(
+  $tablet-height: grid.$tablet-kv-height,
+  $mobile-height: grid.$mobile-kv-height
+) {
+  height: pr-fluid-kv-height-tablet-md($tablet-height, $mobile-height);
+  min-height: pr-fluid-kv-height-tablet-md($tablet-height, $mobile-height);
 }
 
-@mixin pr-segmented-kv-height-tablet-sm {
-  height: pr-fluid-kv-height-tablet-sm();
-  min-height: pr-fluid-kv-height-tablet-sm();
+@mixin pr-segmented-kv-height-tablet-sm(
+  $tablet-height: grid.$tablet-kv-height,
+  $mobile-height: grid.$mobile-kv-height
+) {
+  height: pr-fluid-kv-height-tablet-sm($tablet-height, $mobile-height);
+  min-height: pr-fluid-kv-height-tablet-sm($tablet-height, $mobile-height);
 }
 
-@mixin pr-segmented-kv-height-mobile {
-  height: grid.$mobile-kv-height;
-  min-height: grid.$mobile-kv-height;
+@mixin pr-segmented-kv-height-mobile($mobile-height: grid.$mobile-kv-height) {
+  height: $mobile-height;
+  min-height: $mobile-height;
+}
+
+@mixin pr-segmented-section-height-tablet-md($tablet-height, $mobile-height) {
+  @include pr-apply-fluid-section-height-tablet-md($tablet-height, $mobile-height);
+}
+
+@mixin pr-segmented-section-height-tablet-sm($tablet-height, $mobile-height) {
+  @include pr-apply-fluid-section-height-tablet-sm($tablet-height, $mobile-height);
+}
+
+@mixin pr-segmented-section-height-mobile($mobile-height) {
+  height: $mobile-height;
+  min-height: $mobile-height;
+}
+
+@mixin pr-apply-fluid-section-min-height($tablet-height, $mobile-height) {
+  $fluid: pr-fluid-section-height($tablet-height, $mobile-height);
+  height: $fluid;
+  min-height: $fluid;
+}
+
+@mixin pr-apply-fluid-section-height-tablet-sm($tablet-height, $mobile-height) {
+  $fluid: pr-fluid-section-height-tablet-sm($tablet-height, $mobile-height);
+  height: $fluid;
+  min-height: $fluid;
+}
+
+@mixin pr-apply-fluid-section-height-tablet-md($tablet-height, $mobile-height) {
+  $fluid: pr-fluid-section-height-tablet-md($tablet-height, $mobile-height);
+  height: $fluid;
+  min-height: $fluid;
+}
+
+// Figma MO 텍스트 박스 — 402px 프레임 기준 absolute 배치
+@mixin pr-mo-kv-content {
+  position: absolute;
+  top: calc(50% + 0.03125rem);
+  left: calc(50% - #{grid.$mobile-kv-content-offset-x});
+  transform: translate(-50%, -50%);
+  justify-self: auto;
+  align-self: auto;
+  width: auto;
+  margin: 0;
+}
+
+// MO 오버레이 X — 768px↔402px clamp (차의 종류 앵커)
+@function pr-fluid-overlay-content-offset-x() {
+  @return pr-lerp-mobile-tablet(2.5rem, grid.$mobile-kinds-content-offset-x);
+}
+
+@function pr-fluid-overlay-content-width() {
+  @return pr-lerp-mobile-tablet(
+    grid.$mobile-kinds-content-width,
+    grid.$mobile-kinds-content-width
+  );
+}
+
+@function pr-fluid-seasons-min-height() {
+  @return pr-lerp-mobile-tablet(48rem, grid.$mobile-seasons-height);
+}
+
+@mixin pr-mo-overlay-content-x-kinds {
+  left: calc(50% - #{pr-fluid-overlay-content-offset-x()});
+  right: auto;
+  transform: translateX(-50%);
+  width: pr-fluid-overlay-content-width();
+  max-width: calc(100% - #{grid.$mobile-grid-padding * 2});
+}
+
+@mixin pr-mo-section-content-intro {
+  position: absolute;
+  bottom: grid.$mobile-section-bottom;
+  @include pr-mo-overlay-content-x-kinds;
+  justify-self: auto;
+  align-self: auto;
+  margin: 0;
+}
+
+@mixin pr-mo-section-content-culture {
+  position: absolute;
+  bottom: grid.$mobile-section-bottom;
+  @include pr-mo-overlay-content-x-kinds;
+  justify-self: auto;
+  align-self: auto;
+  margin: 0;
+}
+
+@mixin pr-mo-section-content-ceremony {
+  position: absolute;
+  bottom: grid.$mobile-section-bottom;
+  @include pr-mo-overlay-content-x-kinds;
+  justify-self: auto;
+  align-self: auto;
+  margin: 0;
+}
+
+@mixin pr-mo-section-content-kinds {
+  position: absolute;
+  bottom: grid.$mobile-section-bottom;
+  @include pr-mo-overlay-content-x-kinds;
+  justify-self: auto;
+  align-self: auto;
+  margin: 0;
+}
+
+@mixin pr-mo-reset-content-position {
+  position: relative;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: auto;
+  transform: none;
+  width: 100%;
+  max-width: none;
 }
 
 @mixin pr-fluid-section-height-laptop($desktop-height, $tablet-height) {

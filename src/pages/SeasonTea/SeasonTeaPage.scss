@@ -1360,7 +1360,7 @@
   .season-tea-winter__media {
     width: pr.pr-lerp-mobile-tablet(29.598rem, 19.152rem);
     max-width: 100%;
-    margin-left: pr.pr-lerp-tablet-sm-range(calc(14.375rem - #{grid.$tablet-grid-padding}), 0);
+    margin-left: pr.pr-lerp-tablet-sm-range(10.375rem, 0);
     margin-right: auto;
     align-self: flex-start;
   }
