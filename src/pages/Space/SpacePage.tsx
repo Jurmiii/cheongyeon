@@ -126,22 +126,21 @@ const spaceMapItems = [
   {
     id: 1,
     number: "01",
-    title: "메인 다실",
+    title: "예절 다실",
     image: spaceMap1,
     marker: mapMarker1,
     position: { left: "18%", top: "17%" },
     description:
-      "차를 배우고 경험하는 대표 클래스 공간입니다. 따뜻한 자연광과 분위기 속에서 온전히 차에 집중할 수 있도록 설계 되었습니다",
+      "다도의 기본 예절과 차 문화를 편안하게 익힐 수 있는 클래스 공간입니다.",
   },
   {
     id: 2,
     number: "02",
-    title: "프라이빗 다실",
+    title: "블렌더 다실",
     image: spaceMap2,
     marker: mapMarker2,
     position: { left: "22%", top: "53%" },
-    description:
-      "차분한 분위기 속에서 오롯이 차에 집중할 수 있는 1:1 예약 전용 공간입니다. 나만을 위한 고요한 차 시간을 선사합니다.",
+    description: "나만의 취향을 담은 블렌딩 티를 직접 만들어보는 클래스 공간입니다.",
   },
   {
     id: 3,
@@ -151,27 +150,27 @@ const spaceMapItems = [
     marker: mapMarker3,
     position: { left: "56%", top: "30%" },
     description:
-      "계절의 흐름과 자연의 풍경을 가까이에서 마주하며 잠시 머무를 수 있는 휴식 공간입니다. 사계절 변하는 풍경 속에서 마음을 쉬어갑니다.",
+      "계절의 흐름과 자연의 풍경을 가까이에서 마주하며 잠시 머무를 수 있는 휴식 공간입니다.",
   },
   {
     id: 4,
     number: "04",
-    title: "전시공간",
+    title: "프라이빗 다실",
     image: spaceMap4,
     marker: mapMarker4,
     position: { left: "83%", top: "22%" },
     description:
-      "청연이 전하는 차 문화와 이야기를 다양한 전시와 콘텐츠를 통해 경험할 수 있는 브랜드 공간입니다. 차에 담긴 이야기를 새롭게 만나볼 수 있습니다.",
+      "차분한 분위기 속에서 오롯이 차에 집중할 수 있는 1:1 예약 전용 클래스 공간입니다.",
   },
   {
     id: 5,
     number: "05",
-    title: "티 라운지",
+    title: "숙성차 다실",
     image: spaceMap5,
     marker: mapMarker5,
     position: { left: "calc(87% - 0.625rem)", top: "80%" },
     description:
-      "클래스 전후 여유롭게 머물며 다양한 차를 편안하게 즐길 수 있는 휴식 공간입니다. 차 한 잔과 함께 잠시 쉬어가기 좋은 공간입니다.",
+      "시간이 만든 깊은 풍미를 경험하는 숙성차만의 여운을 천천히 느낄 수 있는 클래스 공간입니다.",
   },
 ] as const;
 
