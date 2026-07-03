@@ -529,57 +529,181 @@
   display: none;
 }
 
-.brand-story-philosophy__tablet-card {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.4fr);
-  align-items: center;
-  gap: var(--space-3);
-  box-sizing: border-box;
-  padding: var(--space-3) var(--space-4);
-  border: 0.0625rem solid var(--han300);
-  border-radius: 0.25rem;
-  background: rgb(255 255 255 / 72%);
+.brand-story-philosophy__h-track {
+  display: none;
 }
 
-.brand-story-philosophy__tablet-character {
-  display: block;
+.brand-story-philosophy__h-item {
+  display: flex;
   flex-shrink: 0;
-  width: 4.5rem;
+  align-items: stretch;
+  height: var(--h-scroll-height);
+  font-size: 0;
+  line-height: 0;
+}
+
+.brand-story-philosophy__h-roll-start-wrap {
+  flex-shrink: 0;
+  height: var(--h-scroll-height);
+  overflow: hidden;
+}
+
+.brand-story-philosophy__h-roll-end-wrap {
+  flex-shrink: 0;
+  width: var(--h-roll-end-width);
+  height: var(--h-scroll-height);
+  overflow: hidden;
+}
+
+.brand-story-philosophy__h-roll-start {
+  display: block;
+  width: var(--h-scroll-height);
   height: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  transform: rotate(90deg) translateX(-100%);
+  transform-origin: top right;
+}
+
+.brand-story-philosophy__h-roll-end {
+  display: block;
+  width: var(--h-scroll-height);
+  height: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  transform: rotate(90deg) translateX(-100%);
+  transform-origin: top right;
+}
+
+.brand-story-philosophy__h-body-wrap {
+  flex-shrink: 0;
+  width: 0;
+  height: var(--h-scroll-height);
+  overflow: hidden;
+  will-change: width;
+}
+
+.brand-story-philosophy__h-body {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: stretch;
+  width: var(--h-body-width);
+  height: var(--h-scroll-height);
+  margin-left: auto;
+}
+
+.brand-story-philosophy__h-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  object-fit: cover;
+  object-position: left center;
+  pointer-events: none;
+}
+
+.brand-story-philosophy__h-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  flex: 1 1 auto;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.35fr);
+  align-items: center;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  min-width: 0;
+  height: 100%;
+  padding-inline: var(--space-2) 0.75rem;
+  line-height: normal;
+}
+
+.brand-story-philosophy__h-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  min-width: 2.75rem;
+}
+
+.brand-story-philosophy__h-character {
+  display: block;
+  width: 2.375rem;
+  height: 2.375rem;
   object-fit: contain;
 }
 
-.brand-story-philosophy__tablet-subtitle {
+.brand-story-philosophy__h-subtitle {
   margin: 0;
-  font-family: var(--font-headline);
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 2.75rem;
-  letter-spacing: -0.02em;
   text-align: center;
   word-break: keep-all;
 }
 
-.brand-story-philosophy__tablet-desc {
+.brand-story-philosophy__h-desc {
   margin: 0;
   word-break: keep-all;
 }
 
-.brand-story-philosophy__tablet-desc-line {
-  display: block;
-}
-
 @media (max-width: $laptop) {
-  .brand-story-philosophy__inner {
-    max-width: 100%;
-    overflow-x: auto;
+  .brand-story-philosophy {
+    height: auto;
+    min-height: 0;
+    --philosophy-section-height: auto;
+    --h-scroll-height: 5.9375rem;
+    --h-body-width: 21.375rem;
+    --h-roll-start-width: calc(var(--h-scroll-height) * 54 / 262);
+    --h-roll-end-width: calc(var(--h-scroll-height) * 16 / 265);
   }
 
   .brand-story-philosophy__list {
-    justify-content: flex-start;
-    width: max-content;
-    min-width: 100%;
-    padding-inline: 0.25rem;
+    display: none;
+  }
+
+  .brand-story-philosophy__h-track {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    width: 100%;
+    margin-top: 0;
+    padding-bottom: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: #{$tablet - 1px}) {
+  .brand-story-philosophy__inner {
+    box-sizing: border-box;
+    width: min(#{grid.$mobile-grid-inner}, calc(100% - #{grid.$mobile-grid-padding * 2}));
+    max-width: min(#{grid.$mobile-grid-inner}, calc(100% - #{grid.$mobile-grid-padding * 2}));
+    height: auto;
+    margin-inline: auto;
+    padding: var(--space-7) 0;
+    overflow-x: visible;
+  }
+
+  .brand-story-philosophy__title {
+    margin-bottom: var(--space-5);
+    color: var(--white);
+  }
+
+  .brand-story-philosophy {
+    --h-body-width: 21.25rem;
+  }
+
+  .brand-story-philosophy__h-content {
+    padding-inline: var(--space-2) 0.625rem;
+    gap: var(--space-1);
   }
 }
 
@@ -1121,13 +1245,15 @@
   .brand-story-philosophy {
     height: auto;
     min-height: 0;
-    background-color: var(--han100);
-    background-image: none !important;
     --philosophy-section-height: auto;
+    --h-scroll-height: 5.9375rem;
+    --h-body-width: calc(#{grid.$tablet-grid-column-width} * 6 + #{grid.$tablet-grid-gap} * 5);
+    --h-roll-start-width: calc(var(--h-scroll-height) * 54 / 262);
+    --h-roll-end-width: calc(var(--h-scroll-height) * 16 / 265);
   }
 
   .brand-story-philosophy__overlay {
-    display: none;
+    display: block;
   }
 
   .brand-story-philosophy__inner {
@@ -1136,30 +1262,38 @@
     max-width: min(#{grid.$tablet-grid-inner}, calc(100% - #{grid.$tablet-grid-padding * 2}));
     height: auto;
     margin-inline: auto;
-    padding: var(--space-10) 0 var(--space-8);
+    padding: var(--space-10) 0;
     overflow-x: visible;
   }
 
   .brand-story-philosophy__title {
     margin-bottom: var(--space-5);
-    color: var(--ink500);
-    font-family: var(--font-headline);
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 2.75rem;
+    color: var(--white);
   }
 
   .brand-story-philosophy__list {
     display: none;
   }
 
-  .brand-story-philosophy__tablet-list {
+  .brand-story-philosophy__h-track {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
+    flex-wrap: nowrap;
+    gap: 1rem;
     width: 100%;
     margin-top: 0;
     padding-bottom: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .brand-story-philosophy__h-item {
+    scroll-snap-align: start;
   }
 
   .brand-story-people__inner {
