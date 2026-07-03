@@ -73,7 +73,7 @@ const stayGalleryData = {
       feature: "특징: 제주 차밭 인근",
     },
   ],
-};
+} as const;
 
 const learningGalleryData = {
   blockClass: "space-learning",
@@ -106,7 +106,7 @@ const learningGalleryData = {
       feature: "특징: 지리산 야생차 문화권",
     },
   ],
-};
+} as const;
 
 const carouselImages = [
   spaceCarousel1,
