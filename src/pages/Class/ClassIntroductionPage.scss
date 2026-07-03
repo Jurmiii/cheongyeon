@@ -136,7 +136,10 @@ $class-intro-about-section-padding-mobile: 2.5rem;
 $class-intro-scroll-section-height-pc: 44.6875rem; // 715px
 $class-intro-scroll-section-padding-pc: 7.5rem;
 $class-intro-scroll-stage-height-pc: 29.6875rem;
-$class-intro-scroll-media-ratio: #{1074} / #{475};
+$class-intro-scroll-media-w-pc: 67.125rem; // 1074px
+$class-intro-scroll-media-h-pc: 29.6875rem; // 475px
+$class-intro-scroll-media-ratio: #{$class-intro-scroll-media-w-pc} / #{$class-intro-scroll-media-h-pc};
+$class-intro-scroll-panel-w-pc: 21.125rem;
 $class-intro-scroll-title-size-pc: 2.25rem; // ft-36b
 $class-intro-scroll-title-line-pc: 3.25rem;
 $class-intro-scroll-desc-size-pc: 1.375rem; // ft-22r
@@ -157,6 +160,8 @@ $class-intro-scroll-copy-gap-tablet: 0.5rem;
 $class-intro-scroll-actions-gap-tablet: 1rem; // 16px — 서브텍스트 아래
 $class-intro-scroll-filter-gap-tablet: 0.5rem; // 8px
 $class-intro-scroll-panel-padding-tablet: 2rem 1.5rem;
+$class-intro-scroll-media-w-tablet: 40rem; // 640px
+$class-intro-scroll-media-h-tablet: 17.6875rem; // 283px
 
 // Mobile — 402×605
 $class-intro-scroll-section-height-mobile: 37.8125rem; // 605px
@@ -169,6 +174,8 @@ $class-intro-scroll-actions-gap-mobile: 1rem;
 $class-intro-scroll-copy-gap-mobile: 0.5rem;
 $class-intro-scroll-filter-gap-mobile: 0.5rem;
 $class-intro-scroll-panel-padding-mobile: 1.5rem 1rem;
+$class-intro-scroll-media-w-mobile: 23.125rem; // 370px
+$class-intro-scroll-media-h-mobile: 17.6875rem; // 283px
 
 @function class-intro-scroll-section-height-tablet-range() {
   @return calc(100vw * #{$class-intro-scroll-section-height-tablet} / #{$tablet});
@@ -858,8 +865,8 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
 
 .class-intro-scroll__panel {
   position: relative;
-  flex: 0 0 21.125rem;
-  width: 21.125rem;
+  flex: 0 0 $class-intro-scroll-panel-w-pc;
+  width: $class-intro-scroll-panel-w-pc;
   height: 100%;
   border-radius: 1rem;
   background: var(--han200);
@@ -946,6 +953,25 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
   }
 }
 
+// PC 그리드 축소 구간 — 이미지·패널·스테이지 균등 스케일
+@media (min-width: $laptop) and (max-width: grid.$desktop-grid-outer) {
+  .class-intro-scroll__stage {
+    height: calc(#{$class-intro-scroll-stage-height-pc} * 100vw / #{grid.$desktop-grid-outer});
+  }
+
+  .class-intro-scroll__media {
+    flex: 0 0 auto;
+    width: calc(#{$class-intro-scroll-media-w-pc} * 100vw / #{grid.$desktop-grid-outer});
+    height: 100%;
+    min-width: 0;
+  }
+
+  .class-intro-scroll__panel {
+    flex: 0 0 auto;
+    width: calc(#{$class-intro-scroll-panel-w-pc} * 100vw / #{grid.$desktop-grid-outer});
+  }
+}
+
 @media (max-width: #{$laptop - 1px}) {
   .class-intro-scroll {
     align-items: center;
@@ -973,17 +999,25 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
   .class-intro-scroll__stage {
     flex-direction: column;
     gap: 0;
-    align-items: stretch;
+    align-items: center;
     width: 100%;
     height: auto;
   }
 
   .class-intro-scroll__media {
     flex: none;
-    width: 100%;
-    height: auto;
-    aspect-ratio: $class-intro-scroll-media-ratio;
-    border-radius: 0;
+    width: min(
+      100%,
+      #{class-intro-about-fluid($class-intro-scroll-media-w-pc, $class-intro-scroll-media-w-tablet)}
+    );
+    height: #{class-intro-about-fluid($class-intro-scroll-media-h-pc, $class-intro-scroll-media-h-tablet)};
+    aspect-ratio: auto;
+    border-radius: 1rem 1rem 0 0;
+  }
+
+  .class-intro-scroll__image {
+    object-fit: cover;
+    object-position: center;
   }
 
   .class-intro-scroll__panel {
@@ -1083,6 +1117,20 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
     min-width: 0;
   }
 
+  .class-intro-scroll__media {
+    width: min(
+      100%,
+      #{class-intro-about-lerp-mobile-tablet(
+        $class-intro-scroll-media-w-tablet,
+        $class-intro-scroll-media-w-mobile
+      )}
+    );
+    height: #{class-intro-about-lerp-mobile-tablet(
+      $class-intro-scroll-media-h-tablet,
+      $class-intro-scroll-media-h-mobile
+    )};
+  }
+
   .class-intro-scroll__panel-slide {
     gap: $class-intro-scroll-actions-gap-mobile;
     padding: $class-intro-scroll-panel-padding-mobile;
@@ -1133,7 +1181,17 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
   }
 }
 
+@media (max-width: $mobile) {
+  .class-intro-scroll__media {
+    width: min(100%, $class-intro-scroll-media-w-mobile);
+    height: $class-intro-scroll-media-h-mobile;
+  }
+}
+
 /* Figma 1449:346 — 1920×900 */
+$class-intro-carousel-desc-size-compact: 1rem; // ft-16r / 16px
+$class-intro-carousel-desc-line-compact: 1.625rem;
+
 .class-intro-carousel {
   box-sizing: border-box;
   width: 100%;
@@ -1295,9 +1353,9 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
 
   .class-intro-carousel__card-description {
     font-family: var(--font-body);
-    font-size: class-intro-about-fluid(1.375rem, 1rem);
+    font-size: class-intro-about-fluid(1.375rem, $class-intro-carousel-desc-size-compact);
     font-weight: 400;
-    line-height: class-intro-about-fluid(2.25rem, 1.625rem);
+    line-height: class-intro-about-fluid(2.25rem, $class-intro-carousel-desc-line-compact);
   }
 }
 
@@ -1366,7 +1424,7 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
     opacity: 1;
   }
 
-  // Tablet → Mobile — ft-24b→ft-20b / ft-16s→ft-14r
+  // Tablet → Mobile — ft-24b→ft-20b / 설명 ft-16r 고정
   .class-intro-carousel .class-intro-carousel__card-title {
     font-family: var(--font-headline);
     font-size: class-intro-about-lerp-mobile-tablet(1.5rem, 1.25rem);
@@ -1376,9 +1434,9 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
 
   .class-intro-carousel__card-description {
     font-family: var(--font-body);
-    font-size: class-intro-about-lerp-mobile-tablet(1rem, 0.875rem);
+    font-size: $class-intro-carousel-desc-size-compact;
     font-weight: 400;
-    line-height: class-intro-about-lerp-mobile-tablet(1.625rem, 1.375rem);
+    line-height: $class-intro-carousel-desc-line-compact;
   }
 }
 
@@ -1569,6 +1627,21 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
     font-weight: 400;
     line-height: $class-intro-cta-button-line-mobile;
     white-space: nowrap;
+  }
+}
+
+@media (max-width: #{$laptop - 1px}) {
+  .class-intro-cta__button {
+    color: var(--white);
+    background: var(--deep500);
+    border-color: var(--deep500);
+    transition: none;
+
+    &:hover {
+      color: var(--white);
+      background: var(--deep500);
+      border-color: var(--deep500);
+    }
   }
 }
 
