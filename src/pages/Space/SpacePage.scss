@@ -793,6 +793,53 @@
   .space-learning__card:hover .space-learning__card-content {
     opacity: 1;
     transform: translateY(0);
+    text-align: left;
+  }
+
+  .space-gallery__card-location-break,
+  .space-learning__card-location-break {
+    display: none;
+  }
+}
+
+/* 좁은 태블릿(403~610px) — 2열 카드 폭 부족, 모바일처럼 타이틀만 표시 */
+@media (min-width: calc($mobile + 1px)) and (max-width: $tablet-sm-max) {
+  .space-gallery,
+  .space-learning {
+    padding-inline: grid.$mobile-grid-padding;
+  }
+
+  .space-gallery__stage,
+  .space-learning__stage {
+    grid-template-columns: repeat(grid.$mobile-grid-columns, minmax(0, 1fr));
+    column-gap: grid.$mobile-grid-gap;
+    row-gap: grid.$mobile-grid-gap;
+  }
+
+  .space-gallery__card,
+  .space-learning__card {
+    grid-column: span 3;
+  }
+
+  .space-gallery__card-content,
+  .space-learning__card-content,
+  .space-gallery__card:hover .space-gallery__card-content,
+  .space-learning__card:hover .space-learning__card-content {
+    padding: var(--space-3) 0;
+    text-align: center;
+  }
+
+  .space-gallery__card-title,
+  .space-learning__card-title {
+    margin-bottom: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .space-gallery__card-text,
+  .space-learning__card-text {
+    display: none;
   }
 }
 
