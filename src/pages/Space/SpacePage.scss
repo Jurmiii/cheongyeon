@@ -12,13 +12,11 @@
   line-break: strict;
 }
 
-/* 작업 중 헤더 숨김 — 표시 시 아래 display: none 제거 */
 .space__header {
   position: absolute;
   top: 0;
   left: 0;
   z-index: 2;
-  display: none;
   width: 100%;
 }
 
@@ -641,6 +639,11 @@
   }
 }
 
+.space-gallery__card-location-break,
+.space-learning__card-location-break {
+  display: none;
+}
+
 @each $block in "space-gallery", "space-learning" {
   .#{$block}--cards-ready {
     .#{$block}__card:hover .#{$block}__card-overlay {
@@ -786,11 +789,6 @@
     opacity: 1;
     transform: translateY(0);
     text-align: left;
-  }
-
-  .space-gallery__card-location-break,
-  .space-learning__card-location-break {
-    display: none;
   }
 }
 
@@ -1190,12 +1188,12 @@
 }
 
 .space-map__marker:hover img {
-  transform: scale(1.28);
+  transform: scale(1);
   box-shadow: 0 0 1.25rem rgba(212, 178, 93, 0.35);
 }
 
 .space-map__marker--active img {
-  transform: scale(1.12);
+  transform: scale(1);
   box-shadow: 0 0 1.125rem rgba(212, 178, 93, 0.42);
 }
 
@@ -1204,8 +1202,15 @@
 }
 
 .space-map__marker--active:hover img {
-  transform: scale(1.32);
+  transform: scale(1);
   box-shadow: 0 0 1.25rem rgba(212, 178, 93, 0.45);
+}
+
+@media (max-width: $laptop) {
+  .space-map__marker img {
+    width: 25px;
+    height: 25px;
+  }
 }
 
 @keyframes space-map-guide-fade-up {
@@ -1491,12 +1496,6 @@
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.625rem;
-  }
-
-  .space-map__marker img {
-    width: 1.625rem;
-    height: 1.625rem;
-    max-width: none;
   }
 }
 
