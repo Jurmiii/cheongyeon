@@ -750,6 +750,7 @@
   .season-tea-kv {
     height: 37.5rem; /* 600px */
     min-height: 37.5rem;
+    background-image: url("../../assets/images/07season-tea/season-ta-kv.webp");
   }
 
   .season-tea-kv__grid {
@@ -1034,6 +1035,7 @@
     height: 40.625rem; /* 650px */
     min-height: 40.625rem;
     padding-block: 0;
+    background-image: url("../../assets/images/07season-tea/season-ta-kv.webp");
     background-position: center center;
   }
 
@@ -1344,6 +1346,7 @@
 @media (max-width: $mobile) {
   .season-tea-kv {
     @include grid.mobile-kv-section;
+    background-image: url("../../assets/images/07season-tea/season-mo-kv.webp");
     background-position: center 35%;
   }
 

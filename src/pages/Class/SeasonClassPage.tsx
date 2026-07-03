@@ -7,8 +7,8 @@ import { Footer, Header, Icon, Button, SubKvSymbolLine } from "../../components/
 import chaIcon from "../../assets/images/09season-class/cha-icon.svg";
 import tryIcon from "../../assets/images/09season-class/try-icon.svg";
 import {
-  SEASON_CLASS_GALLERY_GRID,
   SEASON_CLASS_GALLERY_TITLE,
+  getSeasonGalleryItemStyleVars,
   seasonClassGalleryItems,
 } from "../../data/seasonClassGallery";
 import {
@@ -563,7 +563,6 @@ function SeasonClassScheduleSection() {
   const [calendarMonth, setCalendarMonth] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
   const [openFilter, setOpenFilter] = useState<ScheduleFilter>(null);
   const [selectedBranch, setSelectedBranch] = useState<SeasonClassBranch>(SEASON_CLASS_BRANCHES[0]);
-  const [showReserveButton, setShowReserveButton] = useState(false);
 
   const seasonReservationClass = useMemo(
     () => getActiveSeasonReservationClass(selectedDate),
@@ -596,7 +595,6 @@ function SeasonClassScheduleSection() {
       seasonReservationClass.title,
     );
     setActiveTimeIndex(getFirstAvailableTimeIndex(slots));
-    setShowReserveButton(false);
   }, [selectedDate, selectedBranch.shortLabel, seasonReservationClass.title]);
 
   useEffect(() => {
@@ -610,7 +608,6 @@ function SeasonClassScheduleSection() {
       }
 
       setSelectedDate(startOfDay(date));
-      setShowReserveButton(false);
     },
     [today],
   );
@@ -623,7 +620,6 @@ function SeasonClassScheduleSection() {
       }
 
       setActiveTimeIndex(index);
-      setShowReserveButton(true);
     },
     [allTimeSlots],
   );
@@ -897,6 +893,7 @@ function SeasonClassScheduleSection() {
             {allTimeSlots.map((item, index) => {
               const isActive = index === activeTimeIndex;
               const isPast = item.isPast;
+              const showReserveButton = isActive && !isPast;
               const seatDots = getSeatDots(item.remainingSeats);
               const cupImage = getCupImage(isPast ? 1 : item.remainingSeats);
 
@@ -906,7 +903,7 @@ function SeasonClassScheduleSection() {
                   className={[
                     "season-schedule__card",
                     isActive && "season-schedule__card--active",
-                    isActive && showReserveButton && !isPast && "season-schedule__card--reserve",
+                    showReserveButton && "season-schedule__card--reserve",
                     isPast && "season-schedule__card--past",
                   ]
                     .filter(Boolean)
@@ -972,7 +969,7 @@ function SeasonClassScheduleSection() {
                       </div>
                     </div>
 
-                    {isActive && showReserveButton && !isPast ? (
+                    {showReserveButton ? (
                       <Button
                         className="season-schedule__reserve-btn"
                         variant="btn6"
@@ -1003,41 +1000,34 @@ function SeasonClassGallerySection() {
       <h2 className="season-gallery__title ft-48b ink500">{SEASON_CLASS_GALLERY_TITLE}</h2>
 
       <div className="season-gallery__grid">
-        {seasonClassGalleryItems.map((item) => {
-          const leftRem = pxToRem(item.frame.leftPx - SEASON_CLASS_GALLERY_GRID.leftPx);
-          const topRem = pxToRem(item.frame.topPx - SEASON_CLASS_GALLERY_GRID.topPx);
-          const widthRem = pxToRem(item.frame.widthPx);
-          const heightRem = pxToRem(item.frame.heightPx);
-
-          return (
-            <figure
-              key={item.id}
-              className="season-gallery__item"
-              style={{
-                left: leftRem,
-                top: topRem,
-                width: widthRem,
-                height: heightRem,
-              }}
-            >
-              <img
-                className="season-gallery__img"
-                src={item.image}
-                alt={item.alt}
-                style={
-                  item.crop
-                    ? {
-                        width: `${item.crop.widthPercent}%`,
-                        height: `${item.crop.heightPercent}%`,
-                        left: `${item.crop.leftPercent}%`,
-                        top: `${item.crop.topPercent}%`,
-                      }
-                    : undefined
-                }
-              />
-            </figure>
-          );
-        })}
+        {seasonClassGalleryItems.map((item) => (
+          <figure
+            key={item.id}
+            className={[
+              "season-gallery__item",
+              item.hideOnTablet && "season-gallery__item--hide-tablet",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            style={getSeasonGalleryItemStyleVars(item)}
+          >
+            <img
+              className="season-gallery__img"
+              src={item.image}
+              alt={item.alt}
+              style={
+                item.crop
+                  ? {
+                      width: `${item.crop.widthPercent}%`,
+                      height: `${item.crop.heightPercent}%`,
+                      left: `${item.crop.leftPercent}%`,
+                      top: `${item.crop.topPercent}%`,
+                    }
+                  : undefined
+              }
+            />
+          </figure>
+        ))}
       </div>
     </section>
   );
