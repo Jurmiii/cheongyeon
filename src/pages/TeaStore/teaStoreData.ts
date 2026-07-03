@@ -30,6 +30,7 @@ export type TeaStorySeason = {
   id: string;
   image: string;
   description: string;
+  descriptionMobile?: string;
 };
 
 export type TeaStoryDadoItem = {
@@ -90,6 +91,8 @@ export const teaStorySeasons: TeaStorySeason[] = [
     image: sec8Image4,
     description:
       "차와 자연이 잠시 쉬어가는\n시간, 고요한 청연에서\n몸도 마음도 쉬어갑니다.",
+    descriptionMobile:
+      "차와 자연이 잠시\n쉬어가는 시간 몸도\n마음도 쉬어갑니다.",
   },
 ];
 

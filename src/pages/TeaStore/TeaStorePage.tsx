@@ -247,7 +247,20 @@ function TeaStoryPage() {
                     />
                     <span className="tea-store-season__hover-text ft-48b">{seasonHoverLabels[season.id]}</span>
                   </div>
-                  <p className="tea-store-season__description ft-22r white">{season.description}</p>
+                  <p className="tea-store-season__description ft-22r white">
+                    {season.descriptionMobile ? (
+                      <>
+                        <span className="tea-store-season__description-text tea-store-season__description-text--default">
+                          {season.description}
+                        </span>
+                        <span className="tea-store-season__description-text tea-store-season__description-text--mobile">
+                          {season.descriptionMobile}
+                        </span>
+                      </>
+                    ) : (
+                      season.description
+                    )}
+                  </p>
                 </article>
               ))}
             </div>
