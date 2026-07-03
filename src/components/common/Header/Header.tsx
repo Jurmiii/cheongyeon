@@ -246,14 +246,6 @@ export default function Header() {
                 <img src={logo} alt="청연" />
               </Link>
             </h1>
-            <Link className="site-header__compact-login" to="/login" onClick={closeMenu}>
-              <span className="site-header__compact-user-frame" aria-hidden="true">
-                <Icon name="user" />
-              </span>
-              <span className="site-header__compact-login-text ft-14b ink500">
-                {isLoggedIn ? loginId : "로그인"}
-              </span>
-            </Link>
           </div>
 
           <button

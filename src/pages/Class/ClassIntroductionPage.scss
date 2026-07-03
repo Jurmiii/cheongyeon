@@ -1194,11 +1194,14 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
 
 /* Figma 1449:346 — 1920×900 */
 .class-intro-carousel {
-  width: 120rem;
+  box-sizing: border-box;
+  width: 100%;
   max-width: 100%;
+  min-width: 0;
   min-height: 56.25rem;
   padding: 7.5rem 15rem 8.25rem;
   background: var(--han50);
+  overflow-x: clip;
 }
 
 .class-intro-carousel__grid {
@@ -1222,14 +1225,17 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
   align-items: stretch;
   width: 100%;
   max-width: 89.4375rem;
+  min-width: 0;
   height: 34.5rem;
   margin-inline: auto;
+  overflow: hidden;
 }
 
 .class-intro-carousel__card {
   position: relative;
-  flex: 0 0 13.6875rem;
-  width: 13.6875rem;
+  flex: 13.6875 1 0;
+  width: auto;
+  min-width: 0;
   height: 100%;
   overflow: hidden;
   border-radius: 0;
@@ -1238,18 +1244,17 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
   transform-origin: center center;
   transition:
     flex 0.45s ease,
-    width 0.45s ease,
     transform 0.45s ease;
 
   &--active {
-    flex: 0 0 44.4375rem;
-    width: 44.4375rem;
+    flex: 44.4375 1 0;
+    width: auto;
     transform: scale(1);
   }
 
   &--inactive {
-    flex: 0 0 13.6875rem;
-    width: 13.6875rem;
+    flex: 13.6875 1 0;
+    width: auto;
     transform: scale(0.92);
   }
 }
@@ -1332,13 +1337,43 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
   }
 }
 
+@media (max-width: grid.$desktop-grid-outer) and (min-width: $laptop) {
+  .class-intro-carousel .class-intro-carousel__card--active .class-intro-carousel__card-title {
+    font-family: var(--font-headline);
+    font-size: class-intro-about-fluid(2.25rem, 1.5rem);
+    font-weight: 700;
+    line-height: class-intro-about-fluid(3.25rem, 2.125rem);
+  }
+
+  .class-intro-carousel .class-intro-carousel__card:not(.class-intro-carousel__card--active) .class-intro-carousel__card-title {
+    font-family: var(--font-headline);
+    font-size: class-intro-about-fluid(1.75rem, 1.5rem);
+    font-weight: 700;
+    line-height: class-intro-about-fluid(2.5rem, 2.125rem);
+  }
+
+  .class-intro-carousel__card-description {
+    font-family: var(--font-body);
+    font-size: class-intro-about-fluid(1.375rem, 1rem);
+    font-weight: 400;
+    line-height: class-intro-about-fluid(2.25rem, 1.625rem);
+  }
+}
+
 @media (max-width: grid.$desktop-grid-outer) {
   .class-intro-carousel {
     padding-inline: 1.5rem;
+    overflow-x: clip;
+  }
+
+  .class-intro-carousel__grid {
+    min-width: 0;
   }
 
   .class-intro-carousel__track {
     max-width: 100%;
+    height: clamp(22rem, 52vw, 34.5rem);
+    gap: clamp(0.75rem, 1.5vw, 1.3125rem);
   }
 }
 
@@ -1388,6 +1423,21 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
   .class-intro-carousel__card--active .class-intro-carousel__card-description {
     max-height: 5rem;
     opacity: 1;
+  }
+
+  // Tablet → Mobile — ft-24b→ft-20b / ft-16s→ft-14r
+  .class-intro-carousel .class-intro-carousel__card-title {
+    font-family: var(--font-headline);
+    font-size: class-intro-about-lerp-mobile-tablet(1.5rem, 1.25rem);
+    font-weight: 700;
+    line-height: class-intro-about-lerp-mobile-tablet(2.125rem, 2rem);
+  }
+
+  .class-intro-carousel__card-description {
+    font-family: var(--font-body);
+    font-size: class-intro-about-lerp-mobile-tablet(1rem, 0.875rem);
+    font-weight: 400;
+    line-height: class-intro-about-lerp-mobile-tablet(1.625rem, 1.375rem);
   }
 }
 
@@ -1614,7 +1664,7 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
 
 .class-intro-review__layout {
   @include grid.desktop-grid-fluid;
-  align-items: center;
+  align-items: stretch;
   width: 100%;
   touch-action: pan-y;
   cursor: grab;
@@ -1626,9 +1676,14 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
 }
 
 .class-intro-review__media {
+  display: flex;
+  flex-direction: column;
   grid-column: 1 / span 6;
+  justify-content: center;
+  align-items: flex-start;
   width: 100%;
   min-width: 0;
+  align-self: center;
 }
 
 .class-intro-review__figure {
@@ -1679,6 +1734,7 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
   flex-direction: column;
   gap: $class-intro-review-content-gap-pc;
   min-width: 0;
+  align-self: start;
 }
 
 
@@ -1694,36 +1750,42 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
 
 .class-intro-review__headline {
   position: relative;
-  display: inline-block;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
   margin: 0;
-  padding: 0 1rem 0 0.875rem;
+  padding: 0 0 0 0.875rem;
   font-family: var(--font-headline);
   font-size: $class-intro-review-title-size-pc;
   font-weight: 700;
   line-height: $class-intro-review-title-line-pc;
   letter-spacing: -0.01em;
   color: var(--deep500);
+  word-break: keep-all;
 }
 
 .class-intro-review__headline-text {
-  display: block;
+  display: inline;
   white-space: pre-line;
 }
 
 .class-intro-review__quote-mark {
-  position: absolute;
   font-size: $class-intro-review-quote-mark-size-pc;
   line-height: 1;
   color: var(--deep500);
 
   &:not(.class-intro-review__quote-mark--close) {
+    position: absolute;
     top: 0;
     left: 0;
   }
 
   &--close {
-    right: 0;
-    bottom: 0;
+    position: static;
+    display: inline-block;
+    vertical-align: baseline;
+    margin-left: 0.125rem;
+    line-height: 1;
   }
 }
 
@@ -1847,6 +1909,42 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
 
   .class-intro-review__layout {
     @include grid.desktop-grid-narrow;
+    align-items: stretch;
+  }
+
+  .class-intro-review__media {
+    grid-column: 1 / span 6;
+    align-self: center;
+  }
+
+  .class-intro-review__content {
+    grid-column: 7 / span 6;
+    align-self: start;
+  }
+
+  .class-intro-review__figure {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: $class-intro-review-media-ratio;
+  }
+
+  .class-intro-review .class-intro-review__headline {
+    font-size: class-intro-about-fluid(
+      $class-intro-review-title-size-pc,
+      $class-intro-review-title-size-tablet
+    );
+    line-height: class-intro-about-fluid(
+      $class-intro-review-title-line-pc,
+      $class-intro-review-title-line-tablet
+    );
+  }
+
+  .class-intro-review__quote-mark {
+    font-size: class-intro-about-fluid(
+      $class-intro-review-quote-mark-size-pc,
+      $class-intro-review-title-size-tablet
+    );
   }
 }
 
@@ -1874,37 +1972,41 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
   .class-intro-review__layout {
     display: grid;
     grid-column: 1 / -1;
-    grid-template-columns: repeat(grid.$tablet-grid-columns, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: class-intro-about-fluid(
       $class-intro-review-grid-gap-pc,
       $class-intro-review-grid-gap-tablet
     );
-    align-items: center;
+    align-items: stretch;
     width: 100%;
     max-width: 100%;
     margin-inline: 0;
     padding-inline: 0;
   }
 
-  .class-intro-review__media {
-    grid-column: 1 / span 4;
+  .class-intro-review__media,
+  .class-intro-review__content {
+    grid-column: auto;
     width: 100%;
     min-width: 0;
   }
 
-  .class-intro-review__figure {
-    width: min(
-      100%,
-      class-intro-about-fluid(
-        $class-intro-review-media-width-pc,
-        $class-intro-review-media-width-tablet
-      )
-    );
-    max-width: 100%;
+  .class-intro-review__media {
+    align-self: center;
   }
 
   .class-intro-review__content {
-    grid-column: 5 / span 4;
+    align-self: start;
+  }
+
+  .class-intro-review__figure {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: $class-intro-review-media-ratio;
+  }
+
+  .class-intro-review__content {
     gap: class-intro-about-fluid(
       $class-intro-review-content-gap-pc,
       $class-intro-review-content-gap-tablet
@@ -1920,11 +2022,80 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
     );
     align-items: flex-start;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     text-align: left;
   }
 
   .class-intro-review__headline {
+    max-width: 100%;
     text-align: left;
+  }
+
+  .class-intro-review .class-intro-review__headline {
+    font-size: class-intro-about-fluid(
+      $class-intro-review-title-size-pc,
+      $class-intro-review-title-size-tablet
+    );
+    line-height: class-intro-about-fluid(
+      $class-intro-review-title-line-pc,
+      $class-intro-review-title-line-tablet
+    );
+  }
+
+  .class-intro-review__quote-mark {
+    font-size: class-intro-about-fluid(
+      $class-intro-review-quote-mark-size-pc,
+      $class-intro-review-title-size-tablet
+    );
+  }
+
+  .class-intro-review__star {
+    width: class-intro-about-fluid(
+      $class-intro-review-star-size-pc,
+      $class-intro-review-star-size-tablet
+    );
+    height: class-intro-about-fluid(
+      $class-intro-review-star-size-pc,
+      $class-intro-review-star-size-tablet
+    );
+    font-size: class-intro-about-fluid(
+      $class-intro-review-star-size-pc,
+      $class-intro-review-star-size-tablet
+    );
+  }
+
+  .class-intro-review__name {
+    font-size: class-intro-about-fluid(
+      $class-intro-review-name-size-pc,
+      $class-intro-review-name-size-tablet
+    );
+    line-height: class-intro-about-fluid(
+      $class-intro-review-name-line-pc,
+      $class-intro-review-name-line-tablet
+    );
+  }
+
+  .class-intro-review__body {
+    font-size: class-intro-about-fluid(
+      $class-intro-review-body-size-pc,
+      $class-intro-review-body-size-tablet
+    );
+    line-height: class-intro-about-fluid(
+      $class-intro-review-body-line-pc,
+      $class-intro-review-body-line-tablet
+    );
+  }
+
+  .class-intro-review__date {
+    font-size: class-intro-about-fluid(
+      $class-intro-review-date-size-pc,
+      $class-intro-review-date-size-tablet
+    );
+    line-height: class-intro-about-fluid(
+      $class-intro-review-date-line-pc,
+      $class-intro-review-date-line-tablet
+    );
   }
 
   .class-intro-review__meta {
@@ -1943,36 +2114,6 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
 @media (min-width: $tablet) and (max-width: $laptop) {
   .class-intro-review {
     padding-block: $class-intro-review-section-padding-block-tablet;
-  }
-
-  .class-intro-review .class-intro-review__headline {
-    font-size: $class-intro-review-title-size-tablet;
-    line-height: $class-intro-review-title-line-tablet;
-  }
-
-  .class-intro-review__quote-mark {
-    font-size: $class-intro-review-title-size-tablet;
-  }
-
-  .class-intro-review__star {
-    width: $class-intro-review-star-size-tablet;
-    height: $class-intro-review-star-size-tablet;
-    font-size: $class-intro-review-star-size-tablet;
-  }
-
-  .class-intro-review__name {
-    font-size: $class-intro-review-name-size-tablet;
-    line-height: $class-intro-review-name-line-tablet;
-  }
-
-  .class-intro-review__body {
-    font-size: $class-intro-review-body-size-tablet;
-    line-height: $class-intro-review-body-line-tablet;
-  }
-
-  .class-intro-review__date {
-    font-size: $class-intro-review-date-size-tablet;
-    line-height: $class-intro-review-date-line-tablet;
   }
 }
 
@@ -2017,6 +2158,7 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
     grid-row: auto;
     width: 100%;
     min-width: 0;
+    align-self: stretch;
   }
 
   .class-intro-review__figure {
