@@ -785,7 +785,7 @@ $season-promo-bg-mobile-origin-y: 38%;
 }
 
 .season-promo {
-  --season-promo-bg-pos-x: 50%;
+  --season-promo-bg-pos-x: 73%;
   --season-promo-bg-pos-y: 50%;
   --season-promo-bg-scale: 1;
   --season-promo-bg-translate-x: 0%;
@@ -1011,6 +1011,25 @@ $season-promo-bg-mobile-origin-y: 38%;
 }
 
 /* Figma 1463:541 — 1920×940 */
+$season-schedule-card-w-pc: 13.75rem; // 220px
+$season-schedule-card-h-pc: 24.9375rem; // 399px
+$season-schedule-card-gap-pc: 1.5rem; // 24px
+$season-schedule-card-lift-pc: 2.25rem; // 선택 전 카드 하강
+$season-schedule-card-w-tablet: 6.125rem; // 98px
+$season-schedule-card-h-tablet: 10.8125rem; // 173px
+$season-schedule-card-gap-tablet: 0.625rem; // 10px
+$season-schedule-card-lift-tablet: 1rem; // 98/220 비율
+$season-schedule-card-scale-tablet: #{98 / 220};
+
+@function season-schedule-lerp-pc-tablet($pc-value, $tablet-value) {
+  @return calc(
+    #{$tablet-value} +
+      (#{$pc-value} - #{$tablet-value}) *
+      (100vw - #{$tablet}) /
+      (#{$laptop - $tablet})
+  );
+}
+
 .season-schedule {
   width: 120rem;
   max-width: 100%;
@@ -1404,6 +1423,22 @@ $season-promo-bg-mobile-origin-y: 38%;
   }
 }
 
+/* 태블릿 이하 — 예약하기 버튼 숨김, 카드 높이는 유동/태블릿 규격 따름 */
+@media (max-width: #{$laptop - 1px}) {
+  .season-schedule__reserve-btn {
+    display: none;
+  }
+
+  .season-schedule__card--reserve {
+    min-height: 0;
+  }
+
+  .season-schedule__card--reserve .season-schedule__card-surface {
+    height: 100%;
+    padding-bottom: 0.5625rem;
+  }
+}
+
 .season-schedule__card--past .season-schedule__card-surface {
   background: var(--han100);
   cursor: not-allowed;
@@ -1520,7 +1555,7 @@ $season-promo-bg-mobile-origin-y: 38%;
   }
 }
 
-@media (max-width: $tablet) {
+@media (max-width: #{$laptop - 1px}) {
   .season-schedule {
     height: auto;
     padding-bottom: 3rem;
@@ -1535,50 +1570,210 @@ $season-promo-bg-mobile-origin-y: 38%;
   }
 
   .season-schedule__carousel {
+    width: min(grid.$tablet-grid-inner, calc(100% - #{grid.$tablet-grid-padding * 2}));
     height: auto;
     margin-top: 1.25rem;
   }
 
+  .season-schedule__track {
+    gap: season-schedule-lerp-pc-tablet($season-schedule-card-gap-pc, $season-schedule-card-gap-tablet);
+  }
+
   .season-schedule__card {
-    flex-basis: 11.5rem;
-    width: 11.5rem;
-    height: 22rem;
+    flex-basis: min(
+      season-schedule-lerp-pc-tablet($season-schedule-card-w-pc, $season-schedule-card-w-tablet),
+      calc((100% - 5 * #{$season-schedule-card-gap-tablet}) / 6)
+    );
+    width: min(
+      season-schedule-lerp-pc-tablet($season-schedule-card-w-pc, $season-schedule-card-w-tablet),
+      calc((100% - 5 * #{$season-schedule-card-gap-tablet}) / 6)
+    );
+    height: season-schedule-lerp-pc-tablet($season-schedule-card-h-pc, $season-schedule-card-h-tablet);
+    margin-top: season-schedule-lerp-pc-tablet($season-schedule-card-lift-pc, $season-schedule-card-lift-tablet);
+  }
+
+  .season-schedule__card--reserve {
+    height: season-schedule-lerp-pc-tablet($season-schedule-card-h-pc, $season-schedule-card-h-tablet);
+    min-height: 0;
+  }
+
+  .season-schedule__card-surface {
+    padding:
+      season-schedule-lerp-pc-tablet(1.125rem, 0.5rem)
+      season-schedule-lerp-pc-tablet(0.875rem, 0.375rem)
+      season-schedule-lerp-pc-tablet(1.25rem, 0.5625rem);
+    border-radius: season-schedule-lerp-pc-tablet(1.5rem, 0.6875rem);
+    border-width: season-schedule-lerp-pc-tablet(0.125rem, 0.0625rem);
+  }
+
+  .season-schedule__divider {
+    width: season-schedule-lerp-pc-tablet(8.0375rem, 3.5625rem);
+    height: season-schedule-lerp-pc-tablet(1.64975rem, 0.75rem);
+    margin-top: season-schedule-lerp-pc-tablet(0.3125rem, 0.125rem);
   }
 
   .season-schedule__cup {
-    width: 7rem;
-    height: 4.75rem;
+    width: season-schedule-lerp-pc-tablet(8.4375rem, 3.75rem);
+    height: season-schedule-lerp-pc-tablet(5.9375rem, 2.625rem);
+    margin-top: season-schedule-lerp-pc-tablet(0.75rem, 0.3125rem);
+  }
+
+  .season-schedule__seats {
+    gap: season-schedule-lerp-pc-tablet(1rem, 0.4375rem);
+    margin-top: season-schedule-lerp-pc-tablet(2.6875rem, 1.1875rem);
+    max-width: season-schedule-lerp-pc-tablet(9.125rem, 4.0625rem);
+  }
+
+  .season-schedule__dots {
+    gap: season-schedule-lerp-pc-tablet(0.375rem, 0.1875rem);
+  }
+
+  .season-schedule__dot {
+    flex-basis: season-schedule-lerp-pc-tablet(1.0860625rem, 0.5rem);
+    width: season-schedule-lerp-pc-tablet(1.0860625rem, 0.5rem);
+    height: season-schedule-lerp-pc-tablet(1.0860625rem, 0.5rem);
+    min-width: season-schedule-lerp-pc-tablet(1.0860625rem, 0.5rem);
+    min-height: season-schedule-lerp-pc-tablet(1.0860625rem, 0.5rem);
+  }
+
+  .season-schedule__time-label.ft-32b {
+    font-family: var(--font-headline);
+    font-size: season-schedule-lerp-pc-tablet(2rem, 1rem);
+    font-weight: 700;
+    line-height: season-schedule-lerp-pc-tablet(2.75rem, 1.25rem);
+  }
+
+  .season-schedule__remain.ft-18r {
+    font-family: var(--font-body);
+    font-size: season-schedule-lerp-pc-tablet(1.125rem, 0.625rem);
+    font-weight: 400;
+    line-height: season-schedule-lerp-pc-tablet(1.875rem, 1.375rem);
+  }
+
+  .season-schedule__reserve-btn {
+    font-family: var(--font-body);
+    font-size: 0.625rem;
+    font-weight: 400;
+    line-height: 1.375rem;
   }
 }
 
-/* Figma 1463:688 — 1920×920 */
+@media (max-width: $tablet) {
+  .season-schedule__track {
+    gap: $season-schedule-card-gap-tablet;
+  }
+
+  .season-schedule__card {
+    flex-basis: $season-schedule-card-w-tablet;
+    width: $season-schedule-card-w-tablet;
+    height: $season-schedule-card-h-tablet;
+    margin-top: $season-schedule-card-lift-tablet;
+  }
+
+  .season-schedule__card--reserve {
+    height: $season-schedule-card-h-tablet;
+  }
+
+  .season-schedule__card-surface {
+    padding: 0.5rem 0.375rem 0.5625rem;
+    border-radius: 0.6875rem;
+    border-width: 0.0625rem;
+  }
+
+  .season-schedule__divider {
+    width: 3.5625rem;
+    height: 0.75rem;
+    margin-top: 0.125rem;
+  }
+
+  .season-schedule__cup {
+    width: 3.75rem;
+    height: 2.625rem;
+    margin-top: 0.3125rem;
+  }
+
+  .season-schedule__seats {
+    gap: 0.4375rem;
+    margin-top: 1.1875rem;
+    max-width: 4.0625rem;
+  }
+
+  .season-schedule__dots {
+    gap: 0.1875rem;
+  }
+
+  .season-schedule__dot {
+    flex-basis: 0.5rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    min-width: 0.5rem;
+    min-height: 0.5rem;
+  }
+
+  .season-schedule__time-label.ft-32b {
+    font-size: 1rem;
+    line-height: 1.25rem;
+  }
+
+  .season-schedule__remain.ft-18r {
+    font-size: 0.625rem;
+    line-height: 1.375rem;
+  }
+}
+
+/* Figma 1463:688 — 1920×920 · 콜라주 1438×564 */
+$season-gallery-canvas-w: 89.875rem; // 1438px
+$season-gallery-canvas-ratio: #{1438} / #{564};
+$season-gallery-canvas-w-tablet: 40rem; // 640px
+$season-gallery-canvas-h-tablet: 17.125rem; // 274px
+$season-gallery-canvas-ratio-tablet: #{640} / #{274};
+$season-gallery-canvas-w-mobile: 23.125rem; // 370px
+$season-gallery-canvas-h-mobile: 20.3125rem; // 325px
+$season-gallery-canvas-ratio-mobile: #{370} / #{325};
+$season-gallery-title-padding-top: 5.625rem;
+$season-gallery-grid-margin-top: 2.5rem;
+$season-gallery-section-padding-bottom: 5rem;
+$season-gallery-title-padding-top-tablet: 4rem;
+$season-gallery-grid-margin-top-tablet: 2rem;
+$season-gallery-section-padding-bottom-tablet: 4rem;
+$season-gallery-title-padding-top-mobile: 3rem;
+$season-gallery-grid-margin-top-mobile: 1.5rem;
+$season-gallery-section-padding-bottom-mobile: 3rem;
+
 .season-gallery {
-  width: 120rem;
-  max-width: 100%;
-  height: 57.5rem;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 120rem;
+  margin-inline: auto;
+  height: auto;
+  padding-bottom: $season-gallery-section-padding-bottom;
   background: var(--han200);
 }
 
 .season-gallery__title {
   margin: 0;
-  padding-top: 5.625rem;
+  padding-top: $season-gallery-title-padding-top;
   text-align: center;
   letter-spacing: -0.02em;
 }
 
 .season-gallery__grid {
   position: relative;
-  width: 89.875rem;
-  height: 35.25rem;
-  margin: 2.5rem auto 0;
+  width: min($season-gallery-canvas-w, calc(100% - 3rem));
+  max-width: grid.$desktop-grid-outer;
+  margin: $season-gallery-grid-margin-top auto 0;
+  aspect-ratio: $season-gallery-canvas-ratio;
+  height: auto;
 }
 
 .season-gallery__item {
   position: absolute;
+  left: var(--sg-left);
+  top: var(--sg-top);
+  width: var(--sg-width);
+  height: var(--sg-height);
   margin: 0;
   overflow: hidden;
-
-  /* \uba39/\ubd93 \ub290\ub08c\uc758 \uac70\uce5c \ube0c\ub7ec\uc26c \uac00\uc7a5\uc790\ub9ac \ub9c8\uc2a4\ud06c */
 }
 
 .season-gallery__img {
@@ -1596,57 +1791,59 @@ $season-promo-bg-mobile-origin-y: 38%;
 
 @media (max-width: grid.$desktop-grid-outer) {
   .season-gallery__grid {
-    width: calc(100% - 3rem);
-    height: auto;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-    margin-top: 2rem;
-    padding-bottom: 3rem;
-  }
-
-  .season-gallery__item {
-    position: relative;
-    top: auto !important;
-    left: auto !important;
-    width: 100% !important;
-    height: auto !important;
-    aspect-ratio: 4 / 3;
-  }
-
-  .season-gallery__item:first-child {
-    grid-column: span 2;
-    aspect-ratio: 16 / 10;
-  }
-
-  .season-gallery__item:last-child {
-    aspect-ratio: 3 / 4;
-  }
-
-  .season-gallery__img {
-    position: static !important;
-    width: 100% !important;
-    height: 100% !important;
-    left: auto !important;
-    top: auto !important;
+    width: min($season-gallery-canvas-w, calc(100% - #{grid.$desktop-grid-side-padding * 2}));
   }
 }
 
-@media (max-width: $tablet) {
+@media (max-width: #{$laptop - 1px}) {
   .season-gallery {
-    height: auto;
+    padding-bottom: $season-gallery-section-padding-bottom-tablet;
   }
 
   .season-gallery__title {
-    padding-top: 4rem;
+    padding-top: $season-gallery-title-padding-top-tablet;
   }
 
   .season-gallery__grid {
-    grid-template-columns: 1fr;
+    width: min($season-gallery-canvas-w-tablet, calc(100% - #{grid.$tablet-grid-padding * 2}));
+    max-width: $season-gallery-canvas-w-tablet;
+    aspect-ratio: $season-gallery-canvas-ratio-tablet;
+    margin-top: $season-gallery-grid-margin-top-tablet;
   }
 
-  .season-gallery__item:first-child {
-    grid-column: span 1;
+  .season-gallery__item--hide-tablet {
+    display: none;
+  }
+
+  .season-gallery__item {
+    left: var(--sg-left-tablet);
+    top: var(--sg-top-tablet);
+    width: var(--sg-width-tablet);
+    height: var(--sg-height-tablet);
+  }
+}
+
+@media (max-width: $mobile) {
+  .season-gallery {
+    padding-bottom: $season-gallery-section-padding-bottom-mobile;
+  }
+
+  .season-gallery__title {
+    padding-top: $season-gallery-title-padding-top-mobile;
+  }
+
+  .season-gallery__grid {
+    width: min($season-gallery-canvas-w-mobile, calc(100% - #{grid.$mobile-grid-padding * 2}));
+    max-width: $season-gallery-canvas-w-mobile;
+    aspect-ratio: $season-gallery-canvas-ratio-mobile;
+    margin-top: $season-gallery-grid-margin-top-mobile;
+  }
+
+  .season-gallery__item {
+    left: var(--sg-left-mobile);
+    top: var(--sg-top-mobile);
+    width: var(--sg-width-mobile);
+    height: var(--sg-height-mobile);
   }
 }
 
