@@ -376,7 +376,8 @@ function SpaceGallerySection({
                   <h4 className={`${blockClass}__card-title ft-28b`}>{card.title}</h4>
                   <p className={`${blockClass}__card-text ft-16r`}>
                     {card.location[0]}
-                    <br />
+                    {' '}
+                    <br className={`${blockClass}__card-location-break`} aria-hidden="true" />
                     {card.location[1]}
                   </p>
                   <p className={`${blockClass}__card-text ft-16r`}>{card.feature}</p>
