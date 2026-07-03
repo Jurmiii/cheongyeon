@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import subSymbol from "../../assets/images/01main/subsymbol.svg";
+import { Footer, Header, SubKvSymbolLine } from "../../components/common";
 import aboutBg from "../../assets/images/03space/about-bg.webp";
 import spaceKv from "../../assets/images/03space/space-kv.webp";
 import spaceRoomLeft from "../../assets/images/03space/space-3_1.webp";
@@ -39,7 +39,6 @@ import spaceMap2 from "../../assets/images/03space/space-7_2.webp";
 import spaceMap3 from "../../assets/images/03space/space-7_3.webp";
 import spaceMap4 from "../../assets/images/03space/space-7_4.webp";
 import spaceMap5 from "../../assets/images/03space/space-7_5.webp";
-import { Footer, Header } from "../../components/common";
 import SpaceGallerySection from "./SpaceGallerySection";
 import "./SpacePage.scss";
 
@@ -324,9 +323,9 @@ function SpacePage() {
         aria-label="공간 소개 키비주얼"
       >
         <div className="space-kv__content">
-          <h1 className="space-kv__title ft-64r ink500">공간 소개</h1>
-          <div className="space-kv__ornament" aria-hidden="true">
-            <img src={subSymbol} alt="" />
+          <div className="space-kv__head">
+            <h1 className="space-kv__title ft-64r ink500">공간 소개</h1>
+            <SubKvSymbolLine blockClass="space-kv" tone="responsive" />
           </div>
           <p className="space-kv__desc ft-28r ink500">
             차를 마주하는 모든 순간이

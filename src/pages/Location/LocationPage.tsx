@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import logo from "../../assets/images/00header-footer/logo.svg";
-import subSymbol from "../../assets/images/01main/subsymbol.svg";
-import collectionLineSymbol from "../../assets/images/05collection/collection-line-symbol.svg";
-import { Footer, Header, Icon } from "../../components/common";
+import { Footer, Header, Icon, SubKvSymbolLine } from "../../components/common";
 import "./LocationPage.scss";
 
 const KAKAO_MAP_APP_KEY = "723edbe830219d6cbf7c015343e297fe";
@@ -273,14 +271,7 @@ function LocationPage() {
           <div className="location-kv__text">
             <div className="location-kv__head">
               <h1 className="location-kv__title ft-64r ink500">오시는길</h1>
-              <div className="location-kv__ornament" aria-hidden="true">
-                <img src={subSymbol} alt="" />
-              </div>
-              <div className="location-kv__line" aria-hidden="true">
-                <span className="location-kv__line-bar" />
-                <img className="location-kv__line-symbol" src={collectionLineSymbol} alt="" />
-                <span className="location-kv__line-bar" />
-              </div>
+              <SubKvSymbolLine blockClass="location-kv" tone="responsive" />
             </div>
             <p className="location-kv__desc ft-28r ink500">
               차를 마주하는 모든 순간이

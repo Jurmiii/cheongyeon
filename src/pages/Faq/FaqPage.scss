@@ -1,5 +1,7 @@
 @use "../../styles/abstracts/breakpoints" as *;
 @use "../../styles/abstracts/grid" as grid;
+@use "../../styles/abstracts/sub-kv-symbol" as sub-kv;
+@use "../../styles/abstracts/sub-kv-layout" as sub-kv-layout;
 
 /* Figma 1548:69 — FAQ */
 .faq-page {
@@ -42,27 +44,18 @@
 .faq-kv__content {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 1.5rem;
 }
 
 .faq-kv__head {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  @include sub-kv.sub-kv-head;
   gap: 1rem;
 }
 
 .faq-kv__title {
   margin: 0;
   letter-spacing: -0.02em;
-}
-
-.faq-kv__symbol {
-  display: block;
-  width: auto;
-  height: 1.0625rem;
-  object-fit: contain;
-  object-position: left center;
 }
 
 .faq-kv__description {
@@ -375,3 +368,5 @@
     line-height: 1.375rem;
   }
 }
+
+@include sub-kv-layout.sub-kv-layout-compact("faq-kv");

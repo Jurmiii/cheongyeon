@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import collectionLineSymbol from "../../assets/images/05collection/collection-line-symbol.svg";
 import springTeaImage from "../../assets/images/07season-tea/sec2-tea.webp";
 import wayImage from "../../assets/images/07season-tea/way.webp";
 import summerTeaImage from "../../assets/images/07season-tea/sec3-tea.webp";
@@ -10,7 +9,7 @@ import sec4WayB from "../../assets/images/07season-tea/sec4-way-b.webp";
 import winterTeaImage from "../../assets/images/07season-tea/sec5-tea.webp";
 import sec5WayB from "../../assets/images/07season-tea/sec5-way-b.webp";
 import sec5WayT from "../../assets/images/07season-tea/sec5-way-t.webp";
-import { Button, Footer, Header } from "../../components/common";
+import { Button, Footer, Header, SubKvSymbolLine } from "../../components/common";
 import SeasonTeaDetailModal from "./SeasonTeaDetailModal";
 import { autumnTeaDetail, springTeaDetail, summerTeaDetail, winterTeaDetail, type SeasonTeaDetail } from "./seasonTeaDetailData";
 import "./SeasonTeaPage.scss";
@@ -145,11 +144,9 @@ function SeasonTeaPage() {
       <section className="season-tea-kv" aria-label="계절의 차 키비주얼">
         <div className="season-tea-kv__grid">
           <div className="season-tea-kv__content">
-            <h1 className="season-tea-kv__title ft-64b white">계절의 차</h1>
-            <div className="season-tea-kv__symbol-line" aria-hidden="true">
-              <span className="season-tea-kv__line-bar" />
-              <img className="season-tea-kv__line-symbol" src={collectionLineSymbol} alt="" />
-              <span className="season-tea-kv__line-bar" />
+            <div className="season-tea-kv__head">
+              <h1 className="season-tea-kv__title ft-64b white">계절의 차</h1>
+              <SubKvSymbolLine blockClass="season-tea-kv" tone="white" />
             </div>
             <p className="season-tea-kv__description ft-28r white">
               계절이 머문 향과 풍미를 담아,

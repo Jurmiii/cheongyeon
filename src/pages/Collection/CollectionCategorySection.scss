@@ -1,6 +1,5 @@
 @use "../../styles/abstracts/breakpoints" as *;
 @use "../../styles/abstracts/grid" as grid;
-@use "../../styles/abstracts/product-responsive" as pr;
 
 .collection-category {
   grid-column: 1 / -1;

@@ -1,16 +1,16 @@
 @use "../../../styles/abstracts/breakpoints" as *;
 @use "../../../styles/abstracts/grid" as grid;
 
-// ─── 반응형 lerp (768 / 402 / 1440 그리드 기준) ───────────────────────────
-$header-pc-narrow-range: 42rem; // 1440px(90rem) − 768px(48rem)
+// ─── 반응형 lerp (1024 / 768 / 402 / 1440 그리드 기준) ─────────────────────
+$header-pc-narrow-range: 26rem; // 1440px(90rem) − 1024px(64rem)
 
-@function header-fluid-pc-narrow($pc-value, $value-at-tablet) {
+@function header-fluid-pc-narrow($pc-value, $value-at-laptop) {
   @return clamp(
-    #{$value-at-tablet},
+    #{$value-at-laptop},
     calc(
-      #{$value-at-tablet} +
-        (#{$pc-value} - #{$value-at-tablet}) *
-        (100vw - #{$tablet}) /
+      #{$value-at-laptop} +
+        (#{$pc-value} - #{$value-at-laptop}) *
+        (100vw - #{$laptop}) /
         #{$header-pc-narrow-range}
     ),
     #{$pc-value}
@@ -26,27 +26,47 @@ $header-pc-narrow-range: 42rem; // 1440px(90rem) − 768px(48rem)
   );
 }
 
-// 태블릿(768px) / 모바일(402px) 앵커
-$header-tablet-pad-x: grid.$tablet-grid-padding;
+// 태블릿(768px) / 모바일(402px) 앵커 — MainPage KV 그리드와 동일 패딩
+$header-tablet-section-pad: grid.$tablet-grid-padding; // 64px
+$header-tablet-pad-x: $header-tablet-section-pad;
 $header-tablet-bar-h: 3rem;
-$header-tablet-logo-w: 6.3125rem;
-$header-tablet-logo-h: 3rem;
+$header-tablet-logo-w: 6.3125rem; // 101px
+$header-tablet-logo-h: 3rem; // 48px
 $header-tablet-toggle: 2.0625rem;
 $header-tablet-user-frame: 1.875rem;
 $header-tablet-user-frame-max: 2.25rem;
 $header-tablet-user-icon: 1rem;
 $header-tablet-user-icon-max: 1.25rem;
 
+$header-logo-w: $header-tablet-logo-w;
+$header-logo-h: $header-tablet-logo-h;
+$header-mobile-user-frame-size: 2.5rem; // 40px
+$header-mobile-user-icon-size: 1.25rem; // 20px
+
+$header-mobile-pad-vw-min: 20rem;
+
 $header-mobile-pad-x: grid.$mobile-grid-padding;
-$header-mobile-bar-h: 1.8125rem;
-$header-mobile-logo-w: 5rem;
-$header-mobile-logo-h: 1.625rem;
+$header-mobile-bar-h: $header-logo-h;
+$header-mobile-logo-w: $header-logo-w;
+$header-mobile-logo-h: $header-logo-h;
 $header-mobile-toggle: 2rem;
 $header-mobile-toggle-max: 2.0625rem;
 $header-mobile-user-frame: 1.875rem;
 $header-mobile-user-frame-max: 2.25rem;
 $header-mobile-user-icon: 1rem;
 $header-mobile-user-icon-max: 1.25rem;
+
+@mixin site-header-compact-grid-align {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin-inline: 0;
+}
+
+@mixin site-header-compact-inner-grid-align {
+  @include site-header-compact-grid-align;
+  padding-inline: var(--header-pad-x);
+}
 
 // ─── 공통 ────────────────────────────────────────────────────────────────────
 .site-header-shell {
@@ -72,6 +92,15 @@ $header-mobile-user-icon-max: 1.25rem;
   }
 }
 
+.site-header__compact-logo,
+.site-header__tablet-panel-logo {
+  flex-shrink: 0;
+
+  img {
+    object-position: left center;
+  }
+}
+
 .site-header__menu-toggle,
 .site-header__tablet-panel-close,
 .site-header__tablet-user-button,
@@ -82,13 +111,12 @@ $header-mobile-user-icon-max: 1.25rem;
   cursor: pointer;
 }
 
-// ─── PC 레이아웃: 768px 이상 ────────────────────────────────────────────────
-@media (min-width: $tablet) {
+// ─── PC 레이아웃: 1024px 이상 ───────────────────────────────────────────────
+@media (min-width: $laptop) {
   .site-header--desktop {
     --header-bar-h: #{header-fluid-pc-narrow(5.624375rem, 3.5rem)};
     --header-pad-top: #{header-fluid-pc-narrow(1.625rem, 0.75rem)};
     --header-overlay-h: #{header-fluid-pc-narrow(23.6875rem, 18rem)};
-    --header-pad-x: #{header-fluid-pc-narrow(grid.$desktop-grid-side-padding, grid.$tablet-grid-padding)};
     --header-logo-w: #{header-fluid-pc-narrow(10.0625rem, 5.8125rem)};
     --header-gnb-gap: #{header-fluid-pc-narrow(5.375rem, 0.625rem)};
     --header-actions-reserve: #{header-fluid-pc-narrow(8rem, 3.75rem)};
@@ -160,7 +188,7 @@ $header-mobile-user-icon-max: 1.25rem;
     max-width: grid.$desktop-grid-outer;
     height: var(--header-bar-h);
     margin-inline: auto;
-    padding-inline: var(--header-pad-x);
+    padding-inline: grid.$desktop-grid-side-padding;
   }
 
   .site-header--desktop .site-header__logo {
@@ -359,13 +387,13 @@ $header-mobile-user-icon-max: 1.25rem;
   }
 }
 
-// PC: 768px~1440px — inner 그리드 풀블리드
-@media (min-width: $tablet) and (max-width: grid.$desktop-grid-outer) {
+// PC: 1024px~1440px — MainPage KV·푸터와 동일 그리드 정렬
+@media (min-width: $laptop) and (max-width: grid.$desktop-grid-outer) {
   .site-header--desktop .site-header__inner {
     max-width: none;
     padding-inline: max(
-      var(--header-pad-x),
-      calc((100vw - min(100vw, grid.$desktop-grid-outer)) / 2 + var(--header-pad-x))
+      grid.$desktop-grid-side-padding,
+      calc((100vw - min(100vw, grid.$desktop-grid-outer)) / 2 + grid.$desktop-grid-side-padding)
     );
   }
 }
@@ -438,24 +466,20 @@ $header-mobile-user-icon-max: 1.25rem;
   transform: translate(-50%, 0);
 }
 
-// 컴팩트 구간 풀블리드: ≤767px — 그리드 outer와 무관하게 뷰포트 가로 전체
-@media (max-width: #{$tablet - 1px}) {
+// 컴팩트 구간: ≤1023px — 콘텐츠는 페이지 그리드 패딩에 맞춤
+@media (max-width: #{$laptop - 1px}) {
   .site-header-shell {
-    width: 100vw;
-    max-width: none;
-    margin-inline: calc(50% - 50vw);
+    width: 100%;
+    max-width: 100%;
+    margin-inline: 0;
   }
 
   .site-header--compact {
-    width: 100vw;
-    max-width: none;
-    margin-inline: calc(50% - 50vw);
+    @include site-header-compact-grid-align;
   }
 
   .site-header__compact-inner {
-    width: 100%;
-    max-width: none;
-    margin-inline: 0;
+    @include site-header-compact-inner-grid-align;
   }
 
   .site-header__tablet-panel,
@@ -480,6 +504,320 @@ $header-mobile-user-icon-max: 1.25rem;
     width: 100%;
     max-width: none;
   }
+
+  .site-header-shell--menu-open .site-header--compact {
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+// ─── 컴팩트 + 태블릿 패널: 768px~1023px ─────────────────────────────────────
+$header-compact-vw-min: 25.0625rem; // 401px
+
+@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
+  .site-header-shell {
+    --header-pad-x: #{$header-tablet-section-pad};
+    --header-bar-h: 3rem;
+    --header-logo-w: clamp(
+      5.5rem,
+      calc(5.5rem + (100vw - #{$header-compact-vw-min}) * 0.1443),
+      6.3125rem
+    );
+    --header-logo-h: clamp(
+      2.875rem,
+      calc(2.875rem + (100vw - #{$header-compact-vw-min}) * 0.0496),
+      3rem
+    );
+    --header-toggle: clamp(
+      2rem,
+      calc(2rem + (100vw - #{$header-compact-vw-min}) * 0.00436),
+      2.0625rem
+    );
+    --header-login-gap: clamp(
+      0.75rem,
+      calc(0.75rem + (100vw - #{$header-compact-vw-min}) * 0.0763),
+      1.5rem
+    );
+    --header-user-frame: clamp(
+      1.875rem,
+      calc(1.875rem + (100vw - #{$header-compact-vw-min}) * 0.00872),
+      2.25rem
+    );
+    --header-user-icon: clamp(
+      1rem,
+      calc(1rem + (100vw - #{$header-compact-vw-min}) * 0.00654),
+      1.25rem
+    );
+    --header-panel-pad-top: clamp(
+      2rem,
+      calc(2rem + (100vw - #{$header-compact-vw-min}) * 0.0763),
+      3.125rem
+    );
+    --header-panel-body-top: clamp(
+      2.5rem,
+      calc(2.5rem + (100vw - #{$header-compact-vw-min}) * 0.09811),
+      4.0625rem
+    );
+    --header-panel-height: clamp(
+      42rem,
+      calc(42rem + (100vw - #{$header-compact-vw-min}) * 0.164),
+      50.25rem
+    );
+    --header-primary-gap: clamp(
+      1.5rem,
+      calc(1.5rem + (100vw - #{$header-compact-vw-min}) * 0.10902),
+      3.5rem
+    );
+    --header-primary-lh: clamp(
+      1.375rem,
+      calc(1.375rem + (100vw - #{$header-compact-vw-min}) * 0.0218),
+      1.75rem
+    );
+    --header-utility-mt: clamp(
+      1.5rem,
+      calc(1.5rem + (100vw - #{$header-compact-vw-min}) * 0.1202),
+      3.875rem
+    );
+    --header-utility-gap: clamp(
+      0.75rem,
+      calc(0.75rem + (100vw - #{$header-compact-vw-min}) * 0.0273),
+      1.25rem
+    );
+    --header-divider-left: clamp(
+      9rem,
+      calc(9rem + (100vw - #{$header-compact-vw-min}) * 0.4808),
+      18.1875rem
+    );
+    --header-secondary-left: clamp(
+      13rem,
+      calc(13rem + (100vw - #{$header-compact-vw-min}) * 0.698),
+      26.5625rem
+    );
+    --header-divider-h: calc(
+      (5 * var(--header-primary-lh)) +
+        (4 * var(--header-primary-gap)) +
+        var(--header-utility-mt) +
+        var(--header-toggle)
+    );
+    --header-secondary-gap: clamp(
+      0.75rem,
+      calc(0.75rem + (100vw - #{$header-compact-vw-min}) * 0.0437),
+      1.5rem
+    );
+    --header-popup-w: clamp(
+      7rem,
+      calc(7rem + (100vw - #{$header-compact-vw-min}) * 0.098),
+      8.6875rem
+    );
+    --header-popup-h: clamp(
+      3.5rem,
+      calc(3.5rem + (100vw - #{$header-compact-vw-min}) * 0.0436),
+      4.25rem
+    );
+    --header-popup-offset: clamp(
+      0.75rem,
+      calc(0.75rem + (100vw - #{$header-compact-vw-min}) * 0.0763),
+      2.0625rem
+    );
+  }
+
+  .site-header--desktop {
+    display: none;
+  }
+
+  .site-header--compact {
+    display: block;
+  }
+
+  .site-header__compact-inner {
+    min-height: var(--header-bar-h);
+    height: auto;
+  }
+
+  .site-header__compact-logo {
+    width: var(--header-logo-w);
+    height: var(--header-logo-h);
+  }
+
+  .site-header__menu-toggle {
+    width: var(--header-toggle);
+    height: var(--header-toggle);
+  }
+
+  .site-header__mobile-panel {
+    display: none !important;
+  }
+
+  .site-header__tablet-panel {
+    display: block;
+    height: var(--header-panel-height);
+    padding:
+      var(--header-panel-pad-top)
+      var(--header-pad-x)
+      clamp(1.5rem, 4vw, 2rem);
+  }
+
+  .site-header__tablet-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: var(--header-bar-h);
+  }
+
+  .site-header__tablet-panel-logo {
+    width: var(--header-logo-w);
+    height: var(--header-logo-h);
+  }
+
+  .site-header__tablet-panel-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--header-toggle);
+    height: var(--header-toggle);
+  }
+
+  .site-header__tablet-panel-body {
+    position: relative;
+    padding-top: var(--header-panel-body-top);
+  }
+
+  .site-header__tablet-primary {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--header-primary-gap);
+  }
+
+  .site-header__tablet-primary-link {
+    color: var(--ink500);
+    text-decoration: none;
+    transition: color 0.18s ease;
+
+    &--active,
+    &:hover,
+    &:focus-visible {
+      color: var(--han500);
+    }
+  }
+
+  .site-header__tablet-primary-link.ft-18b {
+    font-size: clamp(0.875rem, calc(0.875rem + (100vw - #{$header-compact-vw-min}) * 0.01635), 1.125rem);
+    line-height: var(--header-primary-lh);
+  }
+
+  .site-header__tablet-utility {
+    display: flex;
+    width: fit-content;
+    flex-direction: column;
+    gap: var(--header-utility-gap);
+    margin-top: var(--header-utility-mt);
+  }
+
+  .site-header__tablet-utility-row {
+    position: relative;
+    display: flex;
+    min-height: var(--header-toggle);
+    align-items: center;
+  }
+
+  .site-header__tablet-user-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--header-toggle);
+    height: var(--header-toggle);
+    color: var(--ink500);
+
+    svg {
+      display: block;
+      width: var(--header-toggle);
+      height: var(--header-toggle);
+    }
+  }
+
+  .site-header__tablet-user-popup {
+    position: absolute;
+    top: 50%;
+    left: calc(100% + var(--header-popup-offset));
+    z-index: 2;
+    display: flex;
+    box-sizing: border-box;
+    width: var(--header-popup-w);
+    min-height: var(--header-popup-h);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--white);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(calc(-50% - 0.375rem));
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease;
+  }
+
+  .site-header__tablet-popup--open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%);
+  }
+
+  .site-header__tablet-popup-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--ink500);
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .site-header__tablet-divider {
+    position: absolute;
+    top: var(--header-panel-body-top);
+    left: var(--header-divider-left);
+    width: 1px;
+    height: var(--header-divider-h);
+    background: var(--han500);
+    pointer-events: none;
+  }
+
+  .site-header__tablet-secondary {
+    position: absolute;
+    top: var(--header-panel-body-top);
+    left: var(--header-secondary-left);
+    right: var(--header-pad-x);
+    display: flex;
+    max-width: calc(100% - var(--header-secondary-left) - var(--header-pad-x));
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--header-secondary-gap);
+  }
+
+  .site-header__tablet-secondary-link {
+    color: var(--ink500);
+    text-decoration: none;
+    transition: color 0.18s ease;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--han500);
+    }
+  }
+
+  .site-header__tablet-secondary-link.ft-18b {
+    font-size: clamp(0.875rem, calc(0.875rem + (100vw - #{$header-compact-vw-min}) * 0.01635), 1.125rem);
+    line-height: clamp(1.375rem, calc(1.375rem + (100vw - #{$header-compact-vw-min}) * 0.0218), 1.75rem);
+  }
 }
 
 // ─── 모바일 컴팩트 + 아코디언 패널: ≤767px (402px~768px lerp) ───────────────
@@ -487,25 +825,13 @@ $header-mobile-user-icon-max: 1.25rem;
 @media (max-width: #{$tablet - 1px}) {
   .site-header-shell {
     --header-pad-x: clamp(
-      #{$header-mobile-pad-x},
-      #{header-lerp-mobile-tablet($header-tablet-pad-x, $header-mobile-pad-x)},
-      #{$header-tablet-pad-x}
+      #{grid.$mobile-grid-padding},
+      calc(#{grid.$mobile-grid-padding} + (100vw - #{$header-mobile-pad-vw-min}) * 0.00895),
+      calc(#{grid.$mobile-grid-padding} + 0.25rem)
     );
-    --header-bar-h: clamp(
-      #{$header-mobile-bar-h},
-      #{header-lerp-mobile-tablet($header-tablet-bar-h, $header-mobile-bar-h)},
-      #{$header-tablet-bar-h}
-    );
-    --header-logo-w: clamp(
-      #{$header-mobile-logo-w},
-      #{header-lerp-mobile-tablet($header-tablet-logo-w, $header-mobile-logo-w)},
-      #{$header-tablet-logo-w}
-    );
-    --header-logo-h: clamp(
-      #{$header-mobile-logo-h},
-      #{header-lerp-mobile-tablet($header-tablet-logo-h, $header-mobile-logo-h)},
-      #{$header-tablet-logo-h}
-    );
+    --header-bar-h: #{$header-logo-h};
+    --header-logo-w: #{$header-logo-w};
+    --header-logo-h: #{$header-logo-h};
     --header-toggle: clamp(
       #{$header-mobile-toggle},
       #{header-lerp-mobile-tablet($header-tablet-toggle, $header-mobile-toggle)},
@@ -599,7 +925,6 @@ $header-mobile-user-icon-max: 1.25rem;
   .site-header__compact-inner {
     min-height: var(--header-bar-h);
     height: auto;
-    padding-inline: var(--header-pad-x);
   }
 
   .site-header__compact-logo {
@@ -625,7 +950,7 @@ $header-mobile-user-icon-max: 1.25rem;
     box-sizing: border-box;
     width: 100%;
     min-height: var(--header-panel-min-h);
-    padding: var(--header-panel-inner-pad);
+    padding: var(--header-panel-inner-pad) var(--header-pad-x);
   }
 
   .site-header__mobile-panel-header {
@@ -639,23 +964,27 @@ $header-mobile-user-icon-max: 1.25rem;
     display: inline-flex;
     align-items: center;
     gap: var(--header-login-gap);
+    position: relative;
+    z-index: 1;
     color: var(--ink500);
     text-decoration: none;
+    cursor: pointer;
   }
 
   .site-header__mobile-panel-user-frame {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: var(--header-user-frame);
-    height: var(--header-user-frame);
+    flex-shrink: 0;
+    width: $header-mobile-user-frame-size;
+    height: $header-mobile-user-frame-size;
     border: 1px solid var(--ink500);
     border-radius: 50%;
     color: var(--ink500);
 
     svg {
-      width: var(--header-user-icon);
-      height: var(--header-user-icon);
+      width: $header-mobile-user-icon-size;
+      height: $header-mobile-user-icon-size;
     }
   }
 
@@ -757,8 +1086,8 @@ $header-mobile-user-icon-max: 1.25rem;
   }
 }
 
-// PC(768px+) 전용: 컴팩트·패널 숨김
-@media (min-width: $tablet) {
+// PC(1024px+) 전용: 컴팩트·패널 숨김
+@media (min-width: $laptop) {
   .site-header--compact,
   .site-header__tablet-panel,
   .site-header__mobile-panel {

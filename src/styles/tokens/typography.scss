@@ -30,6 +30,10 @@
   @include font-token(var(--font-headline), 3rem, 700, 4rem);
 }
 
+.ft-40b {
+  @include font-token(var(--font-headline), 2.5rem, 700, 3.25rem);
+}
+
 .ft-36b {
   @include font-token(var(--font-headline), 2.25rem, 700, 3.25rem);
 }
@@ -40,6 +44,10 @@
 
 .ft-32b {
   @include font-token(var(--font-headline), 2rem, 700, 2.75rem);
+}
+
+.ft-30b {
+  @include font-token(var(--font-headline), 1.875rem, 700, 1.875rem);
 }
 
 .ft-28b {
@@ -207,7 +215,7 @@
 
 @mixin mobile-typography {
   .ft-30b {
-    @include font-token(var(--font-headline), 2rem, 700, 1.875rem);
+    @include font-token(var(--font-headline), 1.875rem, 700, 1.875rem);
   }
 
   .ft-24b {
@@ -220,6 +228,10 @@
 
   .ft-20b {
     @include font-token(var(--font-headline), 1.25rem, 700, 2rem);
+  }
+
+  .ft-20r {
+    @include font-token(var(--font-headline), 1.25rem, 400, 1.75rem);
   }
 
   .ft-18b {

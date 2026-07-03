@@ -1,7 +1,6 @@
 import { useState } from "react";
 
-import subSymbol from "../../assets/images/01main/subsymbol.svg";
-import { Footer, Header, Icon } from "../../components/common";
+import { Footer, Header, Icon, SubKvSymbolLine } from "../../components/common";
 import { faqs } from "../../data/faqs";
 import "./FaqPage.scss";
 
@@ -23,7 +22,7 @@ function FaqPage() {
           <div className="faq-kv__content">
             <div className="faq-kv__head">
               <h1 className="faq-kv__title ft-64b ink500">자주 묻는 질문</h1>
-              <img className="faq-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
+              <SubKvSymbolLine blockClass="faq-kv" />
             </div>
             <p className="faq-kv__description ft-28r ink500">
               청연 이용에 필요한 궁금한 내용을

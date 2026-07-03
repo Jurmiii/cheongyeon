@@ -1,5 +1,7 @@
 @use "../../styles/abstracts/breakpoints" as *;
 @use "../../styles/abstracts/grid" as grid;
+@use "../../styles/abstracts/sub-kv-symbol" as sub-kv;
+@use "../../styles/abstracts/sub-kv-layout" as sub-kv-layout;
 
 .event-page {
   position: relative;
@@ -39,27 +41,18 @@
 .event-kv__content {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 1.5rem;
 }
 
 .event-kv__head {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  @include sub-kv.sub-kv-head;
   gap: 1rem;
 }
 
 .event-kv__title {
   margin: 0;
   letter-spacing: -0.02em;
-}
-
-.event-kv__symbol {
-  display: block;
-  width: auto;
-  height: 1.0625rem;
-  object-fit: contain;
-  object-position: left center;
 }
 
 .event-kv__description {
@@ -336,14 +329,6 @@
 }
 
 @media (max-width: $tablet) {
-  .event-kv {
-    height: 36rem;
-  }
-
-  .event-kv__description {
-    max-width: 100%;
-  }
-
   .event-list {
     grid-template-columns: minmax(0, 29rem);
   }
@@ -568,3 +553,5 @@
     padding: 1rem;
   }
 }
+
+@include sub-kv-layout.sub-kv-layout-compact("event-kv");

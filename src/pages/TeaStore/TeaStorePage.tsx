@@ -1,6 +1,5 @@
-import subSymbol from "../../assets/images/01main/subsymbol.svg";
 import teaStoreLogo from "../../assets/images/06tea-store/logo.webp";
-import { Footer, Header, MobileFooter, MobileHeader, TabletFooter, TabletHeader } from "../../components/common";
+import { Footer, Header, MobileFooter, MobileHeader, SubKvSymbolLine, TabletFooter, TabletHeader } from "../../components/common";
 import {
   teaStoryDadoItems,
   teaStorySeasons,
@@ -48,7 +47,7 @@ function TeaStoryPage() {
           <div className="tea-store-kv__content">
             <div className="tea-store-kv__head">
               <h1 className="tea-store-kv__title ft-64b ink500">차 이야기</h1>
-              <img className="tea-store-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
+              <SubKvSymbolLine blockClass="tea-store-kv" />
             </div>
             <p className="tea-store-kv__description ft-28r ink500">
               차에는 자연의 시간이 담겨 있습니다.

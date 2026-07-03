@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 import hamMenu from "../../../assets/images/00header-footer/ham-menu.svg";
 import hamMenuX from "../../../assets/images/00header-footer/ham-menu-x.svg";
@@ -73,6 +73,7 @@ const getNavLinkClassName = (baseClassName: string, activeClassName: string, isA
 export default function Header() {
   const { isLoggedIn, loginId, logout } = useAuth();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const [activeDropdown, setActiveDropdown] = useState<ActiveDropdown>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeMenuIndex, setActiveMenuIndex] = useState(0);
@@ -94,6 +95,12 @@ export default function Header() {
 
   const toggleAccordion = (index: number) => {
     setActiveAccordionIndex((current) => (current === index ? null : index));
+  };
+
+  const handleMobilePanelLoginClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    closeMenu();
+    navigate("/mypage");
   };
 
   return (
@@ -371,7 +378,11 @@ export default function Header() {
       >
         <div className="site-header__mobile-panel-inner">
           <header className="site-header__mobile-panel-header" aria-label="모바일 메뉴 헤더">
-            <Link className="site-header__mobile-panel-login" to="/login" onClick={closeMenu}>
+            <Link
+              className="site-header__mobile-panel-login"
+              to="/mypage"
+              onClick={handleMobilePanelLoginClick}
+            >
               <span className="site-header__mobile-panel-user-frame" aria-hidden="true">
                 <Icon name="user" />
               </span>

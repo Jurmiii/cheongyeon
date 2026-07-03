@@ -4,7 +4,8 @@
 @use "../styles/abstracts/grid" as grid;
 
 // ─── Main page tablet/mobile grid (KV·sec2 기준 — 이후 섹션 __grid도 동일 mixin/선택자에 추가) ───
-$main-page-tablet-section-pad: 6rem; // 96px — tablet 섹션 패딩 통일
+$main-page-tablet-grid-pad-x: grid.$tablet-grid-padding; // 64px — 태블릿 그리드 좌우 마진
+$main-page-tablet-section-pad: 6rem; // 96px — 태블릿 섹션 상하 여백
 $main-page-mobile-pad-vw-min: 20rem;
 $main-sec3-tablet-image-w: 19.25rem; // 308px
 $main-sec3-tablet-image-h: 14.3125rem; // 229px
@@ -89,7 +90,7 @@ $main-sec5-mobile-card-gap: 0.875rem; // 14px
 }
 
 @mixin main-page-grid-tablet-pad {
-  padding-inline: $main-page-tablet-section-pad;
+  padding-inline: $main-page-tablet-grid-pad-x;
 }
 
 @mixin main-page-grid-pc-compact {
@@ -1421,7 +1422,7 @@ $main-sec5-mobile-card-gap: 0.875rem; // 14px
   .main-sec5__compact-inner {
     align-items: center;
     gap: $main-sec5-tablet-content-gap;
-    padding-inline-start: $main-page-tablet-section-pad;
+    padding-inline-start: $main-page-tablet-grid-pad-x;
     padding-inline-end: 0;
     overflow: visible;
   }
@@ -3010,7 +3011,7 @@ $main-sec5-mobile-card-gap: 0.875rem; // 14px
   .main-sec10__content {
     top: 50%;
     left: auto;
-    right: $main-page-tablet-section-pad;
+    right: $main-page-tablet-grid-pad-x;
     width: min(100%, 18rem);
     align-items: flex-start;
     transform: translateY(-50%);
@@ -3147,9 +3148,6 @@ $main-sec5-mobile-card-gap: 0.875rem; // 14px
 }
 
 // Tablet / Mobile — KV section only
-.main-sec1__symbol--responsive {
-  display: none;
-}
 
 @media (max-width: $laptop) {
   .main-page {
@@ -3200,16 +3198,9 @@ $main-sec5-mobile-card-gap: 0.875rem; // 14px
     transition: margin-top 0.35s ease;
   }
 
-  .main-sec1__symbol:not(.main-sec1__symbol--responsive) {
-    display: none;
-  }
-
-  .main-sec1__symbol--responsive {
-    display: block;
-    width: clamp(10rem, 6rem + 12vw, 12.5rem);
-    height: auto;
+  .main-sec1__symbol {
     margin-top: clamp(1.25rem, 0.75rem + 1.2vw, 1.5rem);
-    transition: width 0.35s ease;
+    transition: margin-top 0.35s ease;
   }
 
   .main-sec1__description {
@@ -3587,7 +3578,7 @@ $main-sec5-mobile-card-gap: 0.875rem; // 14px
   }
 }
 
-// Tablet — 섹션 패딩 96px 통일 (모바일 64px 유지)
+// Tablet — 섹션 상하 여백 96px (그리드 좌우 마진 64px는 main-page-tablet-grid-pad-x)
 @media (min-width: $tablet) and (max-width: $laptop) {
   .main-sec3 {
     padding-bottom: $main-page-tablet-section-pad;

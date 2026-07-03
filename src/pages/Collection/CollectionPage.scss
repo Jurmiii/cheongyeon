@@ -1,6 +1,7 @@
 @use "../../styles/abstracts/breakpoints" as *;
 @use "../../styles/abstracts/grid" as grid;
-@use "../../styles/abstracts/product-responsive" as pr;
+@use "../../styles/abstracts/sub-kv-symbol" as sub-kv;
+@use "../../styles/abstracts/sub-kv-layout" as sub-kv-layout;
 
 .collection-page {
   position: relative;
@@ -91,32 +92,14 @@
   word-break: keep-all;
 }
 
+.collection-kv__head {
+  @include sub-kv.sub-kv-head;
+  gap: 1rem;
+}
+
 .collection-kv__title,
 .collection-kv__description {
   margin: 0;
-}
-
-.collection-kv__symbol-line {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
-  margin-top: 1rem;
-}
-
-.collection-kv__line-bar {
-  flex: 1;
-  height: 0.0625rem;
-  min-height: 0.0625rem;
-  background-color: var(--ink500);
-  opacity: 0.4;
-}
-
-.collection-kv__line-symbol {
-  display: block;
-  flex-shrink: 0;
-  width: 1.125rem;
-  height: 1.125rem;
 }
 
 .collection-kv__description {
@@ -355,37 +338,38 @@
 /* PC 1025px+ — 1920px↔1024px clamp (1024px = laptop 밴드 상단과 연속) */
 @media (min-width: #{$laptop + 1px}) {
   .collection-kv {
-    @include pr.pr-fluid-kv-height-desktop(pr.$pr-desktop-kv-height, pr.$pr-kv-laptop-end);
+    height: 46.25rem;
+    min-height: 46.25rem;
   }
 
   .collection-aroma {
-    padding-block: pr.pr-lerp-desktop(7.5rem, 6rem);
+    padding-block: 7.5rem;
   }
 
   .collection-catalog__grid {
-    padding-top: pr.pr-lerp-desktop(7.5rem, 6rem);
-    padding-bottom: pr.pr-lerp-desktop(7.5rem, 6rem);
+    padding-top: 7.5rem;
+    padding-bottom: 7.5rem;
   }
 
   .collection-kv .ft-64b {
-    font-size: pr.pr-lerp-desktop(4rem, 2.5rem);
-    line-height: pr.pr-lerp-desktop(4.5rem, 3.25rem);
+    font-size: 4rem;
+    line-height: 4.5rem;
   }
 
   .collection-kv .ft-28r {
-    font-size: pr.pr-lerp-desktop(1.75rem, 1.5rem);
-    line-height: pr.pr-lerp-desktop(2.5rem, 2.125rem);
+    font-size: 1.75rem;
+    line-height: 2.5rem;
   }
 
   .collection-aroma .ft-48b,
   .collection-catalog .ft-48b {
-    font-size: pr.pr-lerp-desktop(3rem, 2rem);
-    line-height: pr.pr-lerp-desktop(4rem, 2.75rem);
+    font-size: 3rem;
+    line-height: 4rem;
   }
 
   .collection-aroma .ft-22r {
-    font-size: pr.pr-lerp-desktop(1.375rem, 1.125rem);
-    line-height: pr.pr-lerp-desktop(2.25rem, 1.875rem);
+    font-size: 1.375rem;
+    line-height: 2.25rem;
   }
 }
 
@@ -399,7 +383,6 @@
 
   /* KV — Figma TA 1660:1907, 768×600 */
   .collection-kv {
-    @include pr.pr-fluid-kv-height-laptop;
     padding-block: 0;
     background-image: none;
     background-color: var(--han50);
@@ -451,9 +434,8 @@
     letter-spacing: -0.02em;
   }
 
-  .collection-kv__symbol-line {
-    margin-top: 1rem; /* 16px */
-    max-width: 16.25rem; /* 260px */
+  .collection-kv__head {
+    gap: 1rem;
   }
 
   .collection-kv__description {
@@ -648,9 +630,8 @@
     letter-spacing: -0.01875rem; /* -0.3px */
   }
 
-  .collection-kv__symbol-line {
-    margin-top: 0.5rem; /* 8px */
-    max-width: 7.75rem; /* 124px */
+  .collection-kv__head {
+    gap: 0.5rem;
   }
 
   .collection-kv__description {
@@ -805,12 +786,13 @@
   }
 
   .collection-kv {
-    @include pr.pr-segmented-kv-height-tablet-md(37.5rem, 43.75rem);
+    height: 40rem;
+    min-height: 40rem;
 
     &::before {
-      width: pr.pr-lerp-tablet-md-range(320%, 539.71%);
-      left: pr.pr-lerp-tablet-md-range(-95%, -169.79%);
-      top: pr.pr-lerp-tablet-md-range(-10%, -6.47%);
+      width: 430%;
+      left: -132.4%;
+      top: -8.24%;
     }
   }
 
@@ -830,34 +812,35 @@
   }
 
   .collection-kv .ft-64b {
-    font-size: pr.pr-lerp-tablet-md-range(1.875rem, 2rem);
-    line-height: pr.pr-lerp-tablet-md-range(2.5rem, 2.75rem);
+    font-size: 1.9375rem;
+    line-height: 2.625rem;
   }
 
   .collection-kv .ft-28r {
-    font-size: pr.pr-lerp-tablet-md-range(1.125rem, 1.5rem);
-    line-height: pr.pr-lerp-tablet-md-range(1.625rem, 2.125rem);
+    font-size: 1.3125rem;
+    line-height: 1.875rem;
   }
 }
 
 /* 403px ~ 610px — 태블릿 하단 / 대형 모바일 */
 @media (min-width: #{$mobile + 1px}) and (max-width: $tablet-sm-max) {
   .collection-page {
-    --collection-page-gutter: pr.pr-fluid-grid-padding();
+    --collection-page-gutter: 2rem;
   }
 
   .collection-kv {
-    @include pr.pr-segmented-kv-height-tablet-sm(37.5rem, 43.75rem);
+    height: 42rem;
+    min-height: 42rem;
 
     &::before {
-      width: pr.pr-lerp-tablet-sm-range(480%, 539.71%);
-      left: pr.pr-lerp-tablet-sm-range(-150%, -169.79%);
-      top: pr.pr-lerp-tablet-sm-range(-8%, -6.47%);
+      width: 510%;
+      left: -159.9%;
+      top: -7.24%;
     }
   }
 
   .collection-kv__grid {
-    padding-inline: pr.pr-fluid-grid-padding();
+    @include grid.mobile-fluid-grid-padding;
   }
 
   .collection-kv__content {
@@ -868,24 +851,24 @@
 
   .collection-aroma__grid,
   .collection-catalog__grid {
-    padding-inline: pr.pr-fluid-grid-padding();
+    @include grid.mobile-fluid-grid-padding;
   }
 
   .collection-kv .ft-64b {
-    font-size: pr.pr-lerp-tablet-sm-range(1.875rem, 2rem);
-    line-height: pr.pr-lerp-tablet-sm-range(2.5rem, 2.75rem);
+    font-size: 1.9375rem;
+    line-height: 2.625rem;
   }
 
   .collection-kv .ft-28r {
-    font-size: pr.pr-lerp-tablet-sm-range(1.0625rem, 1.125rem);
-    line-height: pr.pr-lerp-tablet-sm-range(1.5625rem, 1.625rem);
+    font-size: 1.09375rem;
+    line-height: 1.59375rem;
   }
 }
 
 /* 402px 이하 — 모바일 앵커 (Figma MO) */
 @media (max-width: $mobile) {
   .collection-kv {
-    @include pr.pr-segmented-kv-height-mobile(43.75rem);
+    @include grid.mobile-kv-section;
 
     &::before {
       width: 539.71%;
@@ -910,36 +893,36 @@
   .collection-kv .ft-64b,
   .collection-aroma .ft-48b,
   .collection-catalog .ft-48b {
-    font-size: pr.pr-lerp-laptop-tablet(2.5rem, 2rem);
-    line-height: pr.pr-lerp-laptop-tablet(3.25rem, 2.75rem);
+    font-size: 2.5rem;
+    line-height: 3.25rem;
   }
 
   .collection-kv .ft-28r {
-    font-size: pr.pr-lerp-laptop-tablet(1.5rem, 1.125rem);
-    line-height: pr.pr-lerp-laptop-tablet(2.125rem, 1.875rem);
+    font-size: 1.5rem;
+    line-height: 2.125rem;
   }
 }
 
 @media (max-width: #{$tablet - 1px}) {
   .collection-kv .ft-64b {
-    font-size: pr.pr-lerp-mobile-tablet(2rem, 1.875rem);
-    line-height: pr.pr-lerp-mobile-tablet(2.75rem, 2.5rem);
+    font-size: 1.875rem;
+    line-height: 2.5rem;
   }
 
   .collection-aroma .ft-48b,
   .collection-catalog .ft-48b {
-    font-size: pr.pr-lerp-mobile-tablet(2rem, 1.5rem);
-    line-height: pr.pr-lerp-mobile-tablet(2.75rem, 2rem);
+    font-size: 1.5rem;
+    line-height: 2rem;
   }
 
   .collection-kv .ft-28r {
-    font-size: pr.pr-lerp-mobile-tablet(1.5rem, 1.125rem);
-    line-height: pr.pr-lerp-mobile-tablet(2.125rem, 1.625rem);
+    font-size: 1.125rem;
+    line-height: 1.625rem;
   }
 
   .collection-aroma .ft-22r {
-    font-size: pr.pr-lerp-mobile-tablet(1.125rem, 1rem);
-    line-height: pr.pr-lerp-mobile-tablet(1.875rem, 1.625rem);
+    font-size: 1rem;
+    line-height: 1.625rem;
   }
 
   .collection-catalog .ft-18r,
@@ -948,3 +931,5 @@
     line-height: 1.625rem;
   }
 }
+
+@include sub-kv-layout.sub-kv-layout-compact("collection-kv");

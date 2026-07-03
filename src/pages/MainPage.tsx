@@ -41,7 +41,6 @@ import tea5 from "../assets/images/01main/tea5.webp";
 import winter from "../assets/images/01main/winter.webp";
 import winterBg from "../assets/images/01main/winter-bg.webp";
 import kvTitle from "../assets/images/01main/kv-title.svg";
-import subsymbol from "../assets/images/01main/subsymbol.svg";
 import centerLine from "../assets/images/01main/center-line.svg";
 import chajeomIcon from "../assets/images/01main/chajeom-icon.svg";
 import dado1 from "../assets/images/01main/dado1.webp";
@@ -1594,7 +1593,6 @@ export default function MainPage() {
               시간은 천천히 흐른다
             </h1>
             <img className="main-sec1__symbol" src={symbol1} alt="" aria-hidden="true" />
-            <img className="main-sec1__symbol main-sec1__symbol--responsive" src={subsymbol} alt="" aria-hidden="true" />
             <p className="main-sec1__description main-page-type--kv-desc ft-28r ink500">
               계절과 자연이 머무는
               <br />

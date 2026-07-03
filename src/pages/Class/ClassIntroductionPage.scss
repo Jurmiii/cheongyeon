@@ -1,5 +1,7 @@
 @use "../../styles/abstracts/breakpoints" as *;
 @use "../../styles/abstracts/grid" as grid;
+@use "../../styles/abstracts/sub-kv-symbol" as sub-kv;
+@use "../../styles/abstracts/sub-kv-layout" as sub-kv-layout;
 
 // Tablet anchors — 768px / KV 600px
 $class-intro-kv-content-top-tablet: 9.375rem; // 150px
@@ -320,27 +322,18 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
 .class-intro-kv__content {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 1.5rem;
 }
 
 .class-intro-kv__head {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  @include sub-kv.sub-kv-head;
   gap: 1rem;
 }
 
 .class-intro-kv__title {
   margin: 0;
   letter-spacing: -0.02em;
-}
-
-.class-intro-kv__symbol {
-  display: block;
-  width: auto;
-  height: 1.0625rem;
-  object-fit: contain;
-  object-position: left center;
 }
 
 .class-intro-kv__description {
@@ -387,11 +380,7 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
   }
 
   .class-intro-kv__head {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
     gap: class-intro-kv-scaled-tablet($class-intro-kv-head-gap-tablet);
-    width: 100%;
   }
 
   .class-intro-kv__title {
@@ -400,14 +389,6 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
     line-height: class-intro-kv-scaled-tablet($class-intro-kv-title-line-tablet);
     font-weight: 700;
     text-align: left;
-  }
-
-  .class-intro-kv__symbol {
-    display: block;
-    width: class-intro-kv-scaled-tablet($class-intro-kv-symbol-width-tablet);
-    height: class-intro-kv-scaled-tablet($class-intro-kv-symbol-height-tablet);
-    object-fit: contain;
-    object-position: left center;
   }
 
   .class-intro-kv__description {
@@ -457,23 +438,10 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
     text-align: left;
   }
 
-  .class-intro-kv__head {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-  }
-
   .class-intro-kv__title {
     margin: 0;
     font-weight: 700;
     text-align: left;
-  }
-
-  .class-intro-kv__symbol {
-    display: block;
-    object-fit: contain;
-    object-position: left center;
   }
 
   .class-intro-kv__description {
@@ -520,17 +488,6 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
     line-height: class-intro-kv-lerp-tablet-md-range(
       class-intro-kv-lerp-mobile-tablet($class-intro-kv-title-line-tablet, $class-intro-kv-title-line-mobile),
       $class-intro-kv-title-line-tablet
-    );
-  }
-
-  .class-intro-kv__symbol {
-    width: class-intro-kv-lerp-tablet-md-range(
-      class-intro-kv-lerp-mobile-tablet($class-intro-kv-symbol-width-tablet, $class-intro-kv-symbol-width-mobile),
-      $class-intro-kv-symbol-width-tablet
-    );
-    height: class-intro-kv-lerp-tablet-md-range(
-      class-intro-kv-lerp-mobile-tablet($class-intro-kv-symbol-height-tablet, $class-intro-kv-symbol-height-mobile),
-      $class-intro-kv-symbol-height-tablet
     );
   }
 
@@ -586,17 +543,6 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
     );
   }
 
-  .class-intro-kv__symbol {
-    width: class-intro-kv-lerp-mobile-tablet(
-      $class-intro-kv-symbol-width-tablet,
-      $class-intro-kv-symbol-width-mobile
-    );
-    height: class-intro-kv-lerp-mobile-tablet(
-      $class-intro-kv-symbol-height-tablet,
-      $class-intro-kv-symbol-height-mobile
-    );
-  }
-
   .class-intro-kv__description {
     margin-top: class-intro-kv-lerp-mobile-tablet(
       $class-intro-kv-desc-gap-tablet,
@@ -635,11 +581,6 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
   .class-intro-kv__title {
     font-size: $class-intro-kv-title-size-mobile;
     line-height: $class-intro-kv-title-line-mobile;
-  }
-
-  .class-intro-kv__symbol {
-    width: $class-intro-kv-symbol-width-mobile;
-    height: $class-intro-kv-symbol-height-mobile;
   }
 
   .class-intro-kv__description {
@@ -2273,3 +2214,5 @@ $class-intro-review-layout-gap-mobile: 1.5rem;
     line-height: $class-intro-review-date-line-mobile;
   }
 }
+
+@include sub-kv-layout.sub-kv-layout-compact("class-intro-kv");

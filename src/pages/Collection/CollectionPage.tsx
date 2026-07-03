@@ -1,7 +1,6 @@
 import { useState } from "react";
-import collectionLineSymbol from "../../assets/images/05collection/collection-line-symbol.svg";
 import aromaGraph from "../../assets/images/05collection/graph.webp";
-import { Footer, Header, MobileFooter, MobileHeader, Modal2, TabletFooter, TabletHeader } from "../../components/common";
+import { Footer, Header, MobileFooter, MobileHeader, Modal2, SubKvSymbolLine, TabletFooter, TabletHeader } from "../../components/common";
 import type { TeaCollectionModalData } from "../../components/common/TeaCollectionModal/teaCollectionModal.types";
 import { collectionTabs } from "./collectionTabs";
 import type { CollectionTabId } from "./collectionTabs";
@@ -34,11 +33,9 @@ function CollectionPage() {
       <section className="collection-kv" aria-label="차 컬렉션 키비주얼">
         <div className="collection-kv__grid">
           <div className="collection-kv__content">
-            <h1 className="collection-kv__title ft-64b ink500">차 컬렉션</h1>
-            <div className="collection-kv__symbol-line" aria-hidden="true">
-              <span className="collection-kv__line-bar" />
-              <img className="collection-kv__line-symbol" src={collectionLineSymbol} alt="" />
-              <span className="collection-kv__line-bar" />
+            <div className="collection-kv__head">
+              <h1 className="collection-kv__title ft-64b ink500">차 컬렉션</h1>
+              <SubKvSymbolLine blockClass="collection-kv" />
             </div>
             <p className="collection-kv__description ft-28r ink500">
               서로 다른 찻잎이 만들어내는 향의 깊이를 경험해보세요

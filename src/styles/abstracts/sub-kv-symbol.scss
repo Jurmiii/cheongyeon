@@ -1,0 +1,112 @@
+@use "breakpoints" as *;
+
+$sub-kv-line-gap: 0.5rem; // 8px — 라인 ↔ 아이콘
+$sub-kv-line-symbol-width: 1.0625rem; // 17px
+$sub-kv-line-symbol-height: 1.125rem; // 18px
+
+@mixin sub-kv-head {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: flex-start;
+  flex-shrink: 0;
+  width: min-content;
+  max-width: 100%;
+  justify-self: start;
+
+  > :first-child {
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  > :not(:first-child) {
+    align-self: stretch;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+  }
+}
+
+@mixin sub-kv-line-bar {
+  flex: 1 1 0;
+  height: 0.0625rem;
+  min-height: 0.0625rem;
+  min-width: 0;
+  background-color: currentColor;
+  opacity: 0.4;
+}
+
+@mixin sub-kv-line-symbol {
+  display: block;
+  flex-shrink: 0;
+  width: $sub-kv-line-symbol-width;
+  height: $sub-kv-line-symbol-height;
+  object-fit: contain;
+  object-position: center;
+}
+
+@mixin sub-kv-symbol-line {
+  display: flex;
+  align-items: center;
+  gap: $sub-kv-line-gap;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin-top: 0;
+  color: var(--ink500);
+}
+
+@mixin sub-kv-symbol-line-block($block) {
+  .#{$block}__symbol-line-group {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    .#{$block}__symbol-line {
+      width: 100%;
+    }
+  }
+
+  .#{$block}__symbol-line {
+    @include sub-kv-symbol-line;
+
+    &--ink {
+      color: var(--ink500);
+    }
+
+    &--white {
+      color: var(--white);
+    }
+  }
+
+  .#{$block}__head > .#{$block}__symbol-line--ink,
+  .#{$block}__head > .#{$block}__symbol-line--white {
+    display: flex;
+  }
+
+  .#{$block}__symbol-line-group .#{$block}__symbol-line--ink {
+    display: flex;
+
+    @media (max-width: #{$laptop - 1px}) {
+      display: none;
+    }
+  }
+
+  .#{$block}__symbol-line-group .#{$block}__symbol-line--white {
+    display: none;
+
+    @media (max-width: #{$laptop - 1px}) {
+      display: flex;
+    }
+  }
+
+  .#{$block}__line-bar {
+    @include sub-kv-line-bar;
+  }
+
+  .#{$block}__line-symbol {
+    @include sub-kv-line-symbol;
+  }
+}

@@ -1,9 +1,8 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useNavigate } from "react-router-dom";
 
-import subSymbol from "../../assets/images/01main/subsymbol.svg";
 import eventKvBg from "../../assets/images/11event/event-kv-bg.webp";
-import { Badge, Footer, Header, Icon } from "../../components/common";
+import { Badge, Footer, Header, Icon, SubKvSymbolLine } from "../../components/common";
 import type { IconName } from "../../components/common";
 import { events, type EventItem, type EventStatus } from "../../data/eventList";
 import "./EventPage.scss";
@@ -234,7 +233,7 @@ function EventPage() {
           <div className="event-kv__content">
             <div className="event-kv__head">
               <h1 className="event-kv__title ft-64b ink500">이벤트</h1>
-              <img className="event-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
+              <SubKvSymbolLine blockClass="event-kv" />
             </div>
             <p className="event-kv__description ft-28r ink500">
               청연에서 열리는 다양한 차의 시간과

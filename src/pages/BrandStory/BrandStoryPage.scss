@@ -1,4 +1,6 @@
 @use "../../styles/abstracts/breakpoints" as *;
+@use "../../styles/abstracts/sub-kv-symbol" as sub-kv;
+@use "../../styles/abstracts/sub-kv-layout" as sub-kv-layout;
 
 @use "../../styles/abstracts/grid" as grid;
 .brand-story-page {
@@ -35,20 +37,19 @@
   margin-inline: auto;
 }
 
-.brand-story-kv__title {
+.brand-story-kv__head {
+  @include sub-kv.sub-kv-head;
   position: absolute;
   left: 0;
   top: 16.5625rem;
+  gap: 1rem;
+}
+
+.brand-story-kv__title {
+  position: static;
   margin: 0;
   font-weight: 700;
   letter-spacing: -0.02em;
-}
-
-.brand-story-kv__symbol {
-  position: absolute;
-  left: 0;
-  top: 22.0625rem;
-  display: block;
 }
 
 .brand-story-kv__description {
@@ -66,45 +67,6 @@
 @media (max-width: $desktop) {
   .brand-story-kv__grid {
     padding-inline: 1.5rem;
-  }
-}
-
-@media (max-width: $tablet) {
-  .brand-story-kv {
-    height: 40rem;
-    background-position: 70% center;
-  }
-
-  .brand-story-kv__title {
-    top: 14rem;
-  }
-
-  .brand-story-kv__symbol {
-    top: 19rem;
-  }
-
-  .brand-story-kv__description {
-    top: 21.5rem;
-    max-width: 100%;
-  }
-}
-
-@media (max-width: $mobile) {
-  .brand-story-kv {
-    height: 36rem;
-    background-position: 80% center;
-  }
-
-  .brand-story-kv__title {
-    top: 12rem;
-  }
-
-  .brand-story-kv__symbol {
-    top: 16.5rem;
-  }
-
-  .brand-story-kv__description {
-    top: 19rem;
   }
 }
 
@@ -1018,3 +980,5 @@
     margin-top: var(--space-6);
   }
 }
+
+@include sub-kv-layout.sub-kv-layout-compact("brand-story-kv", $grid-only: true);

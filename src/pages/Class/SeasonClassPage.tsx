@@ -3,9 +3,7 @@ import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import { Footer, Header, Icon, Button } from "../../components/common";
-import subSymbol from "../../assets/images/01main/subsymbol.svg";
-import kvSymbolWhite from "../../assets/images/09season-class/kv-symbolline-white.svg";
+import { Footer, Header, Icon, Button, SubKvSymbolLine } from "../../components/common";
 import chaIcon from "../../assets/images/09season-class/cha-icon.svg";
 import tryIcon from "../../assets/images/09season-class/try-icon.svg";
 import {
@@ -1061,18 +1059,7 @@ function SeasonClassPage() {
           <div className="season-class-kv__content">
             <div className="season-class-kv__head">
               <h1 className="season-class-kv__title ft-64b ink500">시즌 클래스</h1>
-              <img
-                className="season-class-kv__symbol season-class-kv__symbol--pc"
-                src={subSymbol}
-                alt=""
-                aria-hidden="true"
-              />
-              <img
-                className="season-class-kv__symbol season-class-kv__symbol--compact"
-                src={kvSymbolWhite}
-                alt=""
-                aria-hidden="true"
-              />
+              <SubKvSymbolLine blockClass="season-class-kv" tone="responsive" />
             </div>
             <p className="season-class-kv__description ft-28r ink500">
               계절마다 다른 향기를 따라

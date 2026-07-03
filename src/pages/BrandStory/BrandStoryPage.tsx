@@ -1,8 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import subSymbol from "../../assets/images/01main/subsymbol.svg";
-import { Footer, Header } from "../../components/common";
+import { Footer, Header, SubKvSymbolLine } from "../../components/common";
 import "./BrandStoryPage.scss";
 
 // KV 배경 이미지 — 교체 시 아래 import 경로만 수정하세요.
@@ -341,8 +340,10 @@ function BrandStoryPage() {
         aria-label="브랜드 스토리 키비주얼"
       >
         <div className="brand-story-kv__grid">
-          <h1 className="brand-story-kv__title ft-64r ink500">브랜드 스토리</h1>
-          <img className="brand-story-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
+          <div className="brand-story-kv__head">
+            <h1 className="brand-story-kv__title ft-64r ink500">브랜드 스토리</h1>
+            <SubKvSymbolLine blockClass="brand-story-kv" />
+          </div>
           <p className="brand-story-kv__description ft-28r ink500">
             <span className="brand-story-kv__description-line">자연이 만든 시간을 차에 담고,</span>
             <span className="brand-story-kv__description-line">그 시간을 사람들의 일상으로 전합니다.</span>

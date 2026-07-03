@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
-import { Footer, Header } from "../../components/common";
-import subSymbol from "../../assets/images/01main/subsymbol.svg";
+import { Footer, Header, SubKvSymbolLine } from "../../components/common";
 import classIntroImage from "../../assets/images/08class/class-introduction-2-1.webp";
 import classIntroCtaBg from "../../assets/images/08class/class-introduction-6-bg.webp";
 import reviewBg from "../../assets/images/08class/class-introduction-7-bg.webp";
@@ -757,7 +756,7 @@ function ClassIntroductionPage() {
           <div className="class-intro-kv__content">
             <div className="class-intro-kv__head">
               <h1 className="class-intro-kv__title ft-64b ink500">클래스 소개</h1>
-              <img className="class-intro-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
+              <SubKvSymbolLine blockClass="class-intro-kv" />
             </div>
             <p className="class-intro-kv__description ft-28r ink500">
               차를 이해하고, 천천히 우리며

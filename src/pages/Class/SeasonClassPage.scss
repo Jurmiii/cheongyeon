@@ -1,5 +1,7 @@
 @use "../../styles/abstracts/breakpoints" as *;
 @use "../../styles/abstracts/grid" as grid;
+@use "../../styles/abstracts/sub-kv-symbol" as sub-kv;
+@use "../../styles/abstracts/sub-kv-layout" as sub-kv-layout;
 
 // KV — ClassIntroductionPage와 동일 규칙·비율
 $season-class-kv-content-top-tablet: 9.375rem; // 150px
@@ -113,36 +115,18 @@ $season-class-kv-height-desktop: 46.25rem; // PC 740px
 .season-class-kv__content {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 1.5rem;
 }
 
 .season-class-kv__head {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  @include sub-kv.sub-kv-head;
   gap: 1rem;
 }
 
 .season-class-kv__title {
   margin: 0;
   letter-spacing: -0.02em;
-}
-
-.season-class-kv__symbol {
-  object-fit: contain;
-  object-position: left center;
-}
-
-.season-class-kv__symbol--pc {
-  display: block;
-  width: auto;
-  height: 1.0625rem;
-}
-
-.season-class-kv__symbol--compact {
-  display: none;
-  width: auto;
-  height: 1.0625rem;
 }
 
 .season-class-kv__description {
@@ -154,27 +138,6 @@ $season-class-kv-height-desktop: 46.25rem; // PC 740px
   .season-class-kv__title.ft-64b,
   .season-class-kv__description.ft-28r {
     color: var(--white);
-  }
-
-  .season-class-kv__symbol--pc {
-    display: none;
-    visibility: hidden;
-    overflow: hidden;
-    width: 0;
-    height: 0;
-    margin: 0;
-    padding: 0;
-    border: 0;
-  }
-
-  .season-class-kv__symbol--compact {
-    display: block;
-  }
-}
-
-@media (min-width: $laptop) {
-  .season-class-kv__symbol--compact {
-    display: none;
   }
 }
 
@@ -219,11 +182,7 @@ $season-class-kv-height-desktop: 46.25rem; // PC 740px
   }
 
   .season-class-kv__head {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
     gap: season-class-kv-scaled-tablet($season-class-kv-head-gap-tablet);
-    width: 100%;
   }
 
   .season-class-kv__title {
@@ -232,12 +191,6 @@ $season-class-kv-height-desktop: 46.25rem; // PC 740px
     line-height: season-class-kv-scaled-tablet($season-class-kv-title-line-tablet);
     font-weight: 700;
     text-align: left;
-  }
-
-  .season-class-kv__symbol--compact {
-    display: block;
-    width: season-class-kv-scaled-tablet($season-class-kv-symbol-width-tablet);
-    height: season-class-kv-scaled-tablet($season-class-kv-symbol-height-tablet);
   }
 
   .season-class-kv__description {
@@ -287,21 +240,10 @@ $season-class-kv-height-desktop: 46.25rem; // PC 740px
     text-align: left;
   }
 
-  .season-class-kv__head {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-  }
-
   .season-class-kv__title {
     margin: 0;
     font-weight: 700;
     text-align: left;
-  }
-
-  .season-class-kv__symbol--compact {
-    display: block;
   }
 
   .season-class-kv__description {
@@ -348,17 +290,6 @@ $season-class-kv-height-desktop: 46.25rem; // PC 740px
     line-height: season-class-kv-lerp-tablet-md-range(
       season-class-kv-lerp-mobile-tablet($season-class-kv-title-line-tablet, $season-class-kv-title-line-mobile),
       $season-class-kv-title-line-tablet
-    );
-  }
-
-  .season-class-kv__symbol--compact {
-    width: season-class-kv-lerp-tablet-md-range(
-      season-class-kv-lerp-mobile-tablet($season-class-kv-symbol-width-tablet, $season-class-kv-symbol-width-mobile),
-      $season-class-kv-symbol-width-tablet
-    );
-    height: season-class-kv-lerp-tablet-md-range(
-      season-class-kv-lerp-mobile-tablet($season-class-kv-symbol-height-tablet, $season-class-kv-symbol-height-mobile),
-      $season-class-kv-symbol-height-tablet
     );
   }
 
@@ -417,17 +348,6 @@ $season-class-kv-height-desktop: 46.25rem; // PC 740px
     );
   }
 
-  .season-class-kv__symbol--compact {
-    width: season-class-kv-lerp-mobile-tablet(
-      $season-class-kv-symbol-width-tablet,
-      $season-class-kv-symbol-width-mobile
-    );
-    height: season-class-kv-lerp-mobile-tablet(
-      $season-class-kv-symbol-height-tablet,
-      $season-class-kv-symbol-height-mobile
-    );
-  }
-
   .season-class-kv__description {
     margin-top: season-class-kv-lerp-mobile-tablet(
       $season-class-kv-desc-gap-tablet,
@@ -466,11 +386,6 @@ $season-class-kv-height-desktop: 46.25rem; // PC 740px
   .season-class-kv__title {
     font-size: $season-class-kv-title-size-mobile;
     line-height: $season-class-kv-title-line-mobile;
-  }
-
-  .season-class-kv__symbol--compact {
-    width: $season-class-kv-symbol-width-mobile;
-    height: $season-class-kv-symbol-height-mobile;
   }
 
   .season-class-kv__description {
@@ -1734,3 +1649,5 @@ $season-promo-bg-mobile-origin-y: 38%;
     grid-column: span 1;
   }
 }
+
+@include sub-kv-layout.sub-kv-layout-compact("season-class-kv");

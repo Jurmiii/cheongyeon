@@ -1,5 +1,7 @@
 @use "../../styles/abstracts/breakpoints" as *;
 @use "../../styles/abstracts/grid" as grid;
+@use "../../styles/abstracts/sub-kv-symbol" as sub-kv;
+@use "../../styles/abstracts/sub-kv-layout" as sub-kv-layout;
 
 /* Figma 1471:930 — 공지 목록 */
 .notice-page {
@@ -37,18 +39,18 @@
   margin-inline: auto;
 }
 
-.notice-kv__title {
+.notice-kv__head {
+  @include sub-kv.sub-kv-head;
   position: absolute;
   left: 0;
   top: 16.5625rem;
-  font-weight: 700;
+  gap: 1rem;
 }
 
-.notice-kv__symbol {
-  position: absolute;
-  left: 0;
-  top: 22.0625rem;
-  display: block;
+.notice-kv__title {
+  position: static;
+  margin: 0;
+  font-weight: 700;
 }
 
 .notice-kv__description {
@@ -472,37 +474,6 @@
 }
 
 @media (min-width: ($mobile + 1px)) and (max-width: $tablet) {
-  .notice-kv {
-    height: auto;
-    min-height: 32rem;
-  }
-
-  .notice-kv__grid {
-    max-width: none;
-    height: auto;
-    min-height: 32rem;
-    padding: 8rem 1.5rem 4rem;
-    box-sizing: border-box;
-  }
-
-  .notice-kv__title,
-  .notice-kv__symbol,
-  .notice-kv__description {
-    position: static;
-  }
-
-  .notice-kv__title {
-    margin: 0;
-  }
-
-  .notice-kv__symbol {
-    margin-top: 1rem;
-  }
-
-  .notice-kv__description {
-    margin: 1.5rem 0 0;
-  }
-
   .notice-content__grid {
     width: 100%;
     max-width: none;
@@ -649,37 +620,6 @@
 }
 
 @media (max-width: $mobile) {
-  .notice-kv {
-    height: auto;
-    min-height: 26rem;
-  }
-
-  .notice-kv__grid {
-    max-width: none;
-    height: auto;
-    min-height: 26rem;
-    padding: 6.5rem 1rem 3rem;
-    box-sizing: border-box;
-  }
-
-  .notice-kv__title,
-  .notice-kv__symbol,
-  .notice-kv__description {
-    position: static;
-  }
-
-  .notice-kv__title {
-    margin: 0;
-  }
-
-  .notice-kv__symbol {
-    margin-top: 0.75rem;
-  }
-
-  .notice-kv__description {
-    margin: 1rem 0 0;
-  }
-
   .notice-content__grid {
     width: 100%;
     max-width: none;
@@ -868,3 +808,5 @@
     min-width: 0;
   }
 }
+
+@include sub-kv-layout.sub-kv-layout-compact("notice-kv", $grid-only: true);
