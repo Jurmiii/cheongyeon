@@ -8,8 +8,8 @@
 $my-page-fluid-vw-min: grid.$mobile-grid-outer;
 $my-page-fluid-tablet-vw: grid.$tablet-grid-outer;
 $my-page-fluid-laptop-vw: 64rem;
-// 다가오는 찻자리 — PC 가로(버튼 우측) 전환 전 좁은 구간 (769~870)
-$my-page-upcoming-compact-max: 870px;
+// 다가오는 찻자리 — 버튼 우측(가로) 배치는 $laptop 초과에서만 (1024px 이하는 버튼 아래로)
+$my-page-upcoming-compact-max: $laptop;
 
 @mixin my-page-fluid-font-3bp(
   $mobile-fs,
