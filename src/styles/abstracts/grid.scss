@@ -6,12 +6,13 @@ $desktop-grid-gap: 1.5rem;
 $desktop-grid-side-padding: 1.5rem;
 $desktop-grid-compact-padding: 1rem;
 
-// Tablet: 640px grid + 64px side padding = 768px
-$tablet-grid-outer: 48rem;
-$tablet-grid-padding: 4rem;
-$tablet-grid-inner: 40rem;
+// Tablet: 8 columns × 59px + 7 gutters × 24px = 640px, margin 64px = 768px viewport
 $tablet-grid-columns: 8;
-$tablet-grid-gap: 1.5rem;
+$tablet-grid-column-width: 3.6875rem; // 59px
+$tablet-grid-gap: 1.5rem; // 24px
+$tablet-grid-inner: 40rem; // 640px — 그리드 콘텐츠 최대 너비
+$tablet-grid-padding: 4rem; // 64px — 좌우 마진
+$tablet-grid-outer: 48rem; // 768px — 태블릿 디자인 기준 뷰포트
 $tablet-kv-width: $tablet-grid-outer;
 $tablet-kv-height: 37.5rem;
 
@@ -73,22 +74,33 @@ $mobile-kv-height: 43.75rem;
 
 @mixin tablet-grid {
   display: grid;
+  grid-template-columns: repeat($tablet-grid-columns, $tablet-grid-column-width);
+  column-gap: $tablet-grid-gap;
+  box-sizing: border-box;
+  width: min($tablet-grid-inner, calc(100% - #{$tablet-grid-padding * 2}));
+  max-width: min($tablet-grid-inner, calc(100% - #{$tablet-grid-padding * 2}));
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
+@mixin tablet-grid-fluid {
+  display: grid;
   grid-template-columns: repeat($tablet-grid-columns, minmax(0, 1fr));
   column-gap: $tablet-grid-gap;
   box-sizing: border-box;
-  width: min($tablet-grid-outer, calc(100% - #{$tablet-grid-padding * 2}));
-  max-width: min($tablet-grid-outer, calc(100% - #{$tablet-grid-padding * 2}));
+  width: min($tablet-grid-inner, calc(100% - #{$tablet-grid-padding * 2}));
+  max-width: min($tablet-grid-inner, calc(100% - #{$tablet-grid-padding * 2}));
   margin-inline: auto;
   padding-inline: 0;
 }
 
 @mixin tablet-grid-padded {
   display: grid;
-  grid-template-columns: repeat($tablet-grid-columns, minmax(0, 1fr));
+  grid-template-columns: repeat($tablet-grid-columns, $tablet-grid-column-width);
   column-gap: $tablet-grid-gap;
   box-sizing: border-box;
   width: 100%;
-  max-width: $tablet-grid-outer;
+  max-width: $tablet-grid-inner;
   padding-inline: $tablet-grid-padding;
   margin-inline: auto;
 }
@@ -153,4 +165,87 @@ $mobile-kv-height: 43.75rem;
     calc(#{$mobile-grid-padding} + (100vw - #{$mobile-kv-width}) * 0.125),
     calc(#{$mobile-grid-padding} + 0.5rem)
   );
+}
+
+// ── 페이지 확장 (TeaStore·Collection·Space 등) ──
+
+$mobile-grid-viewport: $mobile-grid-outer;
+$laptop-grid-min-inset: 4rem;
+$mobile-section-bottom: 4rem;
+$mobile-section-content-gap: 1.5rem;
+$mobile-kinds-content-width: 19.25rem;
+$mobile-kinds-content-offset-x: 1.9375rem;
+$mobile-seasons-height: 53.9375rem;
+$tablet-dado-head-width: 31.8125rem;
+
+@mixin laptop-page-width {
+  box-sizing: border-box;
+  width: min(#{$desktop-grid-outer}, calc(100% - #{$laptop-grid-min-inset * 2}));
+  max-width: min(#{$desktop-grid-outer}, calc(100% - #{$laptop-grid-min-inset * 2}));
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
+@mixin product-grid-tablet {
+  display: grid;
+  grid-template-columns: repeat($tablet-grid-columns, minmax(0, 1fr));
+  column-gap: $tablet-grid-gap;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: $tablet-grid-inner;
+  margin-inline: auto;
+  padding-inline: $tablet-grid-padding;
+}
+
+@mixin product-content-inset-tablet {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin-inline: 0;
+  padding-inline: $tablet-grid-padding;
+}
+
+@mixin product-content-inset-mobile {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin-inline: 0;
+  padding-inline: $mobile-grid-padding;
+}
+
+@mixin mobile-fluid-grid-padding {
+  padding-inline: clamp(
+    #{$mobile-grid-padding},
+    calc(#{$mobile-grid-padding} + (100vw - #{$mobile-grid-viewport}) * 0.125),
+    #{$tablet-grid-padding}
+  );
+}
+
+@mixin mobile-overlay-content {
+  position: absolute;
+  bottom: $mobile-section-bottom;
+  left: calc(50% - #{$mobile-kinds-content-offset-x});
+  right: auto;
+  transform: translateX(-50%);
+  width: min(#{$mobile-kinds-content-width}, calc(100% - #{$mobile-grid-padding * 2}));
+  max-width: calc(100% - #{$mobile-grid-padding * 2});
+  justify-self: auto;
+  align-self: auto;
+  margin: 0;
+}
+
+@mixin mobile-section-content-intro {
+  @include mobile-overlay-content;
+}
+
+@mixin mobile-section-content-culture {
+  @include mobile-overlay-content;
+}
+
+@mixin mobile-section-content-ceremony {
+  @include mobile-overlay-content;
+}
+
+@mixin mobile-section-content-kinds {
+  @include mobile-overlay-content;
 }

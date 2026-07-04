@@ -1,8 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
-import subSymbol from "../../assets/images/01main/subsymbol.svg";
-
-import { Badge, Button, Footer, Header, Icon } from "../../components/common";
+import { Badge, Button, Footer, Header, Icon, SubKvSymbolLine } from "../../components/common";
 
 import {
   NOTICE_ITEMS_PER_PAGE,
@@ -143,8 +141,10 @@ function NoticePage() {
 
       <section className="notice-kv" aria-label="공지사항 키비주얼">
         <div className="notice-kv__grid">
-          <h1 className="notice-kv__title ft-64r ink500">공지사항</h1>
-          <img className="notice-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
+          <div className="notice-kv__head">
+            <h1 className="notice-kv__title ft-64r ink500">공지사항</h1>
+            <SubKvSymbolLine blockClass="notice-kv" />
+          </div>
           <p className="notice-kv__description ft-28r ink500">
             계절마다 달라지는 차의 소식과
             <br />
@@ -204,8 +204,8 @@ function NoticePage() {
                         </Badge>
 
                         <div className="notice-content__card-text">
-                          <h3 className="notice-content__card-title ft-22b ink500">{notice.title}</h3>
-                          <p className="notice-content__card-description ft-18r ink500">{notice.description}</p>
+                          <h3 className="notice-content__card-title ft-36b ink500">{notice.title}</h3>
+                          <p className="notice-content__card-description ft-22r ink500">{notice.description}</p>
                         </div>
                       </div>
 

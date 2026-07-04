@@ -1,6 +1,95 @@
+@use "sass:math";
+
 @use "../../styles/abstracts/breakpoints" as *;
 
 @use "../../styles/abstracts/grid" as grid;
+
+// typography.scss · grid.scss · MainPage fluid 패턴과 동일한 3구간(402→768→1024) 스케일
+$my-page-fluid-vw-min: grid.$mobile-grid-outer;
+$my-page-fluid-tablet-vw: grid.$tablet-grid-outer;
+$my-page-fluid-laptop-vw: 64rem;
+// 다가오는 찻자리 — PC 가로(버튼 우측) 전환 전 좁은 구간 (769~870)
+$my-page-upcoming-compact-max: 870px;
+
+@mixin my-page-fluid-font-3bp(
+  $mobile-fs,
+  $tablet-fs,
+  $desktop-fs,
+  $mobile-lh,
+  $tablet-lh,
+  $desktop-lh,
+  $weight: 700,
+  $family: var(--font-headline)
+) {
+  $mobile-to-tablet-fs-slope: math.div(
+    $tablet-fs - $mobile-fs,
+    $my-page-fluid-tablet-vw - $my-page-fluid-vw-min
+  );
+  $mobile-to-tablet-lh-slope: math.div(
+    $tablet-lh - $mobile-lh,
+    $my-page-fluid-tablet-vw - $my-page-fluid-vw-min
+  );
+  $tablet-to-desktop-fs-slope: math.div(
+    $desktop-fs - $tablet-fs,
+    $my-page-fluid-laptop-vw - $my-page-fluid-tablet-vw
+  );
+  $tablet-to-desktop-lh-slope: math.div(
+    $desktop-lh - $tablet-lh,
+    $my-page-fluid-laptop-vw - $my-page-fluid-tablet-vw
+  );
+
+  font-family: $family;
+  font-weight: $weight;
+  font-size: clamp(
+    $mobile-fs,
+    calc(#{$mobile-fs} + (100vw - #{$my-page-fluid-vw-min}) * #{$mobile-to-tablet-fs-slope}),
+    $tablet-fs
+  );
+  line-height: clamp(
+    $mobile-lh,
+    calc(#{$mobile-lh} + (100vw - #{$my-page-fluid-vw-min}) * #{$mobile-to-tablet-lh-slope}),
+    $tablet-lh
+  );
+
+  @media (min-width: $tablet) {
+    font-size: clamp(
+      $tablet-fs,
+      calc(#{$tablet-fs} + (100vw - #{$my-page-fluid-tablet-vw}) * #{$tablet-to-desktop-fs-slope}),
+      $desktop-fs
+    );
+    line-height: clamp(
+      $tablet-lh,
+      calc(#{$tablet-lh} + (100vw - #{$my-page-fluid-tablet-vw}) * #{$tablet-to-desktop-lh-slope}),
+      $desktop-lh
+    );
+  }
+}
+
+@mixin my-page-fluid-length-3bp($property, $mobile, $tablet, $desktop) {
+  $mobile-to-tablet-slope: math.div(
+    $tablet - $mobile,
+    $my-page-fluid-tablet-vw - $my-page-fluid-vw-min
+  );
+  $tablet-to-desktop-slope: math.div(
+    $desktop - $tablet,
+    $my-page-fluid-laptop-vw - $my-page-fluid-tablet-vw
+  );
+
+  #{$property}: clamp(
+    $mobile,
+    calc(#{$mobile} + (100vw - #{$my-page-fluid-vw-min}) * #{$mobile-to-tablet-slope}),
+    $tablet
+  );
+
+  @media (min-width: $tablet) {
+    #{$property}: clamp(
+      $tablet,
+      calc(#{$tablet} + (100vw - #{$my-page-fluid-tablet-vw}) * #{$tablet-to-desktop-slope}),
+      $desktop
+    );
+  }
+}
+
 .my-page {
   --my-page-header-offset: 5.625rem;
   --my-page-hero-height: 54.125rem;
@@ -71,6 +160,8 @@
   align-items: baseline;
   gap: 1.25rem;
   margin: 0;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .my-page__greeting-name-suffix {
@@ -79,6 +170,8 @@
 
 .my-page__greeting-message {
   margin: var(--space-4) 0 0;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .my-page__upcoming {
@@ -104,20 +197,35 @@
 .my-page__upcoming-box {
   box-sizing: border-box;
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 29.8125rem;
+  justify-content: space-between;
+  gap: var(--space-6);
   width: 100%;
-  height: var(--my-page-upcoming-box-height);
+  height: auto;
+  min-height: var(--my-page-upcoming-box-height);
   margin-top: var(--space-6);
   padding: var(--space-6) var(--space-2);
-  border: 1px solid var(--deep500);
+  border: 0.0625rem solid var(--deep500);
   border-radius: var(--radius-2);
   background: transparent;
-  overflow: hidden;
+  overflow: visible;
+}
+
+// TeaClassContentBox 기본값(width 44.375rem · flex-shrink 0)이 박스를 넘치게 함 — 마이페이지에서만 유동
+.my-page .tea-class-content-box--upcoming {
+  flex: 1 1 auto;
+  flex-shrink: 1;
+  width: auto;
+  min-width: 0;
+  max-width: 44.375rem;
+  height: auto;
 }
 
 .my-page__upcoming-actions {
   display: flex;
+  flex: 0 0 auto;
   flex-shrink: 0;
   flex-direction: column;
   gap: var(--space-3);
@@ -141,7 +249,7 @@
   min-height: var(--my-page-upcoming-box-height);
   margin-top: var(--space-6);
   padding: var(--space-6) var(--space-2);
-  border: 1px solid var(--deep500);
+  border: 0.0625rem solid var(--deep500);
   border-radius: var(--radius-2);
   background: transparent;
 }
@@ -206,8 +314,19 @@
   margin: 0 0 var(--space-6);
 }
 
-.my-page__history-title {
+.my-page__history-head .my-page__history-title {
   margin: 0;
+  align-self: center;
+  line-height: 1;
+}
+
+.my-page__history-head .my-page__history-more-button.cy-button {
+  flex-shrink: 0;
+  align-self: center;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .my-page__history-list {
@@ -259,10 +378,19 @@
   background: var(--ink100);
 }
 
+.my-page__history-card-badge.cy-badge--guide {
+  @media (min-width: ($laptop + 1px)) {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.875rem;
+  }
+}
+
 .my-page__history-divider {
   width: 100%;
   max-width: grid.$desktop-grid-outer;
-  height: 1px;
+  height: 0.0625rem;
   background: var(--ink500);
 }
 
@@ -287,7 +415,7 @@
   align-items: center;
   padding-right: 3rem;
   padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--han300);
+  border-bottom: 0.0625rem solid var(--han300);
 }
 
 .my-page__history-modal-title {
@@ -393,7 +521,7 @@
   width: 100%;
   height: 15.5rem;
   padding: 2.5rem 1.5rem;
-  border: 1px solid var(--deep500);
+  border: 0.0625rem solid var(--deep500);
   border-radius: var(--radius-2);
   background: transparent;
 }
@@ -443,7 +571,7 @@
   width: 100%;
   height: var(--my-page-stats-height);
   margin-top: auto;
-  border: 1px solid var(--deep500);
+  border: 0.0625rem solid var(--deep500);
   border-radius: var(--radius-2);
   background: transparent;
 }
@@ -519,112 +647,314 @@
   margin: var(--space-2) 0 0;
 }
 
-@media (max-width: $laptop) {
-  .my-page__content {
-    height: auto;
-    min-height: var(--my-page-hero-height);
+// ── Fluid responsive (≤1440px) — grid·typography 공통 체계 ──
+@media (max-width: grid.$desktop-grid-outer) {
+  .my-page {
+    --my-page-header-offset: clamp(1.8125rem, calc(1.8125rem + (100vw - #{$my-page-fluid-vw-min}) * 0.015), 3rem);
+    --my-page-section-gap: clamp(4rem, calc(4rem + (100vw - #{$my-page-fluid-vw-min}) * 0.0078), 6rem);
   }
 
-  .my-page__inner {
-    min-height: var(--my-page-hero-height);
-  }
-
-  .my-page__upcoming {
-    height: auto;
-    min-height: var(--my-page-upcoming-height);
-  }
-
-  .my-page__upcoming-box {
-    height: auto;
-    min-height: var(--my-page-upcoming-box-height);
-    gap: var(--space-6);
-    overflow-x: auto;
-  }
-
-  .my-page__history {
-    height: auto;
-    min-height: var(--my-page-history-height);
-  }
-
+  .my-page__content,
+  .my-page__upcoming,
+  .my-page__history,
   .my-page__profile {
     height: auto;
-    min-height: var(--my-page-profile-height);
+    min-height: auto;
+  }
+
+  .my-page__inner,
+  .my-page__upcoming-inner,
+  .my-page__history-inner,
+  .my-page__profile-inner {
+    box-sizing: border-box;
+    width: 100%;
+    margin-inline: auto;
+    @include grid.mobile-fluid-grid-padding;
+  }
+
+  @media (min-width: ($tablet + 1px)) {
+    .my-page__inner,
+    .my-page__upcoming-inner,
+    .my-page__history-inner,
+    .my-page__profile-inner {
+      width: 100%;
+      max-width: grid.$desktop-grid-outer;
+      margin-inline: auto;
+      padding-inline: 0;
+    }
+  }
+
+  @media (max-width: $tablet) {
+    .my-page__inner,
+    .my-page__upcoming-inner,
+    .my-page__history-inner,
+    .my-page__profile-inner {
+      max-width: grid.$tablet-grid-outer;
+    }
+  }
+
+  // typography.scss 토큰 값 — 뷰포트에 따라 연속 스케일 (마이페이지 스코프만)
+  .my-page .ft-64r {
+    @include my-page-fluid-font-3bp(2rem, 2.5rem, 4rem, 1.875rem, 3.25rem, 4.5rem, 400, var(--font-headline));
+  }
+
+  .my-page .ft-48b {
+    @include my-page-fluid-font-3bp(1.5rem, 2rem, 3rem, 2rem, 2.75rem, 4rem);
+  }
+
+  .my-page .ft-36r {
+    @include my-page-fluid-font-3bp(1.5rem, 1.5rem, 2.25rem, 2rem, 2.125rem, 3.25rem, 400, var(--font-headline));
+  }
+
+  .my-page .ft-36b {
+    @include my-page-fluid-font-3bp(1.5rem, 1.5rem, 2.25rem, 2rem, 2.125rem, 3.25rem);
+  }
+
+  .my-page .ft-28b {
+    @include my-page-fluid-font-3bp(1.125rem, 1.5rem, 1.75rem, 1.75rem, 2.125rem, 2.5rem, 700, var(--font-headline));
+  }
+
+  .my-page .ft-28r {
+    @include my-page-fluid-font-3bp(1.125rem, 1.5rem, 1.75rem, 1.75rem, 2.125rem, 2.5rem, 400, var(--font-headline));
+  }
+
+  .my-page .ft-22b {
+    @include my-page-fluid-font-3bp(1.125rem, 1.25rem, 1.375rem, 1.75rem, 2rem, 2.25rem, 500, var(--font-body));
+  }
+
+  .my-page .ft-22r {
+    @include my-page-fluid-font-3bp(1.125rem, 1.25rem, 1.375rem, 1.75rem, 2rem, 2.25rem, 400, var(--font-body));
+  }
+
+  .my-page .ft-18r {
+    @include my-page-fluid-font-3bp(1.125rem, 1.125rem, 1.125rem, 1.75rem, 1.875rem, 1.875rem, 400, var(--font-body));
+  }
+
+  .my-page .ft-14r {
+    @include my-page-fluid-font-3bp(0.875rem, 0.875rem, 0.875rem, 1.375rem, 1.375rem, 1.375rem, 400, var(--font-body));
+  }
+
+  .my-page .ft-14b {
+    @include my-page-fluid-font-3bp(0.875rem, 0.875rem, 0.875rem, 1.375rem, 1.375rem, 1.375rem, 500, var(--font-body));
+  }
+
+  .my-page .ft-16r {
+    @include my-page-fluid-font-3bp(1rem, 1rem, 1rem, 1.625rem, 1.625rem, 1.625rem, 400, var(--font-body));
+  }
+
+  .my-page__upcoming-button,
+  .my-page__profile-edit-button {
+    @include my-page-fluid-font-3bp(1rem, 1.125rem, 1.125rem, 1.625rem, 1.875rem, 1.875rem, 500, var(--font-body));
+  }
+
+  .my-page__upcoming-box,
+  .my-page__upcoming-empty {
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  @media (min-width: ($my-page-upcoming-compact-max + 1px)) {
+    .my-page__upcoming-actions {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      gap: var(--space-3);
+    }
+
+    .my-page__upcoming-button {
+      width: 13.75rem;
+      height: 3rem;
+    }
+
+    .my-page .tea-class-content-box--upcoming {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+
+      .tea-class-content-box__title-row {
+        flex-direction: row;
+        align-items: center;
+
+        .cy-badge {
+          order: 0;
+        }
+      }
+    }
+  }
+
+  .my-page .tea-class-content-box--upcoming {
+    .tea-class-content-box__image {
+      flex: 0 0 auto;
+      flex-shrink: 0;
+      @include my-page-fluid-length-3bp(width, 10rem, 18.9375rem, 21.5625rem);
+      height: auto;
+      aspect-ratio: 345 / 285;
+      border-radius: var(--radius-2);
+    }
+
+    .tea-class-content-box__content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tea-class-content-box__title-row h3,
+    .tea-class-content-box__meta-item span {
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+  }
+
+  .my-page__history-card {
+    height: auto;
+    min-height: 5rem;
+  }
+
+  .my-page__history-card-image {
+    flex-shrink: 0;
+    @include my-page-fluid-length-3bp(width, 6.875rem, 10rem, 13.75rem);
+    height: auto;
+    aspect-ratio: 220 / 140;
+    object-fit: cover;
+  }
+
+  .my-page__history-card-badge {
+    @include my-page-fluid-length-3bp(width, 4.75rem, 5.5rem, 7.625rem);
+    @include my-page-fluid-length-3bp(height, 2rem, 2rem, 2.5rem);
+  }
+
+  .my-page__profile-box {
+    height: auto;
+    min-height: auto;
+  }
+
+  .my-page__stats {
+    height: auto;
+    flex: 0 0 auto;
+  }
+
+  .my-page__stat-divider-image {
+    @include my-page-fluid-length-3bp(height, 3.5rem, 4.5rem, 11rem);
+  }
+
+  // 섹션 헤더(제목+더보기) — ft-* fluid line-height보다 우선
+  .my-page__history-head .my-page__history-title.ft-48b {
+    line-height: 1;
   }
 }
 
-@media (max-width: $tablet) {
-  .my-page__content {
+@media (max-width: $laptop) {
+  .my-page__content,
+  .my-page__inner {
     height: auto;
     min-height: auto;
+  }
+}
+
+// Tablet + Mobile (≤768px)
+@media (max-width: $tablet) {
+  .my-page {
+    background-size: cover;
+    background-position: center top;
+  }
+
+  .my-page__content,
+  .my-page__upcoming,
+  .my-page__history,
+  .my-page__profile {
+    height: auto;
+    min-height: auto;
+  }
+
+  .my-page__inner,
+  .my-page__upcoming-inner,
+  .my-page__history-inner,
+  .my-page__profile-inner {
+    box-sizing: border-box;
+    width: 100%;
+    margin-inline: auto;
   }
 
   .my-page__inner {
     min-height: auto;
     padding-top: calc(var(--my-page-header-offset) + var(--space-4));
-    padding-bottom: var(--space-8);
+    padding-bottom: 0;
+  }
+
+  .my-page__greeting-name {
+    gap: var(--space-2);
+  }
+
+  .my-page__greeting-message {
+    margin-top: var(--space-2);
   }
 
   .my-page__stats {
     flex: 0 0 auto;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: stretch;
     height: auto;
-    margin-top: var(--space-11);
+    margin-top: var(--space-4);
+  }
+
+  .my-page__stat-title {
+    text-align: center;
   }
 
   .my-page__stat-divider {
-    display: none;
+    display: flex;
+    align-self: center;
+    padding-block: var(--space-2);
+  }
+
+  .my-page__stat-divider-image {
+    height: 4.5rem;
   }
 
   .my-page__stat-item {
-    padding-block: var(--space-5);
-    border-bottom: 1px solid var(--deep500);
-  }
-
-  .my-page__stat-item:last-of-type {
+    display: grid;
+    grid-template-rows: 4.5rem auto;
+    justify-items: center;
+    align-content: start;
+    align-self: stretch;
+    height: 100%;
+    padding-block: var(--space-3);
     border-bottom: none;
   }
 
-  .my-page__upcoming {
-    min-height: auto;
-  }
-
-  .my-page__upcoming-inner {
-    padding-top: var(--space-8);
-  }
-
-  .my-page__upcoming-box {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--space-4);
-    min-height: auto;
-    margin-top: var(--space-4);
-    padding: var(--space-4) var(--space-2);
-  }
-
-  .my-page__upcoming-actions {
+  .my-page__stat-heading {
+    align-self: start;
+    align-items: flex-start;
+    justify-content: center;
     width: 100%;
+    height: 4.5rem;
   }
 
-  .my-page__upcoming-button {
-    width: 100%;
+  .my-page__stat-value {
+    align-self: end;
+    margin-top: 0;
   }
 
+  .my-page__upcoming-inner,
+  .my-page__history-inner,
+  .my-page__profile-inner {
+    padding-top: var(--my-page-section-gap);
+  }
+
+  .my-page__profile-inner {
+    padding-bottom: var(--space-8);
+  }
+
+  .my-page__upcoming-box,
   .my-page__upcoming-empty {
-    min-height: auto;
     margin-top: var(--space-4);
-    padding: var(--space-4) var(--space-2);
+    min-height: auto;
+    height: auto;
+    overflow: visible;
   }
 
   .my-page__profile-edit-actions {
     width: 100%;
-  }
-
-  .my-page__history {
-    min-height: auto;
-  }
-
-  .my-page__history-inner {
-    padding-top: var(--space-8);
   }
 
   .my-page__history-head {
@@ -632,33 +962,41 @@
   }
 
   .my-page__history-card {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    align-items: center;
     height: auto;
-    gap: var(--space-3);
-  }
-
-  .my-page__history-card-image {
-    width: 100%;
-    max-width: 13.75rem;
-    height: auto;
-    aspect-ratio: 11 / 7;
+    min-height: 5rem;
+    gap: var(--space-2);
   }
 
   .my-page__history-card-body {
-    flex: 1 1 12rem;
+    flex: 1;
+    min-width: 0;
     margin-left: 0;
   }
 
+  .my-page__history-card-title,
+  .my-page__history-card-date {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+
+  .my-page__history-card-date {
+    margin-top: var(--space-1);
+  }
+
   .my-page__history-card-badge {
-    margin-left: auto;
+    flex-shrink: 0;
+    width: auto;
+    min-width: 5.5rem;
+    height: 2rem;
+    margin-left: 0;
+    padding-inline: var(--space-1);
   }
 
-  .my-page__profile {
-    min-height: auto;
-  }
-
-  .my-page__profile-inner {
-    padding-block: var(--space-8);
+  .my-page__history-more-button.cy-button {
+    width: auto;
+    min-width: 5.5rem;
   }
 
   .my-page__profile-title {
@@ -670,8 +1008,18 @@
     align-items: stretch;
     gap: var(--space-4);
     height: auto;
-    min-height: 15.5rem;
+    min-height: auto;
     padding: var(--space-4) var(--space-3);
+  }
+
+  .my-page__profile-fields {
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: var(--space-3);
+    row-gap: var(--space-2);
+  }
+
+  .my-page__profile-value {
+    grid-column: 2;
   }
 
   .my-page__profile-edit-button {
@@ -679,8 +1027,394 @@
   }
 }
 
+// 다가오는 찻자리 — 태블릿·좁은 노트북 (403~870px): 이미지|정보 + 하단 버튼 가로
+@media (min-width: ($mobile + 1px)) and (max-width: $my-page-upcoming-compact-max) {
+  .my-page__upcoming-box {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: var(--space-2);
+    padding: 0;
+    border: none;
+    border-radius: 0;
+  }
+
+  .my-page .tea-class-content-box--upcoming {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    flex-shrink: 0;
+    gap: var(--space-1);
+    width: 100%;
+    min-width: 0;
+    height: auto;
+
+    .tea-class-content-box__image {
+      flex: 0 0 auto;
+      flex-shrink: 0;
+      @include my-page-fluid-length-3bp(width, 10rem, 18.9375rem, 18.9375rem);
+      max-width: 18.9375rem;
+      min-width: 10rem;
+      height: auto;
+      aspect-ratio: 345 / 285;
+      border-radius: var(--radius-2);
+    }
+
+    .tea-class-content-box__content {
+      flex: 1;
+      min-width: 0;
+      margin-left: 0;
+    }
+
+    .tea-class-content-box__title-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-1);
+
+      h3 {
+        width: 100%;
+        line-height: 1.35;
+        word-break: keep-all;
+        overflow-wrap: normal;
+      }
+
+      .cy-badge {
+        order: -1;
+      }
+    }
+
+    .tea-class-content-box__meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: var(--space-1);
+    }
+  }
+
+  .my-page__upcoming-actions {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    gap: var(--space-1);
+    width: 100%;
+  }
+
+  .my-page__upcoming-button {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    max-width: 18.9375rem;
+    height: 3rem;
+    padding: 0.75rem 1.5rem;
+
+    &:first-child {
+      order: 2;
+    }
+
+    &:last-child {
+      order: 1;
+    }
+  }
+}
+
+// 좁은 중간 구간 (403px ~ 610px) — 회원정보
+@media (min-width: ($mobile + 1px)) and (max-width: 610px) {
+  .my-page__profile-box {
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    min-height: auto;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .my-page__profile-fields {
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: var(--space-3);
+    row-gap: var(--space-2);
+    width: 100%;
+  }
+
+  .my-page__profile-label {
+    grid-column: 1;
+    align-self: start;
+  }
+
+  .my-page__profile-value {
+    grid-column: 2;
+    align-self: start;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .my-page__profile-value .ft-28b {
+    display: block;
+    text-align: left;
+  }
+
+  .my-page__profile-edit-button,
+  .my-page__profile-edit-actions {
+    width: 100%;
+  }
+}
+
+// 좁은 중간 구간 (403px ~ 501px) — 예약이력 가로 카드 / 다가오는 찻자리 이미지
+@media (min-width: ($mobile + 1px)) and (max-width: 501px) {
+  .my-page__history-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "image body badge";
+    align-items: center;
+    gap: var(--space-2);
+    min-height: auto;
+    padding-bottom: 0;
+  }
+
+  .my-page__history-card-image {
+    grid-area: image;
+    flex-shrink: 0;
+    width: 5.5rem;
+    height: 3.5rem;
+    max-width: none;
+    aspect-ratio: auto;
+    object-fit: cover;
+    border-radius: var(--radius-2);
+  }
+
+  .my-page__history-card-body {
+    grid-area: body;
+    min-width: 0;
+  }
+
+  .my-page__history-card-date {
+    margin-top: 0.25rem;
+  }
+
+  .my-page__history-card-badge.cy-badge {
+    grid-area: badge;
+    align-self: center;
+    flex-shrink: 0;
+    min-width: 4.75rem;
+    height: 2rem;
+  }
+}
+
+// 넓은 태블릿 (612px ~ 768px) — 회원정보 가로 배치
+@media (min-width: ($tablet-md + 1px)) and (max-width: $tablet) {
+  .my-page__profile-box {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .my-page__profile-edit-button {
+    width: 10.5rem;
+  }
+
+  .my-page__profile-edit-actions {
+    width: 10.5rem;
+  }
+}
+
+// 모바일 typography(≤767px)가 Badge ft-14b를 MaruBuri로 바꾸는 구간 — 마이페이지 D-Day만 복원
+@media (max-width: #{$tablet - 1px}) {
+  .my-page .tea-class-content-box .cy-badge--d7 {
+    font-family: var(--font-body);
+    font-weight: 500;
+  }
+}
+
+// Mobile (≤402px)
 @media (max-width: $mobile) {
+  .my-page__inner,
+  .my-page__upcoming-inner,
+  .my-page__history-inner,
+  .my-page__profile-inner {
+    max-width: grid.$mobile-grid-outer;
+  }
+
+  .my-page__inner {
+    padding-top: calc(var(--my-page-header-offset) + var(--space-3));
+  }
+
+  .my-page__greeting-name {
+    gap: var(--space-1);
+  }
+
   .my-page__stats {
-    margin-top: var(--space-8);
+    margin-top: var(--space-3);
+  }
+
+  .my-page__stat-item {
+    grid-template-rows: 3.25rem auto;
+    padding-block: var(--space-2);
+  }
+
+  .my-page__stat-heading {
+    height: 3.25rem;
+  }
+
+  // 다가오는 찻자리 — 모바일 (≤402px) 시안: 이미지 상단 + 뱃지 옆 제목 + 하단 버튼 가로
+  .my-page__upcoming-box {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: var(--space-2);
+    padding: 0;
+    border: none;
+    border-radius: 0;
+  }
+
+  .my-page .tea-class-content-box--upcoming {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+
+    .tea-class-content-box__image {
+      width: 100%;
+      max-width: none;
+      height: auto;
+      aspect-ratio: 16 / 10;
+      border-radius: var(--radius-2);
+    }
+
+    .tea-class-content-box__content {
+      margin-left: 0;
+      margin-top: var(--space-1);
+    }
+
+    .tea-class-content-box__title-row {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-2);
+
+      .cy-badge {
+        order: 0;
+        flex-shrink: 0;
+      }
+    }
+
+    .tea-class-content-box__meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+      margin-top: var(--space-1);
+    }
+
+    .tea-class-content-box__meta-icon {
+      width: var(--space-2);
+      height: var(--space-2);
+    }
+  }
+
+  .my-page__upcoming-actions {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    gap: var(--space-1);
+    width: 100%;
+  }
+
+  .my-page__upcoming-button {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    height: 3rem;
+    padding: 0.75rem 1.5rem;
+  }
+
+  // 예약이력 카드 — 이미지 상단 / 텍스트+뱃지 하단
+  .my-page__history-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "image image"
+      "body badge";
+    align-items: center;
+    gap: var(--space-2);
+    min-height: auto;
+    padding-bottom: var(--space-2);
+  }
+
+  .my-page__history-card-image {
+    grid-area: image;
+    width: 100%;
+    height: auto;
+    max-width: none;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: var(--radius-2);
+  }
+
+  .my-page__history-card-body {
+    grid-area: body;
+    min-width: 0;
+  }
+
+  .my-page__history-card-date {
+    margin-top: 0.25rem;
+  }
+
+  .my-page__history-card-badge.cy-badge {
+    grid-area: badge;
+    align-self: center;
+    min-width: 4.75rem;
+    height: 2rem;
+  }
+
+  .my-page__profile-box {
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    min-height: auto;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .my-page__profile-fields {
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: var(--space-3);
+    row-gap: var(--space-2);
+    width: 100%;
+  }
+
+  .my-page__profile-label {
+    grid-column: 1;
+    align-self: start;
+  }
+
+  .my-page__profile-value {
+    grid-column: 2;
+    align-self: start;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .my-page__profile-value .ft-28b {
+    display: block;
+    text-align: left;
+  }
+
+  .my-page__profile-edit-button,
+  .my-page__profile-edit-actions {
+    width: 100%;
+  }
+
+  .my-page__profile-inner {
+    padding-bottom: var(--space-6);
+  }
+
+  .my-page .tea-class-content-box .cy-badge--d7 {
+    font-family: var(--font-body);
+    font-weight: 500;
+  }
+
+  .my-page__history-modal {
+    width: calc(100vw - var(--space-4));
+    max-height: calc(100svh - var(--space-4));
   }
 }

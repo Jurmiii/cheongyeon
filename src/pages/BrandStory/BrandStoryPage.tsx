@@ -1,8 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import subSymbol from "../../assets/images/01main/subsymbol.svg";
-import { Footer, Header } from "../../components/common";
+import { Footer, Header, SubKvSymbolLine } from "../../components/common";
 import "./BrandStoryPage.scss";
 
 // KV 배경 이미지 — 교체 시 아래 import 경로만 수정하세요.
@@ -57,42 +56,67 @@ import characterImage2 from "../../assets/images/02brand-story/cc-2.webp";
 import characterImage3 from "../../assets/images/02brand-story/cc-3.webp";
 import characterImage4 from "../../assets/images/02brand-story/cc-4.webp";
 import characterImage5 from "../../assets/images/02brand-story/cc-5.webp";
+import tabletCharacterImage1 from "../../assets/images/02brand-story/cc-ta1.webp";
+import tabletCharacterImage2 from "../../assets/images/02brand-story/cc-ta2.webp";
+import tabletCharacterImage3 from "../../assets/images/02brand-story/cc-ta3.webp";
+import tabletCharacterImage4 from "../../assets/images/02brand-story/cc-ta4.webp";
+import tabletCharacterImage5 from "../../assets/images/02brand-story/cc-ta5.webp";
+import horizontalBodyImage1 from "../../assets/images/02brand-story/p-bg1.webp";
+import horizontalBodyImage2 from "../../assets/images/02brand-story/p-bg2.webp";
+import horizontalBodyImage3 from "../../assets/images/02brand-story/p-bg3.webp";
+import horizontalBodyImage4 from "../../assets/images/02brand-story/p-bg4.webp";
+import horizontalBodyImage5 from "../../assets/images/02brand-story/p-bg5.webp";
 
 const philosophyItems = [
   {
     id: 1,
     bodyImage: rollBodyImage1,
     characterImage: characterImage1,
+    tabletCharacterImage: tabletCharacterImage1,
+    horizontalBodyImage: horizontalBodyImage1,
     subtitle: "고요함",
     lines: ["차를 마시는 것은", "잠시 멈추는 일, 고요한", "마음이 좋은 차를 만듭니다."],
+    horizontalDesc: "차를 마시는 것은 잠시 멈추는 일, 고요한 마음이 좋은 차를 만듭니다.",
   },
   {
     id: 2,
     bodyImage: rollBodyImage2,
     characterImage: characterImage2,
+    tabletCharacterImage: tabletCharacterImage2,
+    horizontalBodyImage: horizontalBodyImage2,
     subtitle: "기다림",
     lines: ["좋은 차는 서두르지", "않습니다. 자연의 시간이", "맡기고 충분히 기다립니다."],
+    horizontalDesc: "좋은 차는 서두르지 않습니다. 자연의 시간이 맡기고 충분히 기다립니다.",
   },
   {
     id: 3,
     bodyImage: rollBodyImage3,
     characterImage: characterImage3,
+    tabletCharacterImage: tabletCharacterImage3,
+    horizontalBodyImage: horizontalBodyImage3,
     subtitle: "자연",
     lines: ["자연에서 온 그대로를", "담습니다. 계절과 땅의", "흐름을 거스르지 않습니다."],
+    horizontalDesc: "자연에서 온 그대로를 담습니다. 계절과 땅의 흐름을 거스르지 않습니다.",
   },
   {
     id: 4,
     bodyImage: rollBodyImage4,
     characterImage: characterImage4,
+    tabletCharacterImage: tabletCharacterImage4,
+    horizontalBodyImage: horizontalBodyImage4,
     subtitle: "인연",
     lines: ["차는 사람과 사람을", "이어줍니다. 스쳐가는", "인연도 소중히 생각합니다."],
+    horizontalDesc: "차는 사람과 사람을 이어줍니다. 스쳐가는 인연도 소중히 생각합니다.",
   },
   {
     id: 5,
     bodyImage: rollBodyImage5,
     characterImage: characterImage5,
+    tabletCharacterImage: tabletCharacterImage5,
+    horizontalBodyImage: horizontalBodyImage5,
     subtitle: "여운",
     lines: ["한 잔의 차는 마음에 오래", "남는 여운이 됩니다. 그", "여운이 일상이 됩니다."],
+    horizontalDesc: "한 잔의 차는 마음에 오래 남는 여운이 됩니다. 그 여운이 일상이 됩니다.",
   },
 ] as const;
 
@@ -154,134 +178,263 @@ function getRollUnrollHeightPx(scroll: HTMLElement) {
 function BrandStoryPage() {
   const philosophySectionRef = useRef<HTMLElement>(null);
   const scrollRefs = useRef<(HTMLElement | null)[]>([]);
+  const horizontalBodyWrapRefs = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
     let context: gsap.Context | null = null;
+    let philosophyMedia: gsap.MatchMedia | null = null;
 
     const initPhilosophyAnimation = () => {
       context?.revert();
+      philosophyMedia?.revert();
 
-      context = gsap.context(() => {
-        const section = philosophySectionRef.current;
+      philosophyMedia = gsap.matchMedia();
 
-        if (!section) {
-          return;
-        }
+      philosophyMedia.add("(min-width: 64.0625rem)", () => {
+        context = gsap.context(() => {
+          const section = philosophySectionRef.current;
 
-        const scrolls = scrollRefs.current.filter(Boolean) as HTMLElement[];
+          if (!section) {
+            return;
+          }
 
-        if (scrolls.length === 0) {
-          return;
-        }
+          const scrolls = scrollRefs.current.filter(Boolean) as HTMLElement[];
 
-        const resetScrollState = () => {
-          scrolls.forEach((scroll) => {
-            const rollTop = scroll.querySelector<HTMLElement>(".brand-story-philosophy__roll-top");
+          if (scrolls.length === 0) {
+            return;
+          }
+
+          const resetScrollState = () => {
+            scrolls.forEach((scroll) => {
+              const rollTop = scroll.querySelector<HTMLElement>(".brand-story-philosophy__roll-top");
+              const bodyWrap = scroll.querySelector<HTMLElement>(".brand-story-philosophy__roll-body-wrap");
+
+              if (!rollTop || !bodyWrap) {
+                return;
+              }
+
+              gsap.set(rollTop, { autoAlpha: 1 });
+              gsap.set(bodyWrap, { height: 0 });
+            });
+          };
+
+          resetScrollState();
+
+          const timeline = gsap.timeline({
+            paused: true,
+          });
+
+          scrolls.forEach((scroll, index) => {
             const bodyWrap = scroll.querySelector<HTMLElement>(".brand-story-philosophy__roll-body-wrap");
 
-            if (!rollTop || !bodyWrap) {
+            if (!bodyWrap) {
               return;
             }
 
-            gsap.set(rollTop, { autoAlpha: 1 });
-            gsap.set(bodyWrap, { height: 0 });
+            const offset = index * 0.2;
+            const unrollHeight = getRollUnrollHeightPx(scroll);
+
+            timeline.fromTo(
+              bodyWrap,
+              { height: 0 },
+              { height: unrollHeight, duration: 1.5, ease: "power2.inOut" },
+              offset,
+            );
           });
-        };
 
-        resetScrollState();
+          const triggerTarget = section;
+          let hasLeftSection = true;
+          let sectionOverlapsViewport = false;
 
-        const timeline = gsap.timeline({
-          paused: true,
-        });
+          const isSectionFullyOutside = () => {
+            const rect = triggerTarget.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
 
-        scrolls.forEach((scroll, index) => {
-          const bodyWrap = scroll.querySelector<HTMLElement>(".brand-story-philosophy__roll-body-wrap");
+            return rect.bottom <= 0 || rect.top >= viewportHeight;
+          };
 
-          if (!bodyWrap) {
-            return;
-          }
+          const syncSectionPresence = () => {
+            const overlapsViewport = !isSectionFullyOutside();
 
-          const offset = index * 0.2;
-          const unrollHeight = getRollUnrollHeightPx(scroll);
+            if (sectionOverlapsViewport && !overlapsViewport) {
+              hasLeftSection = true;
+              timeline.pause(0);
+              resetScrollState();
+            }
 
-          timeline.fromTo(
-            bodyWrap,
-            { height: 0 },
-            { height: unrollHeight, duration: 1.5, ease: "power2.inOut" },
-            offset,
-          );
-        });
+            sectionOverlapsViewport = overlapsViewport;
+          };
 
-        const triggerTarget = section;
-        let hasLeftSection = true;
-        let sectionOverlapsViewport = false;
+          const playUnroll = () => {
+            if (!hasLeftSection) {
+              return;
+            }
 
-        const isSectionFullyOutside = () => {
-          const rect = triggerTarget.getBoundingClientRect();
-          const viewportHeight = window.innerHeight;
+            hasLeftSection = false;
+            timeline.restart(true);
+          };
 
-          return rect.bottom <= 0 || rect.top >= viewportHeight;
-        };
+          const isRolledSectionReached = () => {
+            const rect = triggerTarget.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
 
-        const syncSectionPresence = () => {
-          const overlapsViewport = !isSectionFullyOutside();
+            return rect.top <= 1 && rect.bottom >= viewportHeight * 0.55;
+          };
 
-          if (sectionOverlapsViewport && !overlapsViewport) {
-            hasLeftSection = true;
-            timeline.pause(0);
-            resetScrollState();
-          }
+          ScrollTrigger.create({
+            id: "brand-story-philosophy-unroll",
+            trigger: triggerTarget,
+            start: "top top",
+            onEnter: playUnroll,
+            invalidateOnRefresh: true,
+          });
 
-          sectionOverlapsViewport = overlapsViewport;
-        };
+          ScrollTrigger.create({
+            id: "brand-story-philosophy-presence",
+            start: 0,
+            end: "max",
+            onUpdate: syncSectionPresence,
+            onRefresh: () => {
+              sectionOverlapsViewport = !isSectionFullyOutside();
+            },
+            invalidateOnRefresh: true,
+          });
 
-        const playUnroll = () => {
-          if (!hasLeftSection) {
-            return;
-          }
+          requestAnimationFrame(() => {
+            ScrollTrigger.refresh();
 
-          hasLeftSection = false;
-          timeline.restart(true);
-        };
-
-        const isRolledSectionReached = () => {
-          const rect = triggerTarget.getBoundingClientRect();
-          const viewportHeight = window.innerHeight;
-
-          return rect.top <= 1 && rect.bottom >= viewportHeight * 0.55;
-        };
-
-        ScrollTrigger.create({
-          id: "brand-story-philosophy-unroll",
-          trigger: triggerTarget,
-          start: "top top",
-          onEnter: playUnroll,
-          invalidateOnRefresh: true,
-        });
-
-        ScrollTrigger.create({
-          id: "brand-story-philosophy-presence",
-          start: 0,
-          end: "max",
-          onUpdate: syncSectionPresence,
-          onRefresh: () => {
             sectionOverlapsViewport = !isSectionFullyOutside();
-          },
-          invalidateOnRefresh: true,
-        });
 
-        requestAnimationFrame(() => {
-          ScrollTrigger.refresh();
+            if (isRolledSectionReached()) {
+              playUnroll();
+            }
+          });
+        }, philosophySectionRef);
 
-          sectionOverlapsViewport = !isSectionFullyOutside();
+        return () => {
+          context?.revert();
+        };
+      });
 
-          if (isRolledSectionReached()) {
-            playUnroll();
+      philosophyMedia.add("(max-width: 64rem)", () => {
+        const horizontalContext = gsap.context(() => {
+          const section = philosophySectionRef.current;
+
+          if (!section) {
+            return;
           }
-        });
-      }, philosophySectionRef);
+
+          const bodyWraps = horizontalBodyWrapRefs.current.filter(Boolean) as HTMLElement[];
+
+          if (bodyWraps.length === 0) {
+            return;
+          }
+
+          const getHorizontalUnrollWidthPx = (bodyWrap: HTMLElement) => {
+            const body = bodyWrap.querySelector<HTMLElement>(".brand-story-philosophy__h-body");
+            return body?.getBoundingClientRect().width ?? 0;
+          };
+
+          const resetHorizontalState = () => {
+            bodyWraps.forEach((bodyWrap) => {
+              gsap.set(bodyWrap, { width: 0 });
+            });
+          };
+
+          resetHorizontalState();
+
+          const timeline = gsap.timeline({
+            paused: true,
+          });
+
+          bodyWraps.forEach((bodyWrap, index) => {
+            const unrollWidth = getHorizontalUnrollWidthPx(bodyWrap);
+
+            if (unrollWidth <= 0) {
+              return;
+            }
+
+            timeline.fromTo(
+              bodyWrap,
+              { width: 0 },
+              { width: unrollWidth, duration: 1.5, ease: "power2.inOut" },
+              index * 0.2,
+            );
+          });
+
+          let hasLeftSection = true;
+          let sectionOverlapsViewport = false;
+
+          const isSectionFullyOutside = () => {
+            const rect = section.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
+
+            return rect.bottom <= 0 || rect.top >= viewportHeight;
+          };
+
+          const syncSectionPresence = () => {
+            const overlapsViewport = !isSectionFullyOutside();
+
+            if (sectionOverlapsViewport && !overlapsViewport) {
+              hasLeftSection = true;
+              timeline.pause(0);
+              resetHorizontalState();
+            }
+
+            sectionOverlapsViewport = overlapsViewport;
+          };
+
+          const playUnroll = () => {
+            if (!hasLeftSection) {
+              return;
+            }
+
+            hasLeftSection = false;
+            timeline.restart(true);
+          };
+
+          const isSectionReached = () => {
+            const rect = section.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
+
+            return rect.top <= viewportHeight * 0.75 && rect.bottom >= viewportHeight * 0.25;
+          };
+
+          ScrollTrigger.create({
+            id: "brand-story-philosophy-h-unroll",
+            trigger: section,
+            start: "top 75%",
+            onEnter: playUnroll,
+            invalidateOnRefresh: true,
+          });
+
+          ScrollTrigger.create({
+            id: "brand-story-philosophy-h-presence",
+            start: 0,
+            end: "max",
+            onUpdate: syncSectionPresence,
+            onRefresh: () => {
+              sectionOverlapsViewport = !isSectionFullyOutside();
+            },
+            invalidateOnRefresh: true,
+          });
+
+          requestAnimationFrame(() => {
+            ScrollTrigger.refresh();
+            sectionOverlapsViewport = !isSectionFullyOutside();
+
+            if (isSectionReached()) {
+              playUnroll();
+            }
+          });
+        }, philosophySectionRef);
+
+        return () => {
+          horizontalContext.revert();
+        };
+      });
 
       ScrollTrigger.refresh();
     };
@@ -293,7 +446,7 @@ function BrandStoryPage() {
     }
 
     const images = section.querySelectorAll<HTMLImageElement>(
-      ".brand-story-philosophy__roll-top, .brand-story-philosophy__roll-body, .brand-story-philosophy__roll-bottom, .brand-story-philosophy__character",
+      ".brand-story-philosophy__roll-top, .brand-story-philosophy__roll-body, .brand-story-philosophy__roll-bottom, .brand-story-philosophy__character, .brand-story-philosophy__h-roll-start, .brand-story-philosophy__h-roll-end, .brand-story-philosophy__h-bg, .brand-story-philosophy__h-character",
     );
 
     const pendingImages = Array.from(images).filter((image) => !image.complete || image.naturalHeight === 0);
@@ -301,6 +454,7 @@ function BrandStoryPage() {
     if (pendingImages.length === 0) {
       initPhilosophyAnimation();
       return () => {
+        philosophyMedia?.revert();
         context?.revert();
       };
     }
@@ -325,6 +479,7 @@ function BrandStoryPage() {
         image.removeEventListener("load", handleImageReady);
         image.removeEventListener("error", handleImageReady);
       });
+      philosophyMedia?.revert();
       context?.revert();
     };
   }, []);
@@ -341,8 +496,10 @@ function BrandStoryPage() {
         aria-label="브랜드 스토리 키비주얼"
       >
         <div className="brand-story-kv__grid">
-          <h1 className="brand-story-kv__title ft-64r ink500">브랜드 스토리</h1>
-          <img className="brand-story-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
+          <div className="brand-story-kv__head">
+            <h1 className="brand-story-kv__title ft-64r ink500">브랜드 스토리</h1>
+            <SubKvSymbolLine blockClass="brand-story-kv" tone="responsive" />
+          </div>
           <p className="brand-story-kv__description ft-28r ink500">
             <span className="brand-story-kv__description-line">자연이 만든 시간을 차에 담고,</span>
             <span className="brand-story-kv__description-line">그 시간을 사람들의 일상으로 전합니다.</span>
@@ -445,6 +602,54 @@ function BrandStoryPage() {
                     </div>
                   </div>
                   <img className="brand-story-philosophy__roll-bottom" src={rollBottomImage} alt="" aria-hidden="true" />
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="brand-story-philosophy__h-track">
+            {philosophyItems.map((item, index) => (
+              <article className="brand-story-philosophy__h-item" key={`horizontal-${item.id}`}>
+                <span className="brand-story-philosophy__h-roll-start-wrap" aria-hidden="true">
+                  <img
+                    className="brand-story-philosophy__h-roll-start"
+                    src={rollTopImage}
+                    alt=""
+                  />
+                </span>
+                <div
+                  className="brand-story-philosophy__h-body-wrap"
+                  ref={(element) => {
+                    horizontalBodyWrapRefs.current[index] = element;
+                  }}
+                >
+                  <div className="brand-story-philosophy__h-body">
+                    <img
+                      className="brand-story-philosophy__h-bg"
+                      src={item.horizontalBodyImage}
+                      alt=""
+                      aria-hidden="true"
+                    />
+                    <div className="brand-story-philosophy__h-content">
+                      <div className="brand-story-philosophy__h-center">
+                        <img
+                          className="brand-story-philosophy__h-character"
+                          src={item.tabletCharacterImage}
+                          alt=""
+                          aria-hidden="true"
+                        />
+                        <h3 className="brand-story-philosophy__h-subtitle ft-28b ink500">{item.subtitle}</h3>
+                      </div>
+                      <p className="brand-story-philosophy__h-desc ft-18r ink500">{item.horizontalDesc}</p>
+                    </div>
+                    <span className="brand-story-philosophy__h-roll-end-wrap" aria-hidden="true">
+                      <img
+                        className="brand-story-philosophy__h-roll-end"
+                        src={rollBottomImage}
+                        alt=""
+                      />
+                    </span>
+                  </div>
                 </div>
               </article>
             ))}

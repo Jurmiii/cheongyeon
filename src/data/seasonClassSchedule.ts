@@ -6,11 +6,13 @@ import seasonClassScheduleCup5 from "../assets/images/09season-class/season-clas
 import seasonClassScheduleDivider from "../assets/images/09season-class/season-class-schedule-divider.webp";
 import {
   reservationTimeSlots,
+  getSessionCapacityByClassTitle,
   type ReservationBranch,
   type ReservationTimeSlot,
 } from "./reservationClasses";
 import { getRemainingSeatsForSession } from "../utils/reservationStorage";
 import { getMockRemainingSeatsForSession } from "../utils/sessionAvailability";
+import { isReservationTimeSlotPast } from "../utils/reservationFormat";
 
 export type SeatDotState = "filled" | "empty";
 
@@ -167,17 +169,7 @@ export interface SeasonClassScheduleTimeSlot {
 }
 
 export function isTimeSlotPast(date: Date, time: ReservationTimeSlot, now = new Date()) {
-  if (isBeforeDay(date, now)) {
-    return true;
-  }
-
-  if (!isSameDay(date, startOfDay(now))) {
-    return false;
-  }
-
-  const [hours, minutes] = time.split(":").map(Number);
-  const slotStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), hours, minutes, 0, 0);
-  return slotStart.getTime() <= now.getTime();
+  return isReservationTimeSlotPast(date, time, now);
 }
 
 export function getScheduleTimeSlots(
@@ -189,6 +181,7 @@ export function getScheduleTimeSlots(
   const normalizedDate = startOfDay(date);
   const now = new Date();
   const dateKey = formatScheduleDateKey(normalizedDate);
+  const sessionCapacity = getSessionCapacityByClassTitle(classTitle);
 
   return reservationTimeSlots.map((time) => {
     const isPast = isTimeSlotPast(normalizedDate, time, now);
@@ -205,6 +198,7 @@ export function getScheduleTimeSlots(
             time,
             classTitle,
             branch,
+            sessionCapacity,
             excludeReservationId,
           }),
     };
@@ -218,13 +212,17 @@ export function getFirstAvailableTimeIndex(slots: SeasonClassScheduleTimeSlot[])
 
 function getRemainingSeatsMock(year: number, month: number, day: number) {
   const dateKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+  const classTitle = "여름 다도클래스";
 
-  return getMockRemainingSeatsForSession({
-    date: dateKey,
-    time: "12:00",
-    branch: "북촌 지점",
-    classTitle: "여름 다도클래스",
-  });
+  return getMockRemainingSeatsForSession(
+    {
+      date: dateKey,
+      time: "12:00",
+      branch: "북촌 지점",
+      classTitle,
+    },
+    getSessionCapacityByClassTitle(classTitle),
+  );
 }
 
 export function getFirstAvailableDayIndex(days: SeasonClassScheduleDay[]) {

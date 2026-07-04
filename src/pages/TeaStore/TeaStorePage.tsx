@@ -1,5 +1,5 @@
-import subSymbol from "../../assets/images/01main/subsymbol.svg";
-import { Footer, Header } from "../../components/common";
+import teaStoreLogo from "../../assets/images/06tea-store/logo.webp";
+import { Footer, Header, MobileFooter, MobileHeader, SubKvSymbolLine, TabletFooter, TabletHeader } from "../../components/common";
 import {
   teaStoryDadoItems,
   teaStorySeasons,
@@ -29,15 +29,26 @@ function TeaStoryPage() {
 
   return (
     <main className="tea-store-page">
-      <div className="tea-store-page__header">
+      {/* Desktop header (≥1025px) */}
+      <div className="tea-store-page__header tea-store-page__header--desktop">
         <Header />
+      </div>
+      {/* Tablet header (768px–1024px) */}
+      <div className="tea-store-page__header tea-store-page__header--tablet">
+        <TabletHeader />
+      </div>
+      {/* Mobile header (≤767px) */}
+      <div className="tea-store-page__header tea-store-page__header--mobile">
+        <MobileHeader />
       </div>
 
       <section className="tea-store-kv" aria-label="차 이야기 키비주얼">
         <div className="tea-store-kv__grid">
           <div className="tea-store-kv__content">
-            <h1 className="tea-store-kv__title ft-64b ink500">차 이야기</h1>
-            <img className="tea-store-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
+            <div className="tea-store-kv__head">
+              <h1 className="tea-store-kv__title ft-64b ink500">차 이야기</h1>
+              <SubKvSymbolLine blockClass="tea-store-kv" />
+            </div>
             <p className="tea-store-kv__description ft-28r ink500">
               차에는 자연의 시간이 담겨 있습니다.
               <br />
@@ -97,14 +108,18 @@ function TeaStoryPage() {
           >
             <h2 className="tea-store-ceremony__title ft-48b white">다도와 차의 관계</h2>
             <p className="tea-store-ceremony__description ft-22r white">
-              다도는 차를 마시는 것을 넘어, 차를 통해 자신과
+              다도는 차를 마시는 것을 넘어
               <br />
-              사람, 자연을 마주하는 하나의 생활 방식입니다.
+              차를 통해 자신과 사람,
+              <br />
+              자연을 마주하는 하나의 생활 방식입니다.
             </p>
             <p className="tea-store-ceremony__description ft-22r white">
-              청연은 이러한 다도의 정신을 바탕으로 일상 속에서도
+              청연은 이러한 다도의 정신을 바탕으로
               <br />
-              차의 가치를 온전히 느낄 수 있도록 제안합니다.
+              일상 속에서도 차의 가치를 온전히
+              <br />
+              느낄 수 있도록 제안합니다.
             </p>
           </div>
         </div>
@@ -146,15 +161,15 @@ function TeaStoryPage() {
             ref={kindsReveal.ref}
             className={`tea-store-kinds__content ${revealClass(kindsReveal.isVisible, "from-right")}`}
           >
-            <h2 className="tea-store-kinds__title ft-48b ink500">차의 종류</h2>
-            <p className="tea-store-kinds__description ft-22r ink500">
+            <h2 className="tea-store-kinds__title ft-48b white">차의 종류</h2>
+            <p className="tea-store-kinds__description ft-22r white">
               차는 발효 정도와 제조 방식에 따라 다양한 종류로 나뉩니다.
               <br />
               각각의 차는 고유의 향, 맛, 색을 가지고 있어 다양한 매력을
               <br />
               느낄 수 있습니다.
             </p>
-            <p className="tea-store-kinds__description ft-22r ink500">
+            <p className="tea-store-kinds__description ft-22r white">
               청연은 한국의 자연에서 자란 찻잎으로 정성을 다해
               <br />
               다양한 차를 만듭니다.
@@ -199,6 +214,9 @@ function TeaStoryPage() {
                 <p className="tea-store-type__description ft-16r ink500">{type.description}</p>
               </article>
             ))}
+            <div className="tea-store-types__logo" aria-hidden="true">
+              <img className="tea-store-types__logo-image" src={teaStoreLogo} alt="" />
+            </div>
           </div>
         </div>
       </section>
@@ -229,7 +247,20 @@ function TeaStoryPage() {
                     />
                     <span className="tea-store-season__hover-text ft-48b">{seasonHoverLabels[season.id]}</span>
                   </div>
-                  <p className="tea-store-season__description ft-22r white">{season.description}</p>
+                  <p className="tea-store-season__description ft-22r white">
+                    {season.descriptionMobile ? (
+                      <>
+                        <span className="tea-store-season__description-text tea-store-season__description-text--default">
+                          {season.description}
+                        </span>
+                        <span className="tea-store-season__description-text tea-store-season__description-text--mobile">
+                          {season.descriptionMobile}
+                        </span>
+                      </>
+                    ) : (
+                      season.description
+                    )}
+                  </p>
                 </article>
               ))}
             </div>
@@ -237,7 +268,18 @@ function TeaStoryPage() {
         </div>
       </section>
 
-      <Footer />
+      {/* Desktop footer (≥1025px) */}
+      <div className="tea-store-page__footer--desktop">
+        <Footer />
+      </div>
+      {/* Tablet footer (768px–1024px) */}
+      <div className="tea-store-page__footer--tablet">
+        <TabletFooter />
+      </div>
+      {/* Mobile footer (≤767px) */}
+      <div className="tea-store-page__footer--mobile">
+        <MobileFooter />
+      </div>
     </main>
   );
 }

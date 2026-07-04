@@ -193,3 +193,43 @@
     padding: var(--space-2);
   }
 }
+
+// Tablet: PC와 동일 — 가운데 정렬 유지
+@media (min-width: ($mobile + 1px)) and (max-width: $tablet) {
+  .login-page {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-card__title.ft-28b {
+    font-family: var(--font-headline);
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 2.5rem;
+  }
+}
+
+// Mobile (370px 기준)
+@media (max-width: $mobile) {
+  .login-page {
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-2);
+  }
+
+  .login-card__title {
+    font-family: var(--font-headline);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 2.125rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .login-card__description {
+    margin: 0;
+  }
+
+  .login-form {
+    margin-top: 0.25rem;
+  }
+}

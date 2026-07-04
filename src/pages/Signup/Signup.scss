@@ -20,7 +20,7 @@
   max-width: 100%;
   min-height: 39.8125rem;
   padding: 2.3125rem 0 2.875rem;
-  border: 1px solid var(--moon500);
+  border: 0.0625rem solid var(--moon500);
   border-radius: var(--radius-lg);
   background: var(--white);
 }
@@ -126,7 +126,7 @@
   flex: 1;
   align-self: stretch;
   height: var(--input-height);
-  border: 1px solid var(--deep500);
+  border: 0.0625rem solid var(--deep500);
   border-radius: var(--radius-input);
   color: var(--deep500);
   background: var(--white);
@@ -173,7 +173,7 @@
   height: 1.125rem;
   margin: 0;
   padding: 0;
-  border: 1px solid var(--deep500);
+  border: 0.0625rem solid var(--deep500);
   border-radius: var(--radius-xs);
   background: var(--white);
   appearance: none;
@@ -300,7 +300,7 @@
   width: 34.0625rem;
   max-width: 100%;
   padding: 2.5rem 2.5rem 2.875rem;
-  border: 1px solid var(--moon500);
+  border: 0.0625rem solid var(--moon500);
   border-radius: var(--radius-lg);
   background: var(--white);
   text-align: center;
@@ -336,7 +336,7 @@
   width: 100%;
   margin-top: 1.75rem;
   padding: 1rem 0.9375rem;
-  border: 1px solid var(--moon500);
+  border: 0.0625rem solid var(--moon500);
   border-radius: var(--radius-input);
   background: var(--han50);
 }
@@ -377,5 +377,54 @@
   .signup-page {
     align-items: flex-start;
     padding: var(--space-2);
+  }
+}
+
+// Tablet: PC와 동일 — 가운데 정렬, 타이틀 24b, 타이틀-폼 24px, 가입하기 18b
+@media (min-width: ($mobile + 1px)) and (max-width: $tablet) {
+  .signup-page {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .signup-card__title {
+    font-family: var(--font-headline);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 2.125rem;
+  }
+
+  .signup-form {
+    margin-top: 1.5rem;
+  }
+
+  .signup-submit.cy-button {
+    font-size: 1.125rem;
+    font-weight: 500;
+  }
+}
+
+// Mobile (370px 기준)
+@media (max-width: $mobile) {
+  .signup-page {
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-2);
+  }
+
+  .signup-card__title {
+    font-family: var(--font-headline);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 2.125rem;
+  }
+
+  .signup-form {
+    gap: 1rem;
+  }
+
+  .signup-submit.cy-button {
+    font-size: 1rem;
+    font-weight: 500;
   }
 }

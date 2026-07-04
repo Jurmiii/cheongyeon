@@ -1,4 +1,6 @@
 @use "../../styles/abstracts/breakpoints" as *;
+@use "../../styles/abstracts/sub-kv-symbol" as sub-kv;
+@use "../../styles/abstracts/sub-kv-layout" as sub-kv-layout;
 
 @use "../../styles/abstracts/grid" as grid;
 .brand-story-page {
@@ -11,12 +13,19 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 20;
   width: 100%;
+  overflow: visible;
+  pointer-events: none;
+
+  .site-header-shell {
+    pointer-events: auto;
+  }
 }
 
 .brand-story-kv {
   position: relative;
+  z-index: 0;
   width: 120rem;
   max-width: 100%;
   height: 46.25rem;
@@ -35,20 +44,19 @@
   margin-inline: auto;
 }
 
-.brand-story-kv__title {
+.brand-story-kv__head {
+  @include sub-kv.sub-kv-head;
   position: absolute;
   left: 0;
   top: 16.5625rem;
+  gap: 1rem;
+}
+
+.brand-story-kv__title {
+  position: static;
   margin: 0;
   font-weight: 700;
   letter-spacing: -0.02em;
-}
-
-.brand-story-kv__symbol {
-  position: absolute;
-  left: 0;
-  top: 22.0625rem;
-  display: block;
 }
 
 .brand-story-kv__description {
@@ -66,45 +74,6 @@
 @media (max-width: $desktop) {
   .brand-story-kv__grid {
     padding-inline: 1.5rem;
-  }
-}
-
-@media (max-width: $tablet) {
-  .brand-story-kv {
-    height: 40rem;
-    background-position: 70% center;
-  }
-
-  .brand-story-kv__title {
-    top: 14rem;
-  }
-
-  .brand-story-kv__symbol {
-    top: 19rem;
-  }
-
-  .brand-story-kv__description {
-    top: 21.5rem;
-    max-width: 100%;
-  }
-}
-
-@media (max-width: $mobile) {
-  .brand-story-kv {
-    height: 36rem;
-    background-position: 80% center;
-  }
-
-  .brand-story-kv__title {
-    top: 12rem;
-  }
-
-  .brand-story-kv__symbol {
-    top: 16.5rem;
-  }
-
-  .brand-story-kv__description {
-    top: 19rem;
   }
 }
 
@@ -556,17 +525,185 @@
   white-space: nowrap;
 }
 
+.brand-story-philosophy__tablet-list {
+  display: none;
+}
+
+.brand-story-philosophy__h-track {
+  display: none;
+}
+
+.brand-story-philosophy__h-item {
+  display: flex;
+  flex-shrink: 0;
+  align-items: stretch;
+  height: var(--h-scroll-height);
+  font-size: 0;
+  line-height: 0;
+}
+
+.brand-story-philosophy__h-roll-start-wrap {
+  flex-shrink: 0;
+  height: var(--h-scroll-height);
+  overflow: hidden;
+}
+
+.brand-story-philosophy__h-roll-end-wrap {
+  flex-shrink: 0;
+  width: var(--h-roll-end-width);
+  height: var(--h-scroll-height);
+  overflow: hidden;
+}
+
+.brand-story-philosophy__h-roll-start {
+  display: block;
+  width: var(--h-scroll-height);
+  height: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  transform: rotate(90deg) translateX(-100%);
+  transform-origin: top right;
+}
+
+.brand-story-philosophy__h-roll-end {
+  display: block;
+  width: var(--h-scroll-height);
+  height: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  transform: rotate(90deg) translateX(-100%);
+  transform-origin: top right;
+}
+
+.brand-story-philosophy__h-body-wrap {
+  flex-shrink: 0;
+  width: 0;
+  height: var(--h-scroll-height);
+  overflow: hidden;
+  will-change: width;
+}
+
+.brand-story-philosophy__h-body {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: stretch;
+  width: var(--h-body-width);
+  height: var(--h-scroll-height);
+  margin-left: auto;
+}
+
+.brand-story-philosophy__h-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  object-fit: cover;
+  object-position: left center;
+  pointer-events: none;
+}
+
+.brand-story-philosophy__h-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  flex: 1 1 auto;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.35fr);
+  align-items: center;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  min-width: 0;
+  height: 100%;
+  padding-inline: var(--space-2) 0.75rem;
+  line-height: normal;
+}
+
+.brand-story-philosophy__h-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  min-width: 2.75rem;
+}
+
+.brand-story-philosophy__h-character {
+  display: block;
+  width: 2.375rem;
+  height: 2.375rem;
+  object-fit: contain;
+}
+
+.brand-story-philosophy__h-subtitle {
+  margin: 0;
+  text-align: center;
+  word-break: keep-all;
+}
+
+.brand-story-philosophy__h-desc {
+  margin: 0;
+  word-break: keep-all;
+}
+
 @media (max-width: $laptop) {
-  .brand-story-philosophy__inner {
-    max-width: 100%;
-    overflow-x: auto;
+  .brand-story-philosophy {
+    height: auto;
+    min-height: 0;
+    --philosophy-section-height: auto;
+    --h-scroll-height: 5.9375rem;
+    --h-body-width: 21.375rem;
+    --h-roll-start-width: calc(var(--h-scroll-height) * 54 / 262);
+    --h-roll-end-width: calc(var(--h-scroll-height) * 16 / 265);
   }
 
   .brand-story-philosophy__list {
-    justify-content: flex-start;
-    width: max-content;
-    min-width: 100%;
-    padding-inline: 0.25rem;
+    display: none;
+  }
+
+  .brand-story-philosophy__h-track {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    width: 100%;
+    margin-top: 0;
+    padding-bottom: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: #{$tablet - 1px}) {
+  .brand-story-philosophy__inner {
+    box-sizing: border-box;
+    width: min(#{grid.$mobile-grid-inner}, calc(100% - #{grid.$mobile-grid-padding * 2}));
+    max-width: min(#{grid.$mobile-grid-inner}, calc(100% - #{grid.$mobile-grid-padding * 2}));
+    height: auto;
+    margin-inline: auto;
+    padding: var(--space-7) 0;
+    overflow-x: visible;
+  }
+
+  .brand-story-philosophy__title {
+    margin-bottom: var(--space-5);
+    color: var(--white);
+  }
+
+  .brand-story-philosophy {
+    --h-body-width: 21.25rem;
+  }
+
+  .brand-story-philosophy__h-content {
+    padding-inline: var(--space-2) 0.625rem;
+    gap: var(--space-1);
   }
 }
 
@@ -1016,5 +1153,265 @@
 
   .brand-story-last__title {
     margin-top: var(--space-6);
+  }
+}
+
+@include sub-kv-layout.sub-kv-layout-compact("brand-story-kv", $grid-only: true);
+
+@media (max-width: #{$laptop - 1px}) {
+  .brand-story-kv {
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: rgba(0, 0, 0, 0.15);
+      pointer-events: none;
+    }
+  }
+
+  .brand-story-kv__grid {
+    position: relative;
+    z-index: 2;
+  }
+
+  .brand-story-kv__title,
+  .brand-story-kv__description {
+    color: var(--white);
+  }
+}
+
+/* 태블릿 (768px ~ 1024px) */
+@media (min-width: $tablet) and (max-width: $laptop) {
+  .brand-story-about {
+    min-height: 37.5rem;
+  }
+
+  .brand-story-about__inner {
+    box-sizing: border-box;
+    width: min(#{grid.$tablet-grid-inner}, calc(100% - #{grid.$tablet-grid-padding * 2}));
+    max-width: min(#{grid.$tablet-grid-inner}, calc(100% - #{grid.$tablet-grid-padding * 2}));
+    margin-inline: auto;
+    margin-left: auto;
+    padding: var(--space-10) 0;
+  }
+
+  .brand-story-about__title {
+    margin-bottom: var(--space-4);
+    font-family: var(--font-headline);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 2.75rem;
+  }
+
+  .brand-story-about__subtitle {
+    font-family: var(--font-headline);
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 2rem;
+  }
+
+  .brand-story-meaning__inner {
+    box-sizing: border-box;
+    width: min(#{grid.$tablet-grid-inner}, calc(100% - #{grid.$tablet-grid-padding * 2}));
+    max-width: min(#{grid.$tablet-grid-inner}, calc(100% - #{grid.$tablet-grid-padding * 2}));
+    margin-inline: auto;
+    padding: var(--space-10) 0;
+    overflow-x: visible;
+  }
+
+  .brand-story-meaning__title {
+    margin-bottom: var(--space-5);
+    font-family: var(--font-headline);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 2.75rem;
+  }
+
+  .brand-story-meaning__cards {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: var(--space-4);
+    padding-inline: 0;
+  }
+
+  .brand-story-meaning__card {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 462 / 393;
+  }
+
+  .brand-story-philosophy {
+    height: auto;
+    min-height: 0;
+    --philosophy-section-height: auto;
+    --h-scroll-height: 5.9375rem;
+    --h-body-width: calc(#{grid.$tablet-grid-column-width} * 6 + #{grid.$tablet-grid-gap} * 5);
+    --h-roll-start-width: calc(var(--h-scroll-height) * 54 / 262);
+    --h-roll-end-width: calc(var(--h-scroll-height) * 16 / 265);
+  }
+
+  .brand-story-philosophy__overlay {
+    display: block;
+  }
+
+  .brand-story-philosophy__inner {
+    box-sizing: border-box;
+    width: min(#{grid.$tablet-grid-inner}, calc(100% - #{grid.$tablet-grid-padding * 2}));
+    max-width: min(#{grid.$tablet-grid-inner}, calc(100% - #{grid.$tablet-grid-padding * 2}));
+    height: auto;
+    margin-inline: auto;
+    padding: var(--space-10) 0;
+    overflow-x: visible;
+  }
+
+  .brand-story-philosophy__title {
+    margin-bottom: var(--space-5);
+    color: var(--white);
+  }
+
+  .brand-story-philosophy__list {
+    display: none;
+  }
+
+  .brand-story-philosophy__h-track {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    width: 100%;
+    margin-top: 0;
+    padding-bottom: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .brand-story-philosophy__h-item {
+    scroll-snap-align: start;
+  }
+
+  .brand-story-people__inner {
+    box-sizing: border-box;
+    width: min(#{grid.$tablet-grid-inner}, calc(100% - #{grid.$tablet-grid-padding * 2}));
+    max-width: min(#{grid.$tablet-grid-inner}, calc(100% - #{grid.$tablet-grid-padding * 2}));
+    margin-inline: auto;
+    padding: var(--space-10) 0 var(--space-8);
+  }
+
+  .brand-story-people__title {
+    font-family: var(--font-headline);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 2.75rem;
+  }
+
+  .brand-story-people__subtitle {
+    font-family: var(--font-headline);
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 2.125rem;
+  }
+
+  .brand-story-people__cards {
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-top: var(--space-5);
+  }
+
+  .brand-story-people__card,
+  .brand-story-people__cards .brand-story-people__card:first-child,
+  .brand-story-people__cards:hover .brand-story-people__card,
+  .brand-story-people__cards:hover .brand-story-people__card:hover {
+    flex: none;
+    width: 100%;
+    height: 12.5rem;
+  }
+
+  .brand-story-people__card-image {
+    left: 0;
+    width: 100%;
+    transform: none;
+  }
+
+  .brand-story-people__card-content,
+  .brand-story-people__cards:not(:hover) .brand-story-people__card:first-child .brand-story-people__card-content,
+  .brand-story-people__cards:hover .brand-story-people__card:first-child:not(:hover) .brand-story-people__card-content,
+  .brand-story-people__card:hover .brand-story-people__card-content {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .brand-story-people__card-title {
+    font-family: var(--font-headline);
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 2.125rem;
+  }
+
+  .brand-story-people__card-desc {
+    font-family: var(--font-body);
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 2rem;
+  }
+
+  .brand-story-time__inner {
+    box-sizing: border-box;
+    width: min(#{grid.$tablet-grid-inner}, calc(100% - #{grid.$tablet-grid-padding * 2}));
+    max-width: min(#{grid.$tablet-grid-inner}, calc(100% - #{grid.$tablet-grid-padding * 2}));
+    margin-inline: auto;
+    padding: var(--space-10) 0 var(--space-8);
+    row-gap: var(--space-5);
+  }
+
+  .brand-story-time__title {
+    font-family: var(--font-headline);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 2.75rem;
+  }
+
+  .brand-story-time__subtitle {
+    font-family: var(--font-headline);
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 2.125rem;
+    white-space: normal;
+  }
+
+  .brand-story-time__desc.ft-22r {
+    margin-top: var(--space-4);
+    font-family: var(--font-body);
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 2rem;
+  }
+
+  .brand-story-time__image {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    transform: none;
+  }
+
+  .brand-story-last__inner {
+    box-sizing: border-box;
+    width: min(#{grid.$tablet-grid-inner}, calc(100% - #{grid.$tablet-grid-padding * 2}));
+    max-width: min(#{grid.$tablet-grid-inner}, calc(100% - #{grid.$tablet-grid-padding * 2}));
+    margin-inline: auto;
+    padding-inline: 0;
+  }
+
+  .brand-story-last__title {
+    font-family: var(--font-headline);
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 2.125rem;
   }
 }

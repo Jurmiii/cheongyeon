@@ -33,6 +33,14 @@ export const reservationBranchAddresses: Record<ReservationBranch, string> = {
 
 export const RESERVATION_SESSION_CAPACITY = 6;
 
+export function getSessionCapacityByClassTitle(classTitle: string) {
+  return reservationClasses.find((item) => item.title === classTitle)?.maxGuests ?? RESERVATION_SESSION_CAPACITY;
+}
+
+export function getSessionCapacityByClassId(classId: number) {
+  return reservationClasses.find((item) => item.id === classId)?.maxGuests ?? RESERVATION_SESSION_CAPACITY;
+}
+
 export const reservationTimeSlots = [
   "10:00",
   "12:00",

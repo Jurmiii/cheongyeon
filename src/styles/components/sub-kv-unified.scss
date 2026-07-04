@@ -1,0 +1,14 @@
+@use "../abstracts/sub-kv-layout" as sub-kv-layout;
+
+// 서브 KV — 태블릿 768×600 · 모바일 402×calc · 세로 중앙 정렬 (PC 미적용)
+@include sub-kv-layout.sub-kv-layout-compact("event-kv");
+@include sub-kv-layout.sub-kv-layout-compact("faq-kv");
+@include sub-kv-layout.sub-kv-layout-compact("tea-store-kv");
+@include sub-kv-layout.sub-kv-layout-compact("class-intro-kv");
+@include sub-kv-layout.sub-kv-layout-compact("season-class-kv");
+@include sub-kv-layout.sub-kv-layout-compact("collection-kv");
+@include sub-kv-layout.sub-kv-layout-compact("season-tea-kv");
+@include sub-kv-layout.sub-kv-layout-compact("space-kv", $no-grid: true);
+@include sub-kv-layout.sub-kv-layout-compact("location-kv", $content-flex: false);
+@include sub-kv-layout.sub-kv-layout-compact("notice-kv", $grid-only: true);
+@include sub-kv-layout.sub-kv-layout-compact("brand-story-kv", $grid-only: true);

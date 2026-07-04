@@ -23,6 +23,8 @@ export { default as Modal2 } from "./TeaCollectionModal";
 export { default as ProductContentBox } from "./ProductContentBox";
 export { default as ReservationInfoEdit } from "./ReservationInfoEdit/ReservationInfoEdit";
 export { default as ReviewContentBox } from "./ReviewContentBox";
+export { default as SubKvSymbolLine } from "./SubKvSymbolLine/SubKvSymbolLine";
+export type { SubKvSymbolLineTone } from "./SubKvSymbolLine/SubKvSymbolLine";
 export { default as TabletFooter } from "./TabletFooter";
 export { default as TabletHeader } from "./TabletHeader";
 export { default as TeaClassContentBox } from "./TeaClassContentBox/TeaClassContentBox";

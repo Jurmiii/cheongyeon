@@ -56,7 +56,7 @@ export const collectionCategories: CollectionCategory[] = [
         weight: "40g",
         price: "35,000원",
         summary: "곡우 이전 첫물차",
-        description: "맑고 섬세한 향과 은은한 감칠맛이 어우러집니다. 봄의 첫 기운을 담아 깨끗한 여운을 남깁니다.",
+        description: "맑고 섬세한 향과 은은한 감칠맛이 어우러집니다.\n봄의 첫 기운을 담아 깨끗한 여운을 남깁니다.",
         imageSrc: greenTea1,
       },
       {
@@ -64,7 +64,7 @@ export const collectionCategories: CollectionCategory[] = [
         weight: "40g",
         price: "30,000원",
         summary: "입하 이전 어린 찻잎",
-        description: "부드러운 풍미와 균형 잡힌 맛이 특징입니다. 매일 편안하게 즐기기 좋은 녹차입니다.",
+        description: "부드러운 풍미와 균형 잡힌 맛이 특징입니다.\n매일 편안하게 즐기기 좋은 녹차입니다.",
         imageSrc: greenTea2,
         specs: [
           { label: "종류", value: "녹차" },
@@ -85,7 +85,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "25,000원",
         summary: "초여름의 햇살을 머금은 차",
         description:
-          "풍부한 감칠맛과 깊어진 녹향이 조화를 이룹니다. 한층 진한 녹차의 매력을 느낄 수 있습니다.",
+          "풍부한 감칠맛과 깊어진 녹향이 조화를 이룹니다.\n한층 진한 녹차의 매력을 느낄 수 있습니다.",
         imageSrc: greenTea3,
         specs: [
           { label: "종류", value: "녹차" },
@@ -106,7 +106,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "20,000원",
         summary: "여름의 시간을 담은 차",
         description:
-          "구수하고 묵직한 풍미가 오래 남는 차입니다. 차분한 오후와 잘 어울리는 녹차입니다.",
+          "구수하고 묵직한 풍미가 오래 남는 차입니다.\n차분한 오후와 잘 어울리는 녹차입니다.",
         imageSrc: greenTea4,
         specs: [
           { label: "종류", value: "녹차" },
@@ -134,7 +134,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "22,000원",
         summary: "어린 새순의 맑은 향",
         description:
-          "눈처럼 맑고 깨끗한 향이 특징인 백차입니다. 은은한 꽃향과 부드러운 단맛이 조화를 이룹니다.",
+          "눈처럼 맑고 깨끗한 향이 특징인 백차입니다.\n은은한 꽃향과 부드러운 단맛이 조화를 이룹니다.",
         imageSrc: whiteTea1,
         specs: [
           { label: "종류", value: "백차" },
@@ -155,7 +155,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "26,000원",
         summary: "달빛 아래 천천히 말린 차",
         description:
-          "차분하고 섬세한 향이 오래 남는 백차입니다. 부드러운 단맛과 깨끗한 여운을 즐길 수 있습니다.",
+          "차분하고 섬세한 향이 오래 남는 백차입니다.\n부드러운 단맛과 깨끗한 여운을 즐길 수 있습니다.",
         imageSrc: whiteTea2,
         specs: [
           { label: "종류", value: "백차" },
@@ -176,7 +176,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "24,000원",
         summary: "초여름의 햇살을 머금은 차",
         description:
-          "은은한 꽃향과 가벼운 바디감이 특징입니다. 맑고 편안한 차 한 잔을 원하는 순간에 어울립니다.",
+          "은은한 꽃향과 가벼운 바디감이 특징입니다.\n맑고 편안한 차 한 잔을 원하는 순간에 어울립니다.",
         imageSrc: whiteTea3,
         specs: [
           { label: "종류", value: "백차" },
@@ -197,7 +197,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "30,000원",
         summary: "안개 낀 산자락의 여운",
         description:
-          "풍부한 향과 긴 여운이 인상적인 백차입니다. 백차 특유의 부드러움과 깊이를 느낄 수 있습니다.",
+          "풍부한 향과 긴 여운이 인상적인 백차입니다.\n백차 특유의 부드러움과 깊이를 느낄 수 있습니다.",
         imageSrc: whiteTea4,
         specs: [
           { label: "종류", value: "백차" },
@@ -225,7 +225,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "38,000원",
         summary: "꽃이 피어나는 계절의 향",
         description:
-          "풍부한 꽃향과 산뜻한 풍미가 어우러진 차입니다. 차를 마시는 순간 은은한 꽃밭을 떠올리게 합니다.",
+          "풍부한 꽃향과 산뜻한 풍미가 어우러진 차입니다.\n차를 마시는 순간 은은한 꽃밭을 떠올리게 합니다.",
         imageSrc: oolongTea1,
         specs: [
           { label: "종류", value: "청차" },
@@ -246,7 +246,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "32,000원",
         summary: "맑은 하늘 아래 피어나는 꽃향",
         description:
-          "은은한 난초 향과 청량한 여운이 조화를 이루는 청차입니다. 청차 본연의 섬세함을 가장 잘 느낄 수 있습니다.",
+          "은은한 난초 향과 청량한 여운이 조화를 이루는\n청차 본연의 섬세함을 가장 잘 느낄 수 있습니다.",
         imageSrc: oolongTea2,
         specs: [
           { label: "종류", value: "청차" },
@@ -267,7 +267,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "29,000원",
         summary: "깊은 숲의 고요함을 담은 차",
         description:
-          "맑은 꽃향 뒤로 은은한 과실향이 이어집니다. 부드럽고 긴 여운이 인상적인 청차입니다.",
+          "맑은 꽃향 뒤로 은은한 과실향이 이어집니다.\n부드럽고 긴 여운이 인상적인 청차입니다.",
         imageSrc: oolongTea3,
         specs: [
           { label: "종류", value: "청차" },
@@ -288,7 +288,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "35,000원",
         summary: "난초 향이 머무는 시간",
         description:
-          "화사한 난초 향과 부드러운 단맛이 특징입니다. 청연을 처음 만나는 분께 추천하는 청차입니다.",
+          "화사한 난초 향과 부드러운 단맛이 특징입니다.\n청연을 처음 만나는 분께 추천하는 청차입니다.",
         imageSrc: oolongTea4,
         specs: [
           { label: "종류", value: "청차" },
@@ -316,7 +316,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "30,000원",
         summary: "붉은 구름의 여운",
         description:
-          "부드러운 단맛과 은은한 꽃향이 어우러진 차입니다. 청연을 대표하는 가장 균형 잡힌 홍차입니다.",
+          "부드러운 단맛과 은은한 꽃향이 어우러진 차입니다.\n청연을 대표하는 가장 균형 잡힌 홍차입니다.",
         imageSrc: blackTea1,
         specs: [
           { label: "종류", value: "홍차" },
@@ -337,7 +337,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "35,000원",
         summary: "깊고 진한 붉은 장미",
         description:
-          "풍부한 바디감과 묵직한 단맛이 특징입니다. 홍차 본연의 깊이를 가장 잘 느낄 수 있습니다.",
+          "풍부한 바디감과 묵직한 단맛이 특징입니다.\n홍차 본연의 깊이를 가장 잘 느낄 수 있습니다.",
         imageSrc: blackTea2,
         specs: [
           { label: "종류", value: "홍차" },
@@ -358,7 +358,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "28,000원",
         summary: "겨울 햇살처럼 부드러운 홍차",
         description:
-          "은은한 단맛과 섬세한 향이 오래 남습니다. 부담 없이 즐기기 좋은 청연의 홍차입니다.",
+          "은은한 단맛과 섬세한 향이 오래 남습니다.\n부담 없이 즐기기 좋은 청연의 홍차입니다.",
         imageSrc: blackTea3,
         specs: [
           { label: "종류", value: "홍차" },
@@ -379,7 +379,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "32,000원",
         summary: "하루의 끝을 닮은 차",
         description:
-          "따뜻한 향과 부드러운 여운이 차분하게 이어집니다. 조용한 저녁과 가장 잘 어울리는 홍차입니다.",
+          "따뜻한 향과 부드러운 여운이 차분하게 이어집니다.\n조용한 저녁과 가장 잘 어울리는 홍차입니다.",
         imageSrc: blackTea4,
         specs: [
           { label: "종류", value: "홍차" },
@@ -407,7 +407,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "32,000원",
         summary: "깊은 연못의 고요함",
         description:
-          "은은한 단맛과 부드러운 숙성향을 담은 흑차입니다. 청연 흑차의 시작을 경험하기 좋은 차입니다.",
+          "은은한 단맛과 부드러운 숙성향을 담은 흑차입니다.\n청연 흑차의 시작을 경험하기 좋은 차입니다.",
         imageSrc: darkTea1,
         specs: [
           { label: "종류", value: "흑차" },
@@ -428,7 +428,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "42,000원",
         summary: "가장 깊은 곳의 시간",
         description:
-          "풍부한 숙성감과 긴 여운이 특징입니다. 청연을 대표하는 프리미엄 흑차입니다.",
+          "풍부한 숙성감과 긴 여운이 특징입니다.\n청연을 대표하는 프리미엄 흑차입니다.",
         imageSrc: darkTea2,
         specs: [
           { label: "종류", value: "흑차" },
@@ -449,7 +449,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "36,000원",
         summary: "숲의 향을 머금은 차",
         description:
-          "은은한 목향과 묵직한 풍미가 조화를 이룹니다. 차분한 시간을 위한 흑차입니다.",
+          "은은한 목향과 묵직한 풍미가 조화를 이룹니다.\n차분한 시간을 위한 흑차입니다.",
         imageSrc: darkTea3,
         specs: [
           { label: "종류", value: "흑차" },
@@ -470,7 +470,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "38,000원",
         summary: "오래 남는 깊은 여운",
         description:
-          "숙성된 단맛과 부드러운 바디감이 인상적입니다. 마실수록 깊이가 느껴지는 흑차입니다.",
+          "숙성된 단맛과 부드러운 바디감이 인상적입니다.\n마실수록 깊이가 느껴지는 흑차입니다.",
         imageSrc: darkTea4,
         specs: [
           { label: "종류", value: "흑차" },
@@ -498,7 +498,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "52,000원",
         summary: "봄을 가장 오래 머금은 찻잎",
         description:
-          "청연의 대표 녹차를 넉넉한 용량으로 담았습니다. 맑고 깨끗한 향을 오래도록 즐길 수 있습니다.",
+          "청연의 대표 녹차를 넉넉한 용량으로 담았습니다.\n맑고 깨끗한 향을 오래도록 즐길 수 있습니다.",
         imageSrc: bigGreenTea,
         specs: [
           { label: "종류", value: "녹차" },
@@ -519,7 +519,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "42,000원",
         summary: "시간이 천천히 흐르는 부드러운 차",
         description:
-          "은은한 단맛과 부드러운 여운이 특징입니다. 편안한 휴식과 함께하기 좋은 백차입니다.",
+          "은은한 단맛과 부드러운 여운이 특징입니다.\n편안한 휴식과 함께하기 좋은 백차입니다.",
         imageSrc: bigWhiteTea,
         specs: [
           { label: "종류", value: "백차" },
@@ -540,7 +540,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "56,000원",
         summary: "꽃과 과일 사이에 머무는 향",
         description:
-          "꽃향과 과일향이 어우러진 깊은 풍미를 담았습니다. 우릴수록 다채로운 향을 경험할 수 있습니다.",
+          "꽃향과 과일향이 어우러진 깊은 풍미를 담았습니다.\n우릴수록 다채로운 향을 경험할 수 있습니다.",
         imageSrc: bigOolongTea,
         specs: [
           { label: "종류", value: "청차" },
@@ -561,7 +561,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "58,000원",
         summary: "깊은 향으로 완성되는 하루",
         description:
-          "풍부한 향과 진한 맛이 조화롭게 이어집니다. 밀크티와 스트레이트 티 모두 잘 어울립니다.",
+          "풍부한 향과 진한 맛이 조화롭게 이어집니다.\n밀크티와 스트레이트 티 모두 잘 어울립니다.",
         imageSrc: bigBlackTea,
         specs: [
           { label: "종류", value: "홍차" },
@@ -582,7 +582,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "62,000원",
         summary: "세월이 빚어낸 깊은 풍미",
         description:
-          "시간이 만든 깊고 묵직한 풍미를 담았습니다. 오랜 여운과 편안한 단맛을 느낄 수 있는 흑차입니다.",
+          "시간이 만든 깊고 묵직한 풍미를 담았습니다.\n오랜 여운과 편안한 단맛을 느낄 수 있습니다.",
         imageSrc: bigDarkTea,
         specs: [
           { label: "종류", value: "흑차" },
@@ -603,7 +603,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "68,000원",
         summary: "안개 낀 산중의 고요한 아침",
         description:
-          "안개 낀 산중의 고요함을 담은 황차입니다. 부드러운 단맛과 은은한 향이 길게 이어집니다.",
+          "안개 낀 산중의 고요함을 담은 황차입니다.\n부드러운 단맛과 은은한 향이 길게 이어집니다.",
         imageSrc: bigSignature1,
         specs: [
           { label: "종류", value: "청차" },
@@ -624,7 +624,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "72,000원",
         summary: "고요한 밤을 담은 한 잔",
         description:
-          "달빛 아래 피어나는 향을 담은 프리미엄 청차입니다. 꽃향과 과일향이 어우러진 깊은 풍미를 전합니다.",
+          "달빛 아래 피어나는 향을 담은 프리미엄 청차입니다\n꽃향과 과일향이 어우러진 깊은 풍미를 전합니다.",
         imageSrc: bigSignature2,
         specs: [
           { label: "종류", value: "청차" },
@@ -645,7 +645,7 @@ export const collectionCategories: CollectionCategory[] = [
         price: "88,000원",
         summary: "깊은 침묵 끝에 피어나는 여운",
         description:
-          "오랜 숙성으로 완성된 깊고 진한 흑차입니다. 묵직한 목향과 긴 여운이 품격 있게 이어집니다.",
+          "오랜 숙성으로 완성된 깊고 진한 흑차입니다.\n묵직한 목향과 긴 여운이 품격 있게 이어집니다.",
         imageSrc: bigSignature3,
         specs: [
           { label: "종류", value: "흑차" },

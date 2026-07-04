@@ -1,7 +1,6 @@
 import { useState } from "react";
-import subSymbol from "../../assets/images/01main/subsymbol.svg";
 import aromaGraph from "../../assets/images/05collection/graph.webp";
-import { Footer, Header, Modal2 } from "../../components/common";
+import { Footer, Header, MobileFooter, MobileHeader, Modal2, SubKvSymbolLine, TabletFooter, TabletHeader } from "../../components/common";
 import type { TeaCollectionModalData } from "../../components/common/TeaCollectionModal/teaCollectionModal.types";
 import { collectionTabs } from "./collectionTabs";
 import type { CollectionTabId } from "./collectionTabs";
@@ -21,24 +20,25 @@ function CollectionPage() {
 
   return (
     <main className="collection-page">
-      <div className="collection-page__header">
+      <div className="collection-page__header collection-page__header--desktop">
         <Header />
+      </div>
+      <div className="collection-page__header collection-page__header--tablet">
+        <TabletHeader />
+      </div>
+      <div className="collection-page__header collection-page__header--mobile">
+        <MobileHeader />
       </div>
 
       <section className="collection-kv" aria-label="차 컬렉션 키비주얼">
         <div className="collection-kv__grid">
           <div className="collection-kv__content">
-            <h1 className="collection-kv__title ft-64b ink500">차 컬렉션</h1>
-            <img className="collection-kv__symbol" src={subSymbol} alt="" aria-hidden="true" />
-            <p className="collection-kv__description collection-kv__description--desktop ft-28r ink500">
-              자연의 향과 맛을 오롯이 담아낸
-              <br />
-              청연만의 다채로운 차 컬렉션
-            </p>
-            <p className="collection-kv__description collection-kv__description--tablet ft-24r ink500">
-              서로 다른 찻잎이 만들어내는
-              <br />
-              향의 깊이를 경험해보세요
+            <div className="collection-kv__head">
+              <h1 className="collection-kv__title ft-64b ink500">차 컬렉션</h1>
+              <SubKvSymbolLine blockClass="collection-kv" />
+            </div>
+            <p className="collection-kv__description ft-28r ink500">
+              서로 다른 찻잎이 만들어내는 향의 깊이를 경험해보세요
             </p>
           </div>
         </div>
@@ -48,7 +48,7 @@ function CollectionPage() {
         <div className="collection-aroma__grid">
           <div className="collection-aroma__content">
             <h2 className="collection-aroma__title ft-48b ink500">향으로 만나는차</h2>
-            <p className="collection-aroma__description ft-28r ink500">
+            <p className="collection-aroma__description ft-22r ink500">
               같은 차라도, 우리는 다른 향을 느낍니다.
               <br />
               <span className="collection-aroma__description-second">
@@ -79,7 +79,7 @@ function CollectionPage() {
                   role="tab"
                   className={[
                     "collection-catalog__tab",
-                    tab.id === activeTab ? "ft-22b" : "ft-22r",
+                    tab.id === activeTab ? "ft-18b" : "ft-18r",
                     tab.id === activeTab && "collection-catalog__tab--active",
                   ]
                     .filter(Boolean)
@@ -114,7 +114,15 @@ function CollectionPage() {
         data={selectedModalData ?? undefined}
       />
 
-      <Footer />
+      <div className="collection-page__footer collection-page__footer--desktop">
+        <Footer />
+      </div>
+      <div className="collection-page__footer collection-page__footer--tablet">
+        <TabletFooter />
+      </div>
+      <div className="collection-page__footer collection-page__footer--mobile">
+        <MobileFooter />
+      </div>
     </main>
   );
 }

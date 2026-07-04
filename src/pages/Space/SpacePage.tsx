@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import subSymbol from "../../assets/images/01main/subsymbol.svg";
+import { Footer, Header, SubKvSymbolLine } from "../../components/common";
 import aboutBg from "../../assets/images/03space/about-bg.webp";
 import spaceKv from "../../assets/images/03space/space-kv.webp";
 import spaceRoomLeft from "../../assets/images/03space/space-3_1.webp";
@@ -39,7 +39,6 @@ import spaceMap2 from "../../assets/images/03space/space-7_2.webp";
 import spaceMap3 from "../../assets/images/03space/space-7_3.webp";
 import spaceMap4 from "../../assets/images/03space/space-7_4.webp";
 import spaceMap5 from "../../assets/images/03space/space-7_5.webp";
-import { Footer, Header } from "../../components/common";
 import SpaceGallerySection from "./SpaceGallerySection";
 import "./SpacePage.scss";
 
@@ -52,29 +51,29 @@ const stayGalleryData = {
     {
       image: spaceGallery1,
       title: "청연 남산 티하우스",
-      location: "위치: 서울특별시 중구 소파로 42",
+      location: ["위치: 서울특별시", "중구 소파로 42"],
       feature: "특징: 도심형 티하우스",
     },
     {
       image: spaceGallery2,
       title: "청연 구례 티하우스",
-      location: "위치: 전라남도 구례군 마산면 214",
+      location: ["위치: 전라남도 구례군", "마산면 214"],
       feature: "특징: 자연 속 휴식 공간",
     },
     {
       image: spaceGallery3,
       title: "청연 경주 티하우스",
-      location: "위치: 경상북도 경주시 첨성로 177",
+      location: ["위치: 경상북도 경주시", "첨성로 177"],
       feature: "특징: 한옥 공간",
     },
     {
       image: spaceGallery4,
       title: "청연 제주 티하우스",
-      location: "위치: 제주도 서귀포시 안덕면 128",
+      location: ["위치: 제주도 서귀포시 안덕", "면 128"],
       feature: "특징: 제주 차밭 인근",
     },
   ],
-};
+} as const;
 
 const learningGalleryData = {
   blockClass: "space-learning",
@@ -85,29 +84,29 @@ const learningGalleryData = {
     {
       image: spaceLearning1,
       title: "청연 북촌 티하우스",
-      location: "위치: 서울특별시 종로구 북촌로 58",
-      feature: "특징: 청연 본점 브랜드 쇼룸",
+      location: ["위치: 서울특별시", "종로구 북촌로 58"],
+      feature: "특징: 청연 브랜드 쇼룸",
     },
     {
       image: spaceLearning2,
       title: "청연 보성 티하우스",
-      location: "위치: 전라남도 보성군 보성읍 821",
+      location: ["위치: 전라남도 보성군", "보성읍 821"],
       feature: "특징: 보성 차밭 인접",
     },
     {
       image: spaceLearning3,
       title: "청연 강진 티하우스",
-      location: "위치: 전라남도 강진군 강진읍 437",
+      location: ["위치: 전라남도 강진군", "성전면 437"],
       feature: "특징: 한국 전통 다도 문화권",
     },
     {
       image: spaceLearning4,
       title: "청연 하동 티하우스",
-      location: "위치: 경상남도 하동군 화개면 612",
+      location: ["위치: 경상남도 하동군", "화개면 612"],
       feature: "특징: 지리산 야생차 문화권",
     },
   ],
-};
+} as const;
 
 const carouselImages = [
   spaceCarousel1,
@@ -126,22 +125,21 @@ const spaceMapItems = [
   {
     id: 1,
     number: "01",
-    title: "메인 다실",
+    title: "예절 다실",
     image: spaceMap1,
     marker: mapMarker1,
     position: { left: "18%", top: "17%" },
     description:
-      "차를 배우고 경험하는 대표 클래스 공간입니다. 따뜻한 자연광과 분위기 속에서 온전히 차에 집중할 수 있도록 설계 되었습니다",
+      "다도의 기본 예절과 차 문화를 편안하게 익힐 수 있는 클래스 공간입니다.",
   },
   {
     id: 2,
     number: "02",
-    title: "프라이빗 다실",
+    title: "블렌더 다실",
     image: spaceMap2,
     marker: mapMarker2,
     position: { left: "22%", top: "53%" },
-    description:
-      "차분한 분위기 속에서 오롯이 차에 집중할 수 있는 1:1 예약 전용 공간입니다. 나만을 위한 고요한 차 시간을 선사합니다.",
+    description: "나만의 취향을 담은 블렌딩 티를 직접 만들어보는 클래스 공간입니다.",
   },
   {
     id: 3,
@@ -151,27 +149,27 @@ const spaceMapItems = [
     marker: mapMarker3,
     position: { left: "56%", top: "30%" },
     description:
-      "계절의 흐름과 자연의 풍경을 가까이에서 마주하며 잠시 머무를 수 있는 휴식 공간입니다. 사계절 변하는 풍경 속에서 마음을 쉬어갑니다.",
+      "계절의 흐름과 자연의 풍경을 가까이에서 마주하며 잠시 머무를 수 있는 휴식 공간입니다.",
   },
   {
     id: 4,
     number: "04",
-    title: "전시공간",
+    title: "프라이빗 다실",
     image: spaceMap4,
     marker: mapMarker4,
     position: { left: "83%", top: "22%" },
     description:
-      "청연이 전하는 차 문화와 이야기를 다양한 전시와 콘텐츠를 통해 경험할 수 있는 브랜드 공간입니다. 차에 담긴 이야기를 새롭게 만나볼 수 있습니다.",
+      "차분한 분위기 속에서 오롯이 차에 집중할 수 있는 1:1 예약 전용 클래스 공간입니다.",
   },
   {
     id: 5,
     number: "05",
-    title: "티 라운지",
+    title: "숙성차 다실",
     image: spaceMap5,
     marker: mapMarker5,
     position: { left: "calc(87% - 0.625rem)", top: "80%" },
     description:
-      "클래스 전후 여유롭게 머물며 다양한 차를 편안하게 즐길 수 있는 휴식 공간입니다. 차 한 잔과 함께 잠시 쉬어가기 좋은 공간입니다.",
+      "시간이 만든 깊은 풍미를 경험하는 숙성차만의 여운을 천천히 느낄 수 있는 클래스 공간입니다.",
   },
 ] as const;
 
@@ -324,15 +322,14 @@ function SpacePage() {
         style={{ backgroundImage: `url(${spaceKv})` }}
         aria-label="공간 소개 키비주얼"
       >
-        <div className="space-kv__content">
-          <h1 className="space-kv__title ft-64r ink500">공간 소개</h1>
-          <div className="space-kv__ornament" aria-hidden="true">
-            <img src={subSymbol} alt="" />
+        <div className="space-kv__grid">
+          <div className="space-kv__head">
+            <h1 className="space-kv__title ft-64r ink500">공간 소개</h1>
+            <SubKvSymbolLine blockClass="space-kv" tone="responsive" />
           </div>
-          <p className="space-kv__desc ft-28r ink500">
-            차를 마주하는 모든 순간이
-            <br />
-            하나의 풍경이 되길 바랍니다.
+          <p className="space-kv__description ft-28r ink500">
+            <span className="space-kv__description-line">차를 마주하는 모든 순간이</span>
+            <span className="space-kv__description-line">하나의 풍경이 되길 바랍니다.</span>
           </p>
         </div>
       </section>
@@ -350,11 +347,20 @@ function SpacePage() {
               머무는 것입니다.
             </h2>
             <p className="space-about__desc ft-28r ink500">
-              청연은 동양화의 고요함을 담은
-              <br />
-              공간입니다. 바쁜 일상 속에서 잠시
-              <br />
-              멈추어, 나와 마주하는 시간을 선물합니다.
+              <span className="space-about__desc-lines space-about__desc-lines--desktop">
+                청연은 동양화의 고요함을 담은
+                <br />
+                공간입니다. 바쁜 일상 속에서 잠시
+                <br />
+                멈추어, 나와 마주하는 시간을 선물합니다.
+              </span>
+              <span className="space-about__desc-lines space-about__desc-lines--mobile">
+                청연은 동양화의 고요함을 담은 공간입니다.
+                <br />
+                바쁜 일상 속에서 잠시 멈추어,
+                <br />
+                나와 마주하는 시간을 선물합니다.
+              </span>
             </p>
           </div>
 
@@ -370,11 +376,9 @@ function SpacePage() {
             <div className="space-rooms__head">
               <h2 className="space-rooms__title ft-48b ink500">머무름의 공간</h2>
               <p className="space-rooms__desc ft-22r ink500">
-                고요한 차향이 스며드는 공간에서
+                고요한 차향이 스며드는 공간에서 복잡한
                 <br />
-                복잡한 생각은 내려놓고, 음미하며
-                <br />
-                마음의 여백을 채워보세요.
+                생각은 내려놓고, 음미하며 마음의 여백을 채워보세요.
               </p>
             </div>
 
@@ -387,11 +391,9 @@ function SpacePage() {
             <div className="space-rooms__head">
               <h2 className="space-rooms__title ft-48b ink500">배움의 공간</h2>
               <p className="space-rooms__desc ft-22r ink500">
-                차를 우려내는 과정부터 향과 맛을
+                차를 우려내는 과정부터 향과 맛을 음미하는 순간까지,
                 <br />
-                음미하는 순간까지, 다도의 깊이를
-                <br />
-                천천히 배워가는 특별한 공간입니다.
+                다도의 깊이를 천천히 배워가는 특별한 공간입니다.
               </p>
             </div>
 
@@ -458,36 +460,22 @@ function SpacePage() {
 
       <section className="space-map" aria-label="청연 본점 공간 안내" onClick={handleMapSectionClick}>
         <div className="space-map__inner">
-          <div className="space-map__content">
-            {!showMapDetail ? (
-              <div className="space-map__intro">
-                <h2 className="space-map__title ft-48b ink500">청연 본점 공간 안내</h2>
-                <p className="space-map__subtitle ft-28r ink500">
-                  청연은 자연의 흐름을 따라
-                  <br />
-                  다실, 중정, 전시 공간이 조화를 이루는
-                  <br />
-                  구성으로 이루어져 있습니다.
-                </p>
-              </div>
-            ) : (
-              <div key={selectedSpace} className="space-map__detail">
-                <img
-                  src={activeSpace.image}
-                  alt={activeSpace.title}
-                  className="space-map__detail-image"
-                />
-                <div className="space-map__detail-head">
-                  <span className="space-map__detail-number ft-48b">{activeSpace.number}</span>
-                  <h3 className="space-map__detail-title ft-48b ink500">{activeSpace.title}</h3>
-                </div>
-                <p className="space-map__detail-desc ft-22r ink500">{activeSpace.description}</p>
-              </div>
-            )}
+          <div
+            className={`space-map__intro${showMapDetail ? " space-map__intro--hidden" : ""}`}
+          >
+            <h2 className="space-map__title ft-48b ink500">청연 본점 공간 안내</h2>
+            <p className="space-map__subtitle ft-28r ink500">
+              청연은 자연의 흐름을 따라
+              <br />
+              다실, 중정, 전시 공간이 조화를 이루는
+              <br />
+              구성으로 이루어져 있습니다.
+            </p>
+            <p className="space-map__hint ft-16r ink400">* 번호를 눌러 공간을 확인해보세요.</p>
           </div>
 
           <div className="space-map__blueprint">
-            <p className="space-map__guide ft-16r ink400">공간 번호 선택하기</p>
+            <p className="space-map__guide ft-16r ink400">* 번호를 눌러 공간을 확인해보세요.</p>
             <div className="space-map__blueprint-stage">
               <img src={blueprint} alt="" className="space-map__blueprint-image" aria-hidden="true" />
               <div className="space-map__markers">
@@ -497,10 +485,10 @@ function SpacePage() {
                     type="button"
                     className={`space-map__marker${selectedSpace === item.id ? " space-map__marker--active" : ""}`}
                     style={{
-                    left: item.position.left,
-                    top: item.position.top,
-                    animationDelay: `${(item.id - 1) * 0.18}s`,
-                  }}
+                      left: item.position.left,
+                      top: item.position.top,
+                      animationDelay: `${(item.id - 1) * 0.18}s`,
+                    }}
                     onClick={(event) => handleMapMarkerClick(item.id, event)}
                     aria-label={item.title}
                     aria-pressed={selectedSpace === item.id}
@@ -511,6 +499,21 @@ function SpacePage() {
               </div>
             </div>
           </div>
+
+          {showMapDetail && (
+            <div key={selectedSpace} className="space-map__detail">
+              <img
+                src={activeSpace.image}
+                alt={activeSpace.title}
+                className="space-map__detail-image"
+              />
+              <div className="space-map__detail-head">
+                <span className="space-map__detail-number ft-48b">{activeSpace.number}</span>
+                <h3 className="space-map__detail-title ft-48b ink500">{activeSpace.title}</h3>
+              </div>
+              <p className="space-map__detail-desc ft-22r ink500">{activeSpace.description}</p>
+            </div>
+          )}
         </div>
       </section>
 

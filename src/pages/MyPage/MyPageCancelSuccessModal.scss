@@ -1,0 +1,83 @@
+@use "../../styles/abstracts/breakpoints" as *;
+
+.my-page-cancel-success-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: rgb(35 35 35 / 45%);
+}
+
+.my-page-cancel-success-modal__dialog {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 26.5rem;
+  max-width: 100%;
+  height: 20.625rem;
+  padding: 2rem 1.5rem 1.5rem;
+  border: 0.0625rem solid var(--moon500);
+  border-radius: var(--radius-2);
+  background: var(--white);
+  text-align: center;
+}
+
+.my-page-cancel-success-modal__icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 62.4375rem;
+  background: var(--deep500);
+  color: var(--white);
+
+  svg {
+    width: 3rem;
+    height: 3rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2.5;
+  }
+}
+
+.my-page-cancel-success-modal__title {
+  margin: 1rem 0 0;
+}
+
+.my-page-cancel-success-modal__thanks {
+  margin: 0.5rem 0 0;
+}
+
+.my-page-cancel-success-modal__refund {
+  margin: 0.75rem 0 0;
+  line-height: 1.5;
+}
+
+.my-page-cancel-success-modal__button {
+  width: 100%;
+  margin-top: auto;
+  padding-block: 0.75rem;
+  color: var(--white);
+}
+
+@media (max-width: $mobile) {
+  .my-page-cancel-success-modal {
+    padding: var(--space-3);
+  }
+
+  .my-page-cancel-success-modal__dialog {
+    width: 100%;
+    height: auto;
+    min-height: 20.625rem;
+    padding-inline: 1.25rem;
+  }
+}
