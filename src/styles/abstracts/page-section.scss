@@ -1,0 +1,21 @@
+// 팀 공용 섹션 간격 — tokens/spacing.scss
+// --section-padding: PC 7.5rem · ≤1024px 6rem · ≤768px 4rem
+// --section-title-gap: PC 3rem · ≤1024px 2.5rem · ≤768px 2rem
+
+@mixin page-section-padding-block {
+  padding-block: var(--section-padding);
+}
+
+@mixin page-section-padding-split {
+  padding-block: calc(var(--section-padding) / 2);
+}
+
+@mixin page-section-padding-start {
+  padding-top: var(--section-padding);
+  padding-bottom: calc(var(--section-padding) / 2);
+}
+
+@mixin page-section-padding-end {
+  padding-top: calc(var(--section-padding) / 2);
+  padding-bottom: var(--section-padding);
+}

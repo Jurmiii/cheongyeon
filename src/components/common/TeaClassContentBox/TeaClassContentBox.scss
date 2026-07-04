@@ -62,6 +62,10 @@
   height: var(--space-3);
 }
 
+.tea-class-content-box__meta-inline-time {
+  display: none;
+}
+
 .tea-class-content-box__actions {
   display: flex;
   flex: 0 0 auto;
