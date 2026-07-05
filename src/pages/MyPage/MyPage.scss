@@ -94,7 +94,7 @@ $my-page-upcoming-compact-max: $laptop;
   --my-page-header-offset: 5.625rem;
   --my-page-hero-height: 54.125rem;
   --my-page-header-greeting-gap: 9.3125rem;
-  --my-page-hero-bottom-gap: var(--space-11);
+  --my-page-hero-bottom-gap: var(--section-padding);
   --my-page-stats-height: 12.8125rem;
   --my-page-upcoming-height: 45.8125rem;
   --my-page-upcoming-box-height: 23.8125rem;
@@ -187,7 +187,7 @@ $my-page-upcoming-compact-max: $laptop;
   max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
-  padding-top: var(--space-11);
+  padding-top: var(--section-padding);
 }
 
 .my-page__upcoming-title {
@@ -205,7 +205,7 @@ $my-page-upcoming-compact-max: $laptop;
   width: 100%;
   height: auto;
   min-height: var(--my-page-upcoming-box-height);
-  margin-top: var(--space-6);
+  margin-top: var(--section-title-gap);
   padding: var(--space-6) var(--space-2);
   border: 0.0625rem solid var(--deep500);
   border-radius: var(--radius-2);
@@ -214,12 +214,13 @@ $my-page-upcoming-compact-max: $laptop;
 }
 
 // TeaClassContentBox 기본값(width 44.375rem · flex-shrink 0)이 박스를 넘치게 함 — 마이페이지에서만 유동
+// max-width는 1024px 초과(가로 배치)에서만 — compact 구간에 두면 우측 빈 공간 발생
 .my-page .tea-class-content-box--upcoming {
   flex: 1 1 auto;
   flex-shrink: 1;
   width: auto;
   min-width: 0;
-  max-width: 44.375rem;
+  max-width: none;
   height: auto;
 }
 
@@ -247,7 +248,7 @@ $my-page-upcoming-compact-max: $laptop;
   gap: var(--space-4);
   width: 100%;
   min-height: var(--my-page-upcoming-box-height);
-  margin-top: var(--space-6);
+  margin-top: var(--section-title-gap);
   padding: var(--space-6) var(--space-2);
   border: 0.0625rem solid var(--deep500);
   border-radius: var(--radius-2);
@@ -303,7 +304,7 @@ $my-page-upcoming-compact-max: $laptop;
   max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
-  padding-top: 7.5rem;
+  padding-top: var(--section-padding);
 }
 
 .my-page__history-head {
@@ -311,7 +312,7 @@ $my-page-upcoming-compact-max: $laptop;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  margin: 0 0 var(--space-6);
+  margin: 0 0 var(--section-title-gap);
 }
 
 .my-page__history-head .my-page__history-title {
@@ -400,10 +401,13 @@ $my-page-upcoming-compact-max: $laptop;
 }
 
 .my-page__history-modal {
+  container-type: inline-size;
   box-sizing: border-box;
   display: flex;
-  width: min(70rem, calc(80vw - 2.5rem));
-  max-height: calc(85vh - 2.5rem);
+  width: 100%;
+  min-width: 0;
+  max-width: 70rem;
+  max-height: calc(85vh - 3rem);
   flex-direction: column;
   overflow: hidden;
 }
@@ -423,10 +427,12 @@ $my-page-upcoming-compact-max: $laptop;
 }
 
 .my-page__history-modal-scroll {
-  max-height: calc(85vh - 2.5rem - 3rem - var(--space-3));
+  min-width: 0;
+  max-height: calc(85vh - 3rem - 3rem - var(--space-3));
   padding-top: var(--space-4);
-  padding-right: 1.75rem;
+  padding-right: var(--space-2);
   overflow-y: auto;
+  overflow-x: hidden;
   scrollbar-color: var(--ink500) transparent;
   scrollbar-width: thin;
 }
@@ -468,30 +474,69 @@ $my-page-upcoming-compact-max: $laptop;
 
 .my-page__history-modal-list {
   gap: var(--space-2);
+  min-width: 0;
 }
 
-.my-page__history-modal-card {
+// 모달 카드 — 페이지 이력 카드 반응형과 분리, 항상 이미지|텍스트|뱃지 가로 배치
+.my-page__history-modal .my-page__history-modal-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "image body badge";
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
   min-width: 0;
   height: auto;
-  min-height: 6.5rem;
+  min-height: auto;
+  padding-bottom: 0;
 }
 
 .my-page__history-modal .my-page__history-card-image {
-  width: 11rem;
-  height: 6.5rem;
+  grid-area: image;
+  flex-shrink: 0;
+  width: clamp(5.5rem, 20cqw, 11rem);
+  height: auto;
+  aspect-ratio: 220 / 130;
+  border-radius: var(--radius-2);
+  object-fit: cover;
 }
 
-.my-page__history-modal-card-title {
+.my-page__history-modal .my-page__history-card-body {
+  grid-area: body;
+  flex: initial;
+  min-width: 0;
+  margin-left: 0;
+}
+
+.my-page__history-modal .my-page__history-modal-card-title {
   margin: 0;
+  font-family: var(--font-body);
+  font-weight: 500;
+  word-break: keep-all;
+  overflow-wrap: normal;
 }
 
-.my-page__history-modal-card-date {
-  margin: 0.375rem 0 0;
+.my-page__history-modal .my-page__history-modal-card-date {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  word-break: keep-all;
+  overflow-wrap: normal;
 }
 
-.my-page__history-modal-card-badge {
-  width: 6.5rem;
-  height: 2rem;
+.my-page__history-modal .my-page__history-modal-card-badge {
+  grid-area: badge;
+  flex-shrink: 0;
+  align-self: center;
+  width: auto;
+  min-width: 4.75rem;
+  height: auto;
+  min-height: 2rem;
+  margin-left: 0;
+  padding: 0.25rem 0.625rem;
+  font-family: var(--font-body);
+  font-weight: 400;
+  white-space: nowrap;
 }
 
 .my-page__profile {
@@ -651,7 +696,7 @@ $my-page-upcoming-compact-max: $laptop;
 @media (max-width: grid.$desktop-grid-outer) {
   .my-page {
     --my-page-header-offset: clamp(1.8125rem, calc(1.8125rem + (100vw - #{$my-page-fluid-vw-min}) * 0.015), 3rem);
-    --my-page-section-gap: clamp(4rem, calc(4rem + (100vw - #{$my-page-fluid-vw-min}) * 0.0078), 6rem);
+    --my-page-section-gap: var(--section-padding);
   }
 
   .my-page__content,
@@ -755,6 +800,10 @@ $my-page-upcoming-compact-max: $laptop;
   }
 
   @media (min-width: ($my-page-upcoming-compact-max + 1px)) {
+    .my-page__upcoming-box {
+      justify-content: flex-start;
+    }
+
     .my-page__upcoming-actions {
       display: flex;
       flex-direction: column;
@@ -771,6 +820,9 @@ $my-page-upcoming-compact-max: $laptop;
       display: flex;
       flex-direction: row;
       align-items: flex-start;
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: none;
 
       .tea-class-content-box__title-row {
         flex-direction: row;
@@ -1027,8 +1079,8 @@ $my-page-upcoming-compact-max: $laptop;
   }
 }
 
-// 다가오는 찻자리 — 태블릿·좁은 노트북 (403~870px): 이미지|정보 + 하단 버튼 가로
-@media (min-width: ($mobile + 1px)) and (max-width: $my-page-upcoming-compact-max) {
+// 다가오는 찻자리 — 태블릿·좁은 노트북 (611~1024px): 이미지|정보 + 하단 버튼 가로
+@media (min-width: ($tablet-sm-max + 1px)) and (max-width: $my-page-upcoming-compact-max) {
   .my-page__upcoming-box {
     display: flex;
     flex-direction: column;
@@ -1043,28 +1095,31 @@ $my-page-upcoming-compact-max: $laptop;
   .my-page .tea-class-content-box--upcoming {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
-    flex-shrink: 0;
-    gap: var(--space-1);
+    align-items: center;
+    flex-shrink: 1;
+    gap: var(--space-2);
     width: 100%;
     min-width: 0;
+    max-width: none;
     height: auto;
 
+    // 이미지·텍스트가 컨테이너 너비에 맞춰 같은 비율로 함께 줄어듦
     .tea-class-content-box__image {
-      flex: 0 0 auto;
-      flex-shrink: 0;
-      @include my-page-fluid-length-3bp(width, 10rem, 18.9375rem, 18.9375rem);
+      flex: 0 1 42%;
+      width: auto;
       max-width: 18.9375rem;
-      min-width: 10rem;
+      min-width: 0;
       height: auto;
       aspect-ratio: 345 / 285;
       border-radius: var(--radius-2);
+      align-self: center;
     }
 
     .tea-class-content-box__content {
-      flex: 1;
+      flex: 1 1 58%;
       min-width: 0;
       margin-left: 0;
+      justify-content: center;
     }
 
     .tea-class-content-box__title-row {
@@ -1104,7 +1159,7 @@ $my-page-upcoming-compact-max: $laptop;
     flex: 1 1 0;
     width: auto;
     min-width: 0;
-    max-width: 18.9375rem;
+    max-width: none;
     height: 3rem;
     padding: 0.75rem 1.5rem;
 
@@ -1115,6 +1170,108 @@ $my-page-upcoming-compact-max: $laptop;
     &:last-child {
       order: 1;
     }
+  }
+}
+
+// 다가오는 찻자리 — 좁은 구간 (≤610px): 이미지 상단 + 하단 버튼 (가로 배치 시 뷰포트 넘침 방지)
+@media (max-width: $tablet-sm-max) {
+  .my-page__upcoming-box {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: var(--space-2);
+    padding: 0;
+    border: none;
+    border-radius: 0;
+  }
+
+  .my-page .tea-class-content-box--upcoming {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    height: auto;
+
+    .tea-class-content-box__image {
+      width: 100%;
+      max-width: none;
+      min-width: 0;
+      height: auto;
+      aspect-ratio: 16 / 10;
+      border-radius: var(--radius-2);
+    }
+
+    .tea-class-content-box__content {
+      margin-left: 0;
+      margin-top: var(--space-1);
+    }
+
+    // 시안: 타이틀 좌측 · D-Day 뱃지 우측 끝
+    .tea-class-content-box__title-row {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      width: 100%;
+      margin-bottom: var(--space-2);
+
+      h3 {
+        flex: 1 1 auto;
+        min-width: 0;
+        margin: 0;
+      }
+
+      .cy-badge {
+        flex-shrink: 0;
+        margin-left: auto;
+      }
+    }
+
+    // 시안: 시간 아이콘만 제거 · 날짜+시간 한 줄 · 인원 · 장소 (달력·사람·위치 아이콘 유지)
+    .tea-class-content-box__meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+      margin-top: 0;
+    }
+
+    .tea-class-content-box__meta-item--time {
+      display: none;
+    }
+
+    .tea-class-content-box__meta-inline-time {
+      display: inline;
+
+      &::before {
+        content: " ";
+      }
+    }
+
+    .tea-class-content-box__meta-icon {
+      flex-shrink: 0;
+      width: var(--space-2);
+      height: var(--space-2);
+    }
+  }
+
+  .my-page__upcoming-actions {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    gap: var(--space-1);
+    width: 100%;
+    margin-top: var(--space-2);
+  }
+
+  .my-page__upcoming-button {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    height: 3rem;
+    padding: 0.75rem 1.5rem;
   }
 }
 
@@ -1255,78 +1412,6 @@ $my-page-upcoming-compact-max: $laptop;
     height: 3.25rem;
   }
 
-  // 다가오는 찻자리 — 모바일 (≤402px) 시안: 이미지 상단 + 뱃지 옆 제목 + 하단 버튼 가로
-  .my-page__upcoming-box {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    gap: var(--space-2);
-    padding: 0;
-    border: none;
-    border-radius: 0;
-  }
-
-  .my-page .tea-class-content-box--upcoming {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    min-width: 0;
-    height: auto;
-
-    .tea-class-content-box__image {
-      width: 100%;
-      max-width: none;
-      height: auto;
-      aspect-ratio: 16 / 10;
-      border-radius: var(--radius-2);
-    }
-
-    .tea-class-content-box__content {
-      margin-left: 0;
-      margin-top: var(--space-1);
-    }
-
-    .tea-class-content-box__title-row {
-      flex-direction: row;
-      align-items: center;
-      gap: var(--space-2);
-
-      .cy-badge {
-        order: 0;
-        flex-shrink: 0;
-      }
-    }
-
-    .tea-class-content-box__meta {
-      display: flex;
-      flex-direction: column;
-      gap: 0.375rem;
-      margin-top: var(--space-1);
-    }
-
-    .tea-class-content-box__meta-icon {
-      width: var(--space-2);
-      height: var(--space-2);
-    }
-  }
-
-  .my-page__upcoming-actions {
-    display: flex;
-    flex-direction: row;
-    flex-shrink: 0;
-    gap: var(--space-1);
-    width: 100%;
-  }
-
-  .my-page__upcoming-button {
-    flex: 1 1 0;
-    width: auto;
-    min-width: 0;
-    height: 3rem;
-    padding: 0.75rem 1.5rem;
-  }
-
   // 예약이력 카드 — 이미지 상단 / 텍스트+뱃지 하단
   .my-page__history-card {
     display: grid;
@@ -1414,7 +1499,70 @@ $my-page-upcoming-compact-max: $laptop;
   }
 
   .my-page__history-modal {
-    width: calc(100vw - var(--space-4));
     max-height: calc(100svh - var(--space-4));
+  }
+}
+
+// CustomModal 안 예약 이력 — 부모 너비에 맞춤 (중간 뷰포트에서 뱃지 잘림 방지)
+.CustomModal-content:has(.my-page__history-modal) {
+  width: min(70rem, 90vw);
+  min-width: 0;
+}
+
+.CustomModal-body:has(.my-page__history-modal) {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+}
+
+// ── 예약 이력 모달 반응형 (페이지 카드 규칙 덮어쓰기) ──
+@media (max-width: grid.$desktop-grid-outer) {
+  .my-page__history-modal .my-page__history-modal-card-title.ft-22b {
+    font-size: clamp(0.875rem, 0.25rem + 1.1vw, 1.375rem);
+    line-height: clamp(1.25rem, 0.5rem + 1.5vw, 2.25rem);
+  }
+
+  .my-page__history-modal .my-page__history-modal-card-date.ft-16r {
+    font-size: clamp(0.75rem, 0.125rem + 0.9vw, 1rem);
+    line-height: clamp(1.125rem, 0.375rem + 1.2vw, 1.625rem);
+  }
+
+  .my-page__history-modal .my-page__history-modal-card-badge.ft-14r {
+    font-size: clamp(0.75rem, 0.125rem + 0.9vw, 0.875rem);
+    line-height: clamp(1.125rem, 0.375rem + 1.2vw, 1.375rem);
+    font-weight: 400;
+  }
+}
+
+@media (max-width: $mobile) {
+  .CustomModal-content:has(.my-page__history-modal) {
+    width: min(70rem, calc(100vw - var(--space-2)));
+  }
+
+  .my-page__history-modal-scroll {
+    max-height: calc(100svh - var(--space-4) - 3rem - var(--space-3));
+    padding-right: var(--space-2);
+  }
+
+  // 피그마 모바일: 제목 14px · 날짜·뱃지 12px · 나눔스퀘어 네오
+  .my-page__history-modal .my-page__history-modal-card-title.ft-22b {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .my-page__history-modal .my-page__history-modal-card-date.ft-16r {
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+  }
+
+  .my-page__history-modal .my-page__history-modal-card-badge.ft-14r {
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+    min-width: 4.25rem;
+    padding: 0.1875rem 0.5rem;
+  }
+
+  .my-page__history-modal .my-page__history-card-image {
+    width: 5.5rem;
   }
 }

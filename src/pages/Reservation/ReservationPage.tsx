@@ -770,8 +770,8 @@ function ReservationPage() {
 
       <section className="reservation-hero" aria-label="예약하기 안내">
         <div className="reservation-hero__grid">
-          <h1 className="reservation-hero__title ft-48b ink500">{isEditMode ? "예약 변경" : "예약하기"}</h1>
-          <p className="reservation-hero__description ft-28r ink500">
+          <h1 className="reservation-hero__title ft-32b ink500">{isEditMode ? "예약 변경" : "예약하기"}</h1>
+          <p className="reservation-hero__description ft-18r ink500">
             {isEditMode
               ? "기존 예약 정보를 확인하고 원하는 일정으로 변경하세요."
               : "원하시는 지점과 클래스를 고르고, 차 한 잔의 시간을 예약하세요."}
@@ -784,10 +784,10 @@ function ReservationPage() {
               onClick={() => setIsNoticeOpen((open) => !open)}
             >
               <span className="reservation-notice__toggle-head">
-                <span className="reservation-notice__asterisk ft-14r ink500" aria-hidden="true">
+                <span className="reservation-notice__asterisk ft-14b ink500" aria-hidden="true">
                   *
                 </span>
-                <span className="reservation-notice__toggle-text ft-14r ink500">
+                <span className="reservation-notice__toggle-text ft-14b ink500">
                   {isEditMode ? "예약 변경전 확인해주세요" : "예약 전 꼭 확인해주세요"}
                 </span>
               </span>
@@ -826,7 +826,7 @@ function ReservationPage() {
                 <button
                   className={[
                     "reservation-form__branch",
-                    "ft-18r",
+                    "ft-18b",
                     "ink500",
                     branch === selectedBranch && "reservation-form__branch--active",
                   ]
@@ -859,7 +859,7 @@ function ReservationPage() {
               <Input
                 id="reservation-name"
                 state={fieldErrors.name ? "in3" : "in1"}
-                placeholder="이름을 입력하세요"
+                placeholder="아이디를 입력하세요"
                 value={reservationName}
                 maxLength={20}
                 aria-invalid={Boolean(fieldErrors.name)}
@@ -885,7 +885,7 @@ function ReservationPage() {
               <Input
                 id="reservation-phone"
                 state={fieldErrors.phone ? "in3" : "in1"}
-                placeholder="010-1234-5678"
+                placeholder="휴대폰 번호를 입력하세요"
                 type="tel"
                 inputMode="numeric"
                 autoComplete="tel"
@@ -930,7 +930,11 @@ function ReservationPage() {
                   >
                     <img className="reservation-class-card__image" src={classItem.image} alt="" />
                     <Badge
-                      className={["reservation-class-card__badge", getClassBadgeModifier(classItem.id)]
+                      className={[
+                        "reservation-class-card__badge",
+                        "ft-14b",
+                        getClassBadgeModifier(classItem.id),
+                      ]
                         .filter(Boolean)
                         .join(" ")}
                       variant="confirmed"
@@ -940,12 +944,12 @@ function ReservationPage() {
                   </div>
                   <div className="reservation-class-card__body">
                     <h3 className="reservation-class-card__title ft-22b ink400">{classItem.title}</h3>
-                    <div className="reservation-class-card__description ft-18r ink400">
+                    <div className="reservation-class-card__description ft-16r ink400">
                       {classItem.description.split("\n").map((line, lineIndex) => (
                         <p key={`${classItem.id}-${lineIndex}`}>{line}</p>
                       ))}
                     </div>
-                    <ul className="reservation-class-card__meta ft-16r ink400">
+                    <ul className="reservation-class-card__meta ft-14r ink400">
                       <li>
                         <Icon name="clock" aria-hidden="true" />
                         <span>{classItem.duration}</span>
@@ -962,7 +966,7 @@ function ReservationPage() {
                     <button
                       className={[
                         "reservation-class-card__select",
-                        "ft-16b",
+                        "ft-18b",
                         isSelected && "reservation-class-card__select--active",
                       ]
                         .filter(Boolean)
@@ -1115,12 +1119,12 @@ function ReservationPage() {
 
       <section className="reservation-payment" aria-label="결제수단">
         <div className="reservation-payment__grid">
-          <h2 className="reservation-payment__title ft-28b ink500">결제수단</h2>
+          <h2 className="reservation-payment__title ft-18b ink500">결제수단</h2>
           <div className="reservation-payment__tabs" role="tablist" aria-label="결제 방식">
             <button
               className={[
                 "reservation-payment__tab",
-                "ft-18b",
+                "ft-16b",
                 paymentMethod === "card" && "reservation-payment__tab--active",
               ]
                 .filter(Boolean)
@@ -1138,7 +1142,7 @@ function ReservationPage() {
             <button
               className={[
                 "reservation-payment__tab",
-                "ft-18b",
+                "ft-16b",
                 paymentMethod === "bank" && "reservation-payment__tab--active",
               ]
                 .filter(Boolean)
@@ -1165,7 +1169,7 @@ function ReservationPage() {
                 .join(" ")}
             >
               <button
-                className="reservation-payment__select ft-18b ink500"
+                className="reservation-payment__select ft-16b ink500"
                 type="button"
                 aria-haspopup="listbox"
                 aria-expanded={openPaymentDropdown === "cardCompany"}
@@ -1201,13 +1205,14 @@ function ReservationPage() {
             <div
               className={[
                 "reservation-payment__select-wrap",
+                "reservation-payment__select-wrap--installment",
                 openPaymentDropdown === "installment" && "reservation-payment__select-wrap--open",
               ]
                 .filter(Boolean)
                 .join(" ")}
             >
               <button
-                className="reservation-payment__select ft-18b ink500"
+                className="reservation-payment__select ft-16b ink500"
                 type="button"
                 aria-haspopup="listbox"
                 aria-expanded={openPaymentDropdown === "installment"}
