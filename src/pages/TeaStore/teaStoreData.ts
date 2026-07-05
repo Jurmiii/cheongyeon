@@ -24,6 +24,7 @@ export type TeaStoryType = {
   leafImage: string;
   cupImage: string;
   description: string;
+  descriptionMobile?: string;
 };
 
 export type TeaStorySeason = {
@@ -105,6 +106,8 @@ export const teaStoryTypes: TeaStoryType[] = [
     cupImage: greenTeaCup,
     description:
       "부분 발효를 통해 꽃향과 과일향이\n살아나며, 풍부한 향과\n부드러운 맛이 조화를 이룹니다",
+    descriptionMobile:
+      "부분 발효를 통해 꽃향과 과일향이\n살아나며, 풍부한 향과\n부드러운 맛이 조화를 이룹니다",
   },
   {
     id: "white",
@@ -113,6 +116,8 @@ export const teaStoryTypes: TeaStoryType[] = [
     leafImage: whiteTeaLeaf,
     cupImage: whiteTeaCup,
     description:
+      "어린 찻잎을 자연스럽게 말려\n만든 차로, 맑고 섬세한 향을\n느낄 수 있습니다.",
+    descriptionMobile:
       "어린 찻잎을 자연스럽게 말려\n만든 차로, 맑고 섬세한 향을\n느낄 수 있습니다.",
   },
   {
@@ -123,6 +128,8 @@ export const teaStoryTypes: TeaStoryType[] = [
     cupImage: oolongTeaCup,
     description:
       "녹차의 맑음과 홍차의 깊이를\n함께 지닌 차로, 은은한 향과\n부드러운 풍미가 오래 이어집니다.",
+    descriptionMobile:
+      "녹차의 맑음과 홍차의 깊이를\n함께 지닌 차로, 은은한 향과\n부드러운 풍미가 오래 이어집니다.",
   },
   {
     id: "black",
@@ -132,6 +139,8 @@ export const teaStoryTypes: TeaStoryType[] = [
     cupImage: blackTeaCup,
     description:
       "부분 발효를 통해 꽃향과 과일향이\n살아나며, 풍부한 향과 부드러운 맛\n이 조화를 이룹니다.",
+    descriptionMobile:
+      "부분 발효를 통해 꽃향과 과일향이\n살아나며, 풍부한 향과 부드러운 맛\n이 조화를 이룹니다.",
   },
   {
     id: "dark",
@@ -140,6 +149,8 @@ export const teaStoryTypes: TeaStoryType[] = [
     leafImage: darkTeaLeaf,
     cupImage: darkTeaCup,
     description:
+      "충분히 발효된 찻잎으로\n만든 차로, 진한 향과 묵직한\n맛이 특징입니다.",
+    descriptionMobile:
       "충분히 발효된 찻잎으로\n만든 차로, 진한 향과 묵직한\n맛이 특징입니다.",
   },
 ];

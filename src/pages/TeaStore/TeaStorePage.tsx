@@ -183,7 +183,9 @@ function TeaStoryPage() {
           <header className="tea-store-types__head">
             <h2 className="tea-store-types__title ft-36b ink500">차의 기본 분류</h2>
             <p className="tea-store-types__subtitle ft-22r ink500">
-              차는 제조 방식과 발효 정보에 따라 각기 다른 맛과 향으로 나뉩니다.
+              차는 제조 방식과 발효 정보에 따라
+              <br />
+              각기 다른 맛과 향으로 나뉩니다.
             </p>
           </header>
 
@@ -193,9 +195,25 @@ function TeaStoryPage() {
           >
             {teaStoryTypes.map((type) => (
               <article className="tea-store-type" key={type.id} aria-label={type.name}>
-                <div className="tea-store-type__head">
-                  <h3 className="tea-store-type__name ft-22b ink500">{type.name}</h3>
-                  <p className="tea-store-type__tagline ft-16r ink500">{type.tagline}</p>
+                <div className="tea-store-type__content">
+                  <div className="tea-store-type__head">
+                    <h3 className="tea-store-type__name ft-22b ink500">{type.name}</h3>
+                    <p className="tea-store-type__tagline ft-16r ink500">{type.tagline}</p>
+                  </div>
+                  <p className="tea-store-type__description ft-16r ink500">
+                    {type.descriptionMobile ? (
+                      <>
+                        <span className="tea-store-type__description-text tea-store-type__description-text--default">
+                          {type.description}
+                        </span>
+                        <span className="tea-store-type__description-text tea-store-type__description-text--mobile">
+                          {type.descriptionMobile}
+                        </span>
+                      </>
+                    ) : (
+                      type.description
+                    )}
+                  </p>
                 </div>
                 <div className="tea-store-type__visual">
                   <img
@@ -211,7 +229,6 @@ function TeaStoryPage() {
                     aria-hidden="true"
                   />
                 </div>
-                <p className="tea-store-type__description ft-16r ink500">{type.description}</p>
               </article>
             ))}
             <div className="tea-store-types__logo" aria-hidden="true">
