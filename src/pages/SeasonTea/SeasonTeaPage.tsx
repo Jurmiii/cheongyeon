@@ -192,9 +192,10 @@ function SeasonTeaPage() {
             <h2 className="season-tea-spring__season ft-64b plum500">봄의 차</h2>
             <p className="season-tea-spring__name ft-28r ink500">동백꽃 차</p>
             <p className="season-tea-spring__lead ft-22r ink500">
-              봄의 첫 설렘을 담은 한 잔
-              <br />
-              은은한 꽃향기와 부드러운 여운이 머무는 동백꽃 차
+              <span className="season-tea-spring__lead-line">봄의 첫 설렘을 담은 한 잔</span>
+              <span className="season-tea-spring__lead-line season-tea-spring__lead-line--sub">
+                은은한 꽃향기와 부드러운 여운이 머무는 동백꽃 차
+              </span>
             </p>
             <p className="season-tea-spring__body ft-18r ink500">
               첫 꽃이 피어나는 계절의 기운을 담아
