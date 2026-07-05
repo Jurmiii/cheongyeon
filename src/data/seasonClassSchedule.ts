@@ -58,7 +58,7 @@ export function getCupImage(remainingSeats: number) {
   return SEASON_CLASS_SCHEDULE_CUP_IMAGES[imageIndex];
 }
 
-export const SEASON_CLASS_SCHEDULE_TITLE = "시즌 클래스 자리";
+export const SEASON_CLASS_SCHEDULE_TITLE = "청연의 클래스 자리";
 export const SEASON_CLASS_SCHEDULE_DESCRIPTION =
   "소규모 정원제로 운영되어 여유롭고 깊이 있는 수업을 제공합니다";
 

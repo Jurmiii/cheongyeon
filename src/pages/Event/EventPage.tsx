@@ -13,7 +13,46 @@ const filterTabs: { value: EventFilter; label: string }[] = [
   { value: "ended", label: "종료" },
 ];
 
-const ITEMS_PER_PAGE = 6;
+const MOBILE_BREAKPOINT = 402;
+const TABLET_BREAKPOINT = 768;
+const MODAL_BASE_WIDTH = 464;
+const ITEMS_PER_PAGE_DESKTOP = 6;
+const ITEMS_PER_PAGE_TABLET = 6;
+const ITEMS_PER_PAGE_MOBILE = 2;
+
+function useEventItemsPerPage() {
+  const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE_DESKTOP);
+
+  useEffect(() => {
+    const mobileMediaQuery = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`);
+    const tabletMediaQuery = window.matchMedia(`(max-width: ${TABLET_BREAKPOINT}px)`);
+
+    const updateItemsPerPage = () => {
+      if (mobileMediaQuery.matches) {
+        setItemsPerPage(ITEMS_PER_PAGE_MOBILE);
+        return;
+      }
+
+      if (tabletMediaQuery.matches) {
+        setItemsPerPage(ITEMS_PER_PAGE_TABLET);
+        return;
+      }
+
+      setItemsPerPage(ITEMS_PER_PAGE_DESKTOP);
+    };
+
+    updateItemsPerPage();
+    mobileMediaQuery.addEventListener("change", updateItemsPerPage);
+    tabletMediaQuery.addEventListener("change", updateItemsPerPage);
+
+    return () => {
+      mobileMediaQuery.removeEventListener("change", updateItemsPerPage);
+      tabletMediaQuery.removeEventListener("change", updateItemsPerPage);
+    };
+  }, []);
+
+  return itemsPerPage;
+}
 
 interface EventDetailModalProps {
   event: EventItem;
@@ -32,9 +71,18 @@ function toLines(value: string) {
   return value.split("\n");
 }
 
+function getModalViewportPadding() {
+  if (window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches) {
+    return 32;
+  }
+
+  return 48;
+}
+
 function EventDetailModal({ event, onClose }: EventDetailModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const [modalScale, setModalScale] = useState(1);
+  const [modalScrollable, setModalScrollable] = useState(false);
   const navigate = useNavigate();
 
   useLayoutEffect(() => {
@@ -45,10 +93,21 @@ function EventDetailModal({ event, onClose }: EventDetailModalProps) {
     }
 
     const updateModalScale = () => {
-      const availableHeight = window.innerHeight - 48;
-      const nextScale = Math.min(1, availableHeight / panel.scrollHeight);
+      const viewportPadding = getModalViewportPadding();
+      const availableWidth = window.innerWidth - viewportPadding;
+      const availableHeight = window.innerHeight - viewportPadding;
+      const widthScale = Math.min(1, availableWidth / MODAL_BASE_WIDTH);
+      const heightScale = Math.min(1, availableHeight / panel.scrollHeight);
+      const needsInnerScroll = panel.scrollHeight * widthScale > availableHeight;
 
-      setModalScale(Number.isFinite(nextScale) ? nextScale : 1);
+      if (needsInnerScroll) {
+        setModalScale(widthScale);
+        setModalScrollable(true);
+        return;
+      }
+
+      setModalScale(Math.min(widthScale, heightScale));
+      setModalScrollable(false);
     };
 
     updateModalScale();
@@ -64,7 +123,13 @@ function EventDetailModal({ event, onClose }: EventDetailModalProps) {
   }, [event]);
 
   useEffect(() => {
+    const panel = panelRef.current;
     const scrollBlockKeys = new Set(["ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp", "End", "Home", "PageDown", "PageUp", " "]);
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
 
     const handleKeyDown = (keyboardEvent: KeyboardEvent) => {
       if (keyboardEvent.key === "Escape") {
@@ -75,27 +140,36 @@ function EventDetailModal({ event, onClose }: EventDetailModalProps) {
       const target = keyboardEvent.target;
       const isInteractiveTarget =
         target instanceof HTMLElement && target.closest("button, a, input, textarea, select");
+      const isInsideModal = target instanceof Node && panel?.contains(target);
 
-      if (scrollBlockKeys.has(keyboardEvent.key) && !isInteractiveTarget) {
+      if (scrollBlockKeys.has(keyboardEvent.key) && !isInteractiveTarget && !isInsideModal) {
         keyboardEvent.preventDefault();
       }
     };
     const preventBackgroundScroll = (event: WheelEvent | TouchEvent) => {
+      const target = event.target;
+
+      if (target instanceof Node && panel?.contains(target)) {
+        return;
+      }
+
       event.preventDefault();
     };
 
     document.addEventListener("keydown", handleKeyDown);
     window.addEventListener("wheel", preventBackgroundScroll, { passive: false });
     window.addEventListener("touchmove", preventBackgroundScroll, { passive: false });
-    panelRef.current?.scrollTo({ top: 0 });
-    panelRef.current?.focus({ preventScroll: true });
+    panel?.scrollTo({ top: 0 });
+    panel?.focus({ preventScroll: true });
 
     return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
       document.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("wheel", preventBackgroundScroll);
       window.removeEventListener("touchmove", preventBackgroundScroll);
     };
-  }, [onClose]);
+  }, [onClose, event]);
 
   const infoBlocks: InfoBlock[] = [
     { icon: "calendar", title: "이벤트 기간", lines: [event.period] },
@@ -115,7 +189,7 @@ function EventDetailModal({ event, onClose }: EventDetailModalProps) {
     <div className="event-modal" role="presentation" onClick={onClose}>
       <div
         ref={panelRef}
-        className="event-modal__panel"
+        className={["event-modal__panel", modalScrollable && "event-modal__panel--scrollable"].filter(Boolean).join(" ")}
         role="dialog"
         aria-modal="true"
         aria-labelledby="event-modal-title"
@@ -195,19 +269,28 @@ function EventPage() {
   const [activeFilter, setActiveFilter] = useState<EventFilter>("progress");
   const [activePage, setActivePage] = useState(1);
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
+  const itemsPerPage = useEventItemsPerPage();
 
   const filteredEvents = useMemo(
     () => events.filter((event) => event.status === activeFilter),
     [activeFilter],
   );
 
-  const totalPages = Math.max(1, Math.ceil(filteredEvents.length / ITEMS_PER_PAGE));
+  const totalPages = Math.max(1, Math.ceil(filteredEvents.length / itemsPerPage));
   const pageNumbers = useMemo(() => Array.from({ length: totalPages }, (_, index) => index + 1), [totalPages]);
 
   const pagedEvents = useMemo(() => {
-    const start = (activePage - 1) * ITEMS_PER_PAGE;
-    return filteredEvents.slice(start, start + ITEMS_PER_PAGE);
-  }, [activePage, filteredEvents]);
+    const start = (activePage - 1) * itemsPerPage;
+    return filteredEvents.slice(start, start + itemsPerPage);
+  }, [activePage, filteredEvents, itemsPerPage]);
+
+  useEffect(() => {
+    setActivePage(1);
+  }, [itemsPerPage]);
+
+  useEffect(() => {
+    setActivePage((page) => Math.min(page, totalPages));
+  }, [totalPages]);
 
   const handleFilterChange = (filter: EventFilter) => {
     setActiveFilter(filter);
@@ -271,7 +354,7 @@ function EventPage() {
             {pagedEvents.map((event) => (
               <li className="event-list__item" key={event.id}>
                 <article
-                  className={["event-card", "event-page-card", event.dark && "event-card--dark"].filter(Boolean).join(" ")}
+                  className={["event-page-card", event.dark && "event-card--dark"].filter(Boolean).join(" ")}
                   style={{ backgroundImage: `url(${event.image})` }}
                 >
                   <div className="event-card__content">
@@ -287,14 +370,7 @@ function EventPage() {
                         <div className="event-card__heading">
                           <p className="event-card__subtitle ft-16r">{event.subTitle}</p>
                           <h3 className="event-card__title ft-22b">{event.title}</h3>
-                          <p className="event-card__description ft-16r">
-                            {event.description.split("\n").map((line, index, lines) => (
-                              <span key={`${event.id}-desc-${index}`}>
-                                {line}
-                                {index < lines.length - 1 && <br />}
-                              </span>
-                            ))}
-                          </p>
+                          <p className="event-card__description ft-16r">{event.description}</p>
                         </div>
                         <p className="event-card__date ft-16r">{event.dateRange}</p>
                       </div>

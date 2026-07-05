@@ -148,24 +148,38 @@ $class-intro-scroll-copy-gap-pc: 1.5rem;
 $class-intro-scroll-actions-gap-pc: 2rem;
 $class-intro-scroll-filter-gap-pc: 0.5rem;
 $class-intro-scroll-panel-padding-pc: 2.75rem 1.9375rem;
+$class-intro-scroll-media-flex-pc: 67.125;
+$class-intro-scroll-panel-flex-pc: 21.125;
+// 1024px 직전 — 텍스트 패널 여유 (줄바꿈 방지, 이미지 비율만 소폭 축소)
+$class-intro-scroll-media-flex-at-laptop: 59.5;
+$class-intro-scroll-panel-flex-at-laptop: 29.5;
 
-// Tablet — 768×627
+// Tablet — 768×627 · 패딩 96 · 이미지 283 · 텍스트카드 152
 $class-intro-scroll-section-height-tablet: 39.1875rem; // 627px
-$class-intro-scroll-section-padding-tablet: 2.5rem;
+$class-intro-scroll-section-padding-tablet: 6rem; // 96px
 $class-intro-scroll-title-size-tablet: 1.5rem; // ft-24b
 $class-intro-scroll-title-line-tablet: 2.125rem;
 $class-intro-scroll-desc-size-tablet: 1.125rem; // ft-18r
 $class-intro-scroll-desc-line-tablet: 1.875rem;
 $class-intro-scroll-copy-gap-tablet: 0.5rem;
-$class-intro-scroll-actions-gap-tablet: 1rem; // 16px — 서브텍스트 아래
-$class-intro-scroll-filter-gap-tablet: 0.5rem; // 8px
-$class-intro-scroll-panel-padding-tablet: 2rem 1.5rem;
+$class-intro-scroll-actions-gap-tablet: 0.625rem;
+$class-intro-scroll-filter-gap-tablet: 0.5rem;
+$class-intro-scroll-filter-size-tablet: 1rem;
+$class-intro-scroll-filter-line-tablet: 1.625rem;
+$class-intro-scroll-filter-padding-block-tablet: 0.3125rem;
+$class-intro-scroll-filter-padding-inline-tablet: 1.1875rem;
+$class-intro-scroll-panel-padding-block-tablet: 0.5rem;
+$class-intro-scroll-panel-padding-inline-tablet: 1.5rem;
+$class-intro-scroll-filter-row-height-tablet: calc(
+  #{$class-intro-scroll-filter-padding-block-tablet} * 2 + #{$class-intro-scroll-filter-line-tablet}
+);
+$class-intro-scroll-panel-height-tablet: 9.5rem; // 152px — 제목·설명·필터 1줄 기준
 $class-intro-scroll-media-w-tablet: 40rem; // 640px
 $class-intro-scroll-media-h-tablet: 17.6875rem; // 283px
 
-// Mobile — 402×605
+// Mobile — 402×605 · 패딩 64 · 설명 최대 3줄
 $class-intro-scroll-section-height-mobile: 37.8125rem; // 605px
-$class-intro-scroll-section-padding-mobile: 2.5rem;
+$class-intro-scroll-section-padding-mobile: 4rem; // 64px
 $class-intro-scroll-title-size-mobile: 1.25rem; // ft-20b
 $class-intro-scroll-title-line-mobile: 2rem;
 $class-intro-scroll-desc-size-mobile: 1rem; // ft-16r
@@ -173,7 +187,26 @@ $class-intro-scroll-desc-line-mobile: 1.625rem;
 $class-intro-scroll-actions-gap-mobile: 1rem;
 $class-intro-scroll-copy-gap-mobile: 0.5rem;
 $class-intro-scroll-filter-gap-mobile: 0.5rem;
-$class-intro-scroll-panel-padding-mobile: 1.5rem 1rem;
+$class-intro-scroll-filter-size-mobile: 0.875rem;
+$class-intro-scroll-filter-line-mobile: 1.375rem;
+$class-intro-scroll-filter-padding-block-mobile: 0.25rem;
+$class-intro-scroll-filter-padding-inline-mobile: 0.75rem;
+$class-intro-scroll-panel-padding-block-mobile: 1.5rem;
+$class-intro-scroll-panel-padding-inline-mobile: 1rem;
+$class-intro-scroll-desc-max-lines-mobile: 3;
+$class-intro-scroll-filter-row-height-mobile: calc(
+  #{$class-intro-scroll-filter-padding-block-mobile} * 2 + #{$class-intro-scroll-filter-line-mobile}
+);
+$class-intro-scroll-filter-rows-mobile: 2;
+$class-intro-scroll-panel-height-mobile: calc(
+  #{$class-intro-scroll-panel-padding-block-mobile} * 2 +
+    #{$class-intro-scroll-title-line-mobile} +
+    #{$class-intro-scroll-copy-gap-mobile} +
+    #{$class-intro-scroll-desc-max-lines-mobile} * #{$class-intro-scroll-desc-line-mobile} +
+    #{$class-intro-scroll-actions-gap-mobile} +
+    #{$class-intro-scroll-filter-rows-mobile} * #{$class-intro-scroll-filter-row-height-mobile} +
+    (#{$class-intro-scroll-filter-rows-mobile} - 1) * #{$class-intro-scroll-filter-gap-mobile}
+);
 $class-intro-scroll-media-w-mobile: 23.125rem; // 370px
 $class-intro-scroll-media-h-mobile: 17.6875rem; // 283px
 
@@ -190,6 +223,23 @@ $class-intro-scroll-media-h-mobile: 17.6875rem; // 283px
     ),
     class-intro-scroll-section-height-tablet-range()
   );
+}
+
+@function class-intro-scroll-scaled($value) {
+  @return calc(#{$value} * min(100vw, #{grid.$desktop-grid-outer}) / #{grid.$desktop-grid-outer});
+}
+
+@function class-intro-scroll-flex-lerp($pc-value, $laptop-value) {
+  @return calc(
+    #{$pc-value} +
+      (#{$laptop-value} - #{$pc-value}) *
+      max(0px, #{grid.$desktop-grid-outer} - 100vw) /
+      (#{grid.$desktop-grid-outer} - #{$laptop})
+  );
+}
+
+@function class-intro-scroll-tablet-scaled($value-at-768) {
+  @return calc(#{$value-at-768} * 100vw / #{$tablet});
 }
 
 // CTA — PC anchors (1920×470)
@@ -868,7 +918,6 @@ $class-intro-review-mobile-text-cols: 5;
   min-width: 0;
   height: 100%;
   overflow: hidden;
-  border-radius: 1rem;
 }
 
 .class-intro-scroll__image {
@@ -967,26 +1016,86 @@ $class-intro-review-mobile-text-cols: 5;
 
 @media (max-width: grid.$desktop-grid-outer) {
   .class-intro-scroll {
-    padding-inline: 1.5rem;
+    padding-inline: 0;
+  }
+
+  .class-intro-scroll__grid {
+    padding-inline: grid.$desktop-grid-side-padding;
   }
 }
 
-// PC 그리드 축소 구간 — 이미지·패널·스테이지 균등 스케일
-@media (min-width: $laptop) and (max-width: grid.$desktop-grid-outer) {
+// 1024px~ — 1440 그리드 기준 비율 스케일 (1441px+ 포함, 1439에서 튐 방지)
+@media (min-width: $laptop) {
+  .class-intro-scroll {
+    padding-inline: 0;
+  }
+
+  .class-intro-scroll__grid {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: grid.$desktop-grid-outer;
+    padding-inline: grid.$desktop-grid-side-padding;
+    margin-inline: auto;
+  }
+
   .class-intro-scroll__stage {
-    height: calc(#{$class-intro-scroll-stage-height-pc} * 100vw / #{grid.$desktop-grid-outer});
+    width: 100%;
+    max-width: 100%;
+    height: class-intro-scroll-scaled($class-intro-scroll-stage-height-pc);
+    gap: class-intro-scroll-scaled(grid.$desktop-grid-gap);
   }
 
   .class-intro-scroll__media {
-    flex: 0 0 auto;
-    width: calc(#{$class-intro-scroll-media-w-pc} * 100vw / #{grid.$desktop-grid-outer});
-    height: 100%;
+    flex: class-intro-scroll-flex-lerp(
+        $class-intro-scroll-media-flex-pc,
+        $class-intro-scroll-media-flex-at-laptop
+      )
+      1 0;
+    width: auto;
     min-width: 0;
+    height: 100%;
+    border-radius: class-intro-scroll-scaled(1rem);
   }
 
   .class-intro-scroll__panel {
-    flex: 0 0 auto;
-    width: calc(#{$class-intro-scroll-panel-w-pc} * 100vw / #{grid.$desktop-grid-outer});
+    flex: class-intro-scroll-flex-lerp(
+        $class-intro-scroll-panel-flex-pc,
+        $class-intro-scroll-panel-flex-at-laptop
+      )
+      1 0;
+    width: auto;
+    min-width: 0;
+    height: 100%;
+  }
+
+  .class-intro-scroll__panel-slide {
+    gap: class-intro-scroll-scaled(0.5rem);
+    height: 100%;
+    padding: class-intro-scroll-scaled(2.75rem) class-intro-scroll-scaled(1.9375rem);
+  }
+
+  .class-intro-scroll__copy {
+    gap: class-intro-scroll-scaled($class-intro-scroll-copy-gap-pc);
+  }
+
+  .class-intro-scroll .class-intro-scroll__title {
+    font-size: class-intro-scroll-scaled($class-intro-scroll-title-size-pc);
+    line-height: class-intro-scroll-scaled($class-intro-scroll-title-line-pc);
+  }
+
+  .class-intro-scroll .class-intro-scroll__description {
+    font-size: class-intro-scroll-scaled($class-intro-scroll-desc-size-pc);
+    line-height: class-intro-scroll-scaled($class-intro-scroll-desc-line-pc);
+  }
+
+  .class-intro-scroll__filters {
+    gap: class-intro-scroll-scaled($class-intro-scroll-filter-gap-pc);
+  }
+
+  .class-intro-scroll__filter {
+    padding: class-intro-scroll-scaled(0.3125rem) class-intro-scroll-scaled(1.1875rem);
+    font-size: class-intro-scroll-scaled(1rem);
+    line-height: class-intro-scroll-scaled(1.625rem);
   }
 }
 
@@ -1001,6 +1110,7 @@ $class-intro-review-mobile-text-cols: 5;
       $class-intro-scroll-section-padding-pc,
       $class-intro-scroll-section-padding-tablet
     );
+    padding-inline: 0;
   }
 
   .class-intro-scroll__grid {
@@ -1017,20 +1127,18 @@ $class-intro-review-mobile-text-cols: 5;
   .class-intro-scroll__stage {
     flex-direction: column;
     gap: 0;
-    align-items: center;
+    align-items: stretch;
     width: 100%;
     height: auto;
   }
 
   .class-intro-scroll__media {
+    position: relative;
     flex: none;
-    width: min(
-      100%,
-      #{class-intro-about-fluid($class-intro-scroll-media-w-pc, $class-intro-scroll-media-w-tablet)}
-    );
+    width: 100%;
+    max-width: 100%;
     height: #{class-intro-about-fluid($class-intro-scroll-media-h-pc, $class-intro-scroll-media-h-tablet)};
-    aspect-ratio: auto;
-    border-radius: 1rem 1rem 0 0;
+    min-height: #{class-intro-about-fluid($class-intro-scroll-media-h-pc, $class-intro-scroll-media-h-tablet)};
   }
 
   .class-intro-scroll__image {
@@ -1053,10 +1161,8 @@ $class-intro-review-mobile-text-cols: 5;
     );
     align-items: flex-start;
     height: auto;
-    padding: class-intro-about-fluid(
-      $class-intro-scroll-panel-padding-pc,
-      $class-intro-scroll-panel-padding-tablet
-    );
+    padding: class-intro-about-fluid(2.75rem, $class-intro-scroll-panel-padding-block-tablet)
+      class-intro-about-fluid(1.9375rem, $class-intro-scroll-panel-padding-inline-tablet);
     text-align: left;
   }
 
@@ -1094,7 +1200,6 @@ $class-intro-review-mobile-text-cols: 5;
   .class-intro-scroll__filters {
     flex-direction: row;
     flex-wrap: wrap;
-    gap: $class-intro-scroll-filter-gap-tablet;
     justify-content: flex-start;
     width: 100%;
   }
@@ -1103,23 +1208,83 @@ $class-intro-review-mobile-text-cols: 5;
 @media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
   .class-intro-scroll {
     min-height: class-intro-scroll-section-height-tablet-range();
+    padding-block: class-intro-scroll-tablet-scaled($class-intro-scroll-section-padding-tablet);
   }
 
-  .class-intro-scroll .class-intro-scroll__title,
-  .class-intro-scroll .class-intro-scroll__description {
+  .class-intro-scroll__media {
     width: 100%;
-    text-align: left;
+    max-width: 100%;
+    height: class-intro-scroll-tablet-scaled($class-intro-scroll-media-h-tablet);
+    min-height: class-intro-scroll-tablet-scaled($class-intro-scroll-media-h-tablet);
+    border-radius: class-intro-scroll-tablet-scaled(1rem) class-intro-scroll-tablet-scaled(1rem) 0 0;
+  }
+
+  .class-intro-scroll__panel {
+    flex: none;
+    width: 100%;
+    height: auto;
+    min-height: class-intro-scroll-tablet-scaled($class-intro-scroll-panel-height-tablet);
+    overflow: visible;
+  }
+
+  .class-intro-scroll__panel-slide {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    width: 100%;
+    height: auto;
+    min-height: class-intro-scroll-tablet-scaled($class-intro-scroll-panel-height-tablet);
+    gap: class-intro-scroll-tablet-scaled($class-intro-scroll-actions-gap-tablet);
+    padding: class-intro-scroll-tablet-scaled($class-intro-scroll-panel-padding-block-tablet)
+      class-intro-scroll-tablet-scaled($class-intro-scroll-panel-padding-inline-tablet);
+  }
+
+  .class-intro-scroll__copy {
+    flex: 0 0 auto;
+    gap: class-intro-scroll-tablet-scaled($class-intro-scroll-copy-gap-tablet);
+  }
+
+  .class-intro-scroll .class-intro-scroll__title {
+    font-size: class-intro-scroll-tablet-scaled($class-intro-scroll-title-size-tablet);
+    line-height: class-intro-scroll-tablet-scaled($class-intro-scroll-title-line-tablet);
     white-space: nowrap;
+  }
+
+  .class-intro-scroll .class-intro-scroll__description {
+    font-size: class-intro-scroll-tablet-scaled($class-intro-scroll-desc-size-tablet);
+    line-height: class-intro-scroll-tablet-scaled($class-intro-scroll-desc-line-tablet);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .class-intro-scroll__filters {
+    flex: 0 0 auto;
+    gap: class-intro-scroll-tablet-scaled($class-intro-scroll-filter-gap-tablet);
+  }
+
+  .class-intro-scroll__filter {
+    padding: class-intro-scroll-tablet-scaled($class-intro-scroll-filter-padding-block-tablet)
+      class-intro-scroll-tablet-scaled($class-intro-scroll-filter-padding-inline-tablet);
+    border-radius: class-intro-scroll-tablet-scaled(6.25rem);
+    font-size: class-intro-scroll-tablet-scaled($class-intro-scroll-filter-size-tablet);
+    line-height: class-intro-scroll-tablet-scaled($class-intro-scroll-filter-line-tablet);
   }
 }
 
 @media (max-width: #{$tablet - 1px}) {
   .class-intro-scroll {
     min-height: class-intro-scroll-section-height-mobile-range();
-    padding-block: $class-intro-scroll-section-padding-mobile;
+    padding-block: class-intro-about-lerp-mobile-tablet(
+      $class-intro-scroll-section-padding-tablet,
+      $class-intro-scroll-section-padding-mobile
+    );
+    padding-inline: 0;
   }
 
   .class-intro-scroll__grid {
+    @include grid.mobile-grid-padded;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -1127,37 +1292,73 @@ $class-intro-review-mobile-text-cols: 5;
     width: 100%;
     max-width: 100%;
     margin-inline: auto;
-    padding-inline: grid.$mobile-grid-padding;
   }
 
   .class-intro-scroll__stage {
+    align-items: stretch;
     width: 100%;
     min-width: 0;
   }
 
   .class-intro-scroll__media {
-    width: min(
-      100%,
-      #{class-intro-about-lerp-mobile-tablet(
-        $class-intro-scroll-media-w-tablet,
-        $class-intro-scroll-media-w-mobile
-      )}
-    );
-    height: #{class-intro-about-lerp-mobile-tablet(
+    width: 100%;
+    max-width: 100%;
+    height: class-intro-about-lerp-mobile-tablet(
       $class-intro-scroll-media-h-tablet,
       $class-intro-scroll-media-h-mobile
-    )};
+    );
+    min-height: class-intro-about-lerp-mobile-tablet(
+      $class-intro-scroll-media-h-tablet,
+      $class-intro-scroll-media-h-mobile
+    );
+    border-radius: class-intro-about-lerp-mobile-tablet(1rem, 1rem)
+      class-intro-about-lerp-mobile-tablet(1rem, 1rem) 0 0;
+  }
+
+  .class-intro-scroll__panel {
+    flex: none;
+    width: 100%;
+    height: auto;
+    min-height: class-intro-about-lerp-mobile-tablet(
+      $class-intro-scroll-panel-height-tablet,
+      $class-intro-scroll-panel-height-mobile
+    );
+    overflow: visible;
   }
 
   .class-intro-scroll__panel-slide {
-    gap: $class-intro-scroll-actions-gap-mobile;
-    padding: $class-intro-scroll-panel-padding-mobile;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    width: 100%;
+    height: auto;
+    min-height: class-intro-about-lerp-mobile-tablet(
+      $class-intro-scroll-panel-height-tablet,
+      $class-intro-scroll-panel-height-mobile
+    );
+    gap: class-intro-about-lerp-mobile-tablet(
+      $class-intro-scroll-actions-gap-tablet,
+      $class-intro-scroll-actions-gap-mobile
+    );
+    padding: class-intro-about-lerp-mobile-tablet(
+        $class-intro-scroll-panel-padding-block-tablet,
+        $class-intro-scroll-panel-padding-block-mobile
+      )
+      class-intro-about-lerp-mobile-tablet(
+        $class-intro-scroll-panel-padding-inline-tablet,
+        $class-intro-scroll-panel-padding-inline-mobile
+      );
     align-items: flex-start;
     text-align: left;
   }
 
   .class-intro-scroll__copy {
-    gap: $class-intro-scroll-copy-gap-mobile;
+    flex: 0 0 auto;
+    gap: class-intro-about-lerp-mobile-tablet(
+      $class-intro-scroll-copy-gap-tablet,
+      $class-intro-scroll-copy-gap-mobile
+    );
     align-items: flex-start;
     text-align: left;
   }
@@ -1183,6 +1384,14 @@ $class-intro-review-mobile-text-cols: 5;
   }
 
   .class-intro-scroll .class-intro-scroll__description {
+    flex: 0 0 auto;
+    min-height: calc(
+      #{$class-intro-scroll-desc-max-lines-mobile} *
+        #{class-intro-about-lerp-mobile-tablet(
+          $class-intro-scroll-desc-line-tablet,
+          $class-intro-scroll-desc-line-mobile
+        )}
+    );
     font-size: class-intro-about-lerp-mobile-tablet(
       $class-intro-scroll-desc-size-tablet,
       $class-intro-scroll-desc-size-mobile
@@ -1194,8 +1403,32 @@ $class-intro-review-mobile-text-cols: 5;
   }
 
   .class-intro-scroll__filters {
-    gap: $class-intro-scroll-filter-gap-mobile;
+    flex: 0 0 auto;
+    gap: class-intro-about-lerp-mobile-tablet(
+      $class-intro-scroll-filter-gap-tablet,
+      $class-intro-scroll-filter-gap-mobile
+    );
     justify-content: flex-start;
+  }
+
+  .class-intro-scroll__filter {
+    padding: class-intro-about-lerp-mobile-tablet(
+        $class-intro-scroll-filter-padding-block-tablet,
+        $class-intro-scroll-filter-padding-block-mobile
+      )
+      class-intro-about-lerp-mobile-tablet(
+        $class-intro-scroll-filter-padding-inline-tablet,
+        $class-intro-scroll-filter-padding-inline-mobile
+      );
+    border-radius: class-intro-about-lerp-mobile-tablet(6.25rem, 6.25rem);
+    font-size: class-intro-about-lerp-mobile-tablet(
+      $class-intro-scroll-filter-size-tablet,
+      $class-intro-scroll-filter-size-mobile
+    );
+    line-height: class-intro-about-lerp-mobile-tablet(
+      $class-intro-scroll-filter-line-tablet,
+      $class-intro-scroll-filter-line-mobile
+    );
   }
 }
 
@@ -1379,12 +1612,13 @@ $class-intro-carousel-desc-line-compact: 1.625rem;
 
 @media (max-width: grid.$desktop-grid-outer) {
   .class-intro-carousel {
-    padding-inline: 1.5rem;
+    padding-inline: 0;
     overflow-x: clip;
   }
 
   .class-intro-carousel__grid {
     min-width: 0;
+    padding-inline: grid.$desktop-grid-side-padding;
   }
 
   .class-intro-carousel__track {
@@ -1401,13 +1635,19 @@ $class-intro-carousel-desc-line-compact: 1.625rem;
     max-width: 100%;
     min-height: auto;
     padding-block: 3rem;
-    padding-inline: grid.$tablet-grid-padding;
+    padding-inline: 0;
   }
 
   .class-intro-carousel__grid {
     gap: class-intro-about-fluid(3.75rem, 2.5rem);
+    box-sizing: border-box;
     width: 100%;
-    max-width: 100%;
+    max-width: grid.$desktop-grid-outer;
+    padding-inline: class-intro-about-fluid(
+      grid.$desktop-grid-side-padding,
+      grid.$tablet-grid-padding
+    );
+    margin-inline: auto;
   }
 
   .class-intro-carousel__track {
@@ -1461,11 +1701,16 @@ $class-intro-carousel-desc-line-compact: 1.625rem;
 @media (max-width: #{$tablet - 1px}) {
   .class-intro-carousel {
     padding-block: class-intro-about-lerp-mobile-tablet(3rem, 2.5rem);
-    padding-inline: grid.$mobile-grid-padding;
+    padding-inline: 0;
   }
 
   .class-intro-carousel__grid {
+    @include grid.mobile-grid-padded;
+    display: flex;
+    flex-direction: column;
     gap: class-intro-about-lerp-mobile-tablet(2.5rem, 2rem);
+    width: 100%;
+    max-width: 100%;
   }
 
   .class-intro-carousel__track {
