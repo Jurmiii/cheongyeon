@@ -323,14 +323,16 @@ function SpacePage() {
         aria-label="공간 소개 키비주얼"
       >
         <div className="space-kv__grid">
-          <div className="space-kv__head">
-            <h1 className="space-kv__title ft-64r ink500">공간 소개</h1>
-            <SubKvSymbolLine blockClass="space-kv" tone="responsive" />
+          <div className="space-kv__content">
+            <div className="space-kv__head">
+              <h1 className="space-kv__title ft-64r ink500">공간 소개</h1>
+              <SubKvSymbolLine blockClass="space-kv" tone="responsive" />
+            </div>
+            <p className="space-kv__description ft-28r ink500">
+              <span className="space-kv__description-line">차를 마주하는 모든 순간이</span>
+              <span className="space-kv__description-line">하나의 풍경이 되길 바랍니다.</span>
+            </p>
           </div>
-          <p className="space-kv__description ft-28r ink500">
-            <span className="space-kv__description-line">차를 마주하는 모든 순간이</span>
-            <span className="space-kv__description-line">하나의 풍경이 되길 바랍니다.</span>
-          </p>
         </div>
       </section>
 

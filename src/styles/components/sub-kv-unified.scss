@@ -8,7 +8,7 @@
 @include sub-kv-layout.sub-kv-layout-compact("season-class-kv");
 @include sub-kv-layout.sub-kv-layout-compact("collection-kv");
 @include sub-kv-layout.sub-kv-layout-compact("season-tea-kv");
-@include sub-kv-layout.sub-kv-layout-compact("space-kv", $no-grid: true);
-@include sub-kv-layout.sub-kv-layout-compact("location-kv", $content-flex: false);
+@include sub-kv-layout.sub-kv-layout-compact("space-kv");
+@include sub-kv-layout.sub-kv-layout-compact("location-kv");
 @include sub-kv-layout.sub-kv-layout-compact("notice-kv", $grid-only: true);
-@include sub-kv-layout.sub-kv-layout-compact("brand-story-kv", $grid-only: true);
+@include sub-kv-layout.sub-kv-layout-compact("brand-story-kv");

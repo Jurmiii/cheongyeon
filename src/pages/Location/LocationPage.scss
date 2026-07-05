@@ -9,8 +9,6 @@ $location-fluid-viewport-min: 25.1875rem;
 $location-fluid-inset-range: grid.$tablet-grid-padding - $location-fluid-inset-min;
 $location-fluid-viewport-range: grid.$tablet-grid-outer - $location-fluid-viewport-min;
 $location-break-tablet-up: 48.0625rem;
-$location-break-laptop-up: 64.0625rem;
-$location-kv-text-max: 67.5rem;
 $location-break-desktop-xl-up: 120.0625rem;
 
 @mixin location-desktop-grid {
@@ -64,19 +62,23 @@ $location-break-desktop-xl-up: 120.0625rem;
   min-width: 0;
 }
 
-/* 작업 중 헤더 숨김 — 표시 시 아래 display: none 제거 */
 .location__header {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2;
-  display: none;
+  z-index: 20;
   width: 100%;
+  overflow: visible;
+  pointer-events: none;
+
+  .site-header-shell {
+    pointer-events: auto;
+  }
 }
 
 .location-kv {
   position: relative;
-  width: 100%;
+  width: 120rem;
   max-width: 100%;
   height: 46.25rem;
   overflow: hidden;
@@ -87,23 +89,27 @@ $location-break-desktop-xl-up: 120.0625rem;
   background-repeat: no-repeat;
 }
 
-.location-kv__content {
-  position: relative;
+.location-kv__grid {
+  display: flex;
+  align-items: center;
   width: 100%;
   max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
 }
 
-.location-kv__text {
-  position: absolute;
-  top: 16.5625rem;
-  left: 0;
+.location-kv__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
   max-width: 32rem;
+  word-break: keep-all;
 }
 
 .location-kv__head {
   @include sub-kv.sub-kv-head;
+  gap: 1rem;
 }
 
 .location-kv__title {
@@ -113,11 +119,17 @@ $location-break-desktop-xl-up: 120.0625rem;
 }
 
 .location-kv__desc {
-  margin: 0.5625rem 0 0;
+  margin: 0;
 }
 
-.location-kv__brand {
-  display: none;
+.location-kv__desc-line {
+  display: block;
+}
+
+@media (max-width: grid.$desktop-grid-outer) {
+  .location-kv__grid {
+    padding-inline: grid.$desktop-grid-side-padding;
+  }
 }
 
 .location-map {
@@ -149,16 +161,28 @@ $location-break-desktop-xl-up: 120.0625rem;
   background-color: var(--white);
 }
 
+.location-map__sheet {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 21.375rem;
+  min-height: 0;
+  height: 100%;
+}
+
+.location-map__sheet-handle {
+  display: none;
+}
+
 .location-map__list {
   display: flex;
   flex-shrink: 0;
   flex-direction: column;
-  width: 21.375rem;
+  width: 100%;
   min-height: 0;
   height: 100%;
   overflow: hidden;
   background-color: var(--white);
-  border-right: 1px solid var(--han200);
 }
 
 .location-map__search-wrap {
@@ -332,19 +356,6 @@ $location-break-desktop-xl-up: 120.0625rem;
 
 /* 48.0625rem ~ 120rem — 12컬럼 + 6rem 좌우 여백 */
 @media (min-width: $location-break-tablet-up) and (max-width: 120rem) {
-  .location-kv__content {
-    @include location-desktop-grid;
-    align-items: center;
-    height: 100%;
-  }
-
-  .location-kv__text {
-    position: static;
-    grid-column: 1 / span 5;
-    justify-self: start;
-    max-width: 100%;
-  }
-
   .location-map {
     padding-inline: 0;
   }
@@ -364,14 +375,8 @@ $location-break-desktop-xl-up: 120.0625rem;
   }
 }
 
-/* 48.0625rem+ — PC KV · 지도 가로 배치 */
-@media (min-width: $location-break-tablet-up) {
-  .location-kv {
-    height: 46.25rem;
-    background-image: url("../../assets/images/04location/location-kv.webp");
-    background-position: center right;
-  }
-
+/* 48.0625rem+ — PC 지도 가로 배치 (1025px 이상) */
+@media (min-width: #{$laptop + 1px}) {
   .location-map {
     padding-block: 6.25rem 7.5rem;
   }
@@ -382,163 +387,84 @@ $location-break-desktop-xl-up: 120.0625rem;
 
   .location-map__card {
     display: flex;
+    flex-direction: row;
     height: 36.75rem;
   }
-}
 
-@media (min-width: $location-break-tablet-up) and (max-width: $laptop) {
-  .location-kv {
-    height: 40rem;
-    background-position: 70% center;
-  }
-
-  .location-kv__text {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    grid-column: 1 / span 7;
-    max-width: none;
-  }
-
-  .location-kv__title,
-  .location-kv__symbol-line,
-  .location-kv__symbol-line-group {
-    grid-column: 1;
-  }
-
-  .location-kv__desc {
-    margin-top: 1.5rem;
-    word-break: keep-all;
-  }
-}
-
-@media (min-width: $location-break-laptop-up) and (max-width: $location-kv-text-max) {
-  .location-kv__text {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    grid-column: 1 / span 7;
-    max-width: none;
-  }
-
-  .location-kv__desc {
-    margin-top: 1.5rem;
-    word-break: keep-all;
-  }
-}
-
-/* 25.1875rem ~ 48rem — 8컬럼 */
-@media (min-width: $location-fluid-viewport-min) and (max-width: $tablet) {
-  .location-kv {
-    height: 40rem;
-    background-image: url("../../assets/images/04location/ta-story-kv.webp");
-    background-position: 70% center;
-  }
-
-  .location-kv__content {
-    @include location-fluid-inset-grid;
-    align-items: center;
+  .location-map__sheet {
+    order: 1;
+    width: 21.375rem;
     height: 100%;
+    background-color: var(--white);
+    border-right: 1px solid var(--han200);
   }
 
-  .location-kv__text {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    position: static;
-    grid-column: 1 / -1;
-    justify-self: start;
-    max-width: 100%;
-  }
-
-  .location-kv__title,
-  .location-kv__symbol-line,
-  .location-kv__symbol-line-group {
-    grid-column: 1;
-  }
-
-  .location-kv__title {
-    letter-spacing: -0.01em;
-  }
-
-  .location-kv__desc {
-    margin-top: 1.5rem;
-    word-break: keep-all;
-  }
-
-  .location-map__inner {
-    @include location-fluid-inset-grid;
-  }
-}
-
-/* 25.125rem 이하 — 6컬럼 · 모바일 KV */
-@media (max-width: $mobile) {
-  .location-kv {
-    width: 100%;
-    max-width: none;
-    height: auto;
-    @include grid.mobile-kv-section;
-    background-image: url("../../assets/images/04location/ta-story-kv.webp");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-
-  .location-kv__content {
-    @include location-mobile-grid;
-    grid-template-rows: 1fr;
-    align-items: center;
-    height: 100%;
-    min-height: 100%;
-    padding-block: 0;
-  }
-
-  .location-kv__brand {
-    display: block;
-    grid-column: 6 / -1;
-    grid-row: 1;
-    justify-self: end;
-    align-self: start;
-    width: 5.0625rem;
-    height: auto;
-  }
-
-  .location-kv__text {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    position: static;
-    grid-column: 1 / span 5;
-    grid-row: 1;
-    justify-self: start;
-    align-self: center;
+  .location-map__map {
+    order: 2;
+    flex: 1;
     min-width: 0;
+    height: 100%;
   }
+}
 
-  .location-kv__title {
-    letter-spacing: -0.01em;
+@media (min-width: #{$laptop + 1px}) {
+  .location-kv {
+    height: 46.25rem;
+    min-height: 46.25rem;
   }
+}
 
-  .location-kv__title,
-  .location-kv__symbol-line,
-  .location-kv__symbol-line-group {
-    grid-column: 1;
+/* 태블릿 KV — 배경만 (레이아웃·타이포는 sub-kv-layout) */
+@media (min-width: $tablet) and (max-width: $laptop) {
+  .location-kv {
+    background-image: url("../../assets/images/04location/ta-story-kv.webp");
+    background-position: center;
   }
+}
 
-  .location-kv__desc {
-    margin-top: 0.75rem;
-    word-break: keep-all;
+/* 25.1875rem ~ 48rem — 지도 8컬럼 */
+@media (min-width: $location-fluid-viewport-min) and (max-width: $tablet) {
+  .location-map__inner {
+    @include location-fluid-inset-grid;
   }
+}
 
+/* 402px 이하 — 모바일 지도 그리드 */
+@media (max-width: $mobile) {
   .location-map__inner {
     @include location-mobile-grid;
   }
 }
 
-/* 48rem 이하 — 지도 세로 스택 */
-@media (max-width: $tablet) {
+@include sub-kv-layout.sub-kv-layout-compact("location-kv");
+
+@media (max-width: #{$laptop - 1px}) {
+  .location-kv {
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: rgb(0 0 0 / 15%);
+      pointer-events: none;
+    }
+  }
+
+  .location-kv__grid {
+    position: relative;
+    z-index: 2;
+  }
+
+  .location-kv__title,
+  .location-kv__desc {
+    color: var(--white);
+  }
+}
+
+/* 1024px 이하 — 태블릿·모바일 바텀시트 */
+@media (max-width: $laptop) {
   .location-map {
-    padding-block: var(--space-7);
+    padding-block: var(--space-7) 0;
     padding-inline: 0;
   }
 
@@ -555,39 +481,68 @@ $location-break-desktop-xl-up: 120.0625rem;
   }
 
   .location-map__card {
-    display: contents;
-  }
-
-  .location-map__map,
-  .location-map__list {
-    height: 17.8125rem;
-  }
-
-  .location-map__map {
+    position: relative;
+    display: block;
     grid-column: 1 / -1;
     grid-row: 2;
     width: 100%;
-    flex: none;
+    height: 37.5rem;
+    min-height: 31.25rem;
     overflow: hidden;
     border-radius: var(--radius-input) var(--radius-input) 0 0;
+    background-color: transparent;
+  }
+
+  .location-map__map {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+  }
+
+  .location-map__sheet {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: 55%;
+    min-height: 17.8125rem;
+    overflow: hidden;
+    border-radius: 1.5rem 1.5rem 0 0;
+    background-color: var(--white);
+    box-shadow: 0.4375rem 0 0.5rem 0 rgb(0 0 0 / 10%);
+  }
+
+  .location-map__sheet-handle {
+    display: block;
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 0.25rem;
+    margin: 0.75rem auto 0;
+    border-radius: var(--radius-full);
+    background-color: var(--han300);
   }
 
   .location-map__list {
     display: flex;
+    flex: 1;
     flex-direction: column;
-    grid-column: 1 / -1;
-    grid-row: 3;
     width: 100%;
     min-height: 0;
     overflow: hidden;
     border: 0;
     border-right: 0;
-    border-radius: 0 0 var(--radius-input) var(--radius-input);
     background-color: var(--white);
   }
 
   .location-map__search-wrap {
-    padding: 1rem 1rem 0.75rem;
+    padding: 0.75rem 1rem 0.75rem;
   }
 
   .location-map__list-scroll-wrap {
@@ -597,28 +552,13 @@ $location-break-desktop-xl-up: 120.0625rem;
 }
 
 @media (max-width: $mobile) {
-  .location-map {
-    padding-block: var(--space-7);
+  .location-map__card {
+    height: 40rem;
   }
 }
 
 /* 120.0625rem 초과 — 12컬럼 중앙 정렬 */
 @media (min-width: $location-break-desktop-xl-up) {
-  .location-kv__content {
-    @include location-desktop-grid;
-    width: min(#{grid.$desktop-grid-outer}, 100%);
-    max-width: grid.$desktop-grid-outer;
-    align-items: center;
-    height: 100%;
-  }
-
-  .location-kv__text {
-    position: static;
-    grid-column: 1 / span 5;
-    justify-self: start;
-    max-width: 100%;
-  }
-
   .location-map__inner {
     @include location-desktop-grid;
     width: min(#{grid.$desktop-grid-outer}, 100%);
@@ -635,5 +575,3 @@ $location-break-desktop-xl-up: 120.0625rem;
     max-width: 100%;
   }
 }
-
-@include sub-kv-layout.sub-kv-layout-compact("location-kv", $content-flex: false);

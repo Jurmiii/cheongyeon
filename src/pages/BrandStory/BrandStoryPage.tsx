@@ -56,67 +56,73 @@ import characterImage2 from "../../assets/images/02brand-story/cc-2.webp";
 import characterImage3 from "../../assets/images/02brand-story/cc-3.webp";
 import characterImage4 from "../../assets/images/02brand-story/cc-4.webp";
 import characterImage5 from "../../assets/images/02brand-story/cc-5.webp";
-import tabletCharacterImage1 from "../../assets/images/02brand-story/cc-ta1.webp";
-import tabletCharacterImage2 from "../../assets/images/02brand-story/cc-ta2.webp";
-import tabletCharacterImage3 from "../../assets/images/02brand-story/cc-ta3.webp";
-import tabletCharacterImage4 from "../../assets/images/02brand-story/cc-ta4.webp";
-import tabletCharacterImage5 from "../../assets/images/02brand-story/cc-ta5.webp";
+import compactHanjaImage1 from "../../assets/images/02brand-story/cc-ta1.webp";
+import compactHanjaImage2 from "../../assets/images/02brand-story/cc-ta2.webp";
+import compactHanjaImage3 from "../../assets/images/02brand-story/cc-ta3.webp";
+import compactHanjaImage4 from "../../assets/images/02brand-story/cc-ta4.webp";
+import compactHanjaImage5 from "../../assets/images/02brand-story/cc-ta5.webp";
 import horizontalBodyImage1 from "../../assets/images/02brand-story/p-bg1.webp";
 import horizontalBodyImage2 from "../../assets/images/02brand-story/p-bg2.webp";
 import horizontalBodyImage3 from "../../assets/images/02brand-story/p-bg3.webp";
 import horizontalBodyImage4 from "../../assets/images/02brand-story/p-bg4.webp";
 import horizontalBodyImage5 from "../../assets/images/02brand-story/p-bg5.webp";
+import compactRollImage from "../../assets/images/02brand-story/roll.webp";
 
 const philosophyItems = [
   {
     id: 1,
     bodyImage: rollBodyImage1,
     characterImage: characterImage1,
-    tabletCharacterImage: tabletCharacterImage1,
+    compactHanjaImage: compactHanjaImage1,
     horizontalBodyImage: horizontalBodyImage1,
     subtitle: "고요함",
     lines: ["차를 마시는 것은", "잠시 멈추는 일, 고요한", "마음이 좋은 차를 만듭니다."],
     horizontalDesc: "차를 마시는 것은 잠시 멈추는 일, 고요한 마음이 좋은 차를 만듭니다.",
+    horizontalDescLines: ["차를 마시는 것은 잠시 멈추는 일,", "고요한 마음이 좋은 차를 만듭니다."],
   },
   {
     id: 2,
     bodyImage: rollBodyImage2,
     characterImage: characterImage2,
-    tabletCharacterImage: tabletCharacterImage2,
+    compactHanjaImage: compactHanjaImage2,
     horizontalBodyImage: horizontalBodyImage2,
     subtitle: "기다림",
     lines: ["좋은 차는 서두르지", "않습니다. 자연의 시간이", "맡기고 충분히 기다립니다."],
     horizontalDesc: "좋은 차는 서두르지 않습니다. 자연의 시간이 맡기고 충분히 기다립니다.",
+    horizontalDescLines: ["좋은 차는 서두르지 않습니다.", "자연의 시간이 맡기고 충분히 기다립니다."],
   },
   {
     id: 3,
     bodyImage: rollBodyImage3,
     characterImage: characterImage3,
-    tabletCharacterImage: tabletCharacterImage3,
+    compactHanjaImage: compactHanjaImage3,
     horizontalBodyImage: horizontalBodyImage3,
     subtitle: "자연",
     lines: ["자연에서 온 그대로를", "담습니다. 계절과 땅의", "흐름을 거스르지 않습니다."],
     horizontalDesc: "자연에서 온 그대로를 담습니다. 계절과 땅의 흐름을 거스르지 않습니다.",
+    horizontalDescLines: ["자연에서 온 그대로를 담습니다.", "계절과 땅의 흐름을 거스르지 않습니다."],
   },
   {
     id: 4,
     bodyImage: rollBodyImage4,
     characterImage: characterImage4,
-    tabletCharacterImage: tabletCharacterImage4,
+    compactHanjaImage: compactHanjaImage4,
     horizontalBodyImage: horizontalBodyImage4,
     subtitle: "인연",
     lines: ["차는 사람과 사람을", "이어줍니다. 스쳐가는", "인연도 소중히 생각합니다."],
     horizontalDesc: "차는 사람과 사람을 이어줍니다. 스쳐가는 인연도 소중히 생각합니다.",
+    horizontalDescLines: ["차는 사람과 사람을 이어줍니다.", "스쳐가는 인연도 소중히 생각합니다."],
   },
   {
     id: 5,
     bodyImage: rollBodyImage5,
     characterImage: characterImage5,
-    tabletCharacterImage: tabletCharacterImage5,
+    compactHanjaImage: compactHanjaImage5,
     horizontalBodyImage: horizontalBodyImage5,
     subtitle: "여운",
     lines: ["한 잔의 차는 마음에 오래", "남는 여운이 됩니다. 그", "여운이 일상이 됩니다."],
     horizontalDesc: "한 잔의 차는 마음에 오래 남는 여운이 됩니다. 그 여운이 일상이 됩니다.",
+    horizontalDescLines: ["한 잔의 차는 마음에", "오래 남는 여운이 됩니다.", "그 여운이 일상이 됩니다."],
   },
 ] as const;
 
@@ -333,8 +339,17 @@ function BrandStoryPage() {
           }
 
           const getHorizontalUnrollWidthPx = (bodyWrap: HTMLElement) => {
-            const body = bodyWrap.querySelector<HTMLElement>(".brand-story-philosophy__h-body");
-            return body?.getBoundingClientRect().width ?? 0;
+            const scrollUnit = bodyWrap.closest<HTMLElement>(".brand-story-philosophy__h-scroll-unit");
+
+            if (!scrollUnit) {
+              return 0;
+            }
+
+            const rollStart = scrollUnit.querySelector<HTMLElement>(".brand-story-philosophy__h-roll-start-wrap");
+            const unitWidth = scrollUnit.getBoundingClientRect().width;
+            const rollWidth = rollStart?.getBoundingClientRect().width ?? 0;
+
+            return Math.max(0, unitWidth - rollWidth);
           };
 
           const resetHorizontalState = () => {
@@ -343,26 +358,31 @@ function BrandStoryPage() {
             });
           };
 
-          resetHorizontalState();
-
           const timeline = gsap.timeline({
             paused: true,
           });
 
-          bodyWraps.forEach((bodyWrap, index) => {
-            const unrollWidth = getHorizontalUnrollWidthPx(bodyWrap);
+          const rebuildHorizontalTimeline = () => {
+            timeline.clear();
+            resetHorizontalState();
 
-            if (unrollWidth <= 0) {
-              return;
-            }
+            bodyWraps.forEach((bodyWrap, index) => {
+              const unrollWidth = getHorizontalUnrollWidthPx(bodyWrap);
 
-            timeline.fromTo(
-              bodyWrap,
-              { width: 0 },
-              { width: unrollWidth, duration: 1.5, ease: "power2.inOut" },
-              index * 0.2,
-            );
-          });
+              if (unrollWidth <= 0) {
+                return;
+              }
+
+              timeline.fromTo(
+                bodyWrap,
+                { width: 0 },
+                { width: unrollWidth, duration: 1.5, ease: "power2.inOut" },
+                index * 0.2,
+              );
+            });
+          };
+
+          rebuildHorizontalTimeline();
 
           let hasLeftSection = true;
           let sectionOverlapsViewport = false;
@@ -417,6 +437,7 @@ function BrandStoryPage() {
             onUpdate: syncSectionPresence,
             onRefresh: () => {
               sectionOverlapsViewport = !isSectionFullyOutside();
+              rebuildHorizontalTimeline();
             },
             invalidateOnRefresh: true,
           });
@@ -496,14 +517,16 @@ function BrandStoryPage() {
         aria-label="브랜드 스토리 키비주얼"
       >
         <div className="brand-story-kv__grid">
-          <div className="brand-story-kv__head">
-            <h1 className="brand-story-kv__title ft-64r ink500">브랜드 스토리</h1>
-            <SubKvSymbolLine blockClass="brand-story-kv" tone="responsive" />
+          <div className="brand-story-kv__content">
+            <div className="brand-story-kv__head">
+              <h1 className="brand-story-kv__title ft-64r ink500">브랜드 스토리</h1>
+              <SubKvSymbolLine blockClass="brand-story-kv" tone="responsive" />
+            </div>
+            <p className="brand-story-kv__description ft-28r ink500">
+              <span className="brand-story-kv__description-line">자연이 만든 시간을 차에 담고,</span>
+              <span className="brand-story-kv__description-line">그 시간을 사람들의 일상으로 전합니다.</span>
+            </p>
           </div>
-          <p className="brand-story-kv__description ft-28r ink500">
-            <span className="brand-story-kv__description-line">자연이 만든 시간을 차에 담고,</span>
-            <span className="brand-story-kv__description-line">그 시간을 사람들의 일상으로 전합니다.</span>
-          </p>
         </div>
       </section>
 
@@ -515,15 +538,20 @@ function BrandStoryPage() {
         <div className="brand-story-about__overlay" aria-hidden="true" />
         <div className="brand-story-about__inner">
           <h2 className="brand-story-about__title ft-48b white">청연이 담고 있는 의미</h2>
-          <p className="brand-story-about__subtitle ft-22r white">
-            <span className="brand-story-about__subtitle-line">
-              청연은 자연의 푸름과 깊은 물의 이름을 담고 있습니다.
-            </span>
-            <span className="brand-story-about__subtitle-line">계절이 머문 찻잎과 시간이 쌓인 한 잔의 차처럼,</span>
-            <span className="brand-story-about__subtitle-line">
-              자연이 만든 깊이를 사람들의 일상에 전하고자 합니다.
-            </span>
-          </p>
+          <div className="brand-story-about__subtitle ft-22r white">
+            <p className="brand-story-about__subtitle-para">
+              <span className="brand-story-about__subtitle-line">청연은 자연의 푸름과 깊은</span>
+              <span className="brand-story-about__subtitle-line">물의 이름을 담고 있습니다.</span>
+            </p>
+            <p className="brand-story-about__subtitle-para">
+              <span className="brand-story-about__subtitle-line">계절이 머문 찻잎과 시간이</span>
+              <span className="brand-story-about__subtitle-line">쌓인 한 잔의 차처럼,</span>
+            </p>
+            <p className="brand-story-about__subtitle-para">
+              <span className="brand-story-about__subtitle-line">자연이 만든 깊이를</span>
+              <span className="brand-story-about__subtitle-line">사람들의 일상에 전하고자 합니다.</span>
+            </p>
+          </div>
         </div>
       </section>
 
@@ -540,16 +568,18 @@ function BrandStoryPage() {
                   aria-hidden="true"
                 />
                 <div className="brand-story-meaning__content">
-                  <span className="brand-story-meaning__number ft-36r white">{card.number}</span>
-                  <hr className="brand-story-meaning__line" />
-                  <strong className="brand-story-meaning__hanja ft-28r white">{card.hanja}</strong>
-                  <p className="brand-story-meaning__desc ft-22r white">
-                    {card.lines.map((line, index) => (
-                      <span className="brand-story-meaning__desc-line" key={`${card.id}-${index}`}>
-                        {line}
-                      </span>
-                    ))}
-                  </p>
+                  <div className="brand-story-meaning__content-inner">
+                    <span className="brand-story-meaning__number ft-36r white">{card.number}</span>
+                    <hr className="brand-story-meaning__line" />
+                    <strong className="brand-story-meaning__hanja ft-28r white">{card.hanja}</strong>
+                    <p className="brand-story-meaning__desc ft-22r white">
+                      {card.lines.map((line, index) => (
+                        <span className="brand-story-meaning__desc-line" key={`${card.id}-${index}`}>
+                          {line}
+                        </span>
+                      ))}
+                    </p>
+                  </div>
                 </div>
               </article>
             ))}
@@ -610,45 +640,54 @@ function BrandStoryPage() {
           <div className="brand-story-philosophy__h-track">
             {philosophyItems.map((item, index) => (
               <article className="brand-story-philosophy__h-item" key={`horizontal-${item.id}`}>
-                <span className="brand-story-philosophy__h-roll-start-wrap" aria-hidden="true">
-                  <img
-                    className="brand-story-philosophy__h-roll-start"
-                    src={rollTopImage}
-                    alt=""
-                  />
-                </span>
-                <div
-                  className="brand-story-philosophy__h-body-wrap"
-                  ref={(element) => {
-                    horizontalBodyWrapRefs.current[index] = element;
-                  }}
-                >
-                  <div className="brand-story-philosophy__h-body">
+                <div className="brand-story-philosophy__h-scroll-unit">
+                  <span className="brand-story-philosophy__h-roll-start-wrap" aria-hidden="true">
                     <img
-                      className="brand-story-philosophy__h-bg"
-                      src={item.horizontalBodyImage}
+                      className="brand-story-philosophy__h-roll-start"
+                      src={compactRollImage}
                       alt=""
-                      aria-hidden="true"
                     />
-                    <div className="brand-story-philosophy__h-content">
-                      <div className="brand-story-philosophy__h-center">
-                        <img
-                          className="brand-story-philosophy__h-character"
-                          src={item.tabletCharacterImage}
-                          alt=""
-                          aria-hidden="true"
-                        />
-                        <h3 className="brand-story-philosophy__h-subtitle ft-28b ink500">{item.subtitle}</h3>
-                      </div>
-                      <p className="brand-story-philosophy__h-desc ft-18r ink500">{item.horizontalDesc}</p>
-                    </div>
-                    <span className="brand-story-philosophy__h-roll-end-wrap" aria-hidden="true">
+                  </span>
+                  <div
+                    className="brand-story-philosophy__h-body-wrap"
+                    ref={(element) => {
+                      horizontalBodyWrapRefs.current[index] = element;
+                    }}
+                  >
+                    <div className="brand-story-philosophy__h-body">
                       <img
-                        className="brand-story-philosophy__h-roll-end"
-                        src={rollBottomImage}
+                        className="brand-story-philosophy__h-bg"
+                        src={item.horizontalBodyImage}
                         alt=""
+                        aria-hidden="true"
                       />
-                    </span>
+                      <div className="brand-story-philosophy__h-content">
+                        <span className="brand-story-philosophy__h-illus-spacer" aria-hidden="true" />
+                        <div className="brand-story-philosophy__h-center">
+                          <img
+                            className="brand-story-philosophy__h-character"
+                            src={item.compactHanjaImage}
+                            alt=""
+                            aria-hidden="true"
+                          />
+                          <h3 className="brand-story-philosophy__h-subtitle ft-28b ink500">{item.subtitle}</h3>
+                        </div>
+                        <p className="brand-story-philosophy__h-desc ft-18r ink500">
+                          {item.horizontalDescLines.map((line, lineIndex) => (
+                            <span className="brand-story-philosophy__h-desc-line" key={`${item.id}-h-${lineIndex}`}>
+                              {line}
+                            </span>
+                          ))}
+                        </p>
+                      </div>
+                      <span className="brand-story-philosophy__h-roll-end-wrap" aria-hidden="true">
+                        <img
+                          className="brand-story-philosophy__h-roll-end"
+                          src={compactRollImage}
+                          alt=""
+                        />
+                      </span>
+                    </div>
                   </div>
                 </div>
               </article>
@@ -698,17 +737,23 @@ function BrandStoryPage() {
           <div className="brand-story-time__content">
             <h2 className="brand-story-time__title ft-48b ink500">청연이 전하는 시간</h2>
             <p className="brand-story-time__subtitle ft-28r ink500">
-              한 잔의 차는 빠르게 소비되는 음료가 아닙니다
+              <span className="brand-story-time__subtitle-line">한 잔의 차는 빠르게</span>
+              <span className="brand-story-time__subtitle-line">소비되는 음료가 아닙니다.</span>
             </p>
-            <p className="brand-story-time__desc ft-22r ink500">
-              차를 우리는 순간, 흩어졌던 마음은 천천히
-              <br />
-              가라앉습니다. 청연은 바쁜 하루 속 잠시
-              <br />
-              멈추어 머무는 시간을 제안합니다. 한 잔의 차가
-              <br />
-              전하는 온기와 여백으로 편안한 쉼을 경험해보세요.
-            </p>
+            <div className="brand-story-time__desc-group">
+              <p className="brand-story-time__desc ft-22r ink500">
+                <span className="brand-story-time__desc-line">차를 우리는 순간 흩어졌던 마음은</span>
+                <span className="brand-story-time__desc-line">천천히 가라앉습니다.</span>
+              </p>
+              <p className="brand-story-time__desc ft-22r ink500">
+                <span className="brand-story-time__desc-line">청연은 바쁜 하루 속 잠시 멈추어</span>
+                <span className="brand-story-time__desc-line">머무는 시간을 제안합니다.</span>
+              </p>
+              <p className="brand-story-time__desc ft-22r ink500">
+                <span className="brand-story-time__desc-line">한 잔의 차가 전하는 온기와 여백으로</span>
+                <span className="brand-story-time__desc-line"> 편안한 쉼을 경험해보세요.</span>
+              </p>
+            </div>
           </div>
 
           <div className="brand-story-time__visual">

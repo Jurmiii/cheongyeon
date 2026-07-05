@@ -40,32 +40,33 @@
 }
 
 .space-kv__grid {
-  position: relative;
+  display: flex;
+  align-items: center;
   width: 100%;
   max-width: grid.$desktop-grid-outer;
   height: 100%;
   margin-inline: auto;
 }
 
+.space-kv__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
 .space-kv__head {
   @include sub-kv.sub-kv-head;
-  position: absolute;
-  left: 0;
-  top: 16.5625rem;
   gap: 1rem;
 }
 
 .space-kv__title {
-  position: static;
   margin: 0;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
 .space-kv__description {
-  position: absolute;
-  left: 0;
-  top: 24.625rem;
   max-width: 32rem;
   margin: 0;
 }
@@ -1385,7 +1386,7 @@
   }
 }
 
-@include sub-kv-layout.sub-kv-layout-compact("space-kv", $grid-only: true);
+@include sub-kv-layout.sub-kv-layout-compact("space-kv");
 
 @media (max-width: #{$laptop - 1px}) {
   .space-kv {
