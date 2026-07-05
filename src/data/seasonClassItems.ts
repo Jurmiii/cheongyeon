@@ -1,6 +1,7 @@
 import seasonClassBg from "../assets/images/09season-class/season-class-2-bg.webp";
 import seasonClassEllipse from "../assets/images/09season-class/Ellipse.webp";
 import seasonClassSubBg from "../assets/images/09season-class/season-class-2-subbg.webp";
+import seasonClassSubBgTablet from "../assets/images/09season-class/Subtract-ta.webp";
 import seasonClass3Bg from "../assets/images/09season-class/season-class-3-bg.webp";
 import seasonClassAuScene from "../assets/images/09season-class/season-class-au.webp";
 import seasonClassAuTea from "../assets/images/09season-class/season-class-au-tea.webp";
@@ -39,6 +40,7 @@ export const seasonClassAssets = {
   bg: seasonClassBg,
   ellipse: seasonClassEllipse,
   subBg: seasonClassSubBg,
+  subBgTablet: seasonClassSubBgTablet,
   kvBg: seasonClassKvBg,
   promoBg: seasonClass3Bg,
 } as const;
@@ -77,6 +79,130 @@ export const SEASON_ORBIT_SLOTS = {
   middle: { leftPx: 709, topPx: 365, frameWidthPx: 211.548, frameHeightPx: 217 },
   bottom: { leftPx: 965, topPx: 705, frameWidthPx: 216.887, frameHeightPx: 220 },
 } as const;
+
+export type SeasonOrbitSlot = {
+  leftPx: number;
+  topPx: number;
+  frameWidthPx: number;
+  frameHeightPx: number;
+};
+
+/** PC / 태블릿 스크롤 섹션 좌표 — GSAP 궤도 애니메이션용 */
+export type SeasonScrollLayoutConfig = {
+  viewWidthPx: number;
+  viewHeightPx: number;
+  cupWidthPx: number;
+  cupHeightPx: number;
+  orbitRingCenter: { xPx: number; yPx: number };
+  orbitRingRadiusPx: number;
+  sceneCenter: { xPx: number; yPx: number };
+  orbitSlots: Record<Exclude<SeasonOrbitPosition, "main">, SeasonOrbitSlot>;
+};
+
+export const SEASON_SCROLL_DESKTOP_LAYOUT: SeasonScrollLayoutConfig = {
+  viewWidthPx: 1920,
+  viewHeightPx: 940,
+  cupWidthPx: 220,
+  cupHeightPx: 220,
+  orbitRingCenter: ORBIT_RING_CENTER,
+  orbitRingRadiusPx: ORBIT_RING_RADIUS_PX,
+  sceneCenter: SEASON_SCENE_CENTER,
+  orbitSlots: SEASON_ORBIT_SLOTS,
+};
+
+/** Figma 태블릿 768×750 */
+export const SEASON_SCROLL_TABLET_LAYOUT: SeasonScrollLayoutConfig = {
+  viewWidthPx: 768,
+  viewHeightPx: 750,
+  cupWidthPx: 109,
+  cupHeightPx: 112,
+  orbitRingCenter: { xPx: 544.5, yPx: 375 },
+  orbitRingRadiusPx: 234.5,
+  sceneCenter: { xPx: 582.5, yPx: 375 },
+  orbitSlots: {
+    top: { leftPx: 434.293, topPx: 52, frameWidthPx: 109, frameHeightPx: 112 }, // left 27.1433rem
+    middle: { leftPx: 230, topPx: 295, frameWidthPx: 109, frameHeightPx: 112 },
+    bottom: { leftPx: 437.8432, topPx: 518, frameWidthPx: 109, frameHeightPx: 112 }, // left 27.3652rem
+  },
+};
+
+const SEASON_SCROLL_FLUID_MIN_PX = 768;
+const SEASON_SCROLL_FLUID_MAX_PX = 1920;
+
+function lerpNum(from: number, to: number, t: number): number {
+  return from + (to - from) * t;
+}
+
+function lerpOrbitSlot(
+  tablet: SeasonOrbitSlot,
+  desktop: SeasonOrbitSlot,
+  t: number,
+): SeasonOrbitSlot {
+  return {
+    leftPx: lerpNum(tablet.leftPx, desktop.leftPx, t),
+    topPx: lerpNum(tablet.topPx, desktop.topPx, t),
+    frameWidthPx: lerpNum(tablet.frameWidthPx, desktop.frameWidthPx, t),
+    frameHeightPx: lerpNum(tablet.frameHeightPx, desktop.frameHeightPx, t),
+  };
+}
+
+function lerpSeasonScrollLayout(
+  tablet: SeasonScrollLayoutConfig,
+  desktop: SeasonScrollLayoutConfig,
+  t: number,
+): SeasonScrollLayoutConfig {
+  return {
+    viewWidthPx: lerpNum(tablet.viewWidthPx, desktop.viewWidthPx, t),
+    viewHeightPx: lerpNum(tablet.viewHeightPx, desktop.viewHeightPx, t),
+    cupWidthPx: lerpNum(tablet.cupWidthPx, desktop.cupWidthPx, t),
+    cupHeightPx: lerpNum(tablet.cupHeightPx, desktop.cupHeightPx, t),
+    orbitRingCenter: {
+      xPx: lerpNum(tablet.orbitRingCenter.xPx, desktop.orbitRingCenter.xPx, t),
+      yPx: lerpNum(tablet.orbitRingCenter.yPx, desktop.orbitRingCenter.yPx, t),
+    },
+    orbitRingRadiusPx: lerpNum(tablet.orbitRingRadiusPx, desktop.orbitRingRadiusPx, t),
+    sceneCenter: {
+      xPx: lerpNum(tablet.sceneCenter.xPx, desktop.sceneCenter.xPx, t),
+      yPx: lerpNum(tablet.sceneCenter.yPx, desktop.sceneCenter.yPx, t),
+    },
+    orbitSlots: {
+      top: lerpOrbitSlot(tablet.orbitSlots.top, desktop.orbitSlots.top, t),
+      middle: lerpOrbitSlot(tablet.orbitSlots.middle, desktop.orbitSlots.middle, t),
+      bottom: lerpOrbitSlot(tablet.orbitSlots.bottom, desktop.orbitSlots.bottom, t),
+    },
+  };
+}
+
+export function getSeasonScrollFluidT(viewportWidth: number): number {
+  if (viewportWidth <= SEASON_SCROLL_FLUID_MIN_PX) {
+    return 0;
+  }
+
+  if (viewportWidth >= SEASON_SCROLL_FLUID_MAX_PX) {
+    return 1;
+  }
+
+  return (
+    (viewportWidth - SEASON_SCROLL_FLUID_MIN_PX) /
+    (SEASON_SCROLL_FLUID_MAX_PX - SEASON_SCROLL_FLUID_MIN_PX)
+  );
+}
+
+export function getSeasonScrollLayout(viewportWidth: number): SeasonScrollLayoutConfig {
+  if (viewportWidth <= SEASON_SCROLL_FLUID_MIN_PX) {
+    return SEASON_SCROLL_TABLET_LAYOUT;
+  }
+
+  if (viewportWidth >= SEASON_SCROLL_FLUID_MAX_PX) {
+    return SEASON_SCROLL_DESKTOP_LAYOUT;
+  }
+
+  return lerpSeasonScrollLayout(
+    SEASON_SCROLL_TABLET_LAYOUT,
+    SEASON_SCROLL_DESKTOP_LAYOUT,
+    getSeasonScrollFluidT(viewportWidth),
+  );
+}
 
 const SEASON_COUNT = 4;
 const ORBIT_BY_OFFSET: SeasonOrbitPosition[] = ["main", "top", "middle", "bottom"];

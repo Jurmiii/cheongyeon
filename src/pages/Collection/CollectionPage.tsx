@@ -38,7 +38,9 @@ function CollectionPage() {
               <SubKvSymbolLine blockClass="collection-kv" />
             </div>
             <p className="collection-kv__description ft-28r ink500">
-              서로 다른 찻잎이 만들어내는 향의 깊이를 경험해보세요
+              서로 다른 찻잎이 만들어내는
+              <br />
+              향의 깊이를 경험해보세요
             </p>
           </div>
         </div>

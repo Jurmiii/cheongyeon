@@ -12,18 +12,15 @@ import {
   seasonClassGalleryItems,
 } from "../../data/seasonClassGallery";
 import {
-  ORBIT_RING_CENTER,
-  ORBIT_RING_RADIUS_PX,
   SEASON_CLASS_PROMO,
-  SEASON_ORBIT_SLOTS,
-  SEASON_SCENE_CENTER,
   SEASON_SECTION_DESCRIPTION,
   SEASON_SECTION_TITLE,
   getSeasonOrbitPosition,
-  ORBIT_CUP_SIZE_REM,
+  getSeasonScrollLayout,
   seasonClassAssets,
   seasonClassItems,
   type SeasonOrbitPosition,
+  type SeasonScrollLayoutConfig,
 } from "../../data/seasonClassItems";
 import {
   SEASON_CLASS_BRANCHES,
@@ -61,35 +58,39 @@ function pxToRem(px: number) {
 // --- SeasonClassListSection helpers ---
 
 const SCROLL_END = 3000;
+const SCROLL_END_TABLET = 1875; // 750px × 2.5 — 태블릿 섹션 높이 기준
+const SEASON_SCROLL_TABLET_MQ = "(max-width: 768px)";
+const SEASON_SCROLL_DESKTOP_MQ = "(min-width: 769px)";
 const ORBIT_STROKE_COLOR = "#c4ad98";
 const TEXT_EASE = "power3.out";
 const MAX_SEASON_INDEX = seasonClassItems.length - 1;
 
-const REF_CUP_WIDTH_REM = ORBIT_CUP_SIZE_REM;
-const REF_CUP_HEIGHT_REM = ORBIT_CUP_SIZE_REM;
+type OrbitSlotAngles = Record<Exclude<SeasonOrbitPosition, "main">, number>;
 
-/** 궤도 슬롯 각도 — Figma 슬롯 중심 기준 */
-const ORBIT_SLOT_ANGLES: Record<Exclude<SeasonOrbitPosition, "main">, number> = {
-  top: 0,
-  middle: 0,
-  bottom: 0,
-};
+function computeOrbitSlotAngles(layout: SeasonScrollLayoutConfig): OrbitSlotAngles {
+  const angles = {} as OrbitSlotAngles;
 
-function initOrbitSlotAngles() {
   (["top", "middle", "bottom"] as const).forEach((slot) => {
-    const { pos } = getCoords(slot, REF_CUP_WIDTH_REM, REF_CUP_HEIGHT_REM);
-    const center = getCupCenter(pos, REF_CUP_WIDTH_REM, REF_CUP_HEIGHT_REM);
-    ORBIT_SLOT_ANGLES[slot] = Math.atan2(
-      center.y - ORBIT_RING_CENTER.yPx,
-      center.x - ORBIT_RING_CENTER.xPx,
+    const { pos } = getCoords(layout, slot, layout.cupWidthPx, layout.cupHeightPx);
+    const center = getCupCenter(pos, layout.cupWidthPx, layout.cupHeightPx);
+
+    angles[slot] = Math.atan2(
+      center.y - layout.orbitRingCenter.yPx,
+      center.x - layout.orbitRingCenter.xPx,
     );
   });
+
+  return angles;
 }
 
-function buildRingArcPath(fromAngle: number, toAngle: number) {
-  const r = ORBIT_RING_RADIUS_PX;
-  const cx = ORBIT_RING_CENTER.xPx;
-  const cy = ORBIT_RING_CENTER.yPx;
+function buildRingArcPath(
+  layout: SeasonScrollLayoutConfig,
+  fromAngle: number,
+  toAngle: number,
+) {
+  const r = layout.orbitRingRadiusPx;
+  const cx = layout.orbitRingCenter.xPx;
+  const cy = layout.orbitRingCenter.yPx;
   const x1 = cx + Math.cos(fromAngle) * r;
   const y1 = cy + Math.sin(fromAngle) * r;
   const x2 = cx + Math.cos(toAngle) * r;
@@ -103,77 +104,79 @@ function buildRingArcPath(fromAngle: number, toAngle: number) {
 type CupPos = { leftPx: number; topPx: number };
 type PolarState = { angle: number; radius: number; alpha: number };
 
-function getMainPos(widthRem: number, heightRem: number): CupPos {
-  const w = widthRem * PX_PER_REM;
-  const h = heightRem * PX_PER_REM;
+function getMainPos(
+  layout: SeasonScrollLayoutConfig,
+  widthPx: number,
+  heightPx: number,
+): CupPos {
   return {
-    leftPx: SEASON_SCENE_CENTER.xPx - w / 2,
-    topPx: SEASON_SCENE_CENTER.yPx - h / 2,
+    leftPx: layout.sceneCenter.xPx - widthPx / 2,
+    topPx: layout.sceneCenter.yPx - heightPx / 2,
   };
 }
 
 function getOrbitPos(
+  layout: SeasonScrollLayoutConfig,
   position: Exclude<SeasonOrbitPosition, "main">,
-  widthRem: number,
-  heightRem: number,
+  widthPx: number,
+  heightPx: number,
 ): CupPos {
-  const slot = SEASON_ORBIT_SLOTS[position];
-  const w = widthRem * PX_PER_REM;
-  const h = heightRem * PX_PER_REM;
+  const slot = layout.orbitSlots[position];
 
   return {
-    leftPx: slot.leftPx + (slot.frameWidthPx - w) / 2,
-    topPx: slot.topPx + (slot.frameHeightPx - h) / 2,
+    leftPx: slot.leftPx + (slot.frameWidthPx - widthPx) / 2,
+    topPx: slot.topPx + (slot.frameHeightPx - heightPx) / 2,
   };
 }
 
 function getCoords(
+  layout: SeasonScrollLayoutConfig,
   position: SeasonOrbitPosition,
-  widthRem: number,
-  heightRem: number,
+  widthPx: number,
+  heightPx: number,
 ): { pos: CupPos; alpha: number } {
   if (position === "main") {
-    return { pos: getMainPos(widthRem, heightRem), alpha: 0 };
+    return { pos: getMainPos(layout, widthPx, heightPx), alpha: 0 };
   }
 
-  return { pos: getOrbitPos(position, widthRem, heightRem), alpha: 1 };
+  return { pos: getOrbitPos(layout, position, widthPx, heightPx), alpha: 1 };
 }
 
-function getCupCenter(pos: CupPos, widthRem: number, heightRem: number) {
-  const w = widthRem * PX_PER_REM;
-  const h = heightRem * PX_PER_REM;
+function getCupCenter(pos: CupPos, widthPx: number, heightPx: number) {
   return {
-    x: pos.leftPx + w / 2,
-    y: pos.topPx + h / 2,
+    x: pos.leftPx + widthPx / 2,
+    y: pos.topPx + heightPx / 2,
   };
 }
 
 function getPolarState(
+  layout: SeasonScrollLayoutConfig,
+  slotAngles: OrbitSlotAngles,
   position: SeasonOrbitPosition,
-  widthRem: number,
-  heightRem: number,
+  widthPx: number,
+  heightPx: number,
 ): PolarState {
-  const { pos } = getCoords(position, widthRem, heightRem);
-  const center = getCupCenter(pos, widthRem, heightRem);
+  const { pos } = getCoords(layout, position, widthPx, heightPx);
+  const center = getCupCenter(pos, widthPx, heightPx);
   const angle = Math.atan2(
-    center.y - ORBIT_RING_CENTER.yPx,
-    center.x - ORBIT_RING_CENTER.xPx,
+    center.y - layout.orbitRingCenter.yPx,
+    center.x - layout.orbitRingCenter.xPx,
   );
 
   if (position === "main") {
     return {
       angle,
       radius: Math.hypot(
-        center.x - ORBIT_RING_CENTER.xPx,
-        center.y - ORBIT_RING_CENTER.yPx,
+        center.x - layout.orbitRingCenter.xPx,
+        center.y - layout.orbitRingCenter.yPx,
       ),
       alpha: 0,
     };
   }
 
   return {
-    angle: ORBIT_SLOT_ANGLES[position],
-    radius: ORBIT_RING_RADIUS_PX,
+    angle: slotAngles[position],
+    radius: layout.orbitRingRadiusPx,
     alpha: 1,
   };
 }
@@ -188,6 +191,8 @@ function getCcwAngleDelta(fromAngle: number, toAngle: number) {
 }
 
 function applyOrbitTrailStroke(
+  layout: SeasonScrollLayoutConfig,
+  slotAngles: OrbitSlotAngles,
   fromActive: number,
   toActive: number,
   t: number,
@@ -197,12 +202,13 @@ function applyOrbitTrailStroke(
 
   let bestFromAngle = 0;
   let bestDelta = 0;
+  const { cupWidthPx, cupHeightPx } = layout;
 
   seasonClassItems.forEach((_, seasonIndex) => {
     const fromOrbit = getSeasonOrbitPosition(seasonIndex, fromActive);
     const toOrbit = getSeasonOrbitPosition(seasonIndex, toActive);
-    const fromPolar = getPolarState(fromOrbit, ORBIT_CUP_SIZE_REM, ORBIT_CUP_SIZE_REM);
-    const toPolar = getPolarState(toOrbit, ORBIT_CUP_SIZE_REM, ORBIT_CUP_SIZE_REM);
+    const fromPolar = getPolarState(layout, slotAngles, fromOrbit, cupWidthPx, cupHeightPx);
+    const toPolar = getPolarState(layout, slotAngles, toOrbit, cupWidthPx, cupHeightPx);
     const delta = getCcwAngleDelta(fromPolar.angle, toPolar.angle);
 
     if (delta > bestDelta) {
@@ -217,7 +223,7 @@ function applyOrbitTrailStroke(
   }
 
   const endAngle = bestFromAngle + bestDelta * t;
-  trailPath.setAttribute("d", buildRingArcPath(bestFromAngle, endAngle));
+  trailPath.setAttribute("d", buildRingArcPath(layout, bestFromAngle, endAngle));
   trailPath.style.opacity = String(Math.sin(t * Math.PI) * 0.95);
 }
 
@@ -232,30 +238,18 @@ function interpolatePolarCcw(from: PolarState, to: PolarState, t: number): Polar
 }
 
 function polarToPos(
+  layout: SeasonScrollLayoutConfig,
   polar: PolarState,
-  widthRem: number,
-  heightRem: number,
+  widthPx: number,
+  heightPx: number,
 ): CupPos {
-  const cx = ORBIT_RING_CENTER.xPx + Math.cos(polar.angle) * polar.radius;
-  const cy = ORBIT_RING_CENTER.yPx + Math.sin(polar.angle) * polar.radius;
-  const w = widthRem * PX_PER_REM;
-  const h = heightRem * PX_PER_REM;
+  const cx = layout.orbitRingCenter.xPx + Math.cos(polar.angle) * polar.radius;
+  const cy = layout.orbitRingCenter.yPx + Math.sin(polar.angle) * polar.radius;
 
   return {
-    leftPx: cx - w / 2,
-    topPx: cy - h / 2,
+    leftPx: cx - widthPx / 2,
+    topPx: cy - heightPx / 2,
   };
-}
-
-initOrbitSlotAngles();
-
-function getScrollBlend(progress: number) {
-  const floatIndex = Math.min(MAX_SEASON_INDEX, progress * MAX_SEASON_INDEX);
-  const fromActive = Math.floor(floatIndex);
-  const toActive = Math.min(MAX_SEASON_INDEX, fromActive + 1);
-  const t = floatIndex - fromActive;
-
-  return { fromActive, toActive, t, floatIndex };
 }
 
 function applyScrollProgress(
@@ -263,8 +257,11 @@ function applyScrollProgress(
   cups: HTMLElement[],
   scenes: HTMLImageElement[],
   trailPath: SVGPathElement | null,
+  layout: SeasonScrollLayoutConfig,
+  slotAngles: OrbitSlotAngles,
 ) {
   const { fromActive, toActive, t } = getScrollBlend(progress);
+  const { cupWidthPx, cupHeightPx } = layout;
 
   seasonClassItems.forEach((_, seasonIndex) => {
     const cup = cups[seasonIndex];
@@ -273,17 +270,17 @@ function applyScrollProgress(
     const fromOrbit = getSeasonOrbitPosition(seasonIndex, fromActive);
     const toOrbit = getSeasonOrbitPosition(seasonIndex, toActive);
 
-    const fromPolar = getPolarState(fromOrbit, ORBIT_CUP_SIZE_REM, ORBIT_CUP_SIZE_REM);
-    const toPolar = getPolarState(toOrbit, ORBIT_CUP_SIZE_REM, ORBIT_CUP_SIZE_REM);
+    const fromPolar = getPolarState(layout, slotAngles, fromOrbit, cupWidthPx, cupHeightPx);
+    const toPolar = getPolarState(layout, slotAngles, toOrbit, cupWidthPx, cupHeightPx);
     const polar = interpolatePolarCcw(fromPolar, toPolar, t);
-    const pos = polarToPos(polar, ORBIT_CUP_SIZE_REM, ORBIT_CUP_SIZE_REM);
+    const pos = polarToPos(layout, polar, cupWidthPx, cupHeightPx);
     const alpha = polar.alpha;
 
     gsap.set(cup, {
       left: pxToRem(pos.leftPx),
       top: pxToRem(pos.topPx),
-      width: `${ORBIT_CUP_SIZE_REM}rem`,
-      height: `${ORBIT_CUP_SIZE_REM}rem`,
+      width: pxToRem(cupWidthPx),
+      height: pxToRem(cupHeightPx),
       opacity: alpha,
       visibility: alpha < 0.05 ? "hidden" : "visible",
     });
@@ -306,22 +303,88 @@ function applyScrollProgress(
     gsap.set(scene, { opacity, scale, force3D: true });
   });
 
-  applyOrbitTrailStroke(fromActive, toActive, t, trailPath);
+  applyOrbitTrailStroke(layout, slotAngles, fromActive, toActive, t, trailPath);
+}
+
+function getScrollBlend(progress: number) {
+  const floatIndex = Math.min(MAX_SEASON_INDEX, progress * MAX_SEASON_INDEX);
+  const fromActive = Math.floor(floatIndex);
+  const toActive = Math.min(MAX_SEASON_INDEX, fromActive + 1);
+  const t = floatIndex - fromActive;
+
+  return { fromActive, toActive, t, floatIndex };
+}
+
+function getDesktopScrollEnd() {
+  return Math.max(Math.round(window.innerHeight * 3), SCROLL_END);
+}
+
+function getTabletScrollEnd(section: HTMLElement) {
+  const sectionHeight = section.offsetHeight;
+
+  return Math.max(
+    Math.round(window.innerHeight * 1.75),
+    Math.round(sectionHeight * 2.5),
+    SCROLL_END_TABLET,
+  );
 }
 
 function SeasonClassListSection() {
+  const pinRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  const scrollLayoutRef = useRef(getSeasonScrollLayout(window.innerWidth));
+  const layoutWidthRef = useRef(0);
+  const scrollProgressRef = useRef(0);
+  const applyLayoutRef = useRef<(() => void) | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [scrollViewBox, setScrollViewBox] = useState(() => ({
+    widthPx: scrollLayoutRef.current.viewWidthPx,
+    heightPx: scrollLayoutRef.current.viewHeightPx,
+  }));
 
   const season = seasonClassItems[activeIndex];
   const leadLines = SEASON_SECTION_DESCRIPTION.split("\n");
   const descLines = season.description.split("\n");
 
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) {
+      return;
+    }
+
+    const updateLayout = () => {
+      const width = section.clientWidth || window.innerWidth;
+      if (Math.abs(width - layoutWidthRef.current) < 1) {
+        return;
+      }
+
+      layoutWidthRef.current = width;
+      scrollLayoutRef.current = getSeasonScrollLayout(width);
+      setScrollViewBox({
+        widthPx: scrollLayoutRef.current.viewWidthPx,
+        heightPx: scrollLayoutRef.current.viewHeightPx,
+      });
+      applyLayoutRef.current?.();
+    };
+
+    updateLayout();
+
+    const resizeObserver = new ResizeObserver(updateLayout);
+    resizeObserver.observe(section);
+    window.addEventListener("resize", updateLayout);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateLayout);
+    };
+  }, []);
+
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
+    const pinEl = pinRef.current;
     const section = sectionRef.current;
-    if (!section) return;
+    if (!pinEl || !section) return;
 
     const cups = Array.from(section.querySelectorAll<HTMLElement>(".season-scroll__cup"));
     const scenes = Array.from(section.querySelectorAll<HTMLImageElement>(".season-scroll__scene-img"));
@@ -333,21 +396,31 @@ function SeasonClassListSection() {
 
     const scrollState = { progress: 0 };
 
-    const ctx = gsap.context(() => {
-      applyScrollProgress(0, cups, scenes, trailPath);
+    const runApply = (progress: number) => {
+      scrollProgressRef.current = progress;
+      const layout = scrollLayoutRef.current;
+      const slotAngles = computeOrbitSlotAngles(layout);
+      applyScrollProgress(progress, cups, scenes, trailPath, layout, slotAngles);
+    };
 
-      const getStableIndex = (progress: number) =>
-        Math.min(MAX_SEASON_INDEX, Math.max(0, Math.round(progress * MAX_SEASON_INDEX)));
+    const getStableIndex = (progress: number) =>
+      Math.min(MAX_SEASON_INDEX, Math.max(0, Math.round(progress * MAX_SEASON_INDEX)));
+
+    const syncScrollTrackHeight = (getScrollEnd: () => number) => {
+      const scrollEnd = getScrollEnd();
+      pinEl.style.height = `${section.offsetHeight + scrollEnd}px`;
+    };
+
+    const createSeasonScrollTrigger = (getScrollEnd: () => number) => {
       let currentIndex = 0;
 
-      // 메인 사계절 차와 동일: 스크럽 없이 한 번 스크롤 → 한 계절씩 스냅 후 부드럽게 전환
-      ScrollTrigger.create({
-        trigger: section,
+      runApply(0);
+      syncScrollTrackHeight(getScrollEnd);
+
+      const trigger = ScrollTrigger.create({
+        trigger: pinEl,
         start: "top top",
-        end: () => `+=${Math.max(Math.round(window.innerHeight * 3), SCROLL_END)}`,
-        pin: true,
-        pinSpacing: true,
-        anticipatePin: 1,
+        end: () => `+=${getScrollEnd()}`,
         invalidateOnRefresh: true,
         snap: {
           snapTo: (value) => getStableIndex(value) / MAX_SEASON_INDEX,
@@ -356,6 +429,7 @@ function SeasonClassListSection() {
           ease: "power3.out",
           inertia: false,
         },
+        onRefresh: () => syncScrollTrackHeight(getScrollEnd),
         onUpdate: (self) => {
           const nextIndex = getStableIndex(self.progress);
           if (nextIndex === currentIndex) {
@@ -369,21 +443,62 @@ function SeasonClassListSection() {
             duration: 0.9,
             ease: "power3.inOut",
             overwrite: "auto",
-            onUpdate: () => applyScrollProgress(scrollState.progress, cups, scenes, trailPath),
+            onUpdate: () => runApply(scrollState.progress),
           });
         },
       });
-    }, section);
 
-    const refresh = () => ScrollTrigger.refresh();
-    requestAnimationFrame(refresh);
+      applyLayoutRef.current = () => {
+        runApply(scrollProgressRef.current);
+        syncScrollTrackHeight(getScrollEnd);
+        trigger.refresh();
+      };
+
+      return trigger;
+    };
+
+    const clearScrollTrackHeight = () => {
+      pinEl.style.height = "";
+    };
+
+    const mm = gsap.matchMedia();
+
+    mm.add(SEASON_SCROLL_DESKTOP_MQ, () => {
+      const trigger = createSeasonScrollTrigger(getDesktopScrollEnd);
+      requestAnimationFrame(() => ScrollTrigger.refresh(true));
+
+      return () => {
+        trigger.kill();
+        clearScrollTrackHeight();
+        if (applyLayoutRef.current) {
+          applyLayoutRef.current = null;
+        }
+      };
+    });
+
+    mm.add(SEASON_SCROLL_TABLET_MQ, () => {
+      const trigger = createSeasonScrollTrigger(() => getTabletScrollEnd(section));
+      requestAnimationFrame(() => ScrollTrigger.refresh(true));
+
+      return () => {
+        trigger.kill();
+        clearScrollTrackHeight();
+        if (applyLayoutRef.current) {
+          applyLayoutRef.current = null;
+        }
+      };
+    });
+
+    const refresh = () => ScrollTrigger.refresh(true);
     window.addEventListener("load", refresh);
     window.addEventListener("resize", refresh);
 
     return () => {
+      applyLayoutRef.current = null;
+      clearScrollTrackHeight();
       window.removeEventListener("load", refresh);
       window.removeEventListener("resize", refresh);
-      ctx.revert();
+      mm.revert();
     };
   }, []);
 
@@ -401,55 +516,67 @@ function SeasonClassListSection() {
   }, [activeIndex]);
 
   return (
-    <section
-      ref={sectionRef}
-      className={`season-scroll season-scroll--${season.key}`}
-      aria-label="사계절 시즌 클래스"
-    >
+    <div ref={pinRef} className="season-scroll-pin">
+      <section
+        ref={sectionRef}
+        className={`season-scroll season-scroll--${season.key}`}
+        aria-label="사계절 시즌 클래스"
+      >
       <img className="season-scroll__bg" src={seasonClassAssets.bg} alt="" aria-hidden="true" />
 
-      <img
-        className="season-scroll__ellipse"
-        src={seasonClassAssets.ellipse}
-        alt=""
-        aria-hidden="true"
-      />
+      <div className="season-scroll__visual" aria-hidden="true">
+        <img
+          className="season-scroll__ellipse"
+          src={seasonClassAssets.ellipse}
+          alt=""
+          aria-hidden="true"
+        />
 
-      <svg
-        className="season-scroll__orbit-trail-svg"
-        viewBox="0 0 1920 940"
-        preserveAspectRatio="xMidYMid slice"
-        aria-hidden="true"
-      >
-        <path className="season-scroll__orbit-trail" stroke={ORBIT_STROKE_COLOR} />
-      </svg>
+        <svg
+          className="season-scroll__orbit-trail-svg"
+          viewBox={`0 0 ${scrollViewBox.widthPx} ${scrollViewBox.heightPx}`}
+          preserveAspectRatio="xMidYMid slice"
+          aria-hidden="true"
+        >
+          <path className="season-scroll__orbit-trail" stroke={ORBIT_STROKE_COLOR} />
+        </svg>
 
-      <div className="season-scroll__orbit" aria-hidden="true">
-        {seasonClassItems.map((item) => (
-          <div key={item.key} className="season-scroll__cup" data-season={item.key}>
-            <img src={item.teaImage} alt="" />
-          </div>
-        ))}
-      </div>
+        <div className="season-scroll__orbit" aria-hidden="true">
+          {seasonClassItems.map((item) => (
+            <div key={item.key} className="season-scroll__cup" data-season={item.key}>
+              <img src={item.teaImage} alt="" />
+            </div>
+          ))}
+        </div>
 
-      <div className="season-scroll__subbg" aria-hidden="true">
-        <img className="season-scroll__subbg-img" src={seasonClassAssets.subBg} alt="" />
-      </div>
-
-      <div className="season-scroll__scene" aria-hidden="true">
-        {seasonClassItems.map((item, index) => (
+        <div className="season-scroll__subbg" aria-hidden="true">
           <img
-            key={item.key}
-            className={[
-              "season-scroll__scene-img",
-              index === activeIndex && "is-active",
-            ]
-              .filter(Boolean)
-              .join(" ")}
-            src={item.sceneImage}
+            className="season-scroll__subbg-img season-scroll__subbg-img--desktop"
+            src={seasonClassAssets.subBg}
             alt=""
           />
-        ))}
+          <img
+            className="season-scroll__subbg-img season-scroll__subbg-img--tablet"
+            src={seasonClassAssets.subBgTablet}
+            alt=""
+          />
+        </div>
+
+        <div className="season-scroll__scene" aria-hidden="true">
+          {seasonClassItems.map((item, index) => (
+            <img
+              key={item.key}
+              className={[
+                "season-scroll__scene-img",
+                index === activeIndex && "is-active",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              src={item.sceneImage}
+              alt=""
+            />
+          ))}
+        </div>
       </div>
 
       <div className="season-scroll__left">
@@ -523,7 +650,8 @@ function SeasonClassListSection() {
           </div>
         </div>
       </div>
-    </section>
+      </section>
+    </div>
   );
 }
 
@@ -733,7 +861,7 @@ function SeasonClassScheduleSection() {
       <header className="season-schedule__header">
         <div className="season-schedule__intro">
           <h2 className="season-schedule__title ft-48b ink500">{SEASON_CLASS_SCHEDULE_TITLE}</h2>
-          <p className="season-schedule__desc ft-28r ink500">{SEASON_CLASS_SCHEDULE_DESCRIPTION}</p>
+          <p className="season-schedule__desc ft-20r ink500">{SEASON_CLASS_SCHEDULE_DESCRIPTION}</p>
 
           <div ref={filtersWrapRef} className="season-schedule__filters-wrap">
           <div className="season-schedule__filters">

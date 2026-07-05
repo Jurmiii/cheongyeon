@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import seasonClassGallery1 from "../assets/images/09season-class/season-class-5-1.webp";
 import seasonClassGallery2 from "../assets/images/09season-class/season-class-5-2.webp";
 import seasonClassGallery3 from "../assets/images/09season-class/season-class-5-3.webp";
@@ -86,7 +88,7 @@ export function getSeasonGalleryFramePercents(
   };
 }
 
-export function getSeasonGalleryItemStyleVars(item: SeasonClassGalleryItem) {
+export function getSeasonGalleryItemStyleVars(item: SeasonClassGalleryItem): CSSProperties {
   const desktop = getSeasonGalleryFramePercents(item.frame);
   const tablet = getSeasonGalleryFramePercents(
     item.frameTablet ?? item.frame,
@@ -112,7 +114,7 @@ export function getSeasonGalleryItemStyleVars(item: SeasonClassGalleryItem) {
     "--sg-top-mobile": mobile.top,
     "--sg-width-mobile": mobile.width,
     "--sg-height-mobile": mobile.height,
-  };
+  } as CSSProperties;
 }
 
 export const seasonClassGalleryItems: SeasonClassGalleryItem[] = [
