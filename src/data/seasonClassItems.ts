@@ -75,6 +75,31 @@ export const SEASON_SCENE_CENTER = {
 
 export type SeasonOrbitPosition = "main" | "top" | "middle" | "bottom";
 
+/** 모바일 — 시즌별 고정 찻잔 슬롯 (90° 회전 궤도, PC top/middle/bottom 과 무관) */
+export type SeasonMobileCupSlot = "left" | "center" | "right" | "waiting";
+
+const SEASON_COUNT = 4;
+
+/** spring=대기, summer=오른쪽, fall=가운데, winter=왼쪽 — 봄 활성 시 기준 */
+export const SEASON_MOBILE_CUP_SLOT_BY_INDEX: Record<number, SeasonMobileCupSlot> = {
+  0: "waiting",
+  1: "right",
+  2: "center",
+  3: "left",
+};
+
+/** 활성 시즌 대비 offset → 9·12·3·6시 슬롯 (0=6시 대기, 1=3시, 2=12시, 3=9시) */
+export const MOBILE_CUP_SLOT_BY_OFFSET: SeasonMobileCupSlot[] = [
+  "waiting",
+  "right",
+  "center",
+  "left",
+];
+
+export function getMobileCupSlotOffset(seasonIndex: number, activeIndex: number): number {
+  return (seasonIndex - activeIndex + SEASON_COUNT) % SEASON_COUNT;
+}
+
 /** Figma 1461:414 — 슬롯 프레임 (좌상단 + 설계 프레임 크기) */
 export const SEASON_ORBIT_SLOTS = {
   top: { leftPx: 993, topPx: -48, frameWidthPx: 211, frameHeightPx: 217 },
@@ -99,6 +124,9 @@ export type SeasonScrollLayoutConfig = {
   orbitRingRadiusPx: number;
   sceneCenter: { xPx: number; yPx: number };
   orbitSlots: Record<Exclude<SeasonOrbitPosition, "main">, SeasonOrbitSlot>;
+  /** 모바일 — 시즌별 고정 슬롯 + 직교 보간 (PC 궤도 회전과 분리) */
+  usesFixedSeasonSlots?: boolean;
+  mobileCupSlots?: Record<SeasonMobileCupSlot, SeasonOrbitSlot>;
 };
 
 export const SEASON_SCROLL_DESKTOP_LAYOUT: SeasonScrollLayoutConfig = {
@@ -112,7 +140,7 @@ export const SEASON_SCROLL_DESKTOP_LAYOUT: SeasonScrollLayoutConfig = {
   orbitSlots: SEASON_ORBIT_SLOTS,
 };
 
-/** Figma 모바일 402×766 */
+/** Figma 모바일 402×766 — 90° 회전 궤도, 시즌별 고정 위치 */
 export const SEASON_SCROLL_MOBILE_LAYOUT: SeasonScrollLayoutConfig = {
   viewWidthPx: 402,
   viewHeightPx: 766,
@@ -120,7 +148,19 @@ export const SEASON_SCROLL_MOBILE_LAYOUT: SeasonScrollLayoutConfig = {
   cupHeightPx: 112,
   orbitRingCenter: { xPx: 208.759, yPx: 496.111 },
   orbitRingRadiusPx: 256.244,
-  sceneCenter: { xPx: 201, yPx: 488 },
+  sceneCenter: { xPx: 201, yPx: 455 },
+  usesFixedSeasonSlots: true,
+  mobileCupSlots: {
+    // season-class-au-tea — top 184, left 146
+    center: { leftPx: 146, topPx: 184, frameWidthPx: 109, frameHeightPx: 112 },
+    // season-class-wi-tea — top 279, 화면 왼쪽 45px 바깥
+    left: { leftPx: -45, topPx: 279, frameWidthPx: 109, frameHeightPx: 112 },
+    // season-class-su-tea — top 269, 화면 오른쪽 52px 바깥
+    right: { leftPx: 345, topPx: 269, frameWidthPx: 109, frameHeightPx: 112 },
+    // season-class-sp-tea — 대기 (씬 중앙, 비표시)
+    waiting: { leftPx: 146.5, topPx: 399, frameWidthPx: 109, frameHeightPx: 112 },
+  },
+  // 궤도 트레일 각도 — left/center/right 슬롯 기준
   orbitSlots: {
     top: { leftPx: 146, topPx: 184, frameWidthPx: 109, frameHeightPx: 112 },
     middle: { leftPx: -45, topPx: 279, frameWidthPx: 109, frameHeightPx: 112 },
@@ -227,7 +267,6 @@ export function getSeasonScrollLayout(viewportWidth: number): SeasonScrollLayout
   );
 }
 
-const SEASON_COUNT = 4;
 const ORBIT_BY_OFFSET: SeasonOrbitPosition[] = ["main", "top", "middle", "bottom"];
 
 export function getSeasonOrbitPosition(
