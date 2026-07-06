@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Button, Icon, Input } from "../../components/common";
+import { useModalOpen } from "../../hooks/useLockBodyScroll";
 import { hasAccount, saveAccount } from "../../utils/accountStorage";
 import { saveUserProfile } from "../../utils/userProfileStorage";
 import logo from "../../assets/images/00header-footer/logo.svg";
@@ -92,6 +93,8 @@ export default function Signup() {
   const [terms, setTerms] = useState(() =>
     Object.fromEntries(TERM_ITEMS.map((item) => [item.id, false]))
   );
+
+  useModalOpen(isSuccessOpen);
 
   const allChecked = TERM_ITEMS.every((item) => terms[item.id]);
 

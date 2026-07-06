@@ -4,6 +4,7 @@ import {
   previewTeaCollectionModalData,
   type TeaCollectionModalData,
 } from "./teaCollectionModal.types";
+import { useModalOpen } from "../../../hooks/useLockBodyScroll";
 import "./TeaCollectionModal.scss";
 
 export type { TeaCollectionModalData } from "./teaCollectionModal.types";
@@ -115,6 +116,8 @@ function TeaCollectionModalPanel({
 export default function TeaCollectionModal({ isOpen, onClose, data }: TeaCollectionModalProps = {}) {
   const isModalMode = onClose !== undefined;
   const content = data ?? previewTeaCollectionModalData;
+
+  useModalOpen(Boolean(isModalMode && isOpen));
 
   useEffect(() => {
     if (!isModalMode || !isOpen) {

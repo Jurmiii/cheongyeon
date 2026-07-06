@@ -1,5 +1,36 @@
 import { useEffect, type RefObject } from "react";
 
+let modalOpenCount = 0;
+
+function syncModalOpenDataset() {
+  if (modalOpenCount > 0) {
+    document.documentElement.dataset.modalOpen = "true";
+    return;
+  }
+
+  delete document.documentElement.dataset.modalOpen;
+}
+
+export function acquireModalOpenLock() {
+  modalOpenCount += 1;
+  syncModalOpenDataset();
+
+  return () => {
+    modalOpenCount = Math.max(0, modalOpenCount - 1);
+    syncModalOpenDataset();
+  };
+}
+
+export function useModalOpen(isActive: boolean) {
+  useEffect(() => {
+    if (!isActive) {
+      return undefined;
+    }
+
+    return acquireModalOpenLock();
+  }, [isActive]);
+}
+
 function findScrollableAncestor(node: Node | null, boundary: HTMLElement): HTMLElement | null {
   let element = node instanceof Element ? node : null;
 
@@ -44,6 +75,7 @@ export function useLockBodyScroll(
       return undefined;
     }
 
+    const releaseModalOpenLock = acquireModalOpenLock();
     const previousBodyOverflow = document.body.style.overflow;
     const previousHtmlOverflow = document.documentElement.style.overflow;
 
@@ -84,6 +116,7 @@ export function useLockBodyScroll(
     window.addEventListener("touchmove", preventBackgroundScroll, { passive: false });
 
     return () => {
+      releaseModalOpenLock();
       document.body.style.overflow = previousBodyOverflow;
       document.documentElement.style.overflow = previousHtmlOverflow;
       window.removeEventListener("wheel", preventBackgroundScroll);

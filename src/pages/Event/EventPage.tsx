@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Badge, Footer, Header, Icon, SubKvSymbolLine } from "../../components/common";
 import type { IconName } from "../../components/common";
 import { events, type EventItem, type EventStatus } from "../../data/eventList";
+import { useModalOpen } from "../../hooks/useLockBodyScroll";
 import "./EventPage.scss";
 type EventFilter = EventStatus;
 
@@ -83,6 +84,8 @@ function EventDetailModal({ event, onClose }: EventDetailModalProps) {
   const [modalScale, setModalScale] = useState(1);
   const [modalScrollable, setModalScrollable] = useState(false);
   const navigate = useNavigate();
+
+  useModalOpen(true);
 
   useLayoutEffect(() => {
     const panel = panelRef.current;

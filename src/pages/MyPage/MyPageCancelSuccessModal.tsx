@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 import { Button } from "../../components/common";
+import { useModalOpen } from "../../hooks/useLockBodyScroll";
 import "./MyPageCancelSuccessModal.scss";
 
 type MyPageCancelSuccessModalProps = {
@@ -8,6 +9,8 @@ type MyPageCancelSuccessModalProps = {
 };
 
 export default function MyPageCancelSuccessModal({ onClose }: MyPageCancelSuccessModalProps) {
+  useModalOpen(true);
+
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";

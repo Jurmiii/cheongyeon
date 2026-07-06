@@ -20,6 +20,7 @@ import {
   type ReservationTimeSlot,
 } from "../../data/reservationClasses";
 import { useReservations } from "../../hooks/useReservations";
+import { useModalOpen } from "../../hooks/useLockBodyScroll";
 import { useUserProfile } from "../../hooks/useUserProfile";
 import type { Reservation } from "../../types/mypage";
 import type { StampBenefitId } from "../../data/stampBenefits";
@@ -316,6 +317,8 @@ const RESERVATION_COMPLETE_NOTICES = [
 
 function ReservationCompleteModal({ isOpen, onClose, title = "예약완료" }: ReservationCompleteModalProps) {
   const navigate = useNavigate();
+
+  useModalOpen(isOpen);
 
   useEffect(() => {
     if (!isOpen) {

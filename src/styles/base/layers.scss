@@ -22,6 +22,34 @@
   z-index: z.$header-menu;
 }
 
+// 모달 열림 시 — 고정 헤더가 닫기 버튼 등을 가리지 않도록 숨김
+html[data-modal-open="true"] {
+  .site-header-shell,
+  .tablet-header-shell,
+  .mobile-header-shell,
+  .main-page__header,
+  .collection-page__header,
+  .tea-store-page__header,
+  .reservation-page__header,
+  .reservation-edit-page__header,
+  .class-intro-page__header,
+  .season-class-page__header,
+  .season-tea-page__header,
+  .brand-story-page__header,
+  .space__header,
+  .location__header,
+  .faq-page__header,
+  .notice-page__header,
+  .contact-page__header,
+  .event-page__header,
+  .my-page__header,
+  .signup-page-wrapper__header,
+  .login-page-wrapper__header {
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
 
 // Page-level header wrappers (positioned above page content)
 .main-page__header,

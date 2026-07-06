@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 import type { SeasonTeaDetail } from "./seasonTeaDetailData";
+import { useModalOpen } from "../../hooks/useLockBodyScroll";
 import "./SeasonTeaDetailModal.scss";
 
 interface SeasonTeaDetailModalProps {
@@ -10,6 +11,8 @@ interface SeasonTeaDetailModalProps {
 }
 
 function SeasonTeaDetailModal({ isOpen, onClose, data }: SeasonTeaDetailModalProps) {
+  useModalOpen(isOpen);
+
   useEffect(() => {
     if (!isOpen) {
       return;

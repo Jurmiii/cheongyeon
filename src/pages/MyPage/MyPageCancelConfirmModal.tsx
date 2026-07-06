@@ -2,6 +2,7 @@ import { useEffect } from "react";
 
 import type { Reservation } from "../../types/mypage";
 import { Button, Icon } from "../../components/common";
+import { useModalOpen } from "../../hooks/useLockBodyScroll";
 import {
   formatGuestCount,
   formatReservationDate,
@@ -27,6 +28,8 @@ export default function MyPageCancelConfirmModal({
   onConfirm,
   onClose,
 }: MyPageCancelConfirmModalProps) {
+  useModalOpen(true);
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
