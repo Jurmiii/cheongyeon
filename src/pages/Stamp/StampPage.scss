@@ -1,5 +1,17 @@
+@use "sass:math";
+
 @use "../../styles/abstracts/breakpoints" as *;
 @use "../../styles/abstracts/grid" as grid;
+
+// PC 시안 970×550px — 카드 너비 기준(cqw)으로 배경·컵·부적·텍스트 비율 유지
+$stamp-design-width: 970;
+$stamp-design-height: 550;
+$stamp-card-max-width: 60.625rem;
+$stamp-modal-gutter: 1.5rem;
+
+@function stamp-cqw($px) {
+  @return calc(#{math.div($px, $stamp-design-width) * 100}cqw);
+}
 
 .stamp-page {
   position: relative;
@@ -19,55 +31,62 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: $stamp-modal-gutter;
   background: rgb(35 35 35 / 55%);
 }
 
 .stamp-card {
+  container-type: inline-size;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 60.625rem;
-  max-width: 100%;
-  height: 34.375rem;
-  padding-top: 2.9375rem;
+  width: min(
+    $stamp-card-max-width,
+    calc(100vw - #{$stamp-modal-gutter * 2}),
+    calc((100svh - #{$stamp-modal-gutter * 2}) * #{$stamp-design-width} / #{$stamp-design-height})
+  );
+  aspect-ratio: #{$stamp-design-width} / #{$stamp-design-height};
+  height: auto;
+  padding-top: stamp-cqw(47);
   background-image: url("../../assets/images/13my-page/stemp.png");
   background-position: center;
-  background-size: cover;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
 }
 
 .stamp-card__logo {
   display: block;
-  width: 8.4375rem;
+  width: stamp-cqw(135);
   height: auto;
 }
 
 .stamp-card__subtitle {
-  margin: 0.75rem 0 0;
+  margin: stamp-cqw(12) 0 0;
   color: var(--ink500);
   text-align: center;
+  font-size: clamp(0.6875rem, #{stamp-cqw(22)}, 1.375rem) !important;
+  line-height: 1.45 !important;
 }
 
 .stamp-card__cups {
   display: grid;
-  grid-template-columns: repeat(4, 5.5rem);
-  column-gap: 7.25rem;
-  row-gap: 0.75rem;
-  margin-top: 2.3125rem;
+  grid-template-columns: repeat(4, stamp-cqw(88));
+  column-gap: stamp-cqw(116);
+  row-gap: stamp-cqw(12);
+  margin-top: stamp-cqw(37);
 }
 
 .stamp-cup {
   position: relative;
-  width: 5.5rem;
-  height: 5.5rem;
+  width: stamp-cqw(88);
+  height: stamp-cqw(88);
 }
 
 .stamp-cup__image {
   display: block;
-  width: 5.5rem;
-  height: 5.5rem;
+  width: 100%;
+  height: 100%;
 }
 
 .stamp-cup__number {
@@ -78,6 +97,8 @@
   transform: translate(-50%, -58%);
   color: var(--plum300);
   pointer-events: none;
+  font-size: clamp(1.25rem, #{stamp-cqw(48)}, 3rem) !important;
+  line-height: 1 !important;
 }
 
 .stamp-cup__bujuk {
@@ -86,7 +107,7 @@
   left: 50%;
   z-index: 2;
   width: auto;
-  height: 8.75rem;
+  height: stamp-cqw(140);
   transform: translate(-50%, -50%) rotate(-45deg);
   pointer-events: none;
 }
@@ -95,30 +116,40 @@
   display: flex;
   flex-direction: column;
   width: fit-content;
-  margin: 2.5rem auto 0;
+  max-width: calc(100% - #{math.div(32, $stamp-design-width) * 100}cqw);
+  margin: stamp-cqw(40) auto 0;
 }
 
 .stamp-benefit {
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;
 }
 
 .stamp-benefit__icon {
   display: block;
+  flex-shrink: 0;
   width: auto;
-  height: 3rem;
-  margin-right: 0.25rem;
+  height: stamp-cqw(48);
+  margin-right: stamp-cqw(4);
 }
 
 .stamp-benefit__label {
+  flex-shrink: 0;
   color: var(--ink500);
+  font-size: clamp(0.625rem, #{stamp-cqw(16)}, 1rem) !important;
+  line-height: 1.45 !important;
 }
 
 .stamp-benefit__desc {
-  margin-left: 0.75rem;
+  margin-left: stamp-cqw(12);
   color: var(--ink500);
+  font-size: clamp(0.625rem, #{stamp-cqw(16)}, 1rem) !important;
+  line-height: 1.45 !important;
 }
 
 .stamp-benefit__desc strong {
   font-weight: inherit;
+  font-size: clamp(0.6875rem, #{stamp-cqw(18)}, 1.125rem) !important;
+  line-height: 1.45 !important;
 }

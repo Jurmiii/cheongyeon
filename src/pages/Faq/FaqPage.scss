@@ -23,7 +23,7 @@
   width: 120rem;
   max-width: 100%;
   min-height: 46.25rem;
-  padding-block: 7.5rem;
+  padding-block: var(--section-padding);
   overflow: hidden;
   background-image: url("../../assets/images/14F&A/f&abg.webp");
   background-size: cover;
@@ -66,7 +66,7 @@
 .faq-content {
   width: 120rem;
   max-width: 100%;
-  padding-block: 7.5rem;
+  padding-block: var(--section-padding);
   background: var(--han50);
   box-sizing: border-box;
 }
@@ -196,7 +196,7 @@
 @media (min-width: ($mobile + 1px)) and (max-width: $tablet) {
   .faq-kv {
     min-height: auto;
-    padding-block: 7.5rem;
+    padding-block: var(--section-padding);
   }
 
   .faq-kv__grid {
@@ -205,7 +205,7 @@
   }
 
   .faq-content {
-    padding-block: 7.5rem;
+    padding-block: var(--section-padding);
   }
 
   .faq-kv__title {
@@ -215,27 +215,29 @@
     line-height: 1.4;
   }
 
+  // ft-18r — KV 서브타이틀 (마루부리 18px Regular)
   .faq-kv__description {
     font-family: var(--font-headline);
-    font-size: 1.5rem;
-    font-weight: 400;
-    line-height: 2.25rem;
-  }
-
-  .faq-content__question-text,
-  .faq-content__mark {
-    font-family: var(--font-body);
     font-size: 1.125rem;
-    font-weight: 700;
-    line-height: 1.625rem;
+    font-weight: 400;
+    line-height: 1.75rem;
   }
 
-  // ft-16r — 답변 (나눔스퀘어 16px Regular)
-  .faq-page .faq-content__answer-text.ft-22r {
+  // ft-16b — 질문 (나눔스퀘어 16px Bold)
+  .faq-page .faq-content__question-text.ft-28b,
+  .faq-page .faq-content__mark--question.ft-22b {
     font-family: var(--font-body);
     font-size: 1rem;
-    font-weight: 400;
+    font-weight: 500;
     line-height: 1.625rem;
+  }
+
+  // ft-14r — 답변 (나눔스퀘어 14px Regular)
+  .faq-page .faq-content__answer-text.ft-22r {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.375rem;
   }
 
   .faq-content__question {
@@ -265,7 +267,7 @@
 @media (max-width: $mobile) {
   .faq-kv {
     min-height: auto;
-    padding-block: 6rem 3rem;
+    padding-block: var(--section-padding) calc(var(--section-padding) / 2);
   }
 
   .faq-kv__grid {
@@ -288,16 +290,17 @@
     line-height: 1.4;
   }
 
+  // ft-18r — KV 서브타이틀 (마루부리 18px Regular)
   .faq-kv__description {
     max-width: 100%;
     font-family: var(--font-headline);
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 400;
     line-height: 1.75rem;
   }
 
   .faq-content {
-    padding-block: 3rem;
+    padding-block: var(--section-padding);
   }
 
   .faq-content__grid {
@@ -370,3 +373,159 @@
 }
 
 @include sub-kv-layout.sub-kv-layout-compact("faq-kv");
+
+// compact mixin 이후 오버라이드 — KV·목록 모바일 타이포·그리드 (≤767px)
+@media (max-width: #{$tablet - 1px}) {
+  // ft-30b — KV 타이틀 (마루부리 30px Bold, compact 기본값 유지)
+  .faq-kv__title {
+    font-family: var(--font-headline);
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1.875rem;
+  }
+
+  // ft-18r — KV 서브타이틀 (마루부리 18px Regular)
+  .faq-kv__description {
+    font-family: var(--font-headline);
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.75rem;
+  }
+
+  .faq-content__list {
+    gap: 0.75rem;
+  }
+
+  .faq-content__question {
+    align-items: center;
+    gap: 0.75rem;
+    min-height: auto;
+    padding: 1rem;
+  }
+
+  .faq-content__question-body {
+    flex: 1;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.625rem;
+    min-width: 0;
+  }
+
+  // ft-16b — 질문 한 줄 (나눔스퀘어 16px Bold)
+  .faq-page .faq-content__question-text.ft-28b,
+  .faq-page .faq-content__mark--question.ft-22b {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.625rem;
+  }
+
+  .faq-content__question-text {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.625rem;
+  }
+
+  .faq-content__mark--question,
+  .faq-content__mark--answer {
+    width: 0.9375rem;
+    height: 1.25rem;
+    min-width: 0.9375rem;
+    min-height: 1.25rem;
+  }
+
+  .faq-content__chevron {
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 1.5rem;
+  }
+
+  .faq-content__answer {
+    gap: 0.625rem;
+    padding: 0 1rem;
+  }
+
+  .faq-content__item--open .faq-content__answer {
+    padding-bottom: 0.875rem;
+  }
+
+  .faq-content__item--open .faq-content__question {
+    padding-bottom: 0.75rem;
+  }
+
+  // ft-14r — 답변 (나눔스퀘어 14px Regular)
+  .faq-page .faq-content__answer-text.ft-22r {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.375rem;
+  }
+}
+
+// ≤402px — 370px 풀 그리드 (402px − 양쪽 16px)
+@media (max-width: $mobile) {
+  .faq-content__grid {
+    width: 100%;
+    max-width: grid.$mobile-grid-outer;
+    margin-inline: auto;
+    padding-inline: grid.$mobile-grid-padding;
+    box-sizing: border-box;
+  }
+}
+
+// 403~767px — 태블릿 소형, 가로 폭 확장 (모바일 402px 캡 제거)
+@media (min-width: ($mobile + 1px)) and (max-width: #{$tablet - 1px}) {
+  .faq-content__grid {
+    width: 100%;
+    max-width: none;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+    box-sizing: border-box;
+  }
+}
+
+// 768~1023px — 태블릿
+@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
+  .faq-content__grid {
+    width: 100%;
+    max-width: none;
+    margin-inline: auto;
+    padding-inline: grid.$tablet-grid-padding;
+    box-sizing: border-box;
+  }
+}
+
+// ≤768px — KV 딤 오버레이 + 흰색 텍스트
+@media (max-width: $tablet) {
+  .faq-kv::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgb(0 0 0 / 40%);
+    pointer-events: none;
+  }
+
+  .faq-kv__grid {
+    position: relative;
+    z-index: 2;
+  }
+
+  .faq-page .faq-kv__title.ink500,
+  .faq-page .faq-kv__description.ink500 {
+    color: var(--white);
+  }
+
+  .faq-kv__symbol-line {
+    color: var(--white);
+  }
+
+  .faq-kv__line-symbol {
+    filter: brightness(0) invert(1);
+  }
+}

@@ -44,11 +44,11 @@ export default function TeaClassContentBox({ variant = "default", upcoming }: Te
     dDayLabel: "D-7",
   };
 
-  const upcomingMetaItems: Array<{ icon: IconName; label: string }> = [
-    { icon: "calendar", label: upcomingContent.dateLabel },
-    { icon: "clock", label: upcomingContent.time },
-    { icon: "user", label: upcomingContent.guestLabel },
-    { icon: "location-dot", label: upcomingContent.location },
+  const upcomingMetaItems: Array<{ key: string; icon: IconName; label: string }> = [
+    { key: "date", icon: "calendar", label: upcomingContent.dateLabel },
+    { key: "time", icon: "clock", label: upcomingContent.time },
+    { key: "guest", icon: "user", label: upcomingContent.guestLabel },
+    { key: "location", icon: "location-dot", label: upcomingContent.location },
   ];
 
   return (
@@ -66,9 +66,17 @@ export default function TeaClassContentBox({ variant = "default", upcoming }: Te
         {isUpcoming ? (
           <ul className="tea-class-content-box__meta">
             {upcomingMetaItems.map((item) => (
-              <li className="tea-class-content-box__meta-item" key={item.label}>
+              <li
+                className={`tea-class-content-box__meta-item tea-class-content-box__meta-item--${item.key}`}
+                key={item.key}
+              >
                 <Icon className="tea-class-content-box__meta-icon ink400" name={item.icon} />
-                <span className="ft-22b ink500">{item.label}</span>
+                <span className="ft-22b ink500">
+                  {item.label}
+                  {item.key === "date" && (
+                    <span className="tea-class-content-box__meta-inline-time">{upcomingContent.time}</span>
+                  )}
+                </span>
               </li>
             ))}
           </ul>
