@@ -417,8 +417,15 @@ $location-break-desktop-xl-up: 120.0625rem;
 /* 태블릿 KV — 배경만 (레이아웃·타이포는 sub-kv-layout) */
 @media (min-width: $tablet) and (max-width: $laptop) {
   .location-kv {
-    background-image: url("../../assets/images/04location/ta-story-kv.webp");
+    background-image: url("../../assets/images/04location/ta-kv.png");
     background-position: center;
+  }
+}
+
+/* 모바일 KV — 배경만 */
+@media (max-width: #{$tablet - 1px}) {
+  .location-kv {
+    background-image: url("../../assets/images/04location/mo-kv.png");
   }
 }
 

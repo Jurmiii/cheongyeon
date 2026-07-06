@@ -801,7 +801,7 @@
   .season-tea-kv {
     height: 37.5rem; /* 600px */
     min-height: 37.5rem;
-    background-image: url("../../assets/images/07season-tea/season-ta-kv.webp");
+    background-image: url("../../assets/images/07season-tea/ta-kv.png");
   }
 
   .season-tea-kv__grid {
@@ -1077,7 +1077,7 @@
     height: 40.625rem; /* 650px */
     min-height: 40.625rem;
     padding-block: 0;
-    background-image: url("../../assets/images/07season-tea/season-ta-kv.webp");
+    background-image: url("../../assets/images/07season-tea/mo-kv.png");
     background-position: center center;
   }
 
@@ -1394,7 +1394,7 @@
 @media (max-width: $mobile) {
   .season-tea-kv {
     @include grid.mobile-kv-section;
-    background-image: url("../../assets/images/07season-tea/season-mo-kv.webp");
+    background-image: url("../../assets/images/07season-tea/mo-kv.png");
     background-position: center 35%;
   }
 
@@ -1429,3 +1429,20 @@
 }
 
 @include sub-kv-layout.sub-kv-layout-compact("season-tea-kv");
+
+// KV 배경 — 태블릿·모바일 (compact 규칙 이후 최종 오버라이드)
+@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
+  .season-tea-kv {
+    background-image: url("../../assets/images/07season-tea/ta-kv.png");
+    background-size: cover;
+    background-position: center center;
+  }
+}
+
+@media (max-width: #{$tablet - 1px}) {
+  .season-tea-kv {
+    background-image: url("../../assets/images/07season-tea/mo-kv.png");
+    background-size: cover;
+    background-position: center center;
+  }
+}

@@ -1,6 +1,7 @@
-import { useEffect, useState, type ReactNode, type TransitionEvent } from "react";
+import { useEffect, useRef, useState, type ReactNode, type TransitionEvent } from "react";
 import { createPortal } from "react-dom";
 
+import { useLockBodyScroll } from "../../../hooks/useLockBodyScroll";
 import "./CustomModal.scss";
 
 interface CustomModalProps {
@@ -12,6 +13,9 @@ interface CustomModalProps {
 export default function CustomModal({ children, isOpen, onClose }: CustomModalProps) {
   const [isRendered, setIsRendered] = useState(isOpen);
   const [isVisible, setIsVisible] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useLockBodyScroll(isRendered && isOpen, modalRef);
 
   useEffect(() => {
     if (!isOpen) {
@@ -57,6 +61,7 @@ export default function CustomModal({ children, isOpen, onClose }: CustomModalPr
 
   return createPortal(
     <div
+      ref={modalRef}
       className={["CustomModal", isVisible && "CustomModal--open"].filter(Boolean).join(" ")}
       role="presentation"
       onClick={onClose}

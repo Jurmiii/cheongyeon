@@ -433,6 +433,7 @@ $my-page-upcoming-compact-max: $laptop;
   padding-right: var(--space-2);
   overflow-y: auto;
   overflow-x: hidden;
+  overscroll-behavior: contain;
   scrollbar-color: var(--ink500) transparent;
   scrollbar-width: thin;
 }

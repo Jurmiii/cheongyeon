@@ -1,9 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 
 import logo from "../../assets/images/00header-footer/logo.svg";
 import bujuk from "../../assets/images/13my-page/dojang.png";
 import cup from "../../assets/images/13my-page/cup.png";
 import smbujuk from "../../assets/images/13my-page/smbujuk.png";
+import { useLockBodyScroll } from "../../hooks/useLockBodyScroll";
 import { useReservations } from "../../hooks/useReservations";
 import "./StampPage.scss";
 
@@ -17,6 +19,9 @@ type StampModalProps = {
 function StampModal({ count = STAMP_COUNT, onClose }: StampModalProps) {
   const { stats } = useReservations();
   const stampedCount = stats.stampCount;
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useLockBodyScroll(true, modalRef);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -25,18 +30,15 @@ function StampModal({ count = STAMP_COUNT, onClose }: StampModalProps) {
       }
     };
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [onClose]);
 
-  return (
-    <div className="stamp-modal" role="presentation" onClick={onClose}>
+  return createPortal(
+    <div ref={modalRef} className="stamp-modal" role="presentation" onClick={onClose}>
       <section
         className="stamp-card"
         aria-label="스탬프 적립"
@@ -78,7 +80,8 @@ function StampModal({ count = STAMP_COUNT, onClose }: StampModalProps) {
           </div>
         </div>
       </section>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

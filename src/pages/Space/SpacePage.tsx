@@ -3,7 +3,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Footer, Header, SubKvSymbolLine } from "../../components/common";
 import aboutBg from "../../assets/images/03space/about-bg.webp";
-import spaceKv from "../../assets/images/03space/space-kv.webp";
 import spaceRoomLeft from "../../assets/images/03space/space-3_1.webp";
 import spaceRoomRight from "../../assets/images/03space/space-3_2.webp";
 import spaceLine from "../../assets/images/03space/space-3-line.svg";
@@ -319,7 +318,6 @@ function SpacePage() {
 
       <section
         className="space-kv"
-        style={{ backgroundImage: `url(${spaceKv})` }}
         aria-label="공간 소개 키비주얼"
       >
         <div className="space-kv__grid">
