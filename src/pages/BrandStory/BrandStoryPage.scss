@@ -707,15 +707,19 @@
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
   gap: 0;
   min-width: 0;
   margin: 0;
+  text-align: center;
   word-break: keep-all;
 }
 
 .brand-story-philosophy__h-desc-line {
   display: block;
+  width: 100%;
+  text-align: center;
 }
 
 .brand-story-philosophy__h-desc-line + .brand-story-philosophy__h-desc-line::before {
@@ -775,22 +779,35 @@
   }
 
   .brand-story-philosophy .brand-story-philosophy__h-subtitle.ft-28b {
-    font-family: var(--font-body) !important;
-    font-size: 0.875rem !important;
+    font-family: var(--font-headline) !important;
+    font-size: 1rem !important; // 16px
     font-weight: 700 !important;
-    line-height: 1.125rem !important;
+    line-height: 1.25rem !important;
   }
 
   .brand-story-philosophy .brand-story-philosophy__h-desc.ft-18r {
     font-family: var(--font-body) !important;
     font-size: 0.875rem !important;
-    font-weight: 600 !important;
+    font-weight: 400 !important;
     line-height: 1.375rem !important;
     letter-spacing: -0.02em;
+  }
+
+  .brand-story-philosophy__h-desc--tablet {
+    display: flex;
+  }
+
+  .brand-story-philosophy__h-desc--mobile {
+    display: none;
   }
 }
 
 @media (max-width: #{$tablet - 1px}) {
+  .brand-story-philosophy {
+    --h-scroll-height: 5.9375rem; // 95px
+    --h-scroll-width: 21.25rem; // 340px
+  }
+
   .brand-story-philosophy .brand-story-philosophy__title.ft-48b {
     font-family: var(--font-headline) !important;
     font-size: 1.5rem !important;
@@ -799,10 +816,39 @@
     text-align: center;
   }
 
-  .brand-story-philosophy .brand-story-philosophy__h-desc.ft-18r {
-    font-size: 0.75rem !important; // 12px
-    font-weight: 600 !important;
+  .brand-story-philosophy .brand-story-philosophy__h-subtitle.ft-28b {
+    font-family: var(--font-headline) !important;
+    font-size: 0.875rem !important; // 14px
+    font-weight: 700 !important;
     line-height: 1.125rem !important;
+  }
+
+  .brand-story-philosophy .brand-story-philosophy__h-desc.ft-18r {
+    font-size: 0.625rem !important; // 10px
+    font-weight: 400 !important;
+    line-height: 0.875rem !important;
+  }
+
+  .brand-story-philosophy__h-desc--tablet {
+    display: none;
+  }
+
+  .brand-story-philosophy__h-desc--mobile {
+    display: flex;
+  }
+
+  .brand-story-philosophy__h-desc-line {
+    white-space: nowrap;
+  }
+
+  .brand-story-philosophy__h-character {
+    width: 2.375rem; // 38px
+    height: 2.375rem;
+  }
+
+  .brand-story-philosophy__h-center {
+    gap: 0;
+    margin-inline: 0.375rem 0.625rem;
   }
 }
 
@@ -1373,61 +1419,70 @@
   }
 
   .brand-story-meaning__cards {
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: nowrap;
     align-items: stretch;
-    justify-content: flex-start;
+    justify-content: center;
     width: 100%;
     min-width: 0;
     max-width: 100%;
-    gap: 1rem;
+    gap: var(--space-6);
     padding-inline: 0;
     overflow-x: visible;
   }
 
   .brand-story-meaning__card {
-    flex: none;
-    width: 100%;
-    max-width: none;
-    height: 12.5rem;
-    max-height: none;
-    aspect-ratio: auto;
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: var(--meaning-card-max-w);
+    width: auto;
+    height: auto;
+    max-height: var(--meaning-card-max-h);
+    aspect-ratio: var(--meaning-card-ratio);
     border-radius: 1.5rem;
-    cursor: default;
+    cursor: pointer;
     transition: none;
   }
 
-  .brand-story-meaning__hover-mask,
+  .brand-story-meaning__hover-mask {
+    width: 68%;
+    background-size: cover;
+    background-position: right center;
+    transform: translateX(100%);
+    transition: transform 0.7s ease;
+  }
+
   .brand-story-meaning__card:hover .brand-story-meaning__hover-mask,
-  .brand-story-meaning__card:focus-visible .brand-story-meaning__hover-mask,
-  .brand-story-meaning__card:active .brand-story-meaning__hover-mask {
-    width: 50%;
+  .brand-story-meaning__card:focus-visible .brand-story-meaning__hover-mask {
     transform: translateX(0);
-    background-size: 100% 100%;
-    transition: none;
+    transition: transform 0.7s ease;
   }
 
-  .brand-story-meaning__content,
-  .brand-story-meaning__card:hover .brand-story-meaning__content,
-  .brand-story-meaning__card:focus-visible .brand-story-meaning__content,
-  .brand-story-meaning__card:active .brand-story-meaning__content {
+  .brand-story-meaning__content {
     right: auto;
-    left: 50%;
-    width: 50%;
+    left: 32%;
+    width: 68%;
     align-items: center;
-    text-align: left;
+    text-align: center;
     gap: 0;
+    opacity: 0;
+    transition: opacity 0.7s ease;
+  }
+
+  .brand-story-meaning__card:hover .brand-story-meaning__content,
+  .brand-story-meaning__card:focus-visible .brand-story-meaning__content {
     opacity: 1;
-    transition: none;
+    transition: opacity 0.7s ease;
   }
 
   .brand-story-meaning__content-inner {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
     gap: 0.25rem;
     width: max-content;
     max-width: 100%;
-    text-align: left;
+    text-align: center;
   }
 
   .brand-story-meaning .brand-story-meaning__number.ft-36r {
@@ -1445,15 +1500,13 @@
   }
 
   .brand-story-meaning .brand-story-meaning__desc.ft-22r {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
+    display: block;
     margin: 0 !important;
     font-family: var(--font-body) !important;
     font-size: 1rem !important;
     font-weight: 400 !important;
     line-height: 1.625rem !important;
+    text-align: center;
   }
 
   .brand-story-meaning__desc-line {
@@ -1461,13 +1514,24 @@
   }
 
   .brand-story-meaning__line {
-    align-self: flex-start;
+    align-self: center;
     width: 2.5rem;
-    margin: 0;
+    margin: var(--space-2) 0;
   }
 
   .brand-story-philosophy__overlay {
     display: block;
+  }
+
+  .brand-story-philosophy {
+    --h-scroll-width: 474px;
+    --h-scroll-height: 133px;
+  }
+
+  .brand-story-philosophy__h-scroll-unit {
+    width: 474px;
+    max-width: 100%;
+    height: 133px;
   }
 
   .brand-story-philosophy__inner {
