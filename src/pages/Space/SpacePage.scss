@@ -26,6 +26,15 @@
   }
 }
 
+// gallery / learning pin 구간(PC) — 고정 헤더 숨김
+@media (min-width: $laptop) {
+  html[data-header-space-content-active="true"] .site-header-shell {
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-100%);
+  }
+}
+
 .space-kv {
   position: relative;
   z-index: 0;

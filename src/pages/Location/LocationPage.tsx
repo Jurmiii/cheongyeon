@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import { Footer, Header, Icon, SubKvSymbolLine } from "../../components/common";
 import "./LocationPage.scss";
 
@@ -134,16 +134,30 @@ const locationStores = [
   },
 ] as const;
 
+const LOCATION_MAP_COMPACT_MQ = "(max-width: 1024px)";
+const SHEET_PEEK_RATIO = 0.38;
+const SHEET_EXPANDED_RATIO = 0.55;
+
+type SheetSnap = "peek" | "expanded";
+
 function LocationPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStoreId, setSelectedStoreId] = useState<number>(locationStores[0].id);
   const [isMapLoadFailed, setIsMapLoadFailed] = useState(false);
   const [scrollbarThumb, setScrollbarThumb] = useState({ height: 0, top: 0 });
+  const [isCompactMap, setIsCompactMap] = useState(
+    () => typeof window !== "undefined" && window.matchMedia(LOCATION_MAP_COMPACT_MQ).matches,
+  );
+  const [sheetSnap, setSheetSnap] = useState<SheetSnap>("peek");
+  const [sheetDragPx, setSheetDragPx] = useState(0);
+  const [isSheetDragging, setIsSheetDragging] = useState(false);
+  const mapCardRef = useRef<HTMLDivElement>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const listScrollRef = useRef<HTMLUListElement>(null);
   const scrollbarTrackRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<KakaoMapInstance | null>(null);
   const markersRef = useRef<KakaoMarker[]>([]);
+  const sheetDragStateRef = useRef({ startY: 0, startDragPx: 0 });
 
   const filteredStores = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -162,6 +176,119 @@ function LocationPage() {
     ? selectedStoreId
     : (filteredStores[0]?.id ?? null);
   const activeStore = locationStores.find((store) => store.id === activeStoreId) ?? locationStores[0];
+
+  const getSheetMaxHeightPercent = () => {
+    const baseRatio = sheetSnap === "expanded" ? SHEET_EXPANDED_RATIO : SHEET_PEEK_RATIO;
+    const cardHeight = mapCardRef.current?.clientHeight ?? 0;
+
+    if (!isCompactMap || cardHeight <= 0) {
+      return baseRatio * 100;
+    }
+
+    const draggedRatio = baseRatio + sheetDragPx / cardHeight;
+    return Math.min(SHEET_EXPANDED_RATIO, Math.max(0.24, draggedRatio)) * 100;
+  };
+
+  const finishSheetDrag = () => {
+    const cardHeight = mapCardRef.current?.clientHeight ?? 0;
+    const baseRatio = sheetSnap === "expanded" ? SHEET_EXPANDED_RATIO : SHEET_PEEK_RATIO;
+    const draggedRatio = cardHeight > 0 ? baseRatio + sheetDragPx / cardHeight : baseRatio;
+    const snapThreshold = (SHEET_PEEK_RATIO + SHEET_EXPANDED_RATIO) / 2;
+
+    setSheetSnap(draggedRatio >= snapThreshold ? "expanded" : "peek");
+    setSheetDragPx(0);
+    setIsSheetDragging(false);
+  };
+
+  const handleSheetPointerDown = (event: PointerEvent<HTMLButtonElement>) => {
+    if (!isCompactMap) {
+      return;
+    }
+
+    sheetDragStateRef.current = {
+      startY: event.clientY,
+      startDragPx: sheetDragPx,
+    };
+    setIsSheetDragging(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handleSheetPointerMove = (event: PointerEvent<HTMLButtonElement>) => {
+    if (!isSheetDragging) {
+      return;
+    }
+
+    const deltaY = sheetDragStateRef.current.startY - event.clientY;
+    setSheetDragPx(sheetDragStateRef.current.startDragPx + deltaY);
+  };
+
+  const handleSheetPointerUp = (event: PointerEvent<HTMLButtonElement>) => {
+    if (!isSheetDragging) {
+      return;
+    }
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    finishSheetDrag();
+  };
+
+  const handleSheetPointerCancel = (event: PointerEvent<HTMLButtonElement>) => {
+    if (!isSheetDragging) {
+      return;
+    }
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    finishSheetDrag();
+  };
+
+  const handleSheetKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (!isCompactMap) {
+      return;
+    }
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      setSheetSnap((current) => (current === "expanded" ? "peek" : "expanded"));
+    }
+  };
+
+  useEffect(() => {
+    const media = window.matchMedia(LOCATION_MAP_COMPACT_MQ);
+    const syncCompactMap = () => {
+      setIsCompactMap(media.matches);
+      if (!media.matches) {
+        setSheetSnap("peek");
+        setSheetDragPx(0);
+        setIsSheetDragging(false);
+      }
+    };
+
+    syncCompactMap();
+    media.addEventListener("change", syncCompactMap);
+
+    return () => {
+      media.removeEventListener("change", syncCompactMap);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isCompactMap) {
+      return;
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      mapRef.current?.relayout();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+    };
+  }, [isCompactMap, sheetSnap, sheetDragPx, isSheetDragging]);
 
   useEffect(() => {
     const listEl = listScrollRef.current;
@@ -305,7 +432,7 @@ function LocationPage() {
         <div className="location-map__inner">
           <h2 className="location-map__title ft-48b ink500">매장 위치</h2>
 
-          <div className="location-map__card">
+          <div className="location-map__card" ref={mapCardRef}>
             <div className="location-map__map">
               <div ref={mapContainerRef} className="location-map__kakao-map" aria-label="카카오 지도" />
               {isMapLoadFailed ? (
@@ -315,8 +442,28 @@ function LocationPage() {
               ) : null}
             </div>
 
-            <div className="location-map__sheet">
-              <div className="location-map__sheet-handle" aria-hidden="true" />
+            <div
+              className={[
+                "location-map__sheet",
+                isCompactMap && "location-map__sheet--compact",
+                isSheetDragging && "location-map__sheet--dragging",
+                sheetSnap === "expanded" && "location-map__sheet--expanded",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              style={isCompactMap ? { maxHeight: `${getSheetMaxHeightPercent()}%` } : undefined}
+            >
+              <button
+                type="button"
+                className="location-map__sheet-handle"
+                aria-label={sheetSnap === "expanded" ? "지점 목록 접기" : "지점 목록 펼치기"}
+                aria-expanded={sheetSnap === "expanded"}
+                onPointerDown={handleSheetPointerDown}
+                onPointerMove={handleSheetPointerMove}
+                onPointerUp={handleSheetPointerUp}
+                onPointerCancel={handleSheetPointerCancel}
+                onKeyDown={handleSheetKeyDown}
+              />
               <div className="location-map__list">
                 <div className="location-map__search-wrap">
                   <div className="location-map__search">

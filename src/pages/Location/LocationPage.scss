@@ -172,6 +172,15 @@ $location-break-desktop-xl-up: 120.0625rem;
 
 .location-map__sheet-handle {
   display: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+
+  &:active {
+    cursor: grabbing;
+  }
 }
 
 .location-map__list {
@@ -464,7 +473,15 @@ $location-break-desktop-xl-up: 120.0625rem;
 
   .location-kv__title,
   .location-kv__desc {
-    color: var(--white);
+    color: var(--ink500);
+  }
+
+  .location-kv__symbol-line--white {
+    color: var(--ink500);
+
+    .location-kv__line-symbol {
+      filter: brightness(0);
+    }
   }
 }
 
@@ -476,6 +493,7 @@ $location-break-desktop-xl-up: 120.0625rem;
   }
 
   .location-map__inner {
+    display: grid;
     row-gap: 0;
   }
 
@@ -489,6 +507,7 @@ $location-break-desktop-xl-up: 120.0625rem;
 
   .location-map__card {
     position: relative;
+    z-index: 0;
     display: block;
     grid-column: 1 / -1;
     grid-row: 2;
@@ -496,6 +515,7 @@ $location-break-desktop-xl-up: 120.0625rem;
     height: 37.5rem;
     min-height: 31.25rem;
     overflow: hidden;
+    isolation: isolate;
     border-radius: var(--radius-input) var(--radius-input) 0 0;
     background-color: transparent;
   }
@@ -507,6 +527,13 @@ $location-break-desktop-xl-up: 120.0625rem;
     width: 100%;
     height: 100%;
     border-radius: inherit;
+    overflow: hidden;
+    pointer-events: auto;
+  }
+
+  .location-map__kakao-map {
+    position: relative;
+    z-index: 0;
   }
 
   .location-map__sheet {
@@ -514,16 +541,24 @@ $location-break-desktop-xl-up: 120.0625rem;
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 1;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     width: 100%;
+    height: auto;
     max-height: 55%;
     min-height: 17.8125rem;
     overflow: hidden;
     border-radius: 1.5rem 1.5rem 0 0;
     background-color: var(--white);
-    box-shadow: 0.4375rem 0 0.5rem 0 rgb(0 0 0 / 10%);
+    box-shadow: 0 -0.25rem 1rem 0 rgb(0 0 0 / 12%);
+    pointer-events: auto;
+    transition: max-height 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    animation: location-map-sheet-rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .location-map__sheet--dragging {
+    transition: none;
   }
 
   .location-map__sheet-handle {
@@ -555,6 +590,16 @@ $location-break-desktop-xl-up: 120.0625rem;
   .location-map__list-scroll-wrap {
     flex: 1;
     min-height: 0;
+  }
+}
+
+@keyframes location-map-sheet-rise {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
   }
 }
 

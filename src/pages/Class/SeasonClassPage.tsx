@@ -601,6 +601,14 @@ type SeasonScrollTriggerHandle = {
 const MOBILE_DRAG_SNAP_DURATION = 0.9;
 const MOBILE_DRAG_SNAP_EASE = "power3.inOut";
 
+const syncSeasonScrollHeaderActive = (isActive: boolean) => {
+  if (isActive) {
+    document.documentElement.dataset.headerSeasonScrollActive = "true";
+  } else {
+    delete document.documentElement.dataset.headerSeasonScrollActive;
+  }
+};
+
 function setupMobileOrbitDrag(
   section: HTMLElement,
   handle: SeasonScrollTriggerHandle,
@@ -867,6 +875,9 @@ function SeasonClassListSection() {
         start: "top top",
         end: () => `+=${getScrollEnd()}`,
         invalidateOnRefresh: true,
+        onToggle: (self) => {
+          syncSeasonScrollHeaderActive(self.isActive);
+        },
         snap: {
           snapTo: (value) => getStableIndexFromProgress(value) / MAX_SEASON_INDEX,
           delay: 0.06,
@@ -937,6 +948,9 @@ function SeasonClassListSection() {
         start: "top top",
         end: "bottom bottom",
         invalidateOnRefresh: true,
+        onToggle: (self) => {
+          syncSeasonScrollHeaderActive(self.isActive);
+        },
         onRefresh: syncMobileSpacer,
       });
 
@@ -973,6 +987,7 @@ function SeasonClassListSection() {
       return () => {
         handle.trigger.kill();
         clearScrollTrackHeight();
+        syncSeasonScrollHeaderActive(false);
         if (applyLayoutRef.current) {
           applyLayoutRef.current = null;
         }
@@ -986,6 +1001,7 @@ function SeasonClassListSection() {
       return () => {
         handle.trigger.kill();
         clearScrollTrackHeight();
+        syncSeasonScrollHeaderActive(false);
         if (applyLayoutRef.current) {
           applyLayoutRef.current = null;
         }
@@ -1001,6 +1017,7 @@ function SeasonClassListSection() {
         cleanupDrag();
         handle.trigger.kill();
         clearScrollTrackHeight();
+        syncSeasonScrollHeaderActive(false);
         if (applyLayoutRef.current) {
           applyLayoutRef.current = null;
         }
@@ -1014,6 +1031,7 @@ function SeasonClassListSection() {
     return () => {
       applyLayoutRef.current = null;
       clearScrollTrackHeight();
+      syncSeasonScrollHeaderActive(false);
       window.removeEventListener("load", refresh);
       window.removeEventListener("resize", refresh);
       mm.revert();

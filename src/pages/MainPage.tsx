@@ -1160,6 +1160,13 @@ export default function MainPage() {
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          onToggle: (self) => {
+            if (self.isActive) {
+              document.documentElement.dataset.headerSec4Active = "true";
+            } else {
+              delete document.documentElement.dataset.headerSec4Active;
+            }
+          },
         },
       });
 
@@ -1193,6 +1200,7 @@ export default function MainPage() {
       });
 
       return () => {
+        delete document.documentElement.dataset.headerSec4Active;
         gsap.set(track, { clearProps: "transform" });
       };
     });
@@ -1531,8 +1539,10 @@ export default function MainPage() {
     </div>
   );
 
+  const isIntroPlaying = !hasSeenIntroAtMount && !isIntroEnded;
+
   return (
-    <main className="main-page">
+    <main className={["main-page", isIntroPlaying && "main-page--intro-playing"].filter(Boolean).join(" ")}>
       {!hasSeenIntroAtMount && (
         <div
           className={["main-intro", isIntroEnded && "main-intro--hidden"].filter(Boolean).join(" ")}

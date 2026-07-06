@@ -170,6 +170,21 @@ $main-sec5-mobile-card-gap: 0.875rem; // 14px
   width: 100%;
 }
 
+// sec4 pin 구간(PC) — 고정 헤더 숨김
+@media (min-width: $laptop) {
+  html[data-header-sec4-active="true"] .site-header-shell {
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-100%);
+  }
+}
+
+// 인트로 영상 재생 중 — 헤더 숨김
+.main-page--intro-playing .site-header-shell {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .main-sec1 {
   position: relative;
   width: 120rem;

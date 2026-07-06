@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
+import { useSiteHeaderScroll } from "../../../hooks/useSiteHeaderScroll";
 import hamMenu from "../../../assets/images/00header-footer/ham-menu.svg";
 import hamMenuX from "../../../assets/images/00header-footer/ham-menu-x.svg";
 import logo from "../../../assets/images/00header-footer/logo.svg";
@@ -80,6 +81,7 @@ export default function Header() {
     getActiveMenuIndex(pathname, gnbMenus),
   );
   const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
+  const { isScrolled, isScrollHidden } = useSiteHeaderScroll();
 
   const isGnbOpen = activeDropdown === "gnb";
   const activeMenu = gnbMenus[activeMenuIndex] ?? gnbMenus[0];
@@ -89,6 +91,12 @@ export default function Header() {
     setActiveMenuIndex(index);
     setActiveAccordionIndex(index);
   }, [pathname]);
+
+  useEffect(() => {
+    if (isScrollHidden) {
+      setActiveDropdown(null);
+    }
+  }, [isScrollHidden]);
 
   const closeMenu = () => {
     setIsMenuOpen(false);
@@ -122,10 +130,22 @@ export default function Header() {
 
   return (
     <div
-      className={["site-header-shell", isMenuOpen && "site-header-shell--menu-open"].filter(Boolean).join(" ")}
+      className={[
+        "site-header-shell",
+        isMenuOpen && "site-header-shell--menu-open",
+        isScrollHidden && !isMenuOpen && "site-header-shell--scroll-hidden",
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
       <header
-        className={["site-header site-header--desktop", isGnbOpen && "site-header--open"].filter(Boolean).join(" ")}
+        className={[
+          "site-header site-header--desktop",
+          isGnbOpen && "site-header--open",
+          isScrolled && "site-header--scrolled",
+        ]
+          .filter(Boolean)
+          .join(" ")}
         onMouseLeave={() => setActiveDropdown(null)}
       >
         <div className="site-header__overlay" aria-hidden="true" />
@@ -262,7 +282,15 @@ export default function Header() {
         </div>
       </header>
 
-      <header className="site-header site-header--compact" aria-label="태블릿·모바일 헤더">
+      <header
+        className={[
+          "site-header site-header--compact",
+          isScrolled && "site-header--scrolled",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        aria-label="태블릿·모바일 헤더"
+      >
         <div className="site-header__compact-inner">
           <div className="site-header__compact-left">
             <h1 className="site-header__compact-logo">

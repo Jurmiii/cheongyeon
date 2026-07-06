@@ -76,6 +76,11 @@ $header-mobile-user-icon-max: 1.25rem;
   min-width: 0;
   margin-inline: calc(50% - 50vw);
   overflow-x: clip;
+  transition: transform 0.32s ease;
+
+  &.site-header-shell--scroll-hidden {
+    transform: translateY(-100%);
+  }
 }
 
 .site-header__logo,
@@ -405,6 +410,12 @@ $header-mobile-user-icon-max: 1.25rem;
   width: 100%;
   background: transparent;
   color: var(--ink500);
+  transition: background-color 0.24s ease;
+}
+
+.site-header--desktop.site-header--scrolled,
+.site-header--compact.site-header--scrolled {
+  background: color-mix(in srgb, var(--han50) 50%, transparent);
 }
 
 .site-header__compact-inner {

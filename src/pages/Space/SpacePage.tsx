@@ -178,6 +178,7 @@ function SpacePage() {
   const carouselSectionRef = useRef<HTMLElement>(null);
   const carouselCursorRef = useRef<HTMLImageElement>(null);
   const roomsSectionRef = useRef<HTMLElement>(null);
+  const gallerySectionsRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -237,6 +238,55 @@ function SpacePage() {
 
     return () => {
       context.revert();
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const galleryGroup = gallerySectionsRef.current;
+    if (!galleryGroup) {
+      return;
+    }
+
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 1024px)", () => {
+      const gallery = galleryGroup.querySelector<HTMLElement>(".space-gallery");
+      const learning = galleryGroup.querySelector<HTMLElement>(".space-learning");
+
+      if (!gallery || !learning) {
+        return;
+      }
+
+      const trigger = ScrollTrigger.create({
+        trigger: gallery,
+        start: "top top",
+        endTrigger: learning,
+        end: "bottom bottom",
+        invalidateOnRefresh: true,
+        onToggle: (self) => {
+          if (self.isActive) {
+            document.documentElement.dataset.headerSpaceContentActive = "true";
+          } else {
+            delete document.documentElement.dataset.headerSpaceContentActive;
+          }
+        },
+      });
+
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+
+      return () => {
+        delete document.documentElement.dataset.headerSpaceContentActive;
+        trigger.kill();
+      };
+    });
+
+    return () => {
+      delete document.documentElement.dataset.headerSpaceContentActive;
+      mm.revert();
     };
   }, []);
 
@@ -404,8 +454,10 @@ function SpacePage() {
         </div>
       </section>
 
-      <SpaceGallerySection {...stayGalleryData} />
-      <SpaceGallerySection {...learningGalleryData} />
+      <div ref={gallerySectionsRef} className="space-gallery-group">
+        <SpaceGallerySection {...stayGalleryData} />
+        <SpaceGallerySection {...learningGalleryData} />
+      </div>
 
       <section
         ref={carouselSectionRef}

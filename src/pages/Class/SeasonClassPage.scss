@@ -429,6 +429,13 @@ $season-scroll-scene-right-tablet: 1.96875rem; // (371-308)/2
   @return calc(#{$tablet-value} * 100vw / #{$tablet});
 }
 
+/* season-scroll pin 구간 — PC·태블릿·모바일 헤더 숨김 */
+html[data-header-season-scroll-active="true"] .site-header-shell {
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-100%);
+}
+
 /* 스크롤 스테이지 — 본문 높이(자연 흐름) + spacer(스크롤 트랙), 아래 promo는 스테이지 밖에서 이어짐 */
 .season-scroll-stage {
   position: relative;
