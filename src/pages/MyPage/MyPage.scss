@@ -113,7 +113,7 @@ $my-page-upcoming-compact-max: $laptop;
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: var(--z-header);
   width: 100%;
 }
 

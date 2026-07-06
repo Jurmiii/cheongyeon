@@ -1,0 +1,10 @@
+// Stacking layers — site header is always topmost (above modals, page overlays, etc.)
+$header: 10000;
+$header-menu: 10001;
+$header-dropdown: 10002;
+
+:root {
+  --z-header: #{$header};
+  --z-header-menu: #{$header-menu};
+  --z-header-dropdown: #{$header-dropdown};
+}

@@ -75,6 +75,7 @@ import winterBg2 from "../assets/images/01main/winter-bg2.svg";
 import winterPot from "../assets/images/01main/winter-tea.webp";
 import { Footer, Header, Icon } from "../components/common";
 import ProductContentBox from "../components/common/ProductContentBox";
+import { collectionHerbalTabLink } from "./Collection/collectionTabs";
 import "./MainPage.scss";
 
 interface MainKvSlide {
@@ -356,13 +357,18 @@ const initialActiveSeasons: Record<SeasonKey, boolean> = {
 
 function ProductCard({ product }: { product: MainProduct }) {
   return (
-    <ProductContentBox
+    <Link
       className="main-sec5__product-card"
-      image={product.image}
-      name={product.name}
-      capacity={product.capacity}
-      price={product.price}
-    />
+      to={collectionHerbalTabLink}
+      aria-label={`${product.name} — 청연의 차 컬렉션 대용량 & 시그니처 보기`}
+    >
+      <ProductContentBox
+        image={product.image}
+        name={product.name}
+        capacity={product.capacity}
+        price={product.price}
+      />
+    </Link>
   );
 }
 

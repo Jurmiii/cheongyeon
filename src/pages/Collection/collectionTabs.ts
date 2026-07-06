@@ -21,3 +21,9 @@ export const collectionTabs: CollectionTab[] = [
   { id: "dark", label: "흑차" },
   { id: "herbal", label: "대용량 & 시그니처" },
 ];
+
+export function isCollectionTabId(value: string): value is CollectionTabId {
+  return collectionTabs.some((tab) => tab.id === value);
+}
+
+export const collectionHerbalTabLink = "/collection?tab=herbal";

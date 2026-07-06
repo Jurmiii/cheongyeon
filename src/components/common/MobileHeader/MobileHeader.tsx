@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 import hamMenu from "../../../assets/images/00header-footer/ham-menu.svg";
 import hamMenuX from "../../../assets/images/00header-footer/ham-menu-x.svg";
 import logo from "../../../assets/images/00header-footer/logo.svg";
+import { getActiveMenuIndex } from "../headerMenuUtils";
 import Icon from "../Icon";
 import "./MobileHeader.scss";
 
@@ -62,11 +63,26 @@ const mobileHeaderMenus: MobileHeaderMenuItem[] = [
 ];
 
 export default function MobileHeader() {
+  const { pathname } = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeMenuIndex, setActiveMenuIndex] = useState<number | null>(0);
+  const [activeMenuIndex, setActiveMenuIndex] = useState<number | null>(() =>
+    getActiveMenuIndex(pathname, mobileHeaderMenus),
+  );
+
+  useEffect(() => {
+    setActiveMenuIndex(getActiveMenuIndex(pathname, mobileHeaderMenus));
+  }, [pathname]);
 
   const toggleMenu = () => {
-    setIsMenuOpen((current) => !current);
+    setIsMenuOpen((current) => {
+      const next = !current;
+
+      if (next) {
+        setActiveMenuIndex(getActiveMenuIndex(pathname, mobileHeaderMenus));
+      }
+
+      return next;
+    });
   };
 
   const closeMenu = () => {

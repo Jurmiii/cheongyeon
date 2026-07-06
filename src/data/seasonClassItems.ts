@@ -178,9 +178,9 @@ export const SEASON_SCROLL_TABLET_LAYOUT: SeasonScrollLayoutConfig = {
   orbitRingRadiusPx: 234.5,
   sceneCenter: { xPx: 582.5, yPx: 375 },
   orbitSlots: {
-    top: { leftPx: 434.293, topPx: 84, frameWidthPx: 109, frameHeightPx: 112 }, // left 27.1433rem
-    middle: { leftPx: 262, topPx: 295, frameWidthPx: 109, frameHeightPx: 112 }, // left 16.375rem
-    bottom: { leftPx: 437.8432, topPx: 550, frameWidthPx: 109, frameHeightPx: 112 }, // left 27.3652rem
+    top: { leftPx: 435.91, topPx: 90.82, frameWidthPx: 109, frameHeightPx: 112 },
+    middle: { leftPx: 255.5, topPx: 319, frameWidthPx: 109, frameHeightPx: 112 },
+    bottom: { leftPx: 438.35, topPx: 547.74, frameWidthPx: 109, frameHeightPx: 112 },
   },
 };
 

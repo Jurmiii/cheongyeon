@@ -66,6 +66,7 @@ const SCROLL_END_TABLET = 1875; // 750px × 2.5 — 태블릿 섹션 높이 기�
 const SEASON_SCROLL_MOBILE_MQ = "(max-width: 402px)";
 const SEASON_SCROLL_TABLET_MQ = "(min-width: 403px) and (max-width: 768px)";
 const SEASON_SCROLL_DESKTOP_MQ = "(min-width: 769px)";
+const SEASON_SCROLL_TABLET_CUP_BOOST = 1.1;
 const ORBIT_STROKE_COLOR = "#c4ad98";
 const TEXT_EASE = "power3.out";
 const MAX_SEASON_INDEX = seasonClassItems.length - 1;
@@ -368,6 +369,7 @@ function getPolarState(
   position: SeasonOrbitPosition,
   widthPx: number,
   heightPx: number,
+  useUniformOrbitRadius = false,
 ): PolarState {
   const { pos } = getCoords(layout, position, widthPx, heightPx);
   const center = getCupCenter(pos, widthPx, heightPx);
@@ -389,7 +391,9 @@ function getPolarState(
 
   return {
     angle: slotAngles[position],
-    radius: getOrbitSlotRadius(layout, position, widthPx, heightPx),
+    radius: useUniformOrbitRadius
+      ? layout.orbitRingRadiusPx
+      : getOrbitSlotRadius(layout, position, widthPx, heightPx),
     alpha: 1,
   };
 }
@@ -410,6 +414,7 @@ function applyOrbitTrailStroke(
   toActive: number,
   t: number,
   trailPath: SVGPathElement | null,
+  useUniformOrbitRadius = false,
 ) {
   if (!trailPath) return;
 
@@ -420,8 +425,22 @@ function applyOrbitTrailStroke(
   seasonClassItems.forEach((_, seasonIndex) => {
     const fromOrbit = getSeasonOrbitPosition(seasonIndex, fromActive);
     const toOrbit = getSeasonOrbitPosition(seasonIndex, toActive);
-    const fromPolar = getPolarState(layout, slotAngles, fromOrbit, cupWidthPx, cupHeightPx);
-    const toPolar = getPolarState(layout, slotAngles, toOrbit, cupWidthPx, cupHeightPx);
+    const fromPolar = getPolarState(
+      layout,
+      slotAngles,
+      fromOrbit,
+      cupWidthPx,
+      cupHeightPx,
+      useUniformOrbitRadius,
+    );
+    const toPolar = getPolarState(
+      layout,
+      slotAngles,
+      toOrbit,
+      cupWidthPx,
+      cupHeightPx,
+      useUniformOrbitRadius,
+    );
     const delta = getCcwAngleDelta(fromPolar.angle, toPolar.angle);
 
     if (delta > bestDelta) {
@@ -471,9 +490,23 @@ function getLayoutViewportScale(
   section: HTMLElement,
   layout: SeasonScrollLayoutConfig,
 ): LayoutViewportScale {
-  const scale = section.clientWidth / layout.viewWidthPx;
+  const width = section.clientWidth || layout.viewWidthPx;
+  const scaleX = width / layout.viewWidthPx;
+  const isTabletRange = width >= 403 && width <= 1024;
 
+  if (isTabletRange) {
+    return {
+      x: scaleX,
+      y: scaleX,
+    };
+  }
+
+  const scale = scaleX;
   return { x: scale, y: scale };
+}
+
+function getSeasonScrollTabletCupBoost(viewportWidth: number): number {
+  return viewportWidth >= 403 && viewportWidth <= 1024 ? SEASON_SCROLL_TABLET_CUP_BOOST : 1;
 }
 
 function applyScrollProgress(
@@ -484,9 +517,13 @@ function applyScrollProgress(
   layout: SeasonScrollLayoutConfig,
   slotAngles: OrbitSlotAngles,
   viewportScale: LayoutViewportScale,
+  cupSizeBoost = 1,
 ) {
   const { fromActive, toActive, t } = getScrollBlend(progress);
   const { cupWidthPx, cupHeightPx } = layout;
+  const cupW = cupWidthPx * cupSizeBoost;
+  const cupH = cupHeightPx * cupSizeBoost;
+  const useUniformOrbitRadius = cupSizeBoost > 1;
 
   seasonClassItems.forEach((_, seasonIndex) => {
     const cup = cups[seasonIndex];
@@ -495,10 +532,24 @@ function applyScrollProgress(
     const fromOrbit = getSeasonOrbitPosition(seasonIndex, fromActive);
     const toOrbit = getSeasonOrbitPosition(seasonIndex, toActive);
 
-    const fromPolar = getPolarState(layout, slotAngles, fromOrbit, cupWidthPx, cupHeightPx);
-    const toPolar = getPolarState(layout, slotAngles, toOrbit, cupWidthPx, cupHeightPx);
+    const fromPolar = getPolarState(
+      layout,
+      slotAngles,
+      fromOrbit,
+      cupWidthPx,
+      cupHeightPx,
+      useUniformOrbitRadius,
+    );
+    const toPolar = getPolarState(
+      layout,
+      slotAngles,
+      toOrbit,
+      cupWidthPx,
+      cupHeightPx,
+      useUniformOrbitRadius,
+    );
     const polar = interpolatePolarCcw(fromPolar, toPolar, t);
-    const pos = polarToPos(layout, polar, cupWidthPx, cupHeightPx);
+    const pos = polarToPos(layout, polar, cupW, cupH);
     const alpha = getTransitionStepAlpha(
       fromPolar.alpha,
       toPolar.alpha,
@@ -511,8 +562,8 @@ function applyScrollProgress(
     gsap.set(cup, {
       left: pxToRem(pos.leftPx * viewportScale.x),
       top: pxToRem(pos.topPx * viewportScale.y),
-      width: pxToRem(cupWidthPx * viewportScale.x),
-      height: pxToRem(cupHeightPx * viewportScale.y),
+      width: pxToRem(cupW * viewportScale.x),
+      height: pxToRem(cupH * viewportScale.y),
       opacity: isVisible ? 1 : 0,
       visibility: isVisible ? "visible" : "hidden",
       force3D: true,
@@ -520,7 +571,15 @@ function applyScrollProgress(
   });
 
   applySceneDisplay(scenes, fromActive, toActive, t);
-  applyOrbitTrailStroke(layout, slotAngles, fromActive, toActive, t, trailPath);
+  applyOrbitTrailStroke(
+    layout,
+    slotAngles,
+    fromActive,
+    toActive,
+    t,
+    trailPath,
+    useUniformOrbitRadius,
+  );
 }
 
 type SeasonScrollState = {
@@ -765,6 +824,7 @@ function SeasonClassListSection() {
       const layout = scrollLayoutRef.current;
       const slotAngles = computeOrbitSlotAngles(layout);
       const viewportScale = getLayoutViewportScale(section, layout);
+      const cupSizeBoost = getSeasonScrollTabletCupBoost(section.clientWidth);
       applyScrollProgress(
         progress,
         cups,
@@ -773,6 +833,7 @@ function SeasonClassListSection() {
         layout,
         slotAngles,
         viewportScale,
+        cupSizeBoost,
       );
     };
 
@@ -1065,7 +1126,7 @@ function SeasonClassListSection() {
             <h3 className="season-scroll__title season-scroll__title--mobile ft-20b ink500">
               {season.title}
             </h3>
-            <p className="season-scroll__desc season-scroll__desc--mobile ft-14b ink500">
+            <p className="season-scroll__desc season-scroll__desc--mobile ft-14r ink500">
               {descLines.map((line, i) => (
                 <span key={`mobile-desc-${season.key}-${i}`} className="season-scroll__desc-line">
                   {line}

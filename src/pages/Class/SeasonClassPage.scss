@@ -745,11 +745,13 @@ $season-scroll-scene-right-tablet: 1.96875rem; // (371-308)/2
 $season-scroll-intro-gap-tablet: 1.5rem; // 24px
 $season-scroll-hanja-gap-tablet: 4.6875rem; // 75px
 $season-scroll-left-gap-tablet: 1rem; // 16px
+$season-scroll-hanja-title-gap-tablet: 2.5rem; // 40px — 한자 ↔ copy-block
 $season-scroll-copy-gap-tablet: 1rem; // 16px
 $season-scroll-meta-gap-tablet: 1.5rem; // 24px
 $season-scroll-meta-label-group-w-tablet: 7rem; // icon 24 + gap 8 + label
 $season-scroll-meta-label-value-gap-tablet: 0.625rem; // 10px — 굵은 라벨 ↔ 얇은 값
 $season-scroll-meta-icon-text-gap-tablet: 0.625rem; // 10px — 아이콘 ↔ 굵은 라벨
+$season-scroll-hanja-push-tablet: 6.25rem; // 100px — intro 아래 한자 블록 하향
 
 /* PC ↔ 태블릿 fluid — 769px~1920px, PC(1920) 레이아웃은 base 그대로 유지 */
 @media (min-width: #{$tablet + 1px}) and (max-width: $season-scroll-design-w) {
@@ -858,7 +860,7 @@ $season-scroll-meta-icon-text-gap-tablet: 0.625rem; // 10px — 아이콘 ↔ �
   }
 
   .season-scroll__orbit-trail-svg {
-    display: block;
+    display: none;
   }
 
   .season-scroll__orbit-trail {
@@ -907,11 +909,11 @@ $season-scroll-meta-icon-text-gap-tablet: 0.625rem; // 10px — 아이콘 ↔ �
     top: $season-scroll-padding-block-tablet;
     bottom: $season-scroll-padding-block-tablet;
     left: grid.$tablet-grid-padding;
-    gap: $season-scroll-left-gap-tablet;
+    gap: $season-scroll-hanja-title-gap-tablet;
     width: calc(100% - #{$season-scroll-subbg-w-tablet} - #{grid.$tablet-grid-padding});
     max-width: none;
     height: auto;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .season-scroll__header {
@@ -948,10 +950,12 @@ $season-scroll-meta-icon-text-gap-tablet: 0.625rem; // 10px — 아이콘 ↔ �
   .season-scroll__hanja {
     width: $season-scroll-hanja-w-tablet;
     height: $season-scroll-hanja-h-tablet;
+    margin-top: $season-scroll-hanja-push-tablet;
   }
 
   .season-scroll__detail {
     width: 100%;
+    margin-top: 0;
   }
 
   .season-scroll__copy-block {
@@ -1091,7 +1095,7 @@ $season-scroll-ellipse-top-tablet: 23.4375rem; // 750px / 2 — 타원 세로 �
     top: season-scroll-tablet-scale($season-scroll-padding-block-tablet);
     bottom: season-scroll-tablet-scale($season-scroll-padding-block-tablet);
     left: season-scroll-tablet-scale(grid.$tablet-grid-padding);
-    gap: season-scroll-tablet-scale($season-scroll-left-gap-tablet);
+    gap: season-scroll-tablet-scale($season-scroll-hanja-title-gap-tablet);
     width: calc(
       100% -
         #{season-scroll-tablet-scale($season-scroll-subbg-w-tablet)} -
@@ -1122,6 +1126,7 @@ $season-scroll-ellipse-top-tablet: 23.4375rem; // 750px / 2 — 타원 세로 �
   .season-scroll__hanja {
     width: season-scroll-tablet-scale($season-scroll-hanja-w-tablet);
     height: season-scroll-tablet-scale($season-scroll-hanja-h-tablet);
+    margin-top: season-scroll-tablet-scale($season-scroll-hanja-push-tablet);
   }
 
   .season-scroll__copy-block {
@@ -1177,6 +1182,97 @@ $season-scroll-ellipse-top-tablet: 23.4375rem; // 750px / 2 — 타원 세로 �
   }
 }
 
+/* 769–1024 — Ellipse.webp 고정 링만 사용, 스크롤 SVG 트레일 중복 선 제거 */
+@media (min-width: #{$tablet + 1px}) and (max-width: $laptop) {
+  .season-scroll__orbit-trail-svg {
+    display: none;
+  }
+}
+
+/* 403–1024 — 태블릿 풀 뷰포트 높이 (하단 여백 제거) */
+@media (min-width: #{$mobile + 1px}) and (max-width: $laptop) {
+  .season-scroll {
+    height: 100dvh;
+    min-height: 100dvh;
+    max-height: none;
+  }
+
+  .season-scroll__visual {
+    inset: 0;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .season-scroll__orbit-layers {
+    inset: 0;
+    height: 100%;
+    overflow: visible;
+  }
+
+  /* 찻잔 — 768×750 설계 좌표를 세로 중앙에 두어 Ellipse 링과 일치 (subbg 아래) */
+  .season-scroll__orbit--cups {
+    top: 50%;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    z-index: 2;
+    height: calc(#{$season-scroll-h-tablet} * 100vw / #{$tablet});
+    transform: translateY(-50%);
+    transform-origin: center;
+  }
+
+  .season-scroll__ellipse {
+    top: calc(
+      50% - (#{$season-scroll-h-tablet} * 100vw / #{$tablet}) / 2 +
+        (#{$season-scroll-h-tablet} * 100vw / #{$tablet}) / 2 -
+        (#{$season-scroll-ellipse-size-tablet} * 100vw / #{$tablet}) / 2
+    );
+    left: calc(#{$season-scroll-ellipse-left-tablet} * 100vw / #{$tablet});
+    width: calc(#{$season-scroll-ellipse-size-tablet} * 100vw / #{$tablet});
+    height: calc(#{$season-scroll-ellipse-size-tablet} * 100vw / #{$tablet});
+    transform: none;
+  }
+
+  .season-scroll__scene {
+    top: calc(
+      50% - (#{$season-scroll-h-tablet} * 100vw / #{$tablet}) / 2 +
+        (#{$season-scroll-h-tablet} * 100vw / #{$tablet}) / 2 -
+        (#{$season-scroll-scene-size-tablet} * 100vw / #{$tablet}) / 2
+    );
+    right: calc(#{$season-scroll-scene-right-tablet} * 100vw / #{$tablet});
+    width: calc(#{$season-scroll-scene-size-tablet} * 100vw / #{$tablet});
+    height: calc(#{$season-scroll-scene-size-tablet} * 100vw / #{$tablet});
+    transform: none;
+  }
+
+  .season-scroll__subbg {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: auto;
+    z-index: 3;
+    width: auto;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .season-scroll__subbg-img--tablet {
+    top: 0;
+    right: 0;
+    left: auto;
+    width: auto;
+    height: 100%;
+    min-height: 100%;
+    max-width: none;
+    object-fit: contain;
+    object-position: right top;
+  }
+
+  .season-scroll__hanja {
+    margin-top: $season-scroll-hanja-push-tablet;
+  }
+}
+
 @media (max-width: $mobile) {
   .season-scroll-stage {
     width: 100%;
@@ -1197,6 +1293,7 @@ $season-scroll-ellipse-top-tablet: 23.4375rem; // 750px / 2 — 타원 세로 �
     position: absolute;
     inset: 0;
     z-index: 5;
+    gap: 0;
     width: 100%;
     max-width: none;
     overflow: visible;
@@ -1245,6 +1342,7 @@ $season-scroll-ellipse-top-tablet: 23.4375rem; // 750px / 2 — 타원 세로 �
     flex-shrink: 0;
     width: $season-scroll-hanja-w-mobile;
     height: $season-scroll-hanja-h-mobile;
+    margin-top: 0;
   }
 
   .season-scroll__detail {
@@ -2761,16 +2859,24 @@ $season-gallery-section-padding-bottom-mobile: 3rem;
 // KV 배경 — 태블릿·모바일 (compact·fluid 규칙 이후 최종 오버라이드)
 @media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
   .season-class-kv {
-    background-image: url("../../assets/images/09season-class/ta-kv.png");
+    --season-class-kv-height: #{grid.$tablet-kv-height};
+    height: grid.$tablet-kv-height;
+    min-height: grid.$tablet-kv-height;
+    background-image: url("../../assets/images/09season-class/season-class-kv-ta.webp");
     background-size: cover;
     background-position: center center;
+    background-repeat: no-repeat;
   }
 }
 
 @media (max-width: #{$tablet - 1px}) {
   .season-class-kv {
-    background-image: url("../../assets/images/09season-class/mo-kv.png");
+    --season-class-kv-height: #{grid.$mobile-kv-height};
+    height: grid.$mobile-kv-height;
+    min-height: grid.$mobile-kv-height;
+    background-image: url("../../assets/images/09season-class/season-class-kv-mo.webp");
     background-size: cover;
     background-position: center center;
+    background-repeat: no-repeat;
   }
 }

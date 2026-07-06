@@ -1,5 +1,6 @@
 @use "../../../styles/abstracts/breakpoints" as *;
 @use "../../../styles/abstracts/grid" as grid;
+@use "../../../styles/tokens/z-index" as z;
 
 // ─── 반응형 lerp (1024 / 768 / 402 / 1440 그리드 기준) ─────────────────────
 $header-pc-narrow-range: 26rem; // 1440px(90rem) − 1024px(64rem)
@@ -70,8 +71,7 @@ $header-mobile-user-icon-max: 1.25rem;
 
 // ─── 공통 ────────────────────────────────────────────────────────────────────
 .site-header-shell {
-  position: relative;
-  z-index: 20;
+  z-index: z.$header;
   width: 100vw;
   min-width: 0;
   margin-inline: calc(50% - 50vw);
@@ -446,7 +446,7 @@ $header-mobile-user-icon-max: 1.25rem;
   position: fixed;
   top: 0;
   left: 50%;
-  z-index: 100;
+  z-index: z.$header-menu;
   box-sizing: border-box;
   width: 100vw;
   background: var(--han50);

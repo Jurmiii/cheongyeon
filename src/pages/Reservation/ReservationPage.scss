@@ -14,7 +14,7 @@ $reservation-class-mobile: 32.5rem; // 520px — 클래스 카드 1열(모바일
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: var(--z-header);
   width: 100%;
 }
 

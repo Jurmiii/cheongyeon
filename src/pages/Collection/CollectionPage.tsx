@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import aromaGraph from "../../assets/images/05collection/graph.webp";
 import { Footer, Header, MobileFooter, MobileHeader, Modal2, SubKvSymbolLine, TabletFooter, TabletHeader } from "../../components/common";
 import type { TeaCollectionModalData } from "../../components/common/TeaCollectionModal/teaCollectionModal.types";
-import { collectionTabs } from "./collectionTabs";
+import { collectionTabs, isCollectionTabId } from "./collectionTabs";
 import type { CollectionTabId } from "./collectionTabs";
 import { getCollectionProductModalData } from "./collectionProductModal";
 import { collectionCategories } from "./collectionProducts";
@@ -10,8 +11,22 @@ import CollectionCategorySection from "./CollectionCategorySection";
 import "./CollectionPage.scss";
 
 function CollectionPage() {
-  const [activeTab, setActiveTab] = useState<CollectionTabId>("all");
+  const [searchParams] = useSearchParams();
+  const tabFromQuery = useMemo(() => {
+    const tab = searchParams.get("tab");
+
+    if (tab && isCollectionTabId(tab)) {
+      return tab;
+    }
+
+    return "all";
+  }, [searchParams]);
+  const [activeTab, setActiveTab] = useState<CollectionTabId>(tabFromQuery);
   const [selectedModalData, setSelectedModalData] = useState<TeaCollectionModalData | null>(null);
+
+  useEffect(() => {
+    setActiveTab(tabFromQuery);
+  }, [tabFromQuery]);
 
   const visibleCategories =
     activeTab === "all"

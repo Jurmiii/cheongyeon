@@ -1,9 +1,9 @@
 @use "../../../styles/abstracts/breakpoints" as *;
 @use "../../../styles/abstracts/grid" as grid;
+@use "../../../styles/tokens/z-index" as z;
 
 .tablet-header-shell {
-  position: relative;
-  z-index: 20;
+  z-index: z.$header;
   width: 100%;
   max-width: 100%;
 }
@@ -65,7 +65,7 @@
   position: fixed;
   top: 0;
   left: 50%;
-  z-index: 100;
+  z-index: z.$header-menu;
   box-sizing: border-box;
   width: min(100vw, grid.$tablet-grid-outer);
   height: clamp(50.25rem, calc(50.25rem + (100vw - #{$tablet}) * 0.04), 52rem);
