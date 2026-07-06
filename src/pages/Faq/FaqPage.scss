@@ -469,9 +469,20 @@ $faq-kv-mobile-max: 600px;
   }
 }
 
-// 1024px~ — PC KV 그리드 여백 (헤더·콘텐츠와 좌측 정렬)
+// 1024px~ — PC KV 그리드 (헤더와 동일: 1440 컨테이너 + 좌우 1.5rem)
 @media (min-width: $laptop) {
   .faq-kv__grid {
+    width: 100%;
+    max-width: grid.$desktop-grid-outer;
+    margin-inline: auto;
+    padding-inline: grid.$desktop-grid-side-padding;
+  }
+}
+
+// 1024~1440px — 뷰포트 축소 시 헤더·푸터와 동일 fluid 인셋
+@media (min-width: $laptop) and (max-width: grid.$desktop-grid-outer) {
+  .faq-kv__grid {
+    max-width: none;
     padding-inline: max(
       grid.$desktop-grid-side-padding,
       calc((100vw - min(100vw, grid.$desktop-grid-outer)) / 2 + grid.$desktop-grid-side-padding)
@@ -505,22 +516,8 @@ $faq-kv-mobile-max: 600px;
   }
 }
 
-// ≤768px — KV 딤 오버레이 + 흰색 텍스트
+// ≤768px — KV 흰색 텍스트
 @media (max-width: $tablet) {
-  .faq-kv::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: rgb(0 0 0 / 40%);
-    pointer-events: none;
-  }
-
-  .faq-kv__grid {
-    position: relative;
-    z-index: 2;
-  }
-
   .faq-page .faq-kv__title.ink500,
   .faq-page .faq-kv__description.ink500 {
     color: var(--white);

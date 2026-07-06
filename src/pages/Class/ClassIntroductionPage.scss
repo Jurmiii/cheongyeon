@@ -530,7 +530,7 @@ $class-intro-review-mobile-text-cols: 5;
 // 611px ~ 768px — 태블릿 상단
 @media (min-width: $tablet-md) and (max-width: $tablet) {
   .class-intro-kv {
-    background-position: center 26%;
+    background-position: center center;
   }
 
   .class-intro-kv__grid {
@@ -662,51 +662,6 @@ $class-intro-review-mobile-text-cols: 5;
     margin-top: $class-intro-kv-desc-gap-mobile;
     font-size: $class-intro-kv-desc-size-mobile;
     line-height: $class-intro-kv-desc-line-mobile;
-  }
-}
-
-// KV 배경 — 태블릿·모바일 전용 이미지 (FAQ·공지와 동일 고정 높이, fluid 보간 제거)
-@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
-  .class-intro-kv {
-    --class-intro-kv-height: #{grid.$tablet-kv-height};
-    height: grid.$tablet-kv-height;
-    min-height: grid.$tablet-kv-height;
-    background-image: url("../../assets/images/08class/ta-kv.png");
-    background-size: cover;
-    background-position: center center;
-  }
-}
-
-@media (max-width: #{$tablet - 1px}) {
-  .class-intro-kv {
-    --class-intro-kv-height: #{grid.$mobile-kv-height};
-    height: grid.$mobile-kv-height;
-    min-height: grid.$mobile-kv-height;
-    background-image: url("../../assets/images/08class/mo-kv.png");
-    background-size: cover;
-    background-position: center center;
-  }
-}
-
-// ≤768px — KV 딤 10% + 흰색 텍스트
-@media (max-width: $tablet) {
-  .class-intro-kv::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: rgb(0 0 0 / 10%);
-    pointer-events: none;
-  }
-
-  .class-intro-kv__grid {
-    position: relative;
-    z-index: 2;
-  }
-
-  .class-intro-page .class-intro-kv__title.ink500,
-  .class-intro-page .class-intro-kv__description.ink500 {
-    color: var(--white);
   }
 }
 
@@ -2596,8 +2551,8 @@ $class-intro-carousel-desc-line-compact: 1.625rem;
 
 @include sub-kv-layout.sub-kv-layout-compact("class-intro-kv");
 
-// ≤768px — KV 심볼·라인 흰색 (compact mixin 이후 오버라이드)
-@media (max-width: $tablet) {
+// ≤767px — KV 심볼·라인 흰색 (compact mixin 이후 오버라이드)
+@media (max-width: #{$tablet - 1px}) {
   .class-intro-kv__symbol-line,
   .class-intro-kv__symbol-line--ink {
     color: var(--white);
@@ -2610,5 +2565,47 @@ $class-intro-carousel-desc-line-compact: 1.625rem;
 
   .class-intro-kv__line-symbol {
     filter: brightness(0) invert(1);
+  }
+}
+
+// KV 배경 — 태블릿·모바일 (compact·fluid 규칙 이후 최종 오버라이드)
+@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
+  .class-intro-kv {
+    --class-intro-kv-height: #{grid.$tablet-kv-height};
+    height: grid.$tablet-kv-height;
+    min-height: grid.$tablet-kv-height;
+    background-image: url("../../assets/images/08class/ta-kv.png");
+    background-size: cover;
+    background-position: center center;
+  }
+}
+
+@media (max-width: #{$tablet - 1px}) {
+  .class-intro-kv {
+    --class-intro-kv-height: #{grid.$mobile-kv-height};
+    height: grid.$mobile-kv-height;
+    min-height: grid.$mobile-kv-height;
+    background-image: url("../../assets/images/08class/mo-kv.png");
+    background-size: cover;
+    background-position: center center;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: rgb(0 0 0 / 10%);
+      pointer-events: none;
+    }
+  }
+
+  .class-intro-kv__grid {
+    position: relative;
+    z-index: 2;
+  }
+
+  .class-intro-page .class-intro-kv__title.ink500,
+  .class-intro-page .class-intro-kv__description.ink500 {
+    color: var(--white);
   }
 }

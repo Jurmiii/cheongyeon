@@ -33,6 +33,7 @@ $stamp-modal-gutter: 1.5rem;
   justify-content: center;
   padding: $stamp-modal-gutter;
   background: rgb(35 35 35 / 55%);
+  overscroll-behavior: contain;
 }
 
 .stamp-card {
@@ -41,6 +42,7 @@ $stamp-modal-gutter: 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: min(
     $stamp-card-max-width,
     calc(100vw - #{$stamp-modal-gutter * 2}),
@@ -48,7 +50,7 @@ $stamp-modal-gutter: 1.5rem;
   );
   aspect-ratio: #{$stamp-design-width} / #{$stamp-design-height};
   height: auto;
-  padding-top: stamp-cqw(47);
+  padding-block: stamp-cqw(36);
   background-image: url("../../assets/images/13my-page/stemp.png");
   background-position: center;
   background-size: 100% 100%;
@@ -74,7 +76,7 @@ $stamp-modal-gutter: 1.5rem;
   grid-template-columns: repeat(4, stamp-cqw(88));
   column-gap: stamp-cqw(116);
   row-gap: stamp-cqw(12);
-  margin-top: stamp-cqw(37);
+  margin-top: stamp-cqw(28);
 }
 
 .stamp-cup {
@@ -117,7 +119,7 @@ $stamp-modal-gutter: 1.5rem;
   flex-direction: column;
   width: fit-content;
   max-width: calc(100% - #{math.div(32, $stamp-design-width) * 100}cqw);
-  margin: stamp-cqw(40) auto 0;
+  margin: stamp-cqw(28) auto 0;
 }
 
 .stamp-benefit {

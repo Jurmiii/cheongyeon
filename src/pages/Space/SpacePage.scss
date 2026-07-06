@@ -34,9 +34,25 @@
   height: 46.25rem;
   overflow: hidden;
   background-color: var(--han50);
+  background-image: url("../../assets/images/03space/space-kv.webp");
   background-size: cover;
   background-position: center right;
   background-repeat: no-repeat;
+}
+
+/* 태블릿 KV — 배경만 */
+@media (min-width: $tablet) and (max-width: $laptop) {
+  .space-kv {
+    background-image: url("../../assets/images/03space/ta-kv.png");
+    background-position: center;
+  }
+}
+
+/* 모바일 KV — 배경만 */
+@media (max-width: #{$tablet - 1px}) {
+  .space-kv {
+    background-image: url("../../assets/images/03space/mo-kv.png");
+  }
 }
 
 .space-kv__grid {

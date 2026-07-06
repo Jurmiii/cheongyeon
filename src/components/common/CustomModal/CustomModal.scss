@@ -10,6 +10,7 @@
   background: rgb(35 35 35 / 45%);
   opacity: 0;
   pointer-events: none;
+  overscroll-behavior: contain;
   transition: opacity 0.22s ease;
 }
 

@@ -98,6 +98,7 @@ $season-class-kv-height-desktop: 46.25rem; // PC 740px
   height: $season-class-kv-height-desktop;
   --season-class-kv-height: #{$season-class-kv-height-desktop};
   overflow: hidden;
+  background-image: url("../../assets/images/09season-class/season-class-kv-bg.webp");
   background-size: cover;
   background-position: center 26%;
   background-repeat: no-repeat;
@@ -2434,3 +2435,20 @@ $season-gallery-section-padding-bottom-mobile: 3rem;
 }
 
 @include sub-kv-layout.sub-kv-layout-compact("season-class-kv");
+
+// KV 배경 — 태블릿·모바일 (compact·fluid 규칙 이후 최종 오버라이드)
+@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
+  .season-class-kv {
+    background-image: url("../../assets/images/09season-class/ta-kv.png");
+    background-size: cover;
+    background-position: center center;
+  }
+}
+
+@media (max-width: #{$tablet - 1px}) {
+  .season-class-kv {
+    background-image: url("../../assets/images/09season-class/mo-kv.png");
+    background-size: cover;
+    background-position: center center;
+  }
+}

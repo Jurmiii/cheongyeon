@@ -1211,11 +1211,7 @@ function SeasonClassPage() {
         <Header />
       </div>
 
-      <section
-        className="season-class-kv"
-        style={{ backgroundImage: `url(${seasonClassAssets.kvBg})` }}
-        aria-label="시즌 클래스"
-      >
+      <section className="season-class-kv" aria-label="시즌 클래스">
         <div className="season-class-kv__grid">
           <div className="season-class-kv__content">
             <div className="season-class-kv__head">

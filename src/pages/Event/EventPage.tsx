@@ -1,7 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useNavigate } from "react-router-dom";
 
-import eventKvBg from "../../assets/images/11event/event-kv-bg.webp";
 import { Badge, Footer, Header, Icon, SubKvSymbolLine } from "../../components/common";
 import type { IconName } from "../../components/common";
 import { events, type EventItem, type EventStatus } from "../../data/eventList";
@@ -307,11 +306,7 @@ function EventPage() {
         <Header />
       </div>
 
-      <section
-        className="event-kv"
-        style={{ backgroundImage: `url(${eventKvBg})` }}
-        aria-label="진행중 이벤트"
-      >
+      <section className="event-kv" aria-label="진행중 이벤트">
         <div className="event-kv__grid">
           <div className="event-kv__content">
             <div className="event-kv__head">
