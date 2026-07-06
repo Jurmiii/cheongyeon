@@ -46,8 +46,6 @@ const HISTORY_PER_PAGE = 3;
 
 const profileFieldConfig = [
 
-  { id: "name", label: "이름" },
-
   { id: "phone", label: "연락처" },
 
   { id: "email", label: "이메일" },
