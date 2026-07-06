@@ -12,6 +12,8 @@ import { Badge, Button, CustomModal, Footer, Header, Icon, Input, TeaClassConten
 
 import { useReservations } from "../../hooks/useReservations";
 
+import { useStampBalance } from "../../hooks/useStampBalance";
+
 import { useUserProfile } from "../../hooks/useUserProfile";
 
 import type { ProfileFormValues, Reservation } from "../../types/mypage";
@@ -75,6 +77,7 @@ function MyPage() {
   const { profile, updateProfile } = useUserProfile();
 
   const { upcomingReservation, historyReservations, stats, cancelReservation } = useReservations();
+  const { availableStamps } = useStampBalance();
 
 
 
@@ -156,7 +159,7 @@ function MyPage() {
 
       title: "적립 스탬프",
 
-      value: String(stats.stampCount),
+      value: String(availableStamps),
 
       unit: "개",
 

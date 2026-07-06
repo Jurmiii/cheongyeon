@@ -22,7 +22,21 @@ import {
 import { useReservations } from "../../hooks/useReservations";
 import { useUserProfile } from "../../hooks/useUserProfile";
 import type { Reservation } from "../../types/mypage";
+import type { StampBenefitId } from "../../data/stampBenefits";
+import {
+  STAMP_BENEFITS,
+  calculateStampPricing,
+  getAvailableStampBenefits,
+  getStampBenefitById,
+  parsePriceKrw,
+} from "../../data/stampBenefits";
+import { TEMP_LOGIN_ID } from "../../data/tempLoginCredentials";
 import { addReservation, getBookedSeatsForSession, getRemainingSeatsForSession, updateReservation } from "../../utils/reservationStorage";
+import {
+  consumeStamps,
+  getAvailableStampBalance,
+  restoreStamps,
+} from "../../utils/stampStorage";
 import {
   getFirstAvailableReservationTimeSlot,
   canCancelReservation,
@@ -35,6 +49,7 @@ import {
   isSeasonReservationClassActive,
   parseSeasonReservationClassId,
 } from "../../data/seasonClassReservation";
+import ReservationStampCoupon from "./ReservationStampCoupon";
 import "./ReservationPage.scss";
 
 type PaymentMethod = "card" | "bank";
@@ -404,7 +419,7 @@ function ReservationCompleteModal({ isOpen, onClose, title = "예약완료" }: R
 function ReservationPage() {
   const { loginId } = useAuth();
   const { profile } = useUserProfile();
-  const { reservations, upcomingReservation } = useReservations();
+  const { reservations, upcomingReservation, stats } = useReservations();
   const [searchParams] = useSearchParams();
   const today = useMemo(() => startOfDay(new Date()), []);
   const isEditMode = searchParams.get("mode") === "edit";
@@ -439,6 +454,8 @@ function ReservationPage() {
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [fieldErrors, setFieldErrors] = useState<ReservationFieldErrors>({});
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const [isCouponSheetOpen, setIsCouponSheetOpen] = useState(false);
+  const [appliedStampBenefitId, setAppliedStampBenefitId] = useState<StampBenefitId | null>(null);
   const customerInfoRef = useRef<HTMLDivElement>(null);
   const initializedEditReservationIdRef = useRef<string | null>(null);
   const initializedFromQueryRef = useRef(false);
@@ -455,6 +472,20 @@ function ReservationPage() {
     () => reservationClasses.find((classItem) => classItem.id === selectedClassId) ?? reservationClasses[0],
     [selectedClassId],
   );
+  const earnedStamps = stats.stampCount;
+  const availableStamps = loginId ? getAvailableStampBalance(loginId, earnedStamps) : 0;
+  const isPracticeAccount = loginId === TEMP_LOGIN_ID;
+  const availableStampBenefits = useMemo(
+    () => (isPracticeAccount ? STAMP_BENEFITS : getAvailableStampBenefits(availableStamps)),
+    [availableStamps, isPracticeAccount],
+  );
+  const unitPrice = useMemo(() => parsePriceKrw(selectedClass.price), [selectedClass.price]);
+  const productAmount = useMemo(() => unitPrice * guestCount, [guestCount, unitPrice]);
+  const pricing = useMemo(
+    () => calculateStampPricing(productAmount, unitPrice, appliedStampBenefitId),
+    [appliedStampBenefitId, productAmount, unitPrice],
+  );
+  const showStampCouponSection = !isEditMode && Boolean(loginId);
   const selectedDateKey = formatDateForStorage(selectedDate);
 
   const sessionAvailabilityByTime = useMemo(() => {
@@ -640,6 +671,63 @@ function ReservationPage() {
     setGuestCount((count) => Math.min(count, bookableGuestCount));
   }, [bookableGuestCount]);
 
+  useEffect(() => {
+    if (!appliedStampBenefitId) {
+      return;
+    }
+
+    const benefit = getStampBenefitById(appliedStampBenefitId);
+
+    if (!benefit) {
+      setAppliedStampBenefitId(null);
+    }
+  }, [appliedStampBenefitId]);
+
+  const handleCouponOpen = () => {
+    setIsCouponSheetOpen(true);
+  };
+
+  const handleCouponClose = () => {
+    setIsCouponSheetOpen(false);
+  };
+
+  const handleApplyStampBenefit = (benefitId: StampBenefitId | null) => {
+    if (!loginId) {
+      return;
+    }
+
+    if (appliedStampBenefitId) {
+      const previousBenefit = getStampBenefitById(appliedStampBenefitId);
+
+      if (previousBenefit && !isPracticeAccount) {
+        restoreStamps(loginId, previousBenefit.requiredStamps);
+      }
+    }
+
+    if (!benefitId) {
+      setAppliedStampBenefitId(null);
+      setIsCouponSheetOpen(false);
+      return;
+    }
+
+    const benefit = getStampBenefitById(benefitId);
+
+    if (!benefit) {
+      return;
+    }
+
+    if (!isPracticeAccount && availableStamps < benefit.requiredStamps) {
+      return;
+    }
+
+    if (!isPracticeAccount) {
+      consumeStamps(loginId, benefit.requiredStamps);
+    }
+
+    setAppliedStampBenefitId(benefitId);
+    setIsCouponSheetOpen(false);
+  };
+
   const handleGuestDecrease = () => {
     setGuestCount((count) => Math.max(1, count - 1));
   };
@@ -776,6 +864,10 @@ function ReservationPage() {
       cardCompany: paymentMethod === "card" ? selectedCardCompany : null,
       installmentPlan: paymentMethod === "card" ? selectedInstallment : undefined,
       savePaymentMethod,
+      stampBenefitId: appliedStampBenefitId,
+      productAmount: pricing.productAmount,
+      discountAmount: pricing.discountAmount,
+      finalAmount: pricing.finalAmount,
       status: editReservation?.status ?? "upcoming",
       image: selectedClass.image,
       createdAt: editReservation?.createdAt ?? new Date().toISOString(),
@@ -1168,173 +1260,205 @@ function ReservationPage() {
         </div>
       </section>
 
-      <section className="reservation-payment" aria-label="결제수단">
+      <section className="reservation-payment" aria-label="결제">
         <div className="reservation-payment__grid">
-          <h2 className="reservation-payment__title ft-18b ink500">결제수단</h2>
-          <div className="reservation-payment__tabs" role="tablist" aria-label="결제 방식">
-            <button
-              className={[
-                "reservation-payment__tab",
-                "ft-16b",
-                paymentMethod === "card" && "reservation-payment__tab--active",
-              ]
-                .filter(Boolean)
-                .join(" ")}
-              type="button"
-              role="tab"
-              aria-selected={paymentMethod === "card"}
-              onClick={() => {
-                setPaymentMethod("card");
-                setOpenPaymentDropdown(null);
-              }}
-            >
-              신용카드
-            </button>
-            <button
-              className={[
-                "reservation-payment__tab",
-                "ft-16b",
-                paymentMethod === "bank" && "reservation-payment__tab--active",
-              ]
-                .filter(Boolean)
-                .join(" ")}
-              type="button"
-              role="tab"
-              aria-selected={paymentMethod === "bank"}
-              onClick={() => {
-                setPaymentMethod("bank");
-                setOpenPaymentDropdown(null);
-              }}
-            >
-              무통장입금
-            </button>
-          </div>
-          {paymentMethod === "card" ? (
-          <div className="reservation-payment__selects">
-            <div
-              className={[
-                "reservation-payment__select-wrap",
-                openPaymentDropdown === "cardCompany" && "reservation-payment__select-wrap--open",
-              ]
-                .filter(Boolean)
-                .join(" ")}
-            >
-              <button
-                className="reservation-payment__select ft-16b ink500"
-                type="button"
-                aria-haspopup="listbox"
-                aria-expanded={openPaymentDropdown === "cardCompany"}
-                disabled={paymentMethod !== "card"}
-                onClick={() => handlePaymentDropdownToggle("cardCompany")}
-              >
-                <span className="reservation-payment__select-label">{cardCompanyLabel}</span>
-                <Icon className="reservation-payment__select-icon" name="angle-down" aria-hidden="true" />
-              </button>
-              <ul className="reservation-payment__select-menu" role="listbox" aria-label="카드사 선택">
-                {cardCompanies.map((company) => (
-                  <li key={company}>
-                    <button
-                      className={[
-                        "reservation-payment__select-option",
-                        "ft-18r",
-                        "ink500",
-                        company === selectedCardCompany && "reservation-payment__select-option--active",
-                      ]
-                        .filter(Boolean)
-                        .join(" ")}
-                      type="button"
-                      role="option"
-                      aria-selected={company === selectedCardCompany}
-                      onClick={() => handleCardCompanySelect(company)}
-                    >
-                      {company}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div
-              className={[
-                "reservation-payment__select-wrap",
-                "reservation-payment__select-wrap--installment",
-                openPaymentDropdown === "installment" && "reservation-payment__select-wrap--open",
-              ]
-                .filter(Boolean)
-                .join(" ")}
-            >
-              <button
-                className="reservation-payment__select ft-16b ink500"
-                type="button"
-                aria-haspopup="listbox"
-                aria-expanded={openPaymentDropdown === "installment"}
-                disabled={paymentMethod !== "card"}
-                onClick={() => handlePaymentDropdownToggle("installment")}
-              >
-                <span className="reservation-payment__select-label">{selectedInstallment}</span>
-                <Icon className="reservation-payment__select-icon" name="angle-down" aria-hidden="true" />
-              </button>
-              <ul className="reservation-payment__select-menu" role="listbox" aria-label="할부 선택">
-                {installmentPlans.map((plan) => (
-                  <li key={plan}>
-                    <button
-                      className={[
-                        "reservation-payment__select-option",
-                        "ft-18r",
-                        "ink500",
-                        plan === selectedInstallment && "reservation-payment__select-option--active",
-                      ]
-                        .filter(Boolean)
-                        .join(" ")}
-                      type="button"
-                      role="option"
-                      aria-selected={plan === selectedInstallment}
-                      onClick={() => handleInstallmentSelect(plan)}
-                    >
-                      {plan}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          ) : (
-            <div className="reservation-payment__bank" role="group" aria-label="무통장입금 계좌 안내">
-              <div className="reservation-payment__bank-messages">
-                <p className="reservation-payment__bank-guide ft-22r ink500">
-                  아래 계좌로 입금해주시면 예약이 확정됩니다.
-                </p>
-                <p className="reservation-payment__bank-notice ft-14r ink300">
-                  <span className="reservation-payment__bank-notice-mark" aria-hidden="true">
-                    *
-                  </span>{" "}
-                  예약 확인을 위해 입금자명은 반드시 예약자명과 동일하게 입력해 주세요.
-                </p>
+          <div
+            className={[
+              "reservation-payment__layout",
+              isEditMode && "reservation-payment__layout--single",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+          >
+            {!isEditMode && showStampCouponSection ? (
+              <div className="reservation-payment__checkout">
+                <ReservationStampCoupon
+                  isOpen={isCouponSheetOpen}
+                  availableStamps={availableStamps}
+                  availableCouponCount={availableStampBenefits.length}
+                  appliedBenefitId={appliedStampBenefitId}
+                  isPracticeAccount={isPracticeAccount}
+                  productAmount={productAmount}
+                  unitPrice={unitPrice}
+                  pricing={pricing}
+                  onOpen={handleCouponOpen}
+                  onClose={handleCouponClose}
+                  onApply={handleApplyStampBenefit}
+                />
               </div>
-              <dl className="reservation-payment__bank-info">
-                <div className="reservation-payment__bank-row">
-                  <dt className="reservation-payment__bank-term ft-18r ink300">입금 은행</dt>
-                  <dd className="reservation-payment__bank-desc ft-22b ink500">{BANK_ACCOUNT.bank}</dd>
+            ) : null}
+
+            <div className="reservation-payment__method">
+              <div className="reservation-payment__method-card">
+                <h2 className="reservation-payment__title ft-18b ink500">결제 방법</h2>
+                <div className="reservation-payment__tabs" role="tablist" aria-label="결제 방식">
+                  <button
+                    className={[
+                      "reservation-payment__tab",
+                      "ft-16b",
+                      paymentMethod === "card" && "reservation-payment__tab--active",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    type="button"
+                    role="tab"
+                    aria-selected={paymentMethod === "card"}
+                    onClick={() => {
+                      setPaymentMethod("card");
+                      setOpenPaymentDropdown(null);
+                    }}
+                  >
+                    신용카드
+                  </button>
+                  <button
+                    className={[
+                      "reservation-payment__tab",
+                      "ft-16b",
+                      paymentMethod === "bank" && "reservation-payment__tab--active",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    type="button"
+                    role="tab"
+                    aria-selected={paymentMethod === "bank"}
+                    onClick={() => {
+                      setPaymentMethod("bank");
+                      setOpenPaymentDropdown(null);
+                    }}
+                  >
+                    무통장입금
+                  </button>
                 </div>
-                <div className="reservation-payment__bank-row">
-                  <dt className="reservation-payment__bank-term ft-18r ink300">계좌번호</dt>
-                  <dd className="reservation-payment__bank-desc ft-22b ink500">{BANK_ACCOUNT.number}</dd>
-                </div>
-                <div className="reservation-payment__bank-row">
-                  <dt className="reservation-payment__bank-term ft-18r ink300">예금주</dt>
-                  <dd className="reservation-payment__bank-desc ft-22b ink500">{BANK_ACCOUNT.holder}</dd>
-                </div>
-              </dl>
+                {paymentMethod === "card" ? (
+                    <div className="reservation-payment__selects">
+                      <div
+                        className={[
+                          "reservation-payment__select-wrap",
+                          openPaymentDropdown === "cardCompany" && "reservation-payment__select-wrap--open",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                      >
+                        <button
+                          className="reservation-payment__select ft-16b ink500"
+                          type="button"
+                          aria-haspopup="listbox"
+                          aria-expanded={openPaymentDropdown === "cardCompany"}
+                          disabled={paymentMethod !== "card"}
+                          onClick={() => handlePaymentDropdownToggle("cardCompany")}
+                        >
+                          <span className="reservation-payment__select-label">{cardCompanyLabel}</span>
+                          <Icon className="reservation-payment__select-icon" name="angle-down" aria-hidden="true" />
+                        </button>
+                        <ul className="reservation-payment__select-menu" role="listbox" aria-label="카드사 선택">
+                          {cardCompanies.map((company) => (
+                            <li key={company}>
+                              <button
+                                className={[
+                                  "reservation-payment__select-option",
+                                  "ft-18r",
+                                  "ink500",
+                                  company === selectedCardCompany && "reservation-payment__select-option--active",
+                                ]
+                                  .filter(Boolean)
+                                  .join(" ")}
+                                type="button"
+                                role="option"
+                                aria-selected={company === selectedCardCompany}
+                                onClick={() => handleCardCompanySelect(company)}
+                              >
+                                {company}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div
+                        className={[
+                          "reservation-payment__select-wrap",
+                          "reservation-payment__select-wrap--installment",
+                          openPaymentDropdown === "installment" && "reservation-payment__select-wrap--open",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                      >
+                        <button
+                          className="reservation-payment__select ft-16b ink500"
+                          type="button"
+                          aria-haspopup="listbox"
+                          aria-expanded={openPaymentDropdown === "installment"}
+                          disabled={paymentMethod !== "card"}
+                          onClick={() => handlePaymentDropdownToggle("installment")}
+                        >
+                          <span className="reservation-payment__select-label">{selectedInstallment}</span>
+                          <Icon className="reservation-payment__select-icon" name="angle-down" aria-hidden="true" />
+                        </button>
+                        <ul className="reservation-payment__select-menu" role="listbox" aria-label="할부 선택">
+                          {installmentPlans.map((plan) => (
+                            <li key={plan}>
+                              <button
+                                className={[
+                                  "reservation-payment__select-option",
+                                  "ft-18r",
+                                  "ink500",
+                                  plan === selectedInstallment && "reservation-payment__select-option--active",
+                                ]
+                                  .filter(Boolean)
+                                  .join(" ")}
+                                type="button"
+                                role="option"
+                                aria-selected={plan === selectedInstallment}
+                                onClick={() => handleInstallmentSelect(plan)}
+                              >
+                                {plan}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                ) : (
+                  <div className="reservation-payment__bank" role="group" aria-label="무통장입금 계좌 안내">
+                    <div className="reservation-payment__bank-messages">
+                      <p className="reservation-payment__bank-guide ft-22r ink500">
+                        아래 계좌로 입금해주시면 예약이 확정됩니다.
+                      </p>
+                      <p className="reservation-payment__bank-notice ft-14r ink300">
+                        <span className="reservation-payment__bank-notice-mark" aria-hidden="true">
+                          *
+                        </span>{" "}
+                        예약 확인을 위해 입금자명은 반드시 예약자명과 동일하게 입력해 주세요.
+                      </p>
+                    </div>
+                    <dl className="reservation-payment__bank-info">
+                      <div className="reservation-payment__bank-row">
+                        <dt className="reservation-payment__bank-term ft-18r ink300">입금 은행</dt>
+                        <dd className="reservation-payment__bank-desc ft-22b ink500">{BANK_ACCOUNT.bank}</dd>
+                      </div>
+                      <div className="reservation-payment__bank-row">
+                        <dt className="reservation-payment__bank-term ft-18r ink300">계좌번호</dt>
+                        <dd className="reservation-payment__bank-desc ft-22b ink500">{BANK_ACCOUNT.number}</dd>
+                      </div>
+                      <div className="reservation-payment__bank-row">
+                        <dt className="reservation-payment__bank-term ft-18r ink300">예금주</dt>
+                        <dd className="reservation-payment__bank-desc ft-22b ink500">{BANK_ACCOUNT.holder}</dd>
+                      </div>
+                    </dl>
+                  </div>
+                )}
+                <label className="reservation-payment__remember ft-14r ink500">
+                  <input
+                    className="reservation-payment__checkbox"
+                    type="checkbox"
+                    checked={savePaymentMethod}
+                    onChange={(event) => setSavePaymentMethod(event.target.checked)}
+                  />
+                  선택한 결제 수단을 다음에도 사용
+                </label>
+              </div>
             </div>
-          )}
-          <label className="reservation-payment__remember ft-14r ink500">
-            <input
-              className="reservation-payment__checkbox"
-              type="checkbox"
-              checked={savePaymentMethod}
-              onChange={(event) => setSavePaymentMethod(event.target.checked)}
-            />
-            선택한 결제 수단을 다음에도 사용
-          </label>
+          </div>
+
           {validationErrors.length > 0 && (
             <div className="reservation-payment__errors" role="alert" aria-live="polite">
               <p className="reservation-payment__errors-title ft-18b">아래 항목을 확인해주세요.</p>

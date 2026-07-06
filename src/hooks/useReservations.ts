@@ -13,6 +13,8 @@ import {
   seedReservationsIfEmpty,
   updateReservationStatus,
 } from "../utils/reservationStorage";
+import { getStampBenefitById } from "../data/stampBenefits";
+import { restoreStamps } from "../utils/stampStorage";
 
 function getNormalizedClassIndex(reservation: Reservation, index: number) {
   if (reservation.classTitle === "차 블렌더 클래스" || reservation.classTitle === "차 블랜더 클래스") {
@@ -104,10 +106,20 @@ export function useReservations() {
         return;
       }
 
+      const targetReservation = reservations.find((reservation) => reservation.id === reservationId);
+
+      if (targetReservation?.stampBenefitId) {
+        const benefit = getStampBenefitById(targetReservation.stampBenefitId);
+
+        if (benefit) {
+          restoreStamps(loginId, benefit.requiredStamps);
+        }
+      }
+
       const nextReservations = updateReservationStatus(loginId, reservationId, "cancelled");
       setReservations(nextReservations);
     },
-    [loginId],
+    [loginId, reservations],
   );
 
   return {

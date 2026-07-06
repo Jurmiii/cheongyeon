@@ -6,7 +6,7 @@ import bujuk from "../../assets/images/13my-page/dojang.png";
 import cup from "../../assets/images/13my-page/cup.png";
 import smbujuk from "../../assets/images/13my-page/smbujuk.png";
 import { useLockBodyScroll } from "../../hooks/useLockBodyScroll";
-import { useReservations } from "../../hooks/useReservations";
+import { useStampBalance } from "../../hooks/useStampBalance";
 import "./StampPage.scss";
 
 const STAMP_COUNT = 8;
@@ -17,8 +17,8 @@ type StampModalProps = {
 };
 
 function StampModal({ count = STAMP_COUNT, onClose }: StampModalProps) {
-  const { stats } = useReservations();
-  const stampedCount = stats.stampCount;
+  const { availableStamps } = useStampBalance();
+  const stampedCount = availableStamps;
   const modalRef = useRef<HTMLDivElement>(null);
 
   useLockBodyScroll(true, modalRef);

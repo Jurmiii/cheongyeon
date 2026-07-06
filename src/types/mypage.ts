@@ -1,5 +1,7 @@
 export type ReservationStatus = "upcoming" | "completed" | "cancelled" | "noshow";
 
+export type StampBenefitId = "stamp-4-half" | "stamp-8-free";
+
 export interface UserProfile {
   loginId: string;
   name: string;
@@ -23,6 +25,10 @@ export interface Reservation {
   cardCompany?: string | null;
   installmentPlan?: string;
   savePaymentMethod?: boolean;
+  stampBenefitId?: StampBenefitId | null;
+  productAmount?: number;
+  discountAmount?: number;
+  finalAmount?: number;
   status: ReservationStatus;
   image: string;
   createdAt: string;

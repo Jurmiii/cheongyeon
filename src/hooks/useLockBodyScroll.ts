@@ -9,7 +9,7 @@ function findScrollableAncestor(node: Node | null, boundary: HTMLElement): HTMLE
       (style.overflowY === "auto" || style.overflowY === "scroll") &&
       element.scrollHeight > element.clientHeight;
 
-    if (canScrollY) {
+    if (canScrollY && element instanceof HTMLElement) {
       return element;
     }
 
