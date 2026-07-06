@@ -6,6 +6,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Footer, Icon, Button, SubKvSymbolLine } from "../../components/common";
 import chaIcon from "../../assets/images/09season-class/cha-icon.svg";
 import tryIcon from "../../assets/images/09season-class/try-icon.svg";
+import cozyMarkArt from "../../assets/images/09season-class/cozymark.svg";
+import hamMenuX from "../../assets/images/00header-footer/ham-menu-x.svg";
 import {
   SEASON_CLASS_GALLERY_TITLE,
   getSeasonGalleryItemStyleVars,
@@ -760,6 +762,8 @@ function SeasonClassListSection() {
   const scrollProgressRef = useRef(0);
   const applyLayoutRef = useRef<(() => void) | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isCozyMarkOpen, setIsCozyMarkOpen] = useState(false);
+  const cozyMarkDismissedRef = useRef(false);
   const [scrollViewBox, setScrollViewBox] = useState(() => ({
     widthPx: scrollLayoutRef.current.viewWidthPx,
     heightPx: scrollLayoutRef.current.viewHeightPx,
@@ -806,6 +810,54 @@ function SeasonClassListSection() {
       window.removeEventListener("resize", updateLayout);
     };
   }, []);
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) {
+      return;
+    }
+
+    const mobileMedia = window.matchMedia(SEASON_SCROLL_MOBILE_MQ);
+
+    const revealCozyMark = () => {
+      if (!mobileMedia.matches || cozyMarkDismissedRef.current) {
+        return;
+      }
+
+      setIsCozyMarkOpen(true);
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          revealCozyMark();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 },
+    );
+
+    observer.observe(stage);
+
+    requestAnimationFrame(() => {
+      const rect = stage.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight * 0.9 && rect.bottom > 0;
+
+      if (inView) {
+        revealCozyMark();
+        observer.disconnect();
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  const dismissCozyMark = () => {
+    cozyMarkDismissedRef.current = true;
+    setIsCozyMarkOpen(false);
+  };
 
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -1202,6 +1254,30 @@ function SeasonClassListSection() {
           </div>
         </div>
       </div>
+
+      {isCozyMarkOpen ? (
+        <div
+          className="season-scroll__cozy-mark"
+          role="dialog"
+          aria-modal="true"
+          aria-label="시즌 클래스 안내"
+        >
+          <button
+            type="button"
+            className="season-scroll__cozy-mark-close"
+            aria-label="닫기"
+            onClick={dismissCozyMark}
+          >
+            <img src={hamMenuX} alt="" aria-hidden="true" />
+          </button>
+          <img
+            className="season-scroll__cozy-mark-art"
+            src={cozyMarkArt}
+            alt=""
+            aria-hidden="true"
+          />
+        </div>
+      ) : null}
       </section>
       </div>
       <div ref={spacerRef} className="season-scroll-spacer" aria-hidden="true" />
