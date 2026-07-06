@@ -518,9 +518,11 @@ function useKvViewport() {
 }
 
 export default function MainPage() {
+  const skipIntroAtMount =
+    typeof window !== "undefined" && getKvViewport(window.innerWidth) === "mobile";
   const [hasSeenIntroAtMount] = useState(() => hasMainIntroBeenSeen());
-  const [isIntroEnded, setIsIntroEnded] = useState(hasSeenIntroAtMount);
-  const [isScrollReleased, setIsScrollReleased] = useState(hasSeenIntroAtMount);
+  const [isIntroEnded, setIsIntroEnded] = useState(hasSeenIntroAtMount || skipIntroAtMount);
+  const [isScrollReleased, setIsScrollReleased] = useState(hasSeenIntroAtMount || skipIntroAtMount);
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
   const [sec1ProgressCycle, setSec1ProgressCycle] = useState<number>(0);
   const [activeSeasons, setActiveSeasons] = useState<Record<SeasonKey, boolean>>(initialActiveSeasons);
@@ -595,6 +597,15 @@ export default function MainPage() {
       markMainIntroAsSeen();
     }
   }, [hasSeenIntroAtMount]);
+
+  useEffect(() => {
+    if (kvViewport !== "mobile" || isIntroEnded) {
+      return;
+    }
+
+    setIsIntroEnded(true);
+    setIsScrollReleased(true);
+  }, [kvViewport, isIntroEnded]);
 
   const setSeasonImageRef = (season: SeasonKey) => (node: HTMLDivElement | null) => {
     seasonImageRefs.current[season] = node;
@@ -1539,11 +1550,12 @@ export default function MainPage() {
     </div>
   );
 
-  const isIntroPlaying = !hasSeenIntroAtMount && !isIntroEnded;
+  const showMainIntro = kvViewport !== "mobile" && !hasSeenIntroAtMount;
+  const isIntroPlaying = showMainIntro && !isIntroEnded;
 
   return (
     <main className={["main-page", isIntroPlaying && "main-page--intro-playing"].filter(Boolean).join(" ")}>
-      {!hasSeenIntroAtMount && (
+      {showMainIntro && (
         <div
           className={["main-intro", isIntroEnded && "main-intro--hidden"].filter(Boolean).join(" ")}
         >
