@@ -13,7 +13,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 20;
+  z-index: var(--z-header);
   width: 100%;
   overflow: visible;
   pointer-events: none;
@@ -31,6 +31,7 @@
   height: 46.25rem;
   overflow: hidden;
   background-color: var(--han50);
+  background-image: url("../../assets/images/02brand-story/brand-kv.webp");
   background-size: cover;
   background-position: center right;
   background-repeat: no-repeat;
@@ -645,8 +646,9 @@
   display: flex;
   flex-shrink: 0;
   align-items: stretch;
-  width: 100%;
-  min-width: 0;
+  /* 펼침 중 리플로우 방지 — 좌·우 롤캡 제외한 본문 너비 고정 */
+  width: calc(min(var(--h-scroll-width), 100%) - var(--h-scroll-height) * 4 / 96 * 2);
+  min-width: calc(min(var(--h-scroll-width), 100%) - var(--h-scroll-height) * 4 / 96 * 2);
   height: var(--h-scroll-height);
   margin-left: 0;
   overflow: hidden;
@@ -2245,5 +2247,15 @@
     font-size: 1.375rem !important;
     font-weight: 400 !important;
     line-height: 2.25rem !important;
+  }
+}
+
+/* 모바일 KV — brand-kv-mo.webp (sub-kv compact 이후 최종 오버라이드) */
+@media (max-width: $mobile) {
+  .brand-story-kv {
+    background-image: url("../../assets/images/02brand-story/brand-kv-mo.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 }

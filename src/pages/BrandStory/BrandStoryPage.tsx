@@ -4,9 +4,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Footer, Header, SubKvSymbolLine } from "../../components/common";
 import "./BrandStoryPage.scss";
 
-// KV 배경 이미지 — 교체 시 아래 import 경로만 수정하세요.
-import brandStoryKvImage from "../../assets/images/02brand-story/brand-kv.webp";
-
 // About 섹션 배경 이미지 — 교체 시 아래 import 경로만 수정하세요.
 import brandStoryAboutImage from "../../assets/images/02brand-story/brand-2.webp";
 
@@ -366,13 +363,30 @@ function BrandStoryPage() {
             }
 
             const rollStart = scrollUnit.querySelector<HTMLElement>(".brand-story-philosophy__h-roll-start-wrap");
+            const rollEnd = scrollUnit.querySelector<HTMLElement>(".brand-story-philosophy__h-roll-end-wrap");
             const unitWidth = scrollUnit.getBoundingClientRect().width;
-            const rollWidth = rollStart?.getBoundingClientRect().width ?? 0;
+            const rollStartWidth = rollStart?.getBoundingClientRect().width ?? 0;
+            const rollEndWidth = rollEnd?.getBoundingClientRect().width ?? 0;
 
-            return Math.max(0, unitWidth - rollWidth);
+            return Math.max(0, unitWidth - rollStartWidth - rollEndWidth);
+          };
+
+          const syncHorizontalBodyWidths = () => {
+            bodyWraps.forEach((bodyWrap) => {
+              const unrollWidth = getHorizontalUnrollWidthPx(bodyWrap);
+              const body = bodyWrap.querySelector<HTMLElement>(".brand-story-philosophy__h-body");
+
+              if (!body || unrollWidth <= 0) {
+                return;
+              }
+
+              gsap.set(body, { width: unrollWidth, minWidth: unrollWidth });
+            });
           };
 
           const resetHorizontalState = () => {
+            syncHorizontalBodyWidths();
+
             bodyWraps.forEach((bodyWrap) => {
               gsap.set(bodyWrap, { width: 0 });
             });
@@ -384,6 +398,7 @@ function BrandStoryPage() {
 
           const rebuildHorizontalTimeline = () => {
             timeline.clear();
+            syncHorizontalBodyWidths();
             resetHorizontalState();
 
             bodyWraps.forEach((bodyWrap, index) => {
@@ -538,7 +553,6 @@ function BrandStoryPage() {
 
       <section
         className="brand-story-kv"
-        style={{ backgroundImage: `url(${brandStoryKvImage})` }}
         aria-label="브랜드 스토리 키비주얼"
       >
         <div className="brand-story-kv__grid">
@@ -714,15 +728,15 @@ function BrandStoryPage() {
                           ))}
                         </p>
                       </div>
-                      <span className="brand-story-philosophy__h-roll-end-wrap" aria-hidden="true">
-                        <img
-                          className="brand-story-philosophy__h-roll-end"
-                          src={compactRollImage}
-                          alt=""
-                        />
-                      </span>
                     </div>
                   </div>
+                  <span className="brand-story-philosophy__h-roll-end-wrap" aria-hidden="true">
+                    <img
+                      className="brand-story-philosophy__h-roll-end"
+                      src={compactRollImage}
+                      alt=""
+                    />
+                  </span>
                 </div>
               </article>
             ))}

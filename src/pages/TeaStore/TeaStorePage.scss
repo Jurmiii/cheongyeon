@@ -66,7 +66,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: var(--z-header);
   width: 100%;
 }
 
@@ -802,7 +802,7 @@
 
 @media (max-width: $laptop) {
   .tea-store-page__header {
-    z-index: 20;
+    z-index: var(--z-header);
     padding-top: clamp(0.75rem, 0.5rem + 0.8vw, 1.25rem);
   }
 }

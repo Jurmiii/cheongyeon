@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 import hamMenu from "../../../assets/images/00header-footer/ham-menu.svg";
 import hamMenuX from "../../../assets/images/00header-footer/ham-menu-x.svg";
 import logo from "../../../assets/images/00header-footer/logo.svg";
+import { getActiveMenuIndex } from "../headerMenuUtils";
 import Icon from "../Icon";
 import "./TabletHeader.scss";
 
@@ -62,14 +63,29 @@ const tabletHeaderMenus: TabletHeaderMenuItem[] = [
 ];
 
 export default function TabletHeader() {
+  const { pathname } = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeMenuIndex, setActiveMenuIndex] = useState(0);
+  const [activeMenuIndex, setActiveMenuIndex] = useState(() =>
+    getActiveMenuIndex(pathname, tabletHeaderMenus),
+  );
   const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
 
   const activeMenu = tabletHeaderMenus[activeMenuIndex] ?? tabletHeaderMenus[0];
 
+  useEffect(() => {
+    setActiveMenuIndex(getActiveMenuIndex(pathname, tabletHeaderMenus));
+  }, [pathname]);
+
   const toggleMenu = () => {
-    setIsMenuOpen((current) => !current);
+    setIsMenuOpen((current) => {
+      const next = !current;
+
+      if (next) {
+        setActiveMenuIndex(getActiveMenuIndex(pathname, tabletHeaderMenus));
+      }
+
+      return next;
+    });
     setIsUserPopupOpen(false);
   };
 

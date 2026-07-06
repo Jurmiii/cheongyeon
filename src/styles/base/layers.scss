@@ -1,0 +1,60 @@
+@use "../abstracts/breakpoints" as *;
+@use "../tokens/z-index" as z;
+
+// Site header shells & slide-out menus
+.site-header-shell,
+.tablet-header-shell,
+.mobile-header-shell {
+  z-index: z.$header;
+}
+
+.mobile-menu,
+.tablet-menu,
+.site-header__tablet-panel,
+.site-header__mobile-panel {
+  z-index: z.$header-menu;
+}
+
+// 모바일·태블릿(≤1023) — 헤더 상단 고정 (PC 제외)
+@media (max-width: #{$laptop - 1px}) {
+  .site-header-shell,
+  .tablet-header-shell,
+  .mobile-header-shell {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    margin-inline: 0;
+  }
+}
+
+// PC(≥1024) — 기존 문서 흐름 유지
+@media (min-width: $laptop) {
+  .site-header-shell {
+    position: relative;
+  }
+}
+
+// Page-level header wrappers (positioned above page content)
+.main-page__header,
+.collection-page__header,
+.tea-store-page__header,
+.reservation-page__header,
+.reservation-edit-page__header,
+.class-intro-page__header,
+.season-class-page__header,
+.season-tea-page__header,
+.brand-story-page__header,
+.space__header,
+.location__header,
+.faq-page__header,
+.notice-page__header,
+.contact-page__header,
+.event-page__header,
+.my-page__header,
+.signup-page-wrapper__header,
+.login-page-wrapper__header {
+  z-index: z.$header;
+}

@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 import hamMenu from "../../../assets/images/00header-footer/ham-menu.svg";
 import hamMenuX from "../../../assets/images/00header-footer/ham-menu-x.svg";
 import logo from "../../../assets/images/00header-footer/logo.svg";
+import { getActiveMenuIndex, pathMatches } from "../headerMenuUtils";
 import Icon from "../Icon";
 import "./Header.scss";
 
@@ -65,8 +66,6 @@ const gnbMenus: HeaderMenuItem[] = [
   },
 ];
 
-const pathMatches = (pathname: string, to: string) => pathname === to || pathname.startsWith(`${to}/`);
-
 const getNavLinkClassName = (baseClassName: string, activeClassName: string, isActive: boolean) =>
   [baseClassName, isActive && "active", isActive && activeClassName].filter(Boolean).join(" ");
 
@@ -76,12 +75,20 @@ export default function Header() {
   const navigate = useNavigate();
   const [activeDropdown, setActiveDropdown] = useState<ActiveDropdown>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeMenuIndex, setActiveMenuIndex] = useState(0);
-  const [activeAccordionIndex, setActiveAccordionIndex] = useState<number | null>(0);
+  const [activeMenuIndex, setActiveMenuIndex] = useState(() => getActiveMenuIndex(pathname, gnbMenus));
+  const [activeAccordionIndex, setActiveAccordionIndex] = useState<number | null>(() =>
+    getActiveMenuIndex(pathname, gnbMenus),
+  );
   const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
 
   const isGnbOpen = activeDropdown === "gnb";
   const activeMenu = gnbMenus[activeMenuIndex] ?? gnbMenus[0];
+
+  useEffect(() => {
+    const index = getActiveMenuIndex(pathname, gnbMenus);
+    setActiveMenuIndex(index);
+    setActiveAccordionIndex(index);
+  }, [pathname]);
 
   const closeMenu = () => {
     setIsMenuOpen(false);
@@ -89,7 +96,17 @@ export default function Header() {
   };
 
   const toggleMenu = () => {
-    setIsMenuOpen((current) => !current);
+    setIsMenuOpen((current) => {
+      const next = !current;
+
+      if (next) {
+        const index = getActiveMenuIndex(pathname, gnbMenus);
+        setActiveMenuIndex(index);
+        setActiveAccordionIndex(index);
+      }
+
+      return next;
+    });
     setIsUserPopupOpen(false);
   };
 

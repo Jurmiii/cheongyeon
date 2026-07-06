@@ -1,9 +1,9 @@
 @use "../../../styles/abstracts/breakpoints" as *;
 @use "../../../styles/abstracts/grid" as grid;
+@use "../../../styles/tokens/z-index" as z;
 
 .mobile-header-shell {
-  position: relative;
-  z-index: 20;
+  z-index: z.$header;
   width: 100%;
   max-width: 100%;
 }
@@ -68,7 +68,7 @@
   position: fixed;
   top: 0;
   left: 50%;
-  z-index: 110;
+  z-index: z.$header-menu;
   box-sizing: border-box;
   width: min(100vw, grid.$mobile-grid-outer);
   min-height: clamp(43.861875rem, calc(43.861875rem + (100vw - #{$mobile}) * 0.04), 46rem);

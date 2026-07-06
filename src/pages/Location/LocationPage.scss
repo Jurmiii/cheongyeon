@@ -66,7 +66,7 @@ $location-break-desktop-xl-up: 120.0625rem;
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 20;
+  z-index: var(--z-header);
   width: 100%;
   overflow: visible;
   pointer-events: none;
