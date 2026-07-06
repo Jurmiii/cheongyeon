@@ -78,7 +78,8 @@ const philosophyItems = [
     subtitle: "고요함",
     lines: ["차를 마시는 것은", "잠시 멈추는 일, 고요한", "마음이 좋은 차를 만듭니다."],
     horizontalDesc: "차를 마시는 것은 잠시 멈추는 일, 고요한 마음이 좋은 차를 만듭니다.",
-    horizontalDescLines: ["차를 마시는 것은 잠시 멈추는 일,", "고요한 마음이 좋은 차를 만듭니다."],
+    horizontalDescLines: ["차를 마시는 것은", "잠시 멈추는 일, 고요한 마음이", "좋은 차를 만듭니다."],
+    mobileHorizontalDescLines: ["차를 마시는 것은", "잠시 멈추는 일, 고요한 마음이", "좋은 차를 만듭니다."],
   },
   {
     id: 2,
@@ -89,7 +90,7 @@ const philosophyItems = [
     subtitle: "기다림",
     lines: ["좋은 차는 서두르지", "않습니다. 자연의 시간이", "맡기고 충분히 기다립니다."],
     horizontalDesc: "좋은 차는 서두르지 않습니다. 자연의 시간이 맡기고 충분히 기다립니다.",
-    horizontalDescLines: ["좋은 차는 서두르지 않습니다.", "자연의 시간이 맡기고 충분히 기다립니다."],
+    horizontalDescLines: ["좋은 차는 서두르지 않습니다.", "자연의 시간이 맡기고", "충분히 기다립니다."],
   },
   {
     id: 3,
@@ -100,7 +101,7 @@ const philosophyItems = [
     subtitle: "자연",
     lines: ["자연에서 온 그대로를", "담습니다. 계절과 땅의", "흐름을 거스르지 않습니다."],
     horizontalDesc: "자연에서 온 그대로를 담습니다. 계절과 땅의 흐름을 거스르지 않습니다.",
-    horizontalDescLines: ["자연에서 온 그대로를 담습니다.", "계절과 땅의 흐름을 거스르지 않습니다."],
+    horizontalDescLines: ["자연에서 온 그대로를 담습니다.", "계절과 땅의 흐름을", "거스르지 않습니다."],
   },
   {
     id: 4,
@@ -112,6 +113,7 @@ const philosophyItems = [
     lines: ["차는 사람과 사람을", "이어줍니다. 스쳐가는", "인연도 소중히 생각합니다."],
     horizontalDesc: "차는 사람과 사람을 이어줍니다. 스쳐가는 인연도 소중히 생각합니다.",
     horizontalDescLines: ["차는 사람과 사람을 이어줍니다.", "스쳐가는 인연도 소중히 생각합니다."],
+    mobileHorizontalDescLines: ["차는 사람과 사람을 이어줍니다.", "스쳐가는 인연도", "소중히 생각합니다."],
   },
   {
     id: 5,
@@ -672,9 +674,16 @@ function BrandStoryPage() {
                           />
                           <h3 className="brand-story-philosophy__h-subtitle ft-28b ink500">{item.subtitle}</h3>
                         </div>
-                        <p className="brand-story-philosophy__h-desc ft-18r ink500">
+                        <p className="brand-story-philosophy__h-desc brand-story-philosophy__h-desc--tablet ft-18r ink500">
                           {item.horizontalDescLines.map((line, lineIndex) => (
                             <span className="brand-story-philosophy__h-desc-line" key={`${item.id}-h-${lineIndex}`}>
+                              {line}
+                            </span>
+                          ))}
+                        </p>
+                        <p className="brand-story-philosophy__h-desc brand-story-philosophy__h-desc--mobile ft-18r ink500">
+                          {(item.mobileHorizontalDescLines ?? item.horizontalDescLines).map((line, lineIndex) => (
+                            <span className="brand-story-philosophy__h-desc-line" key={`${item.id}-h-mo-${lineIndex}`}>
                               {line}
                             </span>
                           ))}
