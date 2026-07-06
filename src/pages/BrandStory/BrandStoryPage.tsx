@@ -162,6 +162,19 @@ import brandStoryTimeImage from "../../assets/images/02brand-story/brand-5.webp"
 import lastBg from "../../assets/images/02brand-story/last-bg.webp";
 import logoWhite from "../../assets/images/00header-footer/logo-white.svg";
 
+const brandStoryTimeDescParagraphs = [
+  ["차를 우리는 순간 흩어졌던 마음은", "천천히 가라앉습니다."],
+  ["청연은 바쁜 하루 속 잠시 멈추어", "머무는 시간을 제안합니다."],
+  ["한 잔의 차가 전하는 온기와 여백으로", "편안한 쉼을 경험해보세요."],
+] as const;
+
+const brandStoryTimeMobileDescLines = [
+  "차를 우리는 순간 흩어졌던 마음은",
+  "천천히 가라앉습니다. 청연은 바쁜 하루 속",
+  "잠시 멈추어 머무는 시간을 제안합니다. 한 잔의 차가",
+  "전하는 온기와 여백으로 편안한 쉼을 경험해보세요.",
+] as const;
+
 const ROLL_WIDTH_REM = 16.375;
 const ROLL_BODY_HEIGHT_REM = ROLL_WIDTH_REM * (709 / 262);
 const ROLL_BOTTOM_HEIGHT_REM = ROLL_WIDTH_REM * (16 / 262);
@@ -272,6 +285,10 @@ function BrandStoryPage() {
               resetScrollState();
             }
 
+            if (!sectionOverlapsViewport && overlapsViewport && hasLeftSection && isRolledSectionReached()) {
+              playUnroll();
+            }
+
             sectionOverlapsViewport = overlapsViewport;
           };
 
@@ -296,6 +313,7 @@ function BrandStoryPage() {
             trigger: triggerTarget,
             start: "top top",
             onEnter: playUnroll,
+            onEnterBack: playUnroll,
             invalidateOnRefresh: true,
           });
 
@@ -405,6 +423,10 @@ function BrandStoryPage() {
               resetHorizontalState();
             }
 
+            if (!sectionOverlapsViewport && overlapsViewport && hasLeftSection && isSectionReached()) {
+              playUnroll();
+            }
+
             sectionOverlapsViewport = overlapsViewport;
           };
 
@@ -429,6 +451,7 @@ function BrandStoryPage() {
             trigger: section,
             start: "top 75%",
             onEnter: playUnroll,
+            onEnterBack: playUnroll,
             invalidateOnRefresh: true,
           });
 
@@ -571,8 +594,10 @@ function BrandStoryPage() {
                 />
                 <div className="brand-story-meaning__content">
                   <div className="brand-story-meaning__content-inner">
-                    <span className="brand-story-meaning__number ft-36r white">{card.number}</span>
-                    <hr className="brand-story-meaning__line" />
+                    <div className="brand-story-meaning__number-head">
+                      <span className="brand-story-meaning__number ft-36r white">{card.number}</span>
+                      <hr className="brand-story-meaning__line" />
+                    </div>
                     <strong className="brand-story-meaning__hanja ft-28r white">{card.hanja}</strong>
                     <p className="brand-story-meaning__desc ft-22r white">
                       {card.lines.map((line, index) => (
@@ -682,7 +707,7 @@ function BrandStoryPage() {
                           ))}
                         </p>
                         <p className="brand-story-philosophy__h-desc brand-story-philosophy__h-desc--mobile ft-18r ink500">
-                          {(item.mobileHorizontalDescLines ?? item.horizontalDescLines).map((line, lineIndex) => (
+                          {("mobileHorizontalDescLines" in item ? item.mobileHorizontalDescLines : item.horizontalDescLines).map((line, lineIndex) => (
                             <span className="brand-story-philosophy__h-desc-line" key={`${item.id}-h-mo-${lineIndex}`}>
                               {line}
                             </span>
@@ -749,18 +774,24 @@ function BrandStoryPage() {
               <span className="brand-story-time__subtitle-line">한 잔의 차는 빠르게</span>
               <span className="brand-story-time__subtitle-line">소비되는 음료가 아닙니다.</span>
             </p>
-            <div className="brand-story-time__desc-group">
+            <div className="brand-story-time__desc-group brand-story-time__desc-group--default">
+              {brandStoryTimeDescParagraphs.map((paragraph, paragraphIndex) => (
+                <p className="brand-story-time__desc ft-22r ink500" key={paragraphIndex}>
+                  {paragraph.map((line, lineIndex) => (
+                    <span className="brand-story-time__desc-line" key={lineIndex}>
+                      {line}
+                    </span>
+                  ))}
+                </p>
+              ))}
+            </div>
+            <div className="brand-story-time__desc-group brand-story-time__desc-group--mobile">
               <p className="brand-story-time__desc ft-22r ink500">
-                <span className="brand-story-time__desc-line">차를 우리는 순간 흩어졌던 마음은</span>
-                <span className="brand-story-time__desc-line">천천히 가라앉습니다.</span>
-              </p>
-              <p className="brand-story-time__desc ft-22r ink500">
-                <span className="brand-story-time__desc-line">청연은 바쁜 하루 속 잠시 멈추어</span>
-                <span className="brand-story-time__desc-line">머무는 시간을 제안합니다.</span>
-              </p>
-              <p className="brand-story-time__desc ft-22r ink500">
-                <span className="brand-story-time__desc-line">한 잔의 차가 전하는 온기와 여백으로</span>
-                <span className="brand-story-time__desc-line"> 편안한 쉼을 경험해보세요.</span>
+                {brandStoryTimeMobileDescLines.map((line, lineIndex) => (
+                  <span className="brand-story-time__desc-line" key={lineIndex}>
+                    {line}
+                  </span>
+                ))}
               </p>
             </div>
           </div>
