@@ -59,7 +59,9 @@ function pxToRem(px: number) {
 
 const SCROLL_END = 3000;
 const SCROLL_END_TABLET = 1875; // 750px × 2.5 — 태블릿 섹션 높이 기준
-const SEASON_SCROLL_TABLET_MQ = "(max-width: 768px)";
+const SCROLL_END_MOBILE = 1915; // 766px × 2.5 — 모바일 섹션 높이 기준
+const SEASON_SCROLL_MOBILE_MQ = "(max-width: 402px)";
+const SEASON_SCROLL_TABLET_MQ = "(min-width: 403px) and (max-width: 768px)";
 const SEASON_SCROLL_DESKTOP_MQ = "(min-width: 769px)";
 const ORBIT_STROKE_COLOR = "#c4ad98";
 const TEXT_EASE = "power3.out";
@@ -319,6 +321,16 @@ function getDesktopScrollEnd() {
   return Math.max(Math.round(window.innerHeight * 3), SCROLL_END);
 }
 
+function getMobileScrollEnd(section: HTMLElement) {
+  const sectionHeight = section.offsetHeight;
+
+  return Math.max(
+    Math.round(window.innerHeight * 1.75),
+    Math.round(sectionHeight * 2.5),
+    SCROLL_END_MOBILE,
+  );
+}
+
 function getTabletScrollEnd(section: HTMLElement) {
   const sectionHeight = section.offsetHeight;
 
@@ -489,6 +501,19 @@ function SeasonClassListSection() {
       };
     });
 
+    mm.add(SEASON_SCROLL_MOBILE_MQ, () => {
+      const trigger = createSeasonScrollTrigger(() => getMobileScrollEnd(section));
+      requestAnimationFrame(() => ScrollTrigger.refresh(true));
+
+      return () => {
+        trigger.kill();
+        clearScrollTrackHeight();
+        if (applyLayoutRef.current) {
+          applyLayoutRef.current = null;
+        }
+      };
+    });
+
     const refresh = () => ScrollTrigger.refresh(true);
     window.addEventListener("load", refresh);
     window.addEventListener("resize", refresh);
@@ -560,6 +585,11 @@ function SeasonClassListSection() {
             src={seasonClassAssets.subBgTablet}
             alt=""
           />
+          <img
+            className="season-scroll__subbg-img season-scroll__subbg-img--mobile"
+            src={seasonClassAssets.subBgMobile}
+            alt=""
+          />
         </div>
 
         <div className="season-scroll__scene" aria-hidden="true">
@@ -600,6 +630,19 @@ function SeasonClassListSection() {
             alt=""
             aria-hidden="true"
           />
+
+          <div className="season-scroll__mobile-copy season-scroll__animate">
+            <h3 className="season-scroll__title season-scroll__title--mobile ft-20b ink500">
+              {season.title}
+            </h3>
+            <p className="season-scroll__desc season-scroll__desc--mobile ft-14b ink500">
+              {descLines.map((line, i) => (
+                <span key={`mobile-desc-${season.key}-${i}`} className="season-scroll__desc-line">
+                  {line}
+                </span>
+              ))}
+            </p>
+          </div>
         </header>
 
         <div className="season-scroll__detail">

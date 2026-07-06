@@ -395,22 +395,10 @@
   /* KV — Figma TA 1660:1907, 768×600 */
   .collection-kv {
     padding-block: 0;
-    background-image: none;
-    background-color: var(--han50);
-
-    &::before {
-      content: "";
-      position: absolute;
-      z-index: 0;
-      width: 282.51%;
-      height: 113%;
-      left: -72.59%;
-      top: -13.03%;
-      background-image: url("../../assets/images/05collection/collection-kv-tablet.png");
-      background-size: 100% 100%;
-      background-repeat: no-repeat;
-      pointer-events: none;
-    }
+    background-image: url("../../assets/images/05collection/collection-kv-ta.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 
   .collection-kv__grid {
@@ -601,22 +589,10 @@
   /* KV — Figma MO 1660:1793, 402×650 */
   .collection-kv {
     padding-block: 0;
-    background-image: none;
-    background-color: var(--han50);
-
-    &::before {
-      content: "";
-      position: absolute;
-      z-index: 0;
-      width: 539.71%;
-      height: 113%;
-      left: -169.79%;
-      top: -6.47%;
-      background-image: url("../../assets/images/05collection/collection-kv-mobile.png");
-      background-size: 100% 100%;
-      background-repeat: no-repeat;
-      pointer-events: none;
-    }
+    background-image: url("../../assets/images/05collection/collection-kv-ta.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 
   .collection-kv__grid {
@@ -810,12 +786,6 @@
   .collection-kv {
     height: 40rem;
     min-height: 40rem;
-
-    &::before {
-      width: 430%;
-      left: -132.4%;
-      top: -8.24%;
-    }
   }
 
   .collection-kv__grid {
@@ -853,12 +823,6 @@
   .collection-kv {
     height: 42rem;
     min-height: 42rem;
-
-    &::before {
-      width: 510%;
-      left: -159.9%;
-      top: -7.24%;
-    }
   }
 
   .collection-kv__grid {
@@ -891,12 +855,10 @@
 @media (max-width: $mobile) {
   .collection-kv {
     @include grid.mobile-kv-section;
-
-    &::before {
-      width: 539.71%;
-      left: -169.79%;
-      top: -6.47%;
-    }
+    background-image: url("../../assets/images/05collection/collection-kv-mo.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 
   .collection-kv__grid {

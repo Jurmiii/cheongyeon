@@ -532,6 +532,10 @@ $season-scroll-scene-right-tablet: 1.96875rem; // (371-308)/2
   display: none;
 }
 
+.season-scroll__subbg-img--mobile {
+  display: none;
+}
+
 /* 5. 메인 장면 — subbg 위 */
 .season-scroll__scene {
   position: absolute;
@@ -632,6 +636,10 @@ $season-scroll-scene-right-tablet: 1.96875rem; // (371-308)/2
   height: 13.8125rem;
   object-fit: contain;
   object-position: left center;
+}
+
+.season-scroll__mobile-copy {
+  display: none;
 }
 
 .season-scroll__detail {
@@ -994,6 +1002,204 @@ $season-scroll-meta-icon-text-gap-tablet: 0.625rem; // 10px — 아이콘 ↔ �
   .season-scroll__icon-img {
     width: 1.5rem;
     height: 1.5rem;
+  }
+}
+
+/* Figma 모바일 402×766 */
+$season-scroll-h-mobile: 47.875rem; // 766px
+$season-scroll-padding-block-mobile: 4rem; // 64px
+$season-scroll-head-left-mobile: 5rem; // 80px
+$season-scroll-hanja-w-mobile: 5.6875rem; // 91px
+$season-scroll-hanja-h-mobile: 5rem; // 80px
+$season-scroll-subbg-top-mobile: 22.0625rem; // 353px
+$season-scroll-scene-top-mobile: 20.875rem; // 334px
+$season-scroll-scene-size-mobile: 19.25rem; // 308px
+$season-scroll-orbit-center-x-mobile: 13.0474375rem; // 208.759px
+$season-scroll-orbit-center-y-mobile: 31.0069375rem; // 496.111px
+$season-scroll-ellipse-size-mobile: 32.0305rem; // 512.488px
+$season-scroll-meta-top-mobile: 38rem; // 608px
+$season-scroll-meta-inline-mobile: 2.9375rem; // 47px
+$season-scroll-meta-icon-mobile: 0.875rem; // 14px
+
+@media (max-width: $mobile) {
+  .season-scroll-pin {
+    max-width: grid.$mobile-grid-outer;
+  }
+
+  .season-scroll {
+    width: 100%;
+    height: $season-scroll-h-mobile;
+    max-height: none;
+  }
+
+  .season-scroll__left {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    width: 100%;
+    max-width: none;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .season-scroll__header {
+    position: absolute;
+    top: $season-scroll-padding-block-mobile;
+    left: $season-scroll-head-left-mobile;
+    right: grid.$mobile-grid-padding;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    width: auto;
+  }
+
+  .season-scroll__intro {
+    display: none;
+  }
+
+  .season-scroll__mobile-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 0;
+    text-align: center;
+  }
+
+  .season-scroll__title--mobile,
+  .season-scroll__desc--mobile {
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .season-scroll__desc--mobile .season-scroll__desc-line {
+    display: block;
+    white-space: normal;
+  }
+
+  .season-scroll__hanja {
+    flex-shrink: 0;
+    width: $season-scroll-hanja-w-mobile;
+    height: $season-scroll-hanja-h-mobile;
+  }
+
+  .season-scroll__detail {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    pointer-events: none;
+  }
+
+  .season-scroll__copy-block {
+    position: absolute;
+    inset: 0;
+    gap: 0;
+  }
+
+  .season-scroll__copy {
+    display: none;
+  }
+
+  .season-scroll__meta {
+    position: absolute;
+    top: $season-scroll-meta-top-mobile;
+    left: $season-scroll-meta-inline-mobile;
+    right: $season-scroll-meta-inline-mobile;
+    gap: 0.75rem;
+    pointer-events: auto;
+  }
+
+  .season-scroll__meta-row,
+  .season-scroll__meta-row:nth-child(1),
+  .season-scroll__meta-row:nth-child(2),
+  .season-scroll__meta-row:nth-child(4),
+  .season-scroll__meta-row--wide {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    column-gap: 0.625rem;
+    width: 100%;
+  }
+
+  .season-scroll__meta-label {
+    display: grid;
+    grid-template-columns: $season-scroll-meta-icon-mobile minmax(0, 1fr);
+    align-items: center;
+    column-gap: 0.375rem;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .season-scroll__meta-label .ft-18b {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.375rem;
+    text-align: center;
+  }
+
+  .season-scroll__meta-row dd.ft-18r {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.375rem;
+    text-align: left;
+    justify-self: start;
+    white-space: normal;
+  }
+
+  .season-scroll__icon-svg,
+  .season-scroll__icon-img {
+    width: $season-scroll-meta-icon-mobile;
+    height: $season-scroll-meta-icon-mobile;
+  }
+
+  .season-scroll__ellipse {
+    display: block;
+    top: $season-scroll-orbit-center-y-mobile;
+    left: $season-scroll-orbit-center-x-mobile;
+    width: $season-scroll-ellipse-size-mobile;
+    height: $season-scroll-ellipse-size-mobile;
+    transform: translate(-50%, -50%);
+  }
+
+  .season-scroll__orbit-trail-svg {
+    display: block;
+  }
+
+  .season-scroll__orbit-trail {
+    stroke-width: 0.125rem;
+  }
+
+  .season-scroll__subbg {
+    top: $season-scroll-subbg-top-mobile;
+    right: 0;
+    left: 0;
+    width: 100%;
+    height: calc(#{$season-scroll-h-mobile} - #{$season-scroll-subbg-top-mobile});
+  }
+
+  .season-scroll__subbg-img--desktop,
+  .season-scroll__subbg-img--tablet {
+    display: none;
+  }
+
+  .season-scroll__subbg-img--mobile {
+    display: block;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .season-scroll__scene {
+    top: $season-scroll-scene-top-mobile;
+    left: 50%;
+    right: auto;
+    width: $season-scroll-scene-size-mobile;
+    height: $season-scroll-scene-size-mobile;
+    transform: translateX(-50%);
   }
 }
 
