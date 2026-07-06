@@ -1735,7 +1735,7 @@ function SeasonClassPage() {
           <div className="season-class-kv__content">
             <div className="season-class-kv__head">
               <h1 className="season-class-kv__title ft-64b ink500">시즌 클래스</h1>
-              <SubKvSymbolLine blockClass="season-class-kv" tone="responsive" />
+              <SubKvSymbolLine blockClass="season-class-kv" tone="ink" />
             </div>
             <p className="season-class-kv__description ft-28r ink500">
               계절마다 다른 향기를 따라

@@ -137,12 +137,9 @@ $season-class-kv-height-desktop: 46.25rem; // PC 740px
 }
 
 @media (max-width: #{$laptop - 1px}) {
-  .season-class-kv__title.ft-64b {
-    color: var(--ink500);
-  }
-
+  .season-class-kv__title.ft-64b,
   .season-class-kv__description.ft-28r {
-    color: var(--white);
+    color: var(--ink500);
   }
 }
 
@@ -3165,5 +3162,24 @@ $season-gallery-section-padding-bottom-mobile: 3rem;
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
+  }
+
+  .season-class-kv__title.ft-64b,
+  .season-class-kv__description.ft-28r {
+    color: var(--white);
+  }
+
+  .season-class-kv__symbol-line,
+  .season-class-kv__symbol-line--ink {
+    color: var(--white);
+  }
+
+  .season-class-kv__line-bar {
+    background-color: currentColor;
+    opacity: 1;
+  }
+
+  .season-class-kv__line-symbol {
+    filter: brightness(0) invert(1);
   }
 }
