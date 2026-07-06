@@ -3,6 +3,8 @@
 @use "../../styles/abstracts/sub-kv-symbol" as sub-kv;
 @use "../../styles/abstracts/sub-kv-layout" as sub-kv-layout;
 
+$faq-kv-mobile-max: 600px;
+
 /* Figma 1548:69 — FAQ */
 .faq-page {
   position: relative;
@@ -42,6 +44,7 @@
 .faq-kv__grid {
   display: flex;
   align-items: center;
+  box-sizing: border-box;
   width: 100%;
   max-width: grid.$desktop-grid-outer;
   min-height: calc(46.25rem - 15rem);
@@ -215,21 +218,6 @@
     padding-block: var(--section-padding);
   }
 
-  .faq-kv__title {
-    font-family: var(--font-headline);
-    font-size: 2.5rem;
-    font-weight: 700;
-    line-height: 1.4;
-  }
-
-  // ft-18r — KV 서브타이틀 (마루부리 18px Regular)
-  .faq-kv__description {
-    font-family: var(--font-headline);
-    font-size: 1.125rem;
-    font-weight: 400;
-    line-height: 1.75rem;
-  }
-
   // ft-16b — 질문 (나눔스퀘어 16px Bold)
   .faq-page .faq-content__question-text.ft-28b,
   .faq-page .faq-content__mark--question.ft-22b {
@@ -288,22 +276,6 @@
 
   .faq-kv__head {
     gap: 0.75rem;
-  }
-
-  .faq-kv__title {
-    font-family: var(--font-headline);
-    font-size: 1.875rem;
-    font-weight: 700;
-    line-height: 1.4;
-  }
-
-  // ft-18r — KV 서브타이틀 (마루부리 18px Regular)
-  .faq-kv__description {
-    max-width: 100%;
-    font-family: var(--font-headline);
-    font-size: 1.125rem;
-    font-weight: 400;
-    line-height: 1.75rem;
   }
 
   .faq-content {
@@ -379,26 +351,27 @@
   }
 }
 
-@include sub-kv-layout.sub-kv-layout-compact("faq-kv");
+@include sub-kv.sub-kv-symbol-line-block("faq-kv");
 
-// compact mixin 이후 오버라이드 — KV·목록 모바일 타이포·그리드 (≤767px)
+// compact(≤767) 대신 601px~ 태블릿 KV 유지 — 768→767 폰트·그리드 절벽 방지
+@media (min-width: ($faq-kv-mobile-max + 1px)) and (max-width: #{$laptop - 1px}) {
+  @include sub-kv-layout.sub-kv-layout-shell-tablet("faq-kv");
+
+  .faq-kv {
+    padding-block: 0;
+  }
+}
+
+@media (max-width: $faq-kv-mobile-max) {
+  @include sub-kv-layout.sub-kv-layout-shell-mobile("faq-kv");
+
+  .faq-kv {
+    padding-block: 0;
+  }
+}
+
+// compact mixin 이후 오버라이드 — 목록 모바일 타이포·그리드 (≤767px)
 @media (max-width: #{$tablet - 1px}) {
-  // ft-30b — KV 타이틀 (마루부리 30px Bold, compact 기본값 유지)
-  .faq-kv__title {
-    font-family: var(--font-headline);
-    font-size: 1.875rem;
-    font-weight: 700;
-    line-height: 1.875rem;
-  }
-
-  // ft-18r — KV 서브타이틀 (마루부리 18px Regular)
-  .faq-kv__description {
-    font-family: var(--font-headline);
-    font-size: 1.125rem;
-    font-weight: 400;
-    line-height: 1.75rem;
-  }
-
   .faq-content__list {
     gap: 0.75rem;
   }
@@ -496,14 +469,39 @@
   }
 }
 
+// 1024px~ — PC KV 그리드 여백 (헤더·콘텐츠와 좌측 정렬)
+@media (min-width: $laptop) {
+  .faq-kv__grid {
+    padding-inline: max(
+      grid.$desktop-grid-side-padding,
+      calc((100vw - min(100vw, grid.$desktop-grid-outer)) / 2 + grid.$desktop-grid-side-padding)
+    );
+  }
+}
+
 // 768~1023px — 태블릿
 @media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
+  .faq-kv {
+    background-image: url("../../assets/images/14F&A/ta-kv.png");
+    background-size: cover;
+    background-position: center center;
+  }
+
   .faq-content__grid {
     width: 100%;
     max-width: none;
     margin-inline: auto;
     padding-inline: grid.$tablet-grid-padding;
     box-sizing: border-box;
+  }
+}
+
+// ≤767px — 모바일 KV
+@media (max-width: #{$tablet - 1px}) {
+  .faq-kv {
+    background-image: url("../../assets/images/14F&A/mo-kv.png");
+    background-size: cover;
+    background-position: center center;
   }
 }
 
