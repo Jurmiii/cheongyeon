@@ -63,7 +63,6 @@ function pxToRem(px: number) {
 
 const SCROLL_END = 3000;
 const SCROLL_END_TABLET = 1875; // 750px × 2.5 — 태블릿 섹션 높이 기준
-const SCROLL_END_MOBILE = 1915; // 766px × 2.5 — 모바일 섹션 높이 기준
 const SEASON_SCROLL_MOBILE_MQ = "(max-width: 402px)";
 const SEASON_SCROLL_TABLET_MQ = "(min-width: 403px) and (max-width: 768px)";
 const SEASON_SCROLL_DESKTOP_MQ = "(min-width: 769px)";
@@ -92,38 +91,6 @@ function computeOrbitSlotAngles(layout: SeasonScrollLayoutConfig): OrbitSlotAngl
   });
 
   return angles;
-}
-
-function getShortestAngleDelta(fromAngle: number, toAngle: number) {
-  let delta = toAngle - fromAngle;
-
-  if (delta > Math.PI) {
-    delta -= Math.PI * 2;
-  } else if (delta < -Math.PI) {
-    delta += Math.PI * 2;
-  }
-
-  return delta;
-}
-
-function buildRingArcPathShortest(
-  layout: SeasonScrollLayoutConfig,
-  fromAngle: number,
-  toAngle: number,
-) {
-  const r = layout.orbitRingRadiusPx;
-  const cx = layout.orbitRingCenter.xPx;
-  const cy = layout.orbitRingCenter.yPx;
-  const delta = getShortestAngleDelta(fromAngle, toAngle);
-  const endAngle = fromAngle + delta;
-  const x1 = cx + Math.cos(fromAngle) * r;
-  const y1 = cy + Math.sin(fromAngle) * r;
-  const x2 = cx + Math.cos(endAngle) * r;
-  const y2 = cy + Math.sin(endAngle) * r;
-  const largeArc = Math.abs(delta) > Math.PI ? 1 : 0;
-  const sweep = delta >= 0 ? 1 : 0;
-
-  return `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} ${sweep} ${x2} ${y2}`;
 }
 
 function buildRingArcPath(
@@ -257,77 +224,6 @@ function interpolateMobilePolarCcw(from: PolarState, to: PolarState, t: number):
   return {
     angle: from.angle + angleDelta * t,
     radius: from.radius,
-    alpha: from.alpha + (to.alpha - from.alpha) * t,
-  };
-}
-
-function applyMobileOrbitTrailStroke(
-  layout: SeasonScrollLayoutConfig,
-  fromActive: number,
-  toActive: number,
-  t: number,
-  trailPath: SVGPathElement | null,
-  cupWidthPx: number,
-  cupHeightPx: number,
-) {
-  if (!trailPath) return;
-
-  let bestFromAngle = 0;
-  let bestDelta = 0;
-
-  seasonClassItems.forEach((_, seasonIndex) => {
-    const fromState = getMobileSeasonCupState(
-      seasonIndex,
-      fromActive,
-      layout,
-      cupWidthPx,
-      cupHeightPx,
-    );
-    const toState = getMobileSeasonCupState(
-      seasonIndex,
-      toActive,
-      layout,
-      cupWidthPx,
-      cupHeightPx,
-    );
-    const fromPolar = getMobileSeasonCupPolar(
-      seasonIndex,
-      fromActive,
-      layout,
-      cupWidthPx,
-      cupHeightPx,
-    );
-    const toPolar = getMobileSeasonCupPolar(seasonIndex, toActive, layout, cupWidthPx, cupHeightPx);
-    const delta = getCcwAngleDelta(fromPolar.angle, toPolar.angle);
-
-    if (delta > bestDelta) {
-      bestDelta = delta;
-      bestFromAngle = fromPolar.angle;
-    }
-  });
-
-  if (bestDelta < 0.05 || t <= 0.001) {
-    trailPath.style.opacity = "0";
-    return;
-  }
-
-  const endAngle = bestFromAngle + bestDelta * t;
-  trailPath.setAttribute("d", buildRingArcPath(layout, bestFromAngle, endAngle));
-  trailPath.style.opacity = String(Math.sin(t * Math.PI) * 0.95);
-}
-
-function interpolatePolarShortest(from: PolarState, to: PolarState, t: number): PolarState {
-  let angleDelta = to.angle - from.angle;
-
-  if (angleDelta > Math.PI) {
-    angleDelta -= Math.PI * 2;
-  } else if (angleDelta < -Math.PI) {
-    angleDelta += Math.PI * 2;
-  }
-
-  return {
-    angle: from.angle + angleDelta * t,
-    radius: from.radius + (to.radius - from.radius) * t,
     alpha: from.alpha + (to.alpha - from.alpha) * t,
   };
 }
@@ -775,16 +671,6 @@ function getLoopingScrollBlend(floatIndex: number) {
 
 function getDesktopScrollEnd() {
   return Math.max(Math.round(window.innerHeight * 3), SCROLL_END);
-}
-
-function getMobileScrollEnd(section: HTMLElement) {
-  const sectionHeight = section.offsetHeight;
-
-  return Math.max(
-    Math.round(window.innerHeight * 1.75),
-    Math.round(sectionHeight * 2.5),
-    SCROLL_END_MOBILE,
-  );
 }
 
 function getTabletScrollEnd(section: HTMLElement) {
