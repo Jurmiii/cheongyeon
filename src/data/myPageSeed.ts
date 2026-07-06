@@ -9,7 +9,7 @@ import winterClass from "../assets/images/13my-page/winter-class.webp";
 import type { Reservation, UserProfile } from "../types/mypage";
 
 export const DEFAULT_PROFILE_SEED: Omit<UserProfile, "loginId"> = {
-  name: "김주은",
+  name: "김청연",
   phone: "010-1234-5678",
   email: "kimju1005@naver.com",
 };

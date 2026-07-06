@@ -1,4 +1,5 @@
 import type { UserProfile } from "../types/mypage";
+import { TEMP_LOGIN_ID } from "../data/tempLoginCredentials";
 
 export const USER_PROFILES_STORAGE_KEY = "cheongyeon-user-profiles";
 
@@ -38,6 +39,15 @@ export function getOrCreateUserProfile(
   const existing = getUserProfile(loginId);
 
   if (existing) {
+    if (loginId === TEMP_LOGIN_ID && existing.name === "김주은") {
+      const updated: UserProfile = {
+        ...existing,
+        name: seedProfile.name,
+      };
+      saveUserProfile(updated);
+      return updated;
+    }
+
     return existing;
   }
 

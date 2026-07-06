@@ -509,6 +509,17 @@ $header-mobile-user-icon-max: 1.25rem;
     visibility: hidden;
     pointer-events: none;
   }
+
+  .site-header-shell--menu-open {
+    .site-header__mobile-panel--open,
+    .site-header__tablet-panel--open {
+      min-height: 100dvh;
+      max-height: 100dvh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
 }
 
 // ─── 컴팩트 + 태블릿 패널: 768px~1023px ─────────────────────────────────────

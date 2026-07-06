@@ -4,6 +4,7 @@ import { DEFAULT_PROFILE_SEED } from "../data/myPageSeed";
 import { useAuth } from "../contexts/AuthContext";
 import type { ProfileFormValues, UserProfile } from "../types/mypage";
 import { isValidEmail, isValidPhone } from "../utils/validation";
+import { getAccount } from "../utils/accountStorage";
 import { getOrCreateUserProfile, saveUserProfile } from "../utils/userProfileStorage";
 
 export function useUserProfile() {
@@ -13,6 +14,20 @@ export function useUserProfile() {
   useEffect(() => {
     if (!loginId) {
       setProfile(null);
+      return;
+    }
+
+    const account = getAccount(loginId);
+
+    if (account) {
+      const accountProfile: UserProfile = {
+        loginId,
+        name: account.name,
+        phone: account.phone,
+        email: account.email,
+      };
+      saveUserProfile(accountProfile);
+      setProfile(accountProfile);
       return;
     }
 
