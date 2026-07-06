@@ -178,9 +178,9 @@ export const SEASON_SCROLL_TABLET_LAYOUT: SeasonScrollLayoutConfig = {
   orbitRingRadiusPx: 234.5,
   sceneCenter: { xPx: 582.5, yPx: 375 },
   orbitSlots: {
-    top: { leftPx: 434.293, topPx: 52, frameWidthPx: 109, frameHeightPx: 112 }, // left 27.1433rem
-    middle: { leftPx: 230, topPx: 295, frameWidthPx: 109, frameHeightPx: 112 },
-    bottom: { leftPx: 437.8432, topPx: 518, frameWidthPx: 109, frameHeightPx: 112 }, // left 27.3652rem
+    top: { leftPx: 434.293, topPx: 84, frameWidthPx: 109, frameHeightPx: 112 }, // left 27.1433rem
+    middle: { leftPx: 262, topPx: 295, frameWidthPx: 109, frameHeightPx: 112 }, // left 16.375rem
+    bottom: { leftPx: 437.8432, topPx: 550, frameWidthPx: 109, frameHeightPx: 112 }, // left 27.3652rem
   },
 };
 
@@ -232,6 +232,39 @@ function lerpSeasonScrollLayout(
   };
 }
 
+function scaleSeasonScrollLayout(
+  layout: SeasonScrollLayoutConfig,
+  scale: number,
+): SeasonScrollLayoutConfig {
+  const scaleSlot = (slot: SeasonOrbitSlot): SeasonOrbitSlot => ({
+    leftPx: slot.leftPx * scale,
+    topPx: slot.topPx * scale,
+    frameWidthPx: slot.frameWidthPx * scale,
+    frameHeightPx: slot.frameHeightPx * scale,
+  });
+
+  return {
+    viewWidthPx: layout.viewWidthPx * scale,
+    viewHeightPx: layout.viewHeightPx * scale,
+    cupWidthPx: layout.cupWidthPx * scale,
+    cupHeightPx: layout.cupHeightPx * scale,
+    orbitRingCenter: {
+      xPx: layout.orbitRingCenter.xPx * scale,
+      yPx: layout.orbitRingCenter.yPx * scale,
+    },
+    orbitRingRadiusPx: layout.orbitRingRadiusPx * scale,
+    sceneCenter: {
+      xPx: layout.sceneCenter.xPx * scale,
+      yPx: layout.sceneCenter.yPx * scale,
+    },
+    orbitSlots: {
+      top: scaleSlot(layout.orbitSlots.top),
+      middle: scaleSlot(layout.orbitSlots.middle),
+      bottom: scaleSlot(layout.orbitSlots.bottom),
+    },
+  };
+}
+
 export function getSeasonScrollFluidT(viewportWidth: number): number {
   if (viewportWidth <= SEASON_SCROLL_FLUID_MIN_PX) {
     return 0;
@@ -252,8 +285,11 @@ export function getSeasonScrollLayout(viewportWidth: number): SeasonScrollLayout
     return SEASON_SCROLL_MOBILE_LAYOUT;
   }
 
-  if (viewportWidth <= SEASON_SCROLL_FLUID_MIN_PX) {
-    return SEASON_SCROLL_TABLET_LAYOUT;
+  if (viewportWidth < SEASON_SCROLL_FLUID_MIN_PX) {
+    return scaleSeasonScrollLayout(
+      SEASON_SCROLL_TABLET_LAYOUT,
+      viewportWidth / SEASON_SCROLL_FLUID_MIN_PX,
+    );
   }
 
   if (viewportWidth >= SEASON_SCROLL_FLUID_MAX_PX) {

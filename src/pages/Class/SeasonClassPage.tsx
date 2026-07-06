@@ -684,10 +684,12 @@ function getTabletScrollEnd(section: HTMLElement) {
 }
 
 function SeasonClassListSection() {
-  const pinRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const spacerRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const scrollLayoutRef = useRef(getSeasonScrollLayout(window.innerWidth));
   const layoutWidthRef = useRef(0);
+  const layoutHeightRef = useRef(0);
   const scrollProgressRef = useRef(0);
   const applyLayoutRef = useRef<(() => void) | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -708,11 +710,16 @@ function SeasonClassListSection() {
 
     const updateLayout = () => {
       const width = section.clientWidth || window.innerWidth;
-      if (Math.abs(width - layoutWidthRef.current) < 1) {
+      const height = section.offsetHeight;
+      if (
+        Math.abs(width - layoutWidthRef.current) < 1 &&
+        Math.abs(height - layoutHeightRef.current) < 1
+      ) {
         return;
       }
 
       layoutWidthRef.current = width;
+      layoutHeightRef.current = height;
       scrollLayoutRef.current = getSeasonScrollLayout(width);
       setScrollViewBox({
         widthPx: scrollLayoutRef.current.viewWidthPx,
@@ -736,9 +743,10 @@ function SeasonClassListSection() {
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const pinEl = pinRef.current;
+    const stageEl = stageRef.current;
+    const spacerEl = spacerRef.current;
     const section = sectionRef.current;
-    if (!pinEl || !section) return;
+    if (!stageEl || !spacerEl || !section) return;
 
     const cups = Array.from(section.querySelectorAll<HTMLElement>(".season-scroll__cup"));
     const scenes = Array.from(section.querySelectorAll<HTMLImageElement>(".season-scroll__scene-img"));
@@ -783,8 +791,7 @@ function SeasonClassListSection() {
     const getStableIndexFromFloat = (floatIndex: number) => modIndex(Math.round(floatIndex));
 
     const syncScrollTrackHeight = (getScrollEnd: () => number) => {
-      const scrollEnd = getScrollEnd();
-      pinEl.style.height = `${section.offsetHeight + scrollEnd}px`;
+      spacerEl.style.height = `${getScrollEnd()}px`;
     };
 
     const createSeasonScrollTrigger = (getScrollEnd: () => number): SeasonScrollTriggerHandle => {
@@ -795,7 +802,7 @@ function SeasonClassListSection() {
       syncScrollTrackHeight(getScrollEnd);
 
       const trigger = ScrollTrigger.create({
-        trigger: pinEl,
+        trigger: stageEl,
         start: "top top",
         end: () => `+=${getScrollEnd()}`,
         invalidateOnRefresh: true,
@@ -858,23 +865,23 @@ function SeasonClassListSection() {
       scrollProgressRef.current = scrollState.progress;
       runApplyMobile(scrollState.floatIndex);
 
-      const syncMobilePinHeight = () => {
-        pinEl.style.height = `${section.offsetHeight}px`;
+      const syncMobileSpacer = () => {
+        spacerEl.style.height = "0px";
       };
 
-      syncMobilePinHeight();
+      syncMobileSpacer();
 
       const trigger = ScrollTrigger.create({
-        trigger: pinEl,
+        trigger: stageEl,
         start: "top top",
         end: "bottom bottom",
         invalidateOnRefresh: true,
-        onRefresh: syncMobilePinHeight,
+        onRefresh: syncMobileSpacer,
       });
 
       applyLayoutRef.current = () => {
         runApplyMobile(scrollState.floatIndex);
-        syncMobilePinHeight();
+        syncMobileSpacer();
         trigger.refresh();
       };
 
@@ -893,7 +900,7 @@ function SeasonClassListSection() {
     };
 
     const clearScrollTrackHeight = () => {
-      pinEl.style.height = "";
+      spacerEl.style.height = "";
     };
 
     const mm = gsap.matchMedia();
@@ -966,12 +973,13 @@ function SeasonClassListSection() {
   }, [activeIndex]);
 
   return (
-    <div ref={pinRef} className="season-scroll-pin">
-      <section
-        ref={sectionRef}
-        className={`season-scroll season-scroll--${season.key}`}
-        aria-label="사계절 시즌 클래스"
-      >
+    <div ref={stageRef} className="season-scroll-stage">
+      <div className="season-scroll-pin">
+        <section
+          ref={sectionRef}
+          className={`season-scroll season-scroll--${season.key}`}
+          aria-label="사계절 시즌 클래스"
+        >
       <img className="season-scroll__bg" src={seasonClassAssets.bg} alt="" aria-hidden="true" />
 
       <div className="season-scroll__visual" aria-hidden="true">
@@ -1116,6 +1124,8 @@ function SeasonClassListSection() {
         </div>
       </div>
       </section>
+      </div>
+      <div ref={spacerRef} className="season-scroll-spacer" aria-hidden="true" />
     </div>
   );
 }
