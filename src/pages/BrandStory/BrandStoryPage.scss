@@ -2250,8 +2250,18 @@
   }
 }
 
+/* 태블릿 KV — brand-kv-ta.webp */
+@media (min-width: $tablet) and (max-width: $laptop) {
+  .brand-story-kv {
+    background-image: url("../../assets/images/02brand-story/brand-kv-ta.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}
+
 /* 모바일 KV — brand-kv-mo.webp (sub-kv compact 이후 최종 오버라이드) */
-@media (max-width: $mobile) {
+@media (max-width: #{$tablet - 1px}) {
   .brand-story-kv {
     background-image: url("../../assets/images/02brand-story/brand-kv-mo.webp");
     background-size: cover;

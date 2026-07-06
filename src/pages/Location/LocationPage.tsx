@@ -135,10 +135,23 @@ const locationStores = [
 ] as const;
 
 const LOCATION_MAP_COMPACT_MQ = "(max-width: 1024px)";
-const SHEET_PEEK_RATIO = 0.38;
-const SHEET_EXPANDED_RATIO = 0.55;
+const LOCATION_MAP_MOBILE_MQ = "(max-width: 767px)";
+const SHEET_EXPANDED_RATIO_DEFAULT = 0.55;
+const SHEET_EXPANDED_RATIO_MOBILE_FALLBACK = 0.72;
+const SHEET_EXPANDED_RATIO_MAX = 0.88;
+const SHEET_VISIBLE_STORE_COUNT_MOBILE = 2;
+const SHEET_COLLAPSED_RATIO_FALLBACK = 0.14;
+const SHEET_DRAG_CLICK_THRESHOLD_PX = 6;
 
-type SheetSnap = "peek" | "expanded";
+type SheetSnap = "collapsed" | "expanded";
+
+function getNextSheetSnap(current: SheetSnap): SheetSnap {
+  return current === "collapsed" ? "expanded" : "collapsed";
+}
+
+function getSheetSnapLabel(snap: SheetSnap) {
+  return snap === "expanded" ? "지점 목록 접기" : "지점 목록 펼치기";
+}
 
 function LocationPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -148,16 +161,22 @@ function LocationPage() {
   const [isCompactMap, setIsCompactMap] = useState(
     () => typeof window !== "undefined" && window.matchMedia(LOCATION_MAP_COMPACT_MQ).matches,
   );
-  const [sheetSnap, setSheetSnap] = useState<SheetSnap>("peek");
+  const [isMobileMapLayout, setIsMobileMapLayout] = useState(
+    () => typeof window !== "undefined" && window.matchMedia(LOCATION_MAP_MOBILE_MQ).matches,
+  );
+  const [sheetSnap, setSheetSnap] = useState<SheetSnap>("collapsed");
   const [sheetDragPx, setSheetDragPx] = useState(0);
   const [isSheetDragging, setIsSheetDragging] = useState(false);
+  const [collapsedSheetRatio, setCollapsedSheetRatio] = useState(SHEET_COLLAPSED_RATIO_FALLBACK);
+  const [expandedSheetRatio, setExpandedSheetRatio] = useState(SHEET_EXPANDED_RATIO_DEFAULT);
   const mapCardRef = useRef<HTMLDivElement>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const sheetChromeRef = useRef<HTMLDivElement>(null);
   const listScrollRef = useRef<HTMLUListElement>(null);
   const scrollbarTrackRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<KakaoMapInstance | null>(null);
   const markersRef = useRef<KakaoMarker[]>([]);
-  const sheetDragStateRef = useRef({ startY: 0, startDragPx: 0 });
+  const sheetDragStateRef = useRef({ startY: 0, startDragPx: 0, didDrag: false });
 
   const filteredStores = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -177,30 +196,42 @@ function LocationPage() {
     : (filteredStores[0]?.id ?? null);
   const activeStore = locationStores.find((store) => store.id === activeStoreId) ?? locationStores[0];
 
+  const getExpandedSheetRatio = () =>
+    isMobileMapLayout ? expandedSheetRatio : SHEET_EXPANDED_RATIO_DEFAULT;
+
+  const getSheetSnapRatio = (snap: SheetSnap) => {
+    if (snap === "collapsed") {
+      return collapsedSheetRatio;
+    }
+
+    return getExpandedSheetRatio();
+  };
+
   const getSheetMaxHeightPercent = () => {
-    const baseRatio = sheetSnap === "expanded" ? SHEET_EXPANDED_RATIO : SHEET_PEEK_RATIO;
+    const baseRatio = getSheetSnapRatio(sheetSnap);
     const cardHeight = mapCardRef.current?.clientHeight ?? 0;
+    const maxRatio = getExpandedSheetRatio();
 
     if (!isCompactMap || cardHeight <= 0) {
       return baseRatio * 100;
     }
 
     const draggedRatio = baseRatio + sheetDragPx / cardHeight;
-    return Math.min(SHEET_EXPANDED_RATIO, Math.max(0.24, draggedRatio)) * 100;
+    return Math.min(maxRatio, Math.max(collapsedSheetRatio, draggedRatio)) * 100;
   };
 
   const finishSheetDrag = () => {
     const cardHeight = mapCardRef.current?.clientHeight ?? 0;
-    const baseRatio = sheetSnap === "expanded" ? SHEET_EXPANDED_RATIO : SHEET_PEEK_RATIO;
+    const baseRatio = getSheetSnapRatio(sheetSnap);
     const draggedRatio = cardHeight > 0 ? baseRatio + sheetDragPx / cardHeight : baseRatio;
-    const snapThreshold = (SHEET_PEEK_RATIO + SHEET_EXPANDED_RATIO) / 2;
+    const snapThreshold = (collapsedSheetRatio + getExpandedSheetRatio()) / 2;
 
-    setSheetSnap(draggedRatio >= snapThreshold ? "expanded" : "peek");
+    setSheetSnap(draggedRatio >= snapThreshold ? "expanded" : "collapsed");
     setSheetDragPx(0);
     setIsSheetDragging(false);
   };
 
-  const handleSheetPointerDown = (event: PointerEvent<HTMLButtonElement>) => {
+  const handleSheetPointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (!isCompactMap) {
       return;
     }
@@ -208,21 +239,27 @@ function LocationPage() {
     sheetDragStateRef.current = {
       startY: event.clientY,
       startDragPx: sheetDragPx,
+      didDrag: false,
     };
     setIsSheetDragging(true);
     event.currentTarget.setPointerCapture(event.pointerId);
   };
 
-  const handleSheetPointerMove = (event: PointerEvent<HTMLButtonElement>) => {
+  const handleSheetPointerMove = (event: PointerEvent<HTMLDivElement>) => {
     if (!isSheetDragging) {
       return;
     }
 
     const deltaY = sheetDragStateRef.current.startY - event.clientY;
+
+    if (Math.abs(deltaY) > SHEET_DRAG_CLICK_THRESHOLD_PX) {
+      sheetDragStateRef.current.didDrag = true;
+    }
+
     setSheetDragPx(sheetDragStateRef.current.startDragPx + deltaY);
   };
 
-  const handleSheetPointerUp = (event: PointerEvent<HTMLButtonElement>) => {
+  const handleSheetPointerUp = (event: PointerEvent<HTMLDivElement>) => {
     if (!isSheetDragging) {
       return;
     }
@@ -234,7 +271,7 @@ function LocationPage() {
     finishSheetDrag();
   };
 
-  const handleSheetPointerCancel = (event: PointerEvent<HTMLButtonElement>) => {
+  const handleSheetPointerCancel = (event: PointerEvent<HTMLDivElement>) => {
     if (!isSheetDragging) {
       return;
     }
@@ -246,35 +283,116 @@ function LocationPage() {
     finishSheetDrag();
   };
 
-  const handleSheetKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+  const handleSheetClick = () => {
+    if (!isCompactMap) {
+      return;
+    }
+
+    if (sheetDragStateRef.current.didDrag) {
+      sheetDragStateRef.current.didDrag = false;
+      return;
+    }
+
+    setSheetSnap((current) => getNextSheetSnap(current));
+  };
+
+  const handleSheetKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (!isCompactMap) {
       return;
     }
 
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      setSheetSnap((current) => (current === "expanded" ? "peek" : "expanded"));
+      setSheetSnap((current) => getNextSheetSnap(current));
     }
   };
 
   useEffect(() => {
-    const media = window.matchMedia(LOCATION_MAP_COMPACT_MQ);
+    const compactMedia = window.matchMedia(LOCATION_MAP_COMPACT_MQ);
+    const mobileMedia = window.matchMedia(LOCATION_MAP_MOBILE_MQ);
+
     const syncCompactMap = () => {
-      setIsCompactMap(media.matches);
-      if (!media.matches) {
-        setSheetSnap("peek");
+      setIsCompactMap(compactMedia.matches);
+      setIsMobileMapLayout(mobileMedia.matches);
+
+      if (!compactMedia.matches) {
+        setSheetSnap("collapsed");
         setSheetDragPx(0);
         setIsSheetDragging(false);
       }
     };
 
     syncCompactMap();
-    media.addEventListener("change", syncCompactMap);
+    compactMedia.addEventListener("change", syncCompactMap);
+    mobileMedia.addEventListener("change", syncCompactMap);
 
     return () => {
-      media.removeEventListener("change", syncCompactMap);
+      compactMedia.removeEventListener("change", syncCompactMap);
+      mobileMedia.removeEventListener("change", syncCompactMap);
     };
   }, []);
+
+  useEffect(() => {
+    if (!isCompactMap) {
+      return;
+    }
+
+    const updateSheetRatios = () => {
+      const cardHeight = mapCardRef.current?.clientHeight ?? 0;
+      const chromeHeight = sheetChromeRef.current?.offsetHeight ?? 0;
+
+      if (cardHeight > 0 && chromeHeight > 0) {
+        setCollapsedSheetRatio((chromeHeight + 1) / cardHeight);
+      }
+
+      if (!isMobileMapLayout) {
+        setExpandedSheetRatio(SHEET_EXPANDED_RATIO_DEFAULT);
+        return;
+      }
+
+      const firstItem = listScrollRef.current?.querySelector<HTMLElement>(".location-map__item");
+      const itemHeight = firstItem?.offsetHeight ?? 0;
+
+      if (cardHeight <= 0 || chromeHeight <= 0 || itemHeight <= 0) {
+        setExpandedSheetRatio(SHEET_EXPANDED_RATIO_MOBILE_FALLBACK);
+        return;
+      }
+
+      const targetHeight = chromeHeight + itemHeight * SHEET_VISIBLE_STORE_COUNT_MOBILE;
+      const ratio = Math.min(
+        SHEET_EXPANDED_RATIO_MAX,
+        Math.max(SHEET_EXPANDED_RATIO_DEFAULT, targetHeight / cardHeight),
+      );
+
+      setExpandedSheetRatio(ratio);
+    };
+
+    updateSheetRatios();
+
+    window.addEventListener("resize", updateSheetRatios);
+
+    const resizeObserver = new ResizeObserver(updateSheetRatios);
+    const chromeEl = sheetChromeRef.current;
+    const cardEl = mapCardRef.current;
+    const listEl = listScrollRef.current;
+
+    if (chromeEl) {
+      resizeObserver.observe(chromeEl);
+    }
+
+    if (cardEl) {
+      resizeObserver.observe(cardEl);
+    }
+
+    if (listEl) {
+      resizeObserver.observe(listEl);
+    }
+
+    return () => {
+      window.removeEventListener("resize", updateSheetRatios);
+      resizeObserver.disconnect();
+    };
+  }, [isCompactMap, isMobileMapLayout, filteredStores]);
 
   useEffect(() => {
     if (!isCompactMap) {
@@ -288,7 +406,7 @@ function LocationPage() {
     return () => {
       window.cancelAnimationFrame(frame);
     };
-  }, [isCompactMap, sheetSnap, sheetDragPx, isSheetDragging]);
+  }, [isCompactMap, sheetSnap, sheetDragPx, isSheetDragging, collapsedSheetRatio, expandedSheetRatio]);
 
   useEffect(() => {
     const listEl = listScrollRef.current;
@@ -334,7 +452,7 @@ function LocationPage() {
       window.removeEventListener("resize", updateScrollbar);
       resizeObserver.disconnect();
     };
-  }, [filteredStores]);
+  }, [filteredStores, isCompactMap, sheetSnap, sheetDragPx, isSheetDragging, collapsedSheetRatio, expandedSheetRatio]);
 
   useEffect(() => {
     const mapContainer = mapContainerRef.current;
@@ -447,24 +565,36 @@ function LocationPage() {
                 "location-map__sheet",
                 isCompactMap && "location-map__sheet--compact",
                 isSheetDragging && "location-map__sheet--dragging",
+                sheetSnap === "collapsed" && "location-map__sheet--collapsed",
                 sheetSnap === "expanded" && "location-map__sheet--expanded",
               ]
                 .filter(Boolean)
                 .join(" ")}
-              style={isCompactMap ? { maxHeight: `${getSheetMaxHeightPercent()}%` } : undefined}
+              style={
+                isCompactMap
+                  ? {
+                      height: `${getSheetMaxHeightPercent()}%`,
+                      maxHeight: `${getSheetMaxHeightPercent()}%`,
+                    }
+                  : undefined
+              }
             >
-              <button
-                type="button"
-                className="location-map__sheet-handle"
-                aria-label={sheetSnap === "expanded" ? "지점 목록 접기" : "지점 목록 펼치기"}
-                aria-expanded={sheetSnap === "expanded"}
-                onPointerDown={handleSheetPointerDown}
-                onPointerMove={handleSheetPointerMove}
-                onPointerUp={handleSheetPointerUp}
-                onPointerCancel={handleSheetPointerCancel}
-                onKeyDown={handleSheetKeyDown}
-              />
-              <div className="location-map__list">
+              <div ref={sheetChromeRef} className="location-map__sheet-chrome">
+                <div
+                  role="button"
+                  tabIndex={isCompactMap ? 0 : -1}
+                  className="location-map__sheet-grabber"
+                  aria-label={getSheetSnapLabel(sheetSnap)}
+                  aria-expanded={sheetSnap !== "collapsed"}
+                  onPointerDown={handleSheetPointerDown}
+                  onPointerMove={handleSheetPointerMove}
+                  onPointerUp={handleSheetPointerUp}
+                  onPointerCancel={handleSheetPointerCancel}
+                  onClick={handleSheetClick}
+                  onKeyDown={handleSheetKeyDown}
+                >
+                  <span className="location-map__sheet-handle" aria-hidden="true" />
+                </div>
                 <div className="location-map__search-wrap">
                   <div className="location-map__search">
                     <Icon className="location-map__search-icon" name="magnifying-glass" aria-hidden="true" />
@@ -478,7 +608,8 @@ function LocationPage() {
                     />
                   </div>
                 </div>
-
+              </div>
+              <div className="location-map__list">
                 <div className="location-map__list-scroll-wrap">
                   <ul ref={listScrollRef} className="location-map__list-scroll">
                     {filteredStores.map((store) => (
