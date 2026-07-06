@@ -29,7 +29,12 @@ import {
   isReservationTimeSlotPast,
 } from "../../utils/reservationFormat";
 import { isValidPhone, isValidReserverName, sanitizePhoneInput, sanitizeReserverNameInput } from "../../utils/validation";
-import { parseSeasonReservationClassId } from "../../data/seasonClassReservation";
+import {
+  getActiveSeasonReservationClassId,
+  isReservationClassSelectable,
+  isSeasonReservationClassActive,
+  parseSeasonReservationClassId,
+} from "../../data/seasonClassReservation";
 import "./ReservationPage.scss";
 
 type PaymentMethod = "card" | "bank";
@@ -481,9 +486,29 @@ function ReservationPage() {
   const isSelectedTimePast = isReservationTimeSlotPast(selectedDate, selectedTime, scheduleNow);
   const selectedRemainingSeats = isSelectedTimePast ? 0 : selectedSessionAvailability.remainingSeats;
   const bookableGuestCount = Math.min(maxGuestCount, selectedRemainingSeats);
+  const activeSeasonClassId = useMemo(
+    () => getActiveSeasonReservationClassId(scheduleNow),
+    [scheduleNow],
+  );
+  const editReservationClassId = useMemo(
+    () => (editReservation ? getClassIdFromReservation(editReservation) : undefined),
+    [editReservation],
+  );
+
+  const isClassSelectable = (classId: number) =>
+    isReservationClassSelectable(classId, scheduleNow, editReservationClassId);
   const canEditReservation = !isEditMode || !editReservation
     ? true
     : canCancelReservation(editReservation.date, editReservation.time, scheduleNow);
+
+  useEffect(() => {
+    if (isEditMode || isClassSelectable(selectedClassId)) {
+      return;
+    }
+
+    setSelectedClassId(activeSeasonClassId);
+    setClassPage(Math.ceil(activeSeasonClassId / RESERVATION_CLASSES_PER_PAGE));
+  }, [activeSeasonClassId, isEditMode, selectedClassId, scheduleNow, editReservationClassId]);
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -558,8 +583,11 @@ function ReservationPage() {
 
     const seasonClassId = parseSeasonReservationClassId(classIdParam);
     if (seasonClassId) {
-      setSelectedClassId(seasonClassId);
-      setClassPage(Math.ceil(seasonClassId / RESERVATION_CLASSES_PER_PAGE));
+      const resolvedSeasonClassId = isSeasonReservationClassActive(seasonClassId, today)
+        ? seasonClassId
+        : getActiveSeasonReservationClassId(today);
+      setSelectedClassId(resolvedSeasonClassId);
+      setClassPage(Math.ceil(resolvedSeasonClassId / RESERVATION_CLASSES_PER_PAGE));
     }
 
     initializedFromQueryRef.current = true;
@@ -682,6 +710,8 @@ function ReservationPage() {
 
     if (!reservationClasses.some((classItem) => classItem.id === selectedClassId)) {
       errors.push("클래스를 선택해주세요.");
+    } else if (!isClassSelectable(selectedClassId)) {
+      errors.push("현재 시즌에 예약할 수 없는 클래스입니다. 다른 클래스를 선택해주세요.");
     }
 
     if (!selectedDate || startOfDay(selectedDate).getTime() < today.getTime()) {
@@ -772,9 +802,15 @@ function ReservationPage() {
         <div className="reservation-hero__grid">
           <h1 className="reservation-hero__title ft-32b ink500">{isEditMode ? "예약 변경" : "예약하기"}</h1>
           <p className="reservation-hero__description ft-18r ink500">
-            {isEditMode
-              ? "기존 예약 정보를 확인하고 원하는 일정으로 변경하세요."
-              : "원하시는 지점과 클래스를 고르고, 차 한 잔의 시간을 예약하세요."}
+            {isEditMode ? (
+              "기존 예약 정보를 확인하고 원하는 일정으로 변경하세요."
+            ) : (
+              <>
+                원하시는 지점과 클래스를 고르고,
+                <br className="reservation-hero__description-break" />
+                차 한 잔의 시간을 예약하세요.
+              </>
+            )}
           </p>
           <div className="reservation-notice">
             <button
@@ -917,9 +953,18 @@ function ReservationPage() {
           <ul className="reservation-classes__list">
             {paginatedClasses.map((classItem) => {
               const isSelected = selectedClassId === classItem.id;
+              const isSelectable = isClassSelectable(classItem.id);
 
               return (
-                <li className="reservation-class-card" key={classItem.id}>
+                <li
+                  className={[
+                    "reservation-class-card",
+                    !isSelectable && "reservation-class-card--inactive",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  key={classItem.id}
+                >
                   <div
                     className={[
                       "reservation-class-card__image-wrap",
@@ -968,19 +1013,25 @@ function ReservationPage() {
                         "reservation-class-card__select",
                         "ft-18b",
                         isSelected && "reservation-class-card__select--active",
+                        !isSelectable && "reservation-class-card__select--disabled",
                       ]
                         .filter(Boolean)
                         .join(" ")}
                       type="button"
                       aria-pressed={isSelected}
+                      disabled={!isSelectable}
                       onClick={() => {
+                        if (!isSelectable) {
+                          return;
+                        }
+
                         const nextMaxGuestCount = getMaxGuestCount(classItem.id);
                         setSelectedClassId(classItem.id);
                         setGuestCount((count) => Math.min(count, nextMaxGuestCount));
                         setValidationErrors([]);
                       }}
                     >
-                      {isSelected ? "선택 완료" : "선택하기"}
+                      {!isSelectable ? "준비중" : isSelected ? "선택 완료" : "선택하기"}
                     </button>
                   </div>
                 </li>

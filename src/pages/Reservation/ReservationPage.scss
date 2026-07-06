@@ -39,6 +39,10 @@ $reservation-class-mobile: 32.5rem; // 520px — 클래스 카드 1열(모바일
   margin: 0;
 }
 
+.reservation-hero__description-break {
+  display: none;
+}
+
 .reservation-hero .reservation-notice {
   margin-top: 1.5rem;
 }
@@ -303,6 +307,28 @@ $reservation-class-mobile: 32.5rem; // 520px — 클래스 카드 1열(모바일
   border-color: var(--deep500);
   background: var(--deep500);
   color: var(--white);
+}
+
+.reservation-class-card--inactive {
+  .reservation-class-card__image-wrap::after {
+    background: rgb(0 0 0 / 45%);
+  }
+}
+
+.reservation-class-card__select--disabled,
+.reservation-class-card__select:disabled {
+  border-color: var(--han300);
+  background: var(--han100);
+  color: var(--han400);
+  cursor: not-allowed;
+}
+
+.reservation-class-card__select--active:disabled {
+  border-color: var(--deep500);
+  background: var(--deep500);
+  color: var(--white);
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .reservation-classes__pagination {
@@ -592,6 +618,29 @@ $reservation-class-mobile: 32.5rem; // 520px — 클래스 카드 1열(모바일
   line-height: 1.125rem;
   color: var(--ink200);
   text-align: right;
+}
+
+@media (max-width: #{$tablet - 1px}) {
+  .reservation-schedule__guests {
+    align-items: stretch;
+  }
+
+  .reservation-schedule__guests .reservation-form__label {
+    order: 1;
+    align-self: flex-start;
+    text-align: left;
+  }
+
+  .reservation-schedule__guests .reservation-schedule__counter {
+    order: 2;
+    margin-top: 0.75rem;
+  }
+
+  .reservation-schedule__guests .reservation-schedule__guest-note {
+    order: 3;
+    margin-top: 0.75rem;
+    text-align: center;
+  }
 }
 
 .reservation-request__title {
@@ -1359,10 +1408,14 @@ $reservation-class-mobile: 32.5rem; // 520px — 클래스 카드 1열(모바일
   }
 
   .reservation-form__row,
-  .reservation-payment__tabs,
   .reservation-payment__selects,
   .reservation-payment__actions {
     flex-direction: column;
+  }
+
+  .reservation-payment__tabs {
+    flex-direction: row;
+    gap: 1rem;
   }
 
   .reservation-form__branch-list {
@@ -1510,6 +1563,33 @@ $reservation-class-mobile: 32.5rem; // 520px — 클래스 카드 1열(모바일
   .reservation-payment__action--submit.cy-button {
     width: 100%;
     max-width: none;
+  }
+}
+
+// 모바일 (≤767) — 히어로 줄바꿈 + 결제 버튼
+@media (max-width: #{$tablet - 1px}) {
+  .reservation-hero__description-break {
+    display: block;
+  }
+
+  .reservation-payment__remember,
+  .reservation-payment__errors {
+    margin-bottom: 0;
+  }
+
+  .reservation-payment__actions {
+    margin-top: 2.5rem;
+  }
+
+  .reservation-payment__action {
+    min-height: 3.125rem;
+  }
+
+  .reservation-payment__action--submit.cy-button {
+    box-sizing: border-box;
+    height: 3.125rem;
+    min-height: 3.125rem;
+    padding-block: 0;
   }
 }
 
@@ -1664,9 +1744,29 @@ $reservation-class-mobile: 32.5rem; // 520px — 클래스 카드 1열(모바일
   }
 }
 
-@media (max-width: $tablet) {
+// 태블릿 (768~1023) — 443×384, 버튼 가로 정렬
+@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
+  .reservation-complete-modal__dialog {
+    width: 27.6875rem; /* 443px */
+    max-width: 27.6875rem;
+    height: 24rem; /* 384px */
+    min-height: 24rem;
+    padding: 1.5rem;
+  }
+
+  .reservation-complete-modal__actions {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+}
+
+// 모바일 (≤767)
+@media (max-width: #{$tablet - 1px}) {
   .reservation-complete-modal__dialog {
     width: 100%;
+    max-width: 27.6875rem;
     height: auto;
     min-height: 24rem;
     padding: 1.25rem;
@@ -1677,10 +1777,40 @@ $reservation-class-mobile: 32.5rem; // 520px — 클래스 카드 1열(모바일
     line-height: 1.35;
   }
 
+  .reservation-complete-modal__description.ft-16r {
+    margin-top: 0.75rem;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.125rem;
+    white-space: nowrap;
+  }
+
   .reservation-complete-modal__actions {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
     gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .reservation-complete-modal__action {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    height: 2.625rem;
+    padding-inline: 0.5rem;
+  }
+
+  .reservation-complete-modal__notice {
+    margin-top: 1.25rem;
+  }
+
+  .reservation-complete-modal__notice-item.ft-14r {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.125rem;
   }
 }
 
@@ -1763,6 +1893,43 @@ $reservation-class-mobile: 32.5rem; // 520px — 클래스 카드 1열(모바일
     font-size: 1rem;
     font-weight: 500;
     line-height: 1.625rem;
+  }
+}
+
+// 태블릿 (768~1023) — 히어로 타이포 + 결제 버튼
+@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
+  .reservation-page .reservation-hero__title.ft-32b {
+    font-family: var(--font-headline);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 2.75rem;
+  }
+
+  .reservation-page .reservation-hero__description.ft-18r {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.875rem;
+  }
+
+  .reservation-payment__action {
+    min-height: 3.75rem;
+  }
+
+  .reservation-payment__action--submit.cy-button {
+    box-sizing: border-box;
+    height: 3.75rem;
+    min-height: 3.75rem;
+    padding-block: 0;
+  }
+
+  .reservation-payment__remember,
+  .reservation-payment__errors {
+    margin-bottom: 0;
+  }
+
+  .reservation-payment__actions {
+    margin-top: 3rem;
   }
 }
 
