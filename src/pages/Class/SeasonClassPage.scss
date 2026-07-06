@@ -81,6 +81,7 @@ $season-class-kv-height-desktop: 46.25rem; // PC 740px
   position: relative;
   width: 100%;
   min-width: 0;
+  overflow-x: clip;
 }
 
 .season-class-page__header {
@@ -423,20 +424,37 @@ $season-scroll-scene-right-tablet: 1.96875rem; // (371-308)/2
   );
 }
 
-/* 스크롤 트랙 래퍼 — height(JS) + sticky 섹션, 아래 promo는 래퍼 밖에서 대기 */
-.season-scroll-pin {
+/* 768px 태블릿 기준 비율 축소 — 레이아웃 구조는 유지, 402px에서 모바일로 전환 */
+@function season-scroll-tablet-scale($tablet-value) {
+  @return calc(#{$tablet-value} * 100vw / #{$tablet});
+}
+
+/* 스크롤 스테이지 — 본문 높이(자연 흐름) + spacer(스크롤 트랙), 아래 promo는 스테이지 밖에서 이어짐 */
+.season-scroll-stage {
   position: relative;
   width: 100%;
-  max-width: $season-scroll-design-w;
+  max-width: 100%;
+}
+
+.season-scroll-pin {
+  position: sticky;
+  top: 0;
+  width: 100%;
+}
+
+.season-scroll-spacer {
+  display: block;
+  width: 100%;
+  height: 0;
+  pointer-events: none;
 }
 
 .season-scroll {
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --season-scroll-t: 1;
 
-  position: sticky;
-  top: 0;
-  width: $season-scroll-design-w;
+  position: relative;
+  width: 100%;
   max-width: 100%;
   height: $season-scroll-design-h;
   overflow: hidden;
@@ -458,6 +476,8 @@ $season-scroll-scene-right-tablet: 1.96875rem; // (371-308)/2
   z-index: 0;
   width: 100%;
   height: 100%;
+  min-width: 100%;
+  min-height: 100%;
   max-width: none;
   object-fit: cover;
   object-position: center;
@@ -816,6 +836,12 @@ $season-scroll-meta-icon-text-gap-tablet: 0.625rem; // 10px — 아이콘 ↔ �
 }
 
 @media (max-width: $tablet) {
+  .season-scroll-stage,
+  .season-scroll {
+    width: 100%;
+    max-width: 100%;
+  }
+
   .season-scroll {
     height: $season-scroll-h-tablet;
     max-height: none;
@@ -1026,10 +1052,139 @@ $season-scroll-meta-inline-mobile: 2.9375rem; // 47px
 $season-scroll-meta-icon-mobile: 0.875rem; // 14px
 $season-scroll-meta-gap-mobile: 0.75rem; // 12px — 행 간격
 $season-scroll-meta-icon-text-gap-mobile: 0.25rem; // 4px — 아이콘 ↔ 라벨
+$season-scroll-ellipse-top-tablet: 23.4375rem; // 750px / 2 — 타원 세로 중심
+
+/* 403px ~ 768px — 태블릿 레이아웃 그대로, 뷰포트 비율만 축소 (402px에서 모바일 레이아웃 전환) */
+@media (min-width: #{$mobile + 1px}) and (max-width: $tablet) {
+  .season-scroll {
+    height: season-scroll-tablet-scale($season-scroll-h-tablet);
+  }
+
+  .season-scroll__ellipse {
+    top: 50%;
+    right: auto;
+    left: season-scroll-tablet-scale($season-scroll-ellipse-left-tablet);
+    width: season-scroll-tablet-scale($season-scroll-ellipse-size-tablet);
+    height: season-scroll-tablet-scale($season-scroll-ellipse-size-tablet);
+    transform: translateY(-50%);
+  }
+
+  .season-scroll__subbg {
+    top: 0;
+    right: 0;
+    left: auto;
+    width: season-scroll-tablet-scale($season-scroll-subbg-w-tablet);
+    height: season-scroll-tablet-scale($season-scroll-h-tablet);
+    transform: none;
+  }
+
+  .season-scroll__scene {
+    top: 50%;
+    right: season-scroll-tablet-scale($season-scroll-scene-right-tablet);
+    left: auto;
+    width: season-scroll-tablet-scale($season-scroll-scene-size-tablet);
+    height: season-scroll-tablet-scale($season-scroll-scene-size-tablet);
+    transform: translateY(-50%);
+  }
+
+  .season-scroll__left {
+    top: season-scroll-tablet-scale($season-scroll-padding-block-tablet);
+    bottom: season-scroll-tablet-scale($season-scroll-padding-block-tablet);
+    left: season-scroll-tablet-scale(grid.$tablet-grid-padding);
+    gap: season-scroll-tablet-scale($season-scroll-left-gap-tablet);
+    width: calc(
+      100% -
+        #{season-scroll-tablet-scale($season-scroll-subbg-w-tablet)} -
+        #{season-scroll-tablet-scale(grid.$tablet-grid-padding)}
+    );
+  }
+
+  .season-scroll__header {
+    gap: season-scroll-tablet-scale($season-scroll-hanja-gap-tablet);
+  }
+
+  .season-scroll__intro {
+    gap: season-scroll-tablet-scale($season-scroll-intro-gap-tablet);
+    max-width: calc(100% + #{season-scroll-tablet-scale(1.5rem)});
+  }
+
+  .season-scroll__heading.ft-48b {
+    font-size: season-scroll-tablet-scale(2rem);
+    line-height: season-scroll-tablet-scale(2.75rem);
+  }
+
+  .season-scroll__lead.ft-28r {
+    font-size: season-scroll-tablet-scale(1.25rem);
+    line-height: season-scroll-tablet-scale(2rem);
+    max-width: season-scroll-tablet-scale(22.75rem);
+  }
+
+  .season-scroll__hanja {
+    width: season-scroll-tablet-scale($season-scroll-hanja-w-tablet);
+    height: season-scroll-tablet-scale($season-scroll-hanja-h-tablet);
+  }
+
+  .season-scroll__copy-block {
+    gap: season-scroll-tablet-scale($season-scroll-meta-gap-tablet);
+  }
+
+  .season-scroll__copy {
+    gap: season-scroll-tablet-scale($season-scroll-copy-gap-tablet);
+  }
+
+  .season-scroll__title.ft-48b {
+    font-size: season-scroll-tablet-scale(1.5rem);
+    line-height: season-scroll-tablet-scale(2.125rem);
+  }
+
+  .season-scroll__desc.ft-28r {
+    font-size: season-scroll-tablet-scale(1.25rem);
+    line-height: season-scroll-tablet-scale(2rem);
+  }
+
+  .season-scroll__meta {
+    gap: season-scroll-tablet-scale(0.75rem);
+  }
+
+  .season-scroll__meta-row,
+  .season-scroll__meta-row:nth-child(1),
+  .season-scroll__meta-row:nth-child(2),
+  .season-scroll__meta-row:nth-child(4),
+  .season-scroll__meta-row--wide {
+    grid-template-columns:
+      season-scroll-tablet-scale($season-scroll-meta-label-group-w-tablet)
+      minmax(0, 1fr);
+    column-gap: season-scroll-tablet-scale($season-scroll-meta-label-value-gap-tablet);
+  }
+
+  .season-scroll__meta-label {
+    grid-template-columns:
+      season-scroll-tablet-scale(1.5rem)
+      minmax(0, 1fr);
+    column-gap: season-scroll-tablet-scale($season-scroll-meta-icon-text-gap-tablet);
+  }
+
+  .season-scroll__meta-label .ft-18b,
+  .season-scroll__meta-row dd.ft-18r {
+    font-size: season-scroll-tablet-scale(1rem);
+    line-height: season-scroll-tablet-scale(1.625rem);
+  }
+
+  .season-scroll__icon-svg,
+  .season-scroll__icon-img {
+    width: season-scroll-tablet-scale(1.5rem);
+    height: season-scroll-tablet-scale(1.5rem);
+  }
+}
 
 @media (max-width: $mobile) {
+  .season-scroll-stage {
+    width: 100%;
+    max-width: 100%;
+  }
+
   .season-scroll-pin {
-    max-width: grid.$mobile-grid-outer;
+    max-width: none;
   }
 
   .season-scroll {
@@ -1340,13 +1495,13 @@ $season-promo-bg-mobile-origin-y: 38%;
   --season-promo-bg-pos-x: 78%;
   --season-promo-bg-pos-y: 50%;
   --season-promo-bg-scale: 1;
-  --season-promo-bg-translate-x: 2%;
+  --season-promo-bg-translate-x: 0%;
   --season-promo-bg-translate-y: 0%;
   --season-promo-bg-origin-x: 78%;
   --season-promo-bg-origin-y: 50%;
 
   position: relative;
-  width: $season-promo-design-w;
+  width: 100%;
   max-width: 100%;
   height: $season-promo-h-pc;
   overflow: hidden;
@@ -1354,19 +1509,15 @@ $season-promo-bg-mobile-origin-y: 38%;
 
 .season-promo__bg {
   position: absolute;
+  inset: 0;
   z-index: 0;
-  width: calc(100% * var(--season-promo-bg-scale));
-  height: calc(100% * var(--season-promo-bg-scale));
+  width: 100%;
+  height: 100%;
+  min-width: 100%;
+  min-height: 100%;
   max-width: none;
-  left: 50%;
-  top: 50%;
   object-fit: cover;
   object-position: var(--season-promo-bg-pos-x) var(--season-promo-bg-pos-y);
-  transform: translate(
-      calc(-50% + var(--season-promo-bg-translate-x)),
-      calc(-50% + var(--season-promo-bg-translate-y))
-    );
-  transform-origin: var(--season-promo-bg-origin-x) var(--season-promo-bg-origin-y);
   pointer-events: none;
 }
 
@@ -1440,8 +1591,6 @@ $season-promo-bg-mobile-origin-y: 38%;
 @media (max-width: #{$laptop - 1px}) {
   .season-promo {
     height: #{season-promo-fluid-laptop-tablet($season-promo-h-pc, $season-promo-h-tablet)};
-    width: 100%;
-    max-width: 100%;
   }
 
   .season-promo__shade {
@@ -1534,6 +1683,21 @@ $season-promo-bg-mobile-origin-y: 38%;
     --season-promo-bg-translate-y: #{$season-promo-bg-mobile-translate-y};
     --season-promo-bg-origin-x: #{$season-promo-bg-mobile-origin-x};
     --season-promo-bg-origin-y: #{$season-promo-bg-mobile-origin-y};
+  }
+
+  .season-promo__bg {
+    inset: auto;
+    left: 50%;
+    top: 50%;
+    width: max(100%, calc(100% * var(--season-promo-bg-scale)));
+    height: max(100%, calc(100% * var(--season-promo-bg-scale)));
+    min-width: max(100%, calc(100% * var(--season-promo-bg-scale)));
+    min-height: max(100%, calc(100% * var(--season-promo-bg-scale)));
+    transform: translate(
+      calc(-50% + var(--season-promo-bg-translate-x)),
+      calc(-50% + var(--season-promo-bg-translate-y))
+    );
+    transform-origin: var(--season-promo-bg-origin-x) var(--season-promo-bg-origin-y);
   }
 
   .season-promo__content {

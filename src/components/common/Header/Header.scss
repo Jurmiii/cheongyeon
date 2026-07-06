@@ -141,7 +141,7 @@ $header-mobile-user-icon-max: 1.25rem;
     height: calc(var(--header-bar-h) + var(--header-pad-top));
     padding-top: var(--header-pad-top);
     overflow: visible;
-    background: transparent;
+  background: transparent;
   color: var(--ink500);
     transition: background-color 0.24s ease;
 

@@ -63,7 +63,6 @@ function pxToRem(px: number) {
 
 const SCROLL_END = 3000;
 const SCROLL_END_TABLET = 1875; // 750px × 2.5 — 태블릿 섹션 높이 기준
-const SCROLL_END_MOBILE = 1915; // 766px × 2.5 — 모바일 섹션 높이 기준
 const SEASON_SCROLL_MOBILE_MQ = "(max-width: 402px)";
 const SEASON_SCROLL_TABLET_MQ = "(min-width: 403px) and (max-width: 768px)";
 const SEASON_SCROLL_DESKTOP_MQ = "(min-width: 769px)";
@@ -92,38 +91,6 @@ function computeOrbitSlotAngles(layout: SeasonScrollLayoutConfig): OrbitSlotAngl
   });
 
   return angles;
-}
-
-function getShortestAngleDelta(fromAngle: number, toAngle: number) {
-  let delta = toAngle - fromAngle;
-
-  if (delta > Math.PI) {
-    delta -= Math.PI * 2;
-  } else if (delta < -Math.PI) {
-    delta += Math.PI * 2;
-  }
-
-  return delta;
-}
-
-function buildRingArcPathShortest(
-  layout: SeasonScrollLayoutConfig,
-  fromAngle: number,
-  toAngle: number,
-) {
-  const r = layout.orbitRingRadiusPx;
-  const cx = layout.orbitRingCenter.xPx;
-  const cy = layout.orbitRingCenter.yPx;
-  const delta = getShortestAngleDelta(fromAngle, toAngle);
-  const endAngle = fromAngle + delta;
-  const x1 = cx + Math.cos(fromAngle) * r;
-  const y1 = cy + Math.sin(fromAngle) * r;
-  const x2 = cx + Math.cos(endAngle) * r;
-  const y2 = cy + Math.sin(endAngle) * r;
-  const largeArc = Math.abs(delta) > Math.PI ? 1 : 0;
-  const sweep = delta >= 0 ? 1 : 0;
-
-  return `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} ${sweep} ${x2} ${y2}`;
 }
 
 function buildRingArcPath(
@@ -257,77 +224,6 @@ function interpolateMobilePolarCcw(from: PolarState, to: PolarState, t: number):
   return {
     angle: from.angle + angleDelta * t,
     radius: from.radius,
-    alpha: from.alpha + (to.alpha - from.alpha) * t,
-  };
-}
-
-function applyMobileOrbitTrailStroke(
-  layout: SeasonScrollLayoutConfig,
-  fromActive: number,
-  toActive: number,
-  t: number,
-  trailPath: SVGPathElement | null,
-  cupWidthPx: number,
-  cupHeightPx: number,
-) {
-  if (!trailPath) return;
-
-  let bestFromAngle = 0;
-  let bestDelta = 0;
-
-  seasonClassItems.forEach((_, seasonIndex) => {
-    const fromState = getMobileSeasonCupState(
-      seasonIndex,
-      fromActive,
-      layout,
-      cupWidthPx,
-      cupHeightPx,
-    );
-    const toState = getMobileSeasonCupState(
-      seasonIndex,
-      toActive,
-      layout,
-      cupWidthPx,
-      cupHeightPx,
-    );
-    const fromPolar = getMobileSeasonCupPolar(
-      seasonIndex,
-      fromActive,
-      layout,
-      cupWidthPx,
-      cupHeightPx,
-    );
-    const toPolar = getMobileSeasonCupPolar(seasonIndex, toActive, layout, cupWidthPx, cupHeightPx);
-    const delta = getCcwAngleDelta(fromPolar.angle, toPolar.angle);
-
-    if (delta > bestDelta) {
-      bestDelta = delta;
-      bestFromAngle = fromPolar.angle;
-    }
-  });
-
-  if (bestDelta < 0.05 || t <= 0.001) {
-    trailPath.style.opacity = "0";
-    return;
-  }
-
-  const endAngle = bestFromAngle + bestDelta * t;
-  trailPath.setAttribute("d", buildRingArcPath(layout, bestFromAngle, endAngle));
-  trailPath.style.opacity = String(Math.sin(t * Math.PI) * 0.95);
-}
-
-function interpolatePolarShortest(from: PolarState, to: PolarState, t: number): PolarState {
-  let angleDelta = to.angle - from.angle;
-
-  if (angleDelta > Math.PI) {
-    angleDelta -= Math.PI * 2;
-  } else if (angleDelta < -Math.PI) {
-    angleDelta += Math.PI * 2;
-  }
-
-  return {
-    angle: from.angle + angleDelta * t,
-    radius: from.radius + (to.radius - from.radius) * t,
     alpha: from.alpha + (to.alpha - from.alpha) * t,
   };
 }
@@ -777,16 +673,6 @@ function getDesktopScrollEnd() {
   return Math.max(Math.round(window.innerHeight * 3), SCROLL_END);
 }
 
-function getMobileScrollEnd(section: HTMLElement) {
-  const sectionHeight = section.offsetHeight;
-
-  return Math.max(
-    Math.round(window.innerHeight * 1.75),
-    Math.round(sectionHeight * 2.5),
-    SCROLL_END_MOBILE,
-  );
-}
-
 function getTabletScrollEnd(section: HTMLElement) {
   const sectionHeight = section.offsetHeight;
 
@@ -798,10 +684,12 @@ function getTabletScrollEnd(section: HTMLElement) {
 }
 
 function SeasonClassListSection() {
-  const pinRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const spacerRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const scrollLayoutRef = useRef(getSeasonScrollLayout(window.innerWidth));
   const layoutWidthRef = useRef(0);
+  const layoutHeightRef = useRef(0);
   const scrollProgressRef = useRef(0);
   const applyLayoutRef = useRef<(() => void) | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -822,11 +710,16 @@ function SeasonClassListSection() {
 
     const updateLayout = () => {
       const width = section.clientWidth || window.innerWidth;
-      if (Math.abs(width - layoutWidthRef.current) < 1) {
+      const height = section.offsetHeight;
+      if (
+        Math.abs(width - layoutWidthRef.current) < 1 &&
+        Math.abs(height - layoutHeightRef.current) < 1
+      ) {
         return;
       }
 
       layoutWidthRef.current = width;
+      layoutHeightRef.current = height;
       scrollLayoutRef.current = getSeasonScrollLayout(width);
       setScrollViewBox({
         widthPx: scrollLayoutRef.current.viewWidthPx,
@@ -850,9 +743,10 @@ function SeasonClassListSection() {
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const pinEl = pinRef.current;
+    const stageEl = stageRef.current;
+    const spacerEl = spacerRef.current;
     const section = sectionRef.current;
-    if (!pinEl || !section) return;
+    if (!stageEl || !spacerEl || !section) return;
 
     const cups = Array.from(section.querySelectorAll<HTMLElement>(".season-scroll__cup"));
     const scenes = Array.from(section.querySelectorAll<HTMLImageElement>(".season-scroll__scene-img"));
@@ -897,8 +791,7 @@ function SeasonClassListSection() {
     const getStableIndexFromFloat = (floatIndex: number) => modIndex(Math.round(floatIndex));
 
     const syncScrollTrackHeight = (getScrollEnd: () => number) => {
-      const scrollEnd = getScrollEnd();
-      pinEl.style.height = `${section.offsetHeight + scrollEnd}px`;
+      spacerEl.style.height = `${getScrollEnd()}px`;
     };
 
     const createSeasonScrollTrigger = (getScrollEnd: () => number): SeasonScrollTriggerHandle => {
@@ -909,7 +802,7 @@ function SeasonClassListSection() {
       syncScrollTrackHeight(getScrollEnd);
 
       const trigger = ScrollTrigger.create({
-        trigger: pinEl,
+        trigger: stageEl,
         start: "top top",
         end: () => `+=${getScrollEnd()}`,
         invalidateOnRefresh: true,
@@ -972,23 +865,23 @@ function SeasonClassListSection() {
       scrollProgressRef.current = scrollState.progress;
       runApplyMobile(scrollState.floatIndex);
 
-      const syncMobilePinHeight = () => {
-        pinEl.style.height = `${section.offsetHeight}px`;
+      const syncMobileSpacer = () => {
+        spacerEl.style.height = "0px";
       };
 
-      syncMobilePinHeight();
+      syncMobileSpacer();
 
       const trigger = ScrollTrigger.create({
-        trigger: pinEl,
+        trigger: stageEl,
         start: "top top",
         end: "bottom bottom",
         invalidateOnRefresh: true,
-        onRefresh: syncMobilePinHeight,
+        onRefresh: syncMobileSpacer,
       });
 
       applyLayoutRef.current = () => {
         runApplyMobile(scrollState.floatIndex);
-        syncMobilePinHeight();
+        syncMobileSpacer();
         trigger.refresh();
       };
 
@@ -1007,7 +900,7 @@ function SeasonClassListSection() {
     };
 
     const clearScrollTrackHeight = () => {
-      pinEl.style.height = "";
+      spacerEl.style.height = "";
     };
 
     const mm = gsap.matchMedia();
@@ -1080,12 +973,13 @@ function SeasonClassListSection() {
   }, [activeIndex]);
 
   return (
-    <div ref={pinRef} className="season-scroll-pin">
-      <section
-        ref={sectionRef}
-        className={`season-scroll season-scroll--${season.key}`}
-        aria-label="사계절 시즌 클래스"
-      >
+    <div ref={stageRef} className="season-scroll-stage">
+      <div className="season-scroll-pin">
+        <section
+          ref={sectionRef}
+          className={`season-scroll season-scroll--${season.key}`}
+          aria-label="사계절 시즌 클래스"
+        >
       <img className="season-scroll__bg" src={seasonClassAssets.bg} alt="" aria-hidden="true" />
 
       <div className="season-scroll__visual" aria-hidden="true">
@@ -1230,6 +1124,8 @@ function SeasonClassListSection() {
         </div>
       </div>
       </section>
+      </div>
+      <div ref={spacerRef} className="season-scroll-spacer" aria-hidden="true" />
     </div>
   );
 }
