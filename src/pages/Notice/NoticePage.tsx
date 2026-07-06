@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
-import { Badge, Button, Footer, Header, Icon, SubKvSymbolLine } from "../../components/common";
+import { Badge, Button, Footer, Icon, SubKvSymbolLine } from "../../components/common";
 
 import {
   NOTICE_ITEMS_PER_PAGE,
@@ -135,9 +135,6 @@ function NoticePage() {
 
   return (
     <main className="notice-page">
-      <div className="notice-page__header">
-        <Header />
-      </div>
 
       <section className="notice-kv" aria-label="공지사항 키비주얼">
         <div className="notice-kv__grid">

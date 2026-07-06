@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Button, Calendar, Footer, Header, Input } from "../../components/common";
+import { Button, Calendar, Footer, Input } from "../../components/common";
 import { reservationTimeSlots, type ReservationTimeSlot } from "../../data/reservationClasses";
 import { useReservations } from "../../hooks/useReservations";
 import { useUserProfile } from "../../hooks/useUserProfile";
@@ -60,9 +60,6 @@ function ReservationEditPage() {
 
   return (
     <main className="reservation-edit-page">
-      <div className="reservation-edit-page__header">
-        <Header />
-      </div>
 
       <section className="reservation-edit" aria-label="예약 변경">
         <div className="reservation-edit__grid">

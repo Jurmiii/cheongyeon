@@ -865,6 +865,16 @@ $tablet-type-tab-line: 1.875rem;
   @include event-modal-scroll;
 }
 
+/* ── 모달 — PC ≥1024px: 스크롤 없이 뷰포트에 맞게 scale ── */
+@media (min-width: $laptop) {
+  .event-modal__panel,
+  .event-modal__panel--scrollable {
+    overflow: visible;
+    max-height: none;
+    padding-right: 1.5rem;
+  }
+}
+
 /* ── 모달 — 태블릿 ≤768px: 뷰포트 높이 이내 ── */
 @media (max-width: $tablet) {
   .event-modal__panel {
@@ -877,16 +887,23 @@ $tablet-type-tab-line: 1.875rem;
   }
 }
 
-/* ── 모달 — 모바일 ≤402px: 뷰포트 높이 이내 ── */
+/* ── 모달 — 모바일 ≤402px: 화면 여백 확보 ── */
+$event-modal-mobile-inset: 2rem; // 32px — 그리드 1rem보다 넓은 모달 전용 여백
+
 @media (max-width: $mobile) {
   .event-modal {
-    padding: grid.$mobile-grid-padding;
+    padding: $event-modal-mobile-inset;
   }
 
   .event-modal__panel {
-    max-width: calc(100vw - #{grid.$mobile-grid-padding * 2});
+    width: 100%;
+    max-width: calc(100vw - #{$event-modal-mobile-inset * 2});
     padding: 1rem 0.75rem 1rem 1rem;
-    max-height: calc((100dvh - #{grid.$mobile-grid-padding * 2}) / var(--event-modal-scale, 1));
+    max-height: calc((100dvh - #{$event-modal-mobile-inset * 2}) / var(--event-modal-scale, 1));
+  }
+
+  .event-modal__panel--scrollable {
+    max-height: calc((100dvh - #{$event-modal-mobile-inset * 2}) / var(--event-modal-scale, 1));
   }
 }
 

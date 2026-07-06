@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Footer, Header, SubKvSymbolLine } from "../../components/common";
+import { Footer, SubKvSymbolLine } from "../../components/common";
 import "./BrandStoryPage.scss";
 
 // About 섹션 배경 이미지 — 교체 시 아래 import 경로만 수정하세요.
@@ -547,9 +547,6 @@ function BrandStoryPage() {
 
   return (
     <main className="brand-story-page">
-      <div className="brand-story-page__header">
-        <Header />
-      </div>
 
       <section
         className="brand-story-kv"

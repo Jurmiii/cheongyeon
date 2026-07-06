@@ -260,8 +260,8 @@ $header-mobile-user-icon-max: 1.25rem;
 
   .site-header--desktop .site-header__submenu-link--active,
   .site-header--desktop .site-header__action-dropdown-link--active {
-  color: var(--han500);
-}
+    color: var(--han500);
+  }
 
   .site-header--desktop .site-header__action-link {
   min-width: 0;
@@ -379,6 +379,13 @@ $header-mobile-user-icon-max: 1.25rem;
   color: var(--ink500);
   text-align: center;
   text-decoration: none;
+  transition: color 0.18s ease;
+
+  &:hover,
+  &:focus-visible,
+  &--active {
+    color: var(--han500);
+  }
 }
 
   .site-header--desktop .site-header__menu-item--active .site-header__dropdown-line,
@@ -719,7 +726,6 @@ $header-compact-vw-min: 25.0625rem; // 401px
     text-decoration: none;
     transition: color 0.18s ease;
 
-    &--active,
     &:hover,
     &:focus-visible {
       color: var(--han500);
@@ -830,6 +836,7 @@ $header-compact-vw-min: 25.0625rem; // 401px
     text-decoration: none;
     transition: color 0.18s ease;
 
+    &--active,
     &:hover,
     &:focus-visible {
       color: var(--han500);
@@ -1096,6 +1103,7 @@ $header-compact-vw-min: 25.0625rem; // 401px
     text-decoration: none;
     transition: color 0.18s ease;
 
+    &--active,
     &:hover,
     &:focus-visible {
       color: var(--han500);

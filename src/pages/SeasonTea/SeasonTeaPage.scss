@@ -600,23 +600,9 @@
     padding-top: clamp(0.75rem, 0.5rem + 0.8vw, 1.25rem);
   }
 
-  .season-tea-kv::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: rgb(0 0 0 / 15%);
-    pointer-events: none;
-  }
-
-  .season-tea-kv__grid {
-    position: relative;
-    z-index: 2;
-  }
-
   .season-tea-kv__title,
   .season-tea-kv__description {
-    color: var(--han50);
+    color: var(--ink500);
   }
 
   .season-tea-spring::before,

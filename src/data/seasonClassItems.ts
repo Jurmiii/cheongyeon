@@ -140,10 +140,10 @@ export const SEASON_SCROLL_DESKTOP_LAYOUT: SeasonScrollLayoutConfig = {
   orbitSlots: SEASON_ORBIT_SLOTS,
 };
 
-/** Figma 모바일 402×766 — 90° 회전 궤도, 시즌별 고정 위치 */
+/** Figma 모바일 402×766 — 섹션 높이 755px(subbg 하단 정렬), 좌표는 Figma 기준 */
 export const SEASON_SCROLL_MOBILE_LAYOUT: SeasonScrollLayoutConfig = {
   viewWidthPx: 402,
-  viewHeightPx: 766,
+  viewHeightPx: 755,
   cupWidthPx: 109,
   cupHeightPx: 112,
   orbitRingCenter: { xPx: 208.759, yPx: 496.111 },
@@ -186,6 +186,7 @@ export const SEASON_SCROLL_TABLET_LAYOUT: SeasonScrollLayoutConfig = {
 
 const SEASON_SCROLL_FLUID_MIN_PX = 768;
 const SEASON_SCROLL_FLUID_MAX_PX = 1920;
+const SEASON_SCROLL_LAPTOP_MAX_PX = 1024;
 const SEASON_SCROLL_MOBILE_MAX_PX = 402;
 
 function lerpNum(from: number, to: number, t: number): number {
@@ -285,7 +286,8 @@ export function getSeasonScrollLayout(viewportWidth: number): SeasonScrollLayout
     return SEASON_SCROLL_MOBILE_LAYOUT;
   }
 
-  if (viewportWidth < SEASON_SCROLL_FLUID_MIN_PX) {
+  // 403~1024 — CSS 태블릿 비율 레이아웃과 동일 좌표 (궤도·Ellipse 정렬)
+  if (viewportWidth <= SEASON_SCROLL_LAPTOP_MAX_PX) {
     return scaleSeasonScrollLayout(
       SEASON_SCROLL_TABLET_LAYOUT,
       viewportWidth / SEASON_SCROLL_FLUID_MIN_PX,

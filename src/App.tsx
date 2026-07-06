@@ -1,6 +1,8 @@
 import { useEffect, useLayoutEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { AuthProvider } from './contexts/AuthContext'
+import SiteChromeLayout from './layouts/SiteChromeLayout'
 import ClassIntroductionPage from './pages/Class/ClassIntroductionPage'
 import SeasonClassPage from './pages/Class/SeasonClassPage'
 import ComponentPreview from './pages/ComponentPreview'
@@ -23,6 +25,7 @@ import SeasonTeaPage from './pages/SeasonTea/SeasonTeaPage'
 import CollectionPage from './pages/Collection/CollectionPage'
 import TeaStoryPage from './pages/TeaStore/TeaStorePage'
 import MyPageRoute from './pages/MyPage/MyPageRoute'
+import { PrivacyPage, TermsPage } from './pages/Legal/LegalPage'
 
 function RouteScrollReset() {
   const { key, pathname, search, hash } = useLocation()
@@ -36,6 +39,10 @@ function RouteScrollReset() {
       window.history.scrollRestoration = previousScrollRestoration
     }
   }, [])
+
+  useLayoutEffect(() => {
+    ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+  }, [pathname]);
 
   useLayoutEffect(() => {
     if (hash) {
@@ -68,9 +75,10 @@ function App() {
       <AuthProvider>
         <RouteScrollReset />
         <Routes>
-          <Route path="/" element={<MainPage />} />
           <Route path="/preview" element={<ComponentPreview />} />
           <Route path="/components" element={<ComponentPreview />} />
+          <Route element={<SiteChromeLayout />}>
+          <Route path="/" element={<MainPage />} />
           <Route path="/about" element={<BrandStoryPage />} />
           <Route path="/about/story" element={<BrandStoryPage />} />
           <Route path="/class/introduction" element={<ClassIntroductionPage />} />
@@ -87,6 +95,8 @@ function App() {
           <Route path="/reservation/faq" element={<FaqPage />} />
           <Route path="/stamp" element={<StampPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/mypage/stamp" element={<StampPage />} />
           <Route path="/event" element={<EventPage />} />
           <Route path="/event/ongoing" element={<EventPage />} />
@@ -106,6 +116,8 @@ function App() {
           <Route path="/product/season-tea" element={<SeasonTeaPage />} />
           <Route path="/shop" element={<CollectionPage />} />
           <Route path="/shop/tea-story" element={<Navigate to="/product/tea-story" replace />} />
+          <Route path="/product" element={<Navigate to="/product/tea-story" replace />} />
+          <Route path="/products" element={<Navigate to="/shop" replace />} />
           <Route path="/product/tea-story" element={<TeaStoryPage />} />
           <Route path="/tea-story" element={<Navigate to="/product/tea-story" replace />} />
           <Route path="/tea-store" element={<Navigate to="/product/tea-story" replace />} />
@@ -115,13 +127,16 @@ function App() {
           <Route path="/mypage" element={<MyPageRoute />} />
           <Route path="/my-page" element={<MyPageRoute />} />
           <Route path="/store" element={<LocationPage />} />
+          <Route path="/location" element={<Navigate to="/store" replace />} />
           <Route path="/brand/space" element={<SpacePage />} />
+          <Route path="/brand" element={<Navigate to="/about" replace />} />
           <Route path="/space" element={<SpacePage />} />
           <Route path="/brandstory" element={<BrandStoryPage />} />
           <Route path="/brand/story" element={<BrandStoryPage />} />
           <Route path="/brand/location" element={<LocationPage />} />
           <Route path="/brand-story" element={<BrandStoryPage />} />
           <Route path="*" element={<Navigate to="/preview" replace />} />
+          </Route>
         </Routes>
       </AuthProvider>
     </BrowserRouter>

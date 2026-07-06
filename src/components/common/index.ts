@@ -16,8 +16,9 @@ export type { IconName } from "./Icon";
 export { default as Input } from "./Input";
 export type { InputAlias, InputProps, InputState } from "./Input";
 export { default as MainContentBox } from "./MainContentBox/MainContentBox";
-export { default as MobileFooter } from "./MobileFooter";
-export { default as MobileHeader } from "./MobileHeader";
+// [레거시] 단일 Header/Footer로 대체 — 페이지에서 미사용
+// export { default as MobileFooter } from "./MobileFooter";
+// export { default as MobileHeader } from "./MobileHeader";
 export { default as Modal1 } from "./Modal1/Modal1";
 export { default as Modal2 } from "./TeaCollectionModal";
 export { default as ProductContentBox } from "./ProductContentBox";
@@ -25,6 +26,7 @@ export { default as ReservationInfoEdit } from "./ReservationInfoEdit/Reservatio
 export { default as ReviewContentBox } from "./ReviewContentBox";
 export { default as SubKvSymbolLine } from "./SubKvSymbolLine/SubKvSymbolLine";
 export type { SubKvSymbolLineTone } from "./SubKvSymbolLine/SubKvSymbolLine";
-export { default as TabletFooter } from "./TabletFooter";
-export { default as TabletHeader } from "./TabletHeader";
+// [레거시] 단일 Header/Footer로 대체 — 페이지에서 미사용
+// export { default as TabletFooter } from "./TabletFooter";
+// export { default as TabletHeader } from "./TabletHeader";
 export { default as TeaClassContentBox } from "./TeaClassContentBox/TeaClassContentBox";

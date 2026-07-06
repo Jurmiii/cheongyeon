@@ -12,52 +12,18 @@
 }
 
 .collection-page__header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: var(--z-header);
-  width: 100%;
-  overflow: visible;
-  pointer-events: none;
-
-  .site-header-shell,
-  .tablet-header-shell,
-  .mobile-header-shell {
-    pointer-events: auto;
-  }
-}
-
-.collection-page__header--tablet,
-.collection-page__header--mobile,
-.collection-page__footer--tablet,
-.collection-page__footer--mobile {
-  display: none;
-}
-
-@media (min-width: $tablet) and (max-width: $laptop) {
-  .collection-page__header--desktop,
-  .collection-page__footer--desktop {
-    display: none;
-  }
-
-  .collection-page__header--tablet,
-  .collection-page__footer--tablet {
-    display: block;
-  }
-}
-
-@media (max-width: #{$tablet - 1px}) {
-  .collection-page__header--desktop,
-  .collection-page__header--tablet,
-  .collection-page__footer--desktop,
-  .collection-page__footer--tablet {
-    display: none;
-  }
-
-  .collection-page__header--mobile,
-  .collection-page__footer--mobile {
-    display: block;
-  }
+  // [page-chrome.scss] 공통 헤더 앵커 — pointer-events 오버라이드 제거
+  // position: absolute;
+  // top: 0;
+  // left: 0;
+  // z-index: var(--z-header);
+  // width: 100%;
+  // overflow: visible;
+  // pointer-events: none;
+  //
+  // .site-header-shell {
+  //   pointer-events: auto;
+  // }
 }
 
 .collection-kv {

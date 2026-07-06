@@ -63,51 +63,18 @@
 }
 
 .tea-store-page__header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: var(--z-header);
-  width: 100%;
-}
-
-/* ══════════════════════════════════════════
-   반응형 헤더/푸터 가시성 제어
-   ══════════════════════════════════════════ */
-
-/* 기본: 데스크톱만 표시 */
-.tea-store-page__header--tablet,
-.tea-store-page__header--mobile,
-.tea-store-page__footer--tablet,
-.tea-store-page__footer--mobile {
-  display: none;
-}
-
-/* 태블릿 (768px ~ 1024px) — breakpoints.scss $tablet / $laptop */
-@media (min-width: $tablet) and (max-width: $laptop) {
-  .tea-store-page__header--desktop,
-  .tea-store-page__footer--desktop {
-    display: none;
-  }
-
-  .tea-store-page__header--tablet,
-  .tea-store-page__footer--tablet {
-    display: block;
-  }
-}
-
-/* 모바일 (≤767px) */
-@media (max-width: #{$tablet - 1px}) {
-  .tea-store-page__header--desktop,
-  .tea-store-page__header--tablet,
-  .tea-store-page__footer--desktop,
-  .tea-store-page__footer--tablet {
-    display: none;
-  }
-
-  .tea-store-page__header--mobile,
-  .tea-store-page__footer--mobile {
-    display: block;
-  }
+  // [page-chrome.scss] 공통 헤더 앵커 — pointer-events 오버라이드 제거
+  // position: absolute;
+  // top: 0;
+  // left: 0;
+  // z-index: var(--z-header);
+  // width: 100%;
+  // overflow: visible;
+  // pointer-events: none;
+  //
+  // .site-header-shell {
+  //   pointer-events: auto;
+  // }
 }
 
 /* KV — Figma 1920×740 */

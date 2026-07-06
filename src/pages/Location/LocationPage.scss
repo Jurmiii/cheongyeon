@@ -63,17 +63,18 @@ $location-break-desktop-xl-up: 120.0625rem;
 }
 
 .location__header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: var(--z-header);
-  width: 100%;
-  overflow: visible;
-  pointer-events: none;
-
-  .site-header-shell {
-    pointer-events: auto;
-  }
+  // [page-chrome.scss] 공통 헤더 앵커 — pointer-events 오버라이드 제거
+  // position: absolute;
+  // top: 0;
+  // left: 0;
+  // z-index: var(--z-header);
+  // width: 100%;
+  // overflow: visible;
+  // pointer-events: none;
+  //
+  // .site-header-shell {
+  //   pointer-events: auto;
+  // }
 }
 
 .location-kv {

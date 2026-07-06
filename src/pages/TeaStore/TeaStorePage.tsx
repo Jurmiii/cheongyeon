@@ -1,5 +1,5 @@
 import teaStoreLogo from "../../assets/images/06tea-store/logo.webp";
-import { Footer, Header, MobileFooter, MobileHeader, SubKvSymbolLine, TabletFooter, TabletHeader } from "../../components/common";
+import { Footer, SubKvSymbolLine } from "../../components/common";
 import {
   teaStoryDadoItems,
   teaStorySeasons,
@@ -29,18 +29,6 @@ function TeaStoryPage() {
 
   return (
     <main className="tea-store-page">
-      {/* Desktop header (≥1025px) */}
-      <div className="tea-store-page__header tea-store-page__header--desktop">
-        <Header />
-      </div>
-      {/* Tablet header (768px–1024px) */}
-      <div className="tea-store-page__header tea-store-page__header--tablet">
-        <TabletHeader />
-      </div>
-      {/* Mobile header (≤767px) */}
-      <div className="tea-store-page__header tea-store-page__header--mobile">
-        <MobileHeader />
-      </div>
 
       <section className="tea-store-kv" aria-label="차 이야기 키비주얼">
         <div className="tea-store-kv__grid">
@@ -285,18 +273,7 @@ function TeaStoryPage() {
         </div>
       </section>
 
-      {/* Desktop footer (≥1025px) */}
-      <div className="tea-store-page__footer--desktop">
-        <Footer />
-      </div>
-      {/* Tablet footer (768px–1024px) */}
-      <div className="tea-store-page__footer--tablet">
-        <TabletFooter />
-      </div>
-      {/* Mobile footer (≤767px) */}
-      <div className="tea-store-page__footer--mobile">
-        <MobileFooter />
-      </div>
+      <Footer />
     </main>
   );
 }

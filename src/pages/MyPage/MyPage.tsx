@@ -8,7 +8,7 @@ import myPageBg from "../../assets/images/13my-page/my-bg.webp";
 
 import myIcon from "../../assets/images/13my-page/my-icon.svg";
 
-import { Badge, Button, CustomModal, Footer, Header, Icon, Input, TeaClassContentBox } from "../../components/common";
+import { Badge, Button, CustomModal, Footer, Icon, Input, TeaClassContentBox } from "../../components/common";
 
 import { useReservations } from "../../hooks/useReservations";
 
@@ -298,14 +298,6 @@ function MyPage() {
   return (
 
     <main className="my-page" style={{ backgroundImage: `url(${myPageBg})` }}>
-
-      <div className="my-page__header">
-
-        <Header />
-
-      </div>
-
-
 
       <section className="my-page__content" aria-label="마이페이지">
 

@@ -1,10 +1,8 @@
 @use "../abstracts/breakpoints" as *;
 @use "../tokens/z-index" as z;
 
-// Site header shells & slide-out menus — 모든 뷰포트 상단 고정
-.site-header-shell,
-.tablet-header-shell,
-.mobile-header-shell {
+// Site header — 통합 Header 컴포넌트(.site-header-shell) 전용
+.site-header-shell {
   position: fixed;
   top: 0;
   left: 0;
@@ -13,62 +11,48 @@
   width: 100%;
   max-width: 100%;
   margin-inline: 0;
+  pointer-events: auto;
+
+  a,
+  button {
+    pointer-events: auto;
+    cursor: pointer;
+  }
 }
 
-.mobile-menu,
-.tablet-menu,
+// [레거시] TabletHeader / MobileHeader — 단일 Header로 대체됨. 사용 중단.
+// .tablet-header-shell,
+// .mobile-header-shell {
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   right: 0;
+//   z-index: z.$header;
+//   width: 100%;
+//   max-width: 100%;
+//   margin-inline: 0;
+// }
+
 .site-header__tablet-panel,
 .site-header__mobile-panel {
   z-index: z.$header-menu;
 }
 
-// 모달 열림 시 — 고정 헤더가 닫기 버튼 등을 가리지 않도록 숨김
-html[data-modal-open="true"] {
-  .site-header-shell,
-  .tablet-header-shell,
-  .mobile-header-shell,
-  .main-page__header,
-  .collection-page__header,
-  .tea-store-page__header,
-  .reservation-page__header,
-  .reservation-edit-page__header,
-  .class-intro-page__header,
-  .season-class-page__header,
-  .season-tea-page__header,
-  .brand-story-page__header,
-  .space__header,
-  .location__header,
-  .faq-page__header,
-  .notice-page__header,
-  .contact-page__header,
-  .event-page__header,
-  .my-page__header,
-  .signup-page-wrapper__header,
-  .login-page-wrapper__header {
-    visibility: hidden;
-    pointer-events: none;
-  }
+// [레거시] tablet-menu / mobile-menu
+// .tablet-menu,
+// .mobile-menu,
+
+// 모달 열림 시 — 포털 헤더만 숨김 (페이지 __header 래퍼는 빈 앵커)
+html[data-modal-open="true"] .site-header-shell {
+  visibility: hidden;
+  pointer-events: none;
 }
 
-
-// Page-level header wrappers (positioned above page content)
-.main-page__header,
-.collection-page__header,
-.tea-store-page__header,
-.reservation-page__header,
-.reservation-edit-page__header,
-.class-intro-page__header,
-.season-class-page__header,
-.season-tea-page__header,
-.brand-story-page__header,
-.space__header,
-.location__header,
-.faq-page__header,
-.notice-page__header,
-.contact-page__header,
-.event-page__header,
-.my-page__header,
-.signup-page-wrapper__header,
-.login-page-wrapper__header {
-  z-index: z.$header;
-}
+// [레거시] 모달 시 페이지 래퍼 + 구형 헤더 숨김 — 포털 전환 후 불필요
+// html[data-modal-open="true"] {
+//   .tablet-header-shell,
+//   .mobile-header-shell,
+//   .main-page__header,
+//   .collection-page__header,
+//   ...
+// }

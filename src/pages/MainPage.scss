@@ -163,11 +163,12 @@ $main-sec5-mobile-card-gap: 0.875rem; // 14px
 }
 
 .main-page__header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: var(--z-header);
-  width: 100%;
+  // [page-chrome.scss] 공통 헤더 앵커 — 위치/z-index는 전역에서 처리
+  // position: absolute;
+  // top: 0;
+  // left: 0;
+  // z-index: var(--z-header);
+  // width: 100%;
 }
 
 // sec4 pin 구간(PC) — 고정 헤더 숨김
@@ -180,7 +181,7 @@ $main-sec5-mobile-card-gap: 0.875rem; // 14px
 }
 
 // 인트로 영상 재생 중 — 헤더 숨김
-.main-page--intro-playing .site-header-shell {
+html:has(.main-page--intro-playing) .site-header-shell {
   visibility: hidden;
   pointer-events: none;
 }

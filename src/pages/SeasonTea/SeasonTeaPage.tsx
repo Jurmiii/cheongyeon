@@ -9,7 +9,7 @@ import sec4WayB from "../../assets/images/07season-tea/sec4-way-b.webp";
 import winterTeaImage from "../../assets/images/07season-tea/sec5-tea.webp";
 import sec5WayB from "../../assets/images/07season-tea/sec5-way-b.webp";
 import sec5WayT from "../../assets/images/07season-tea/sec5-way-t.webp";
-import { Button, Footer, Header, SubKvSymbolLine } from "../../components/common";
+import { Button, Footer, SubKvSymbolLine } from "../../components/common";
 import SeasonTeaDetailModal from "./SeasonTeaDetailModal";
 import { autumnTeaDetail, springTeaDetail, summerTeaDetail, winterTeaDetail, type SeasonTeaDetail } from "./seasonTeaDetailData";
 import "./SeasonTeaPage.scss";
@@ -137,18 +137,15 @@ function SeasonTeaPage() {
 
   return (
     <main className="season-tea-page">
-      <div className="season-tea-page__header">
-        <Header />
-      </div>
 
       <section className="season-tea-kv" aria-label="계절의 차 키비주얼">
         <div className="season-tea-kv__grid">
           <div className="season-tea-kv__content">
             <div className="season-tea-kv__head">
-              <h1 className="season-tea-kv__title ft-64b white">계절의 차</h1>
-              <SubKvSymbolLine blockClass="season-tea-kv" tone="white" />
+              <h1 className="season-tea-kv__title ft-64b ink500">계절의 차</h1>
+              <SubKvSymbolLine blockClass="season-tea-kv" tone="ink" />
             </div>
-            <p className="season-tea-kv__description ft-28r white">
+            <p className="season-tea-kv__description ft-28r ink500">
               계절이 머문 향과 풍미를 담아,
               <br />
               가장 아름다운 순간을 전합니다.

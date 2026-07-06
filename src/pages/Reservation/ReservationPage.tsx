@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { Badge, Button, Footer, Header, Icon, Input } from "../../components/common";
+import { Badge, Button, Footer, Icon, Input } from "../../components/common";
 import { useAuth } from "../../contexts/AuthContext";
 import {
   RESERVATION_CLASSES_PER_PAGE,
@@ -889,9 +889,6 @@ function ReservationPage() {
 
   return (
     <main className="reservation-page">
-      <div className="reservation-page__header">
-        <Header />
-      </div>
 
       <section className="reservation-hero" aria-label="예약하기 안내">
         <div className="reservation-hero__grid">

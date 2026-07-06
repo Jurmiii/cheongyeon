@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
-import { Footer, Header, Icon, SubKvSymbolLine } from "../../components/common";
+import { Footer, Icon, SubKvSymbolLine } from "../../components/common";
 import "./LocationPage.scss";
 
 const KAKAO_MAP_APP_KEY = "723edbe830219d6cbf7c015343e297fe";
@@ -527,9 +527,6 @@ function LocationPage() {
 
   return (
     <main className="location">
-      <div className="location__header">
-        <Header />
-      </div>
 
       <section className="location-kv" aria-label="오시는 길 키비주얼">
         <div className="location-kv__grid">

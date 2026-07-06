@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Footer, Header, SubKvSymbolLine } from "../../components/common";
+import { Footer, SubKvSymbolLine } from "../../components/common";
 import aboutBg from "../../assets/images/03space/about-bg.webp";
 import spaceRoomLeft from "../../assets/images/03space/space-3_1.webp";
 import spaceRoomRight from "../../assets/images/03space/space-3_2.webp";
@@ -362,9 +362,6 @@ function SpacePage() {
 
   return (
     <main className="space">
-      <div className="space__header">
-        <Header />
-      </div>
 
       <section
         className="space-kv"

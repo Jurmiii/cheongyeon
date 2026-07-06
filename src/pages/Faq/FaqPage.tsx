@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Footer, Header, Icon, SubKvSymbolLine } from "../../components/common";
+import { Footer, Icon, SubKvSymbolLine } from "../../components/common";
 import { faqs } from "../../data/faqs";
 import "./FaqPage.scss";
 
@@ -13,9 +13,6 @@ function FaqPage() {
 
   return (
     <main className="faq-page">
-      <div className="faq-page__header">
-        <Header />
-      </div>
 
       <section className="faq-kv" aria-label="자주 묻는 질문 키비주얼">
         <div className="faq-kv__grid">

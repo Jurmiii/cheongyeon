@@ -88,7 +88,7 @@ $season-class-kv-height-desktop: 46.25rem; // PC 740px
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: var(--z-header);
   width: 100%;
 }
 
@@ -137,7 +137,10 @@ $season-class-kv-height-desktop: 46.25rem; // PC 740px
 }
 
 @media (max-width: #{$laptop - 1px}) {
-  .season-class-kv__title.ft-64b,
+  .season-class-kv__title.ft-64b {
+    color: var(--ink500);
+  }
+
   .season-class-kv__description.ft-28r {
     color: var(--white);
   }
@@ -788,6 +791,15 @@ $season-scroll-hanja-push-tablet: 6.25rem; // 100px — intro 아래 한자 블�
     height: season-scroll-fluid($season-scroll-design-h, $season-scroll-h-tablet);
   }
 
+  .season-scroll__subbg-img--desktop {
+    display: block;
+  }
+
+  .season-scroll__subbg-img--tablet,
+  .season-scroll__subbg-img--mobile {
+    display: none;
+  }
+
   .season-scroll__scene {
     top: 50%;
     right: season-scroll-fluid($season-scroll-scene-right-pc, $season-scroll-scene-right-tablet);
@@ -1045,8 +1057,8 @@ $season-scroll-hanja-push-tablet: 6.25rem; // 100px — intro 아래 한자 블�
   }
 }
 
-/* Figma 모바일 402×766 */
-$season-scroll-h-mobile: 47.875rem; // 766px
+/* Figma 모바일 402×766 — 섹션 높이는 subbg 하단(353+402=755px)에 맞춤 */
+$season-scroll-h-mobile: 47.1875rem; // 755px (766px − 11px 하단 여백)
 $season-scroll-padding-block-mobile: 4rem; // 64px
 $season-scroll-hanja-w-mobile: 5.6875rem; // 91px
 $season-scroll-hanja-h-mobile: 5rem; // 80px
@@ -1263,7 +1275,12 @@ $season-scroll-ellipse-top-tablet: 23.4375rem; // 750px / 2 — 타원 세로 �
     overflow: visible;
   }
 
+  .season-scroll__subbg-img--desktop {
+    display: none;
+  }
+
   .season-scroll__subbg-img--tablet {
+    display: block;
     top: 0;
     right: 0;
     left: auto;
@@ -1852,6 +1869,9 @@ $season-schedule-card-h-active-tablet-spec: 13.92375rem; // 222.78px
 $season-schedule-card-h-inactive-tablet-spec: 12.023125rem; // 192.37px
 $season-schedule-card-gap-tablet-spec: 1.5rem; // 24px
 $season-schedule-card-lift-tablet-spec: 3rem; // 80px - 32px
+$season-schedule-card-slot-h-tablet-spec: calc(
+  #{$season-schedule-card-lift-tablet-spec} + #{$season-schedule-card-h-active-tablet-spec}
+); // 비활성 lift + 활성 카드 높이 — 트랙 높이 고정
 $season-schedule-carousel-mt-tablet-spec: 2rem; // 32px — 드롭다운 ↔ 카드
 $season-schedule-card-pad-tablet-spec: 1rem; // 16px
 $season-schedule-card-divider-w-tablet-spec: 3.75rem; // 60px
@@ -2672,23 +2692,29 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
     gap: $season-schedule-card-gap-tablet-spec;
     align-items: end;
     justify-content: center;
+    min-height: $season-schedule-card-slot-h-tablet-spec;
   }
 
   .season-schedule__card {
+    position: relative;
     flex: none;
     width: $season-schedule-card-w-tablet-spec;
-    height: auto;
-    margin-top: $season-schedule-card-lift-tablet-spec;
+    height: $season-schedule-card-slot-h-tablet-spec;
+    margin-top: 0;
     aspect-ratio: auto;
     opacity: 0.72;
+    transition: opacity 0.3s ease;
   }
 
   .season-schedule__card--active {
-    margin-top: 0;
     opacity: 1;
   }
 
   .season-schedule__card-surface {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -2792,8 +2818,9 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
   }
 
   .season-schedule__reserve-btn--hidden {
-    display: none;
-    margin: 0;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
     animation: none;
   }
 }
@@ -2845,18 +2872,25 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
     gap: season-schedule-card-scale($season-schedule-card-gap-tablet-spec);
     align-items: end;
     justify-items: stretch;
+    min-height: season-schedule-card-scale($season-schedule-card-slot-h-tablet-spec);
   }
 
   .season-schedule__card {
+    position: relative;
     flex: none;
     width: 100%;
     max-width: none;
-    height: auto;
-    margin-top: season-schedule-card-scale($season-schedule-card-lift-tablet-spec);
+    height: season-schedule-card-scale($season-schedule-card-slot-h-tablet-spec);
+    margin-top: 0;
     aspect-ratio: auto;
+    transition: opacity 0.3s ease;
   }
 
   .season-schedule__card-surface {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -2882,7 +2916,6 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
   }
 
   .season-schedule__card--active {
-    margin-top: 0;
     opacity: 1;
     z-index: 1;
   }
@@ -2963,9 +2996,8 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
   }
 
   .season-schedule__reserve-btn--hidden {
-    display: none;
-    margin: 0;
     visibility: hidden;
+    opacity: 0;
     pointer-events: none;
     animation: none;
   }

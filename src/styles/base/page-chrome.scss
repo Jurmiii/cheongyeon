@@ -1,0 +1,42 @@
+@use "../tokens/z-index" as z;
+
+// ─── 통합 Header / Footer 연결 (App SiteChromeLayout 기준) ───────────────────
+
+.site-chrome__header {
+  position: relative;
+  z-index: var(--z-header);
+  width: 100%;
+  height: 0;
+  overflow: visible;
+  pointer-events: none;
+
+  .site-header-shell {
+    pointer-events: auto;
+  }
+}
+
+// [레거시] 페이지별 __header 앵커 — SiteChromeLayout 전환 후 미사용
+// .main-page__header,
+// .collection-page__header,
+// ...
+
+// 푸터 링크 클릭 보장
+.site-footer {
+  position: relative;
+  z-index: 1;
+
+  .site-footer__logo,
+  .site-footer__nav-link,
+  .site-footer__policy-link,
+  .site-footer__sns-link {
+    position: relative;
+    z-index: 2;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+
+  .site-footer__brand,
+  .site-footer__slogan {
+    pointer-events: none;
+  }
+}

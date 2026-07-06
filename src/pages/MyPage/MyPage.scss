@@ -117,18 +117,23 @@ $my-page-upcoming-compact-max: $laptop;
   width: 100%;
 }
 
-.my-page .site-header__interactive {
-  pointer-events: none;
-}
-
-.my-page .site-header__logo,
-.my-page .site-header__logo a,
-.my-page .site-header__gnb,
-.my-page .site-header__actions,
-.my-page .site-header__menu-item,
-.my-page .site-header__action-link {
-  pointer-events: auto;
-}
+// [page-chrome.scss] 포털 헤더 사용 — 클릭 차단 해제
+// html:has(.my-page) .site-header__interactive {
+//   pointer-events: none;
+// }
+//
+// html:has(.my-page) .site-header__logo,
+// html:has(.my-page) .site-header__logo a,
+// html:has(.my-page) .site-header__gnb,
+// html:has(.my-page) .site-header__actions,
+// html:has(.my-page) .site-header__menu-item,
+// html:has(.my-page) .site-header__action-link,
+// html:has(.my-page) .site-header--compact,
+// html:has(.my-page) .site-header__menu-toggle,
+// html:has(.my-page) .site-header__tablet-panel,
+// html:has(.my-page) .site-header__mobile-panel {
+//   pointer-events: auto;
+// }
 
 .my-page__content {
   position: relative;

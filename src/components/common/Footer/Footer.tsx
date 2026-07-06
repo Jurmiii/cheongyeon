@@ -3,26 +3,19 @@ import githubIcon from "../../../assets/images/00header-footer/github.svg";
 import kakaoIcon from "../../../assets/images/00header-footer/kakao.svg";
 import logoWhite from "../../../assets/images/00header-footer/logo-white.svg";
 import naverIcon from "../../../assets/images/00header-footer/naver.svg";
+import {
+  footerContactLink,
+  footerNavLinks,
+  footerPolicyLinks,
+  footerSnsLinks,
+} from "../../../data/siteNavConfig";
 import "./Footer.scss";
 
-const footerLinks = [
-  { label: "브랜드 소개", to: "/about" },
-  { label: "제품소개", to: "/product/tea-story" },
-  { label: "다도 클래스", to: "/class" },
-  { label: "예약", to: "/reservation" },
-  { label: "이벤트", to: "/event" },
-];
-
-const snsLinks = [
-  { label: "kakao", icon: kakaoIcon, href: "https://www.kakaocorp.com/page/service/service/KakaoTalk" },
-  { label: "naver", icon: naverIcon, href: "https://www.naver.com/" },
-  { label: "github", icon: githubIcon, href: "https://github.com/Jurmiii/cheongyeon.git" },
-];
-
-const policyLinks = [
-  { label: "이용약관", to: "/terms" },
-  { label: "개인정보 처리 방침", to: "/privacy" },
-];
+const snsIcons = {
+  kakao: kakaoIcon,
+  naver: naverIcon,
+  github: githubIcon,
+} as const;
 
 export default function Footer() {
   return (
@@ -46,13 +39,13 @@ export default function Footer() {
           </div>
 
           <nav className="site-footer__nav" aria-label="푸터 메뉴">
-            {footerLinks.map((link) => (
+            {footerNavLinks.map((link) => (
               <Link className="site-footer__nav-link ft-18r" key={link.label} to={link.to}>
                 {link.label}
               </Link>
             ))}
-            <Link className="site-footer__nav-link ft-18r" to="/contact">
-              문의하기
+            <Link className="site-footer__nav-link ft-18r" to={footerContactLink.to}>
+              {footerContactLink.label}
             </Link>
           </nav>
         </div>
@@ -61,7 +54,7 @@ export default function Footer() {
 
         <div className="site-footer__bottom">
           <ul className="site-footer__sns" aria-label="SNS 링크">
-            {snsLinks.map((sns) => (
+            {footerSnsLinks.map((sns) => (
               <li key={sns.label}>
                 <a
                   className="site-footer__sns-link"
@@ -70,18 +63,24 @@ export default function Footer() {
                   rel="noreferrer"
                   aria-label={`${sns.label} 새 창으로 이동`}
                 >
-                  <img src={sns.icon} alt="" />
+                  <img src={snsIcons[sns.label as keyof typeof snsIcons]} alt="" />
                 </a>
               </li>
             ))}
           </ul>
 
           <nav className="site-footer__policies" aria-label="푸터 약관">
-            {policyLinks.map((link) => (
+            {footerPolicyLinks.map((link) => (
               <Link className="site-footer__policy-link ft-14r" key={link.label} to={link.to}>
                 {link.label}
               </Link>
             ))}
+            <Link
+              className="site-footer__policy-link site-footer__policy-link--mobile-only ft-14r"
+              to={footerContactLink.to}
+            >
+              {footerContactLink.label}
+            </Link>
           </nav>
         </div>
       </div>

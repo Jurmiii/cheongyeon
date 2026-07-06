@@ -1,0 +1,28 @@
+@use "../../styles/abstracts/breakpoints" as *;
+@use "../../styles/abstracts/grid" as grid;
+
+.legal-page {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.legal-page__content {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100vh;
+  padding: 7.5rem clamp(1.5rem, 5vw, 15rem) 5rem;
+  background: var(--han50);
+}
+
+.legal-page__inner {
+  width: min(#{grid.$desktop-grid-outer}, 100%);
+  margin-inline: auto;
+}
+
+@media (max-width: #{$tablet - 1px}) {
+  .legal-page__content {
+    padding-top: 6.5rem;
+    padding-inline: grid.$mobile-grid-padding;
+  }
+}

@@ -73,7 +73,7 @@ import summerBg2 from "../assets/images/01main/summer-bg2.svg";
 import summerPot from "../assets/images/01main/summer-tea.webp";
 import winterBg2 from "../assets/images/01main/winter-bg2.svg";
 import winterPot from "../assets/images/01main/winter-tea.webp";
-import { Footer, Header, Icon } from "../components/common";
+import { Footer, Icon } from "../components/common";
 import ProductContentBox from "../components/common/ProductContentBox";
 import { collectionHerbalTabLink } from "./Collection/collectionTabs";
 import "./MainPage.scss";
@@ -1579,9 +1579,6 @@ export default function MainPage() {
           </button>
         </div>
       )}
-      <div className="main-page__header">
-        <Header />
-      </div>
       <section
         className={[
           "main-sec1",

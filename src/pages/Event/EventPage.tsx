@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Badge, Footer, Header, Icon, SubKvSymbolLine } from "../../components/common";
+import { Badge, Footer, Icon, SubKvSymbolLine } from "../../components/common";
 import type { IconName } from "../../components/common";
 import { events, type EventItem, type EventStatus } from "../../data/eventList";
 import { useModalOpen } from "../../hooks/useLockBodyScroll";
@@ -15,7 +15,10 @@ const filterTabs: { value: EventFilter; label: string }[] = [
 
 const MOBILE_BREAKPOINT = 402;
 const TABLET_BREAKPOINT = 768;
+const LAPTOP_BREAKPOINT = 1024;
 const MODAL_BASE_WIDTH = 464;
+/** 모바일 모달 — 좌우·상하 각 2rem(32px) 여백 */
+const MODAL_MOBILE_VIEWPORT_PADDING = 64;
 const ITEMS_PER_PAGE_DESKTOP = 6;
 const ITEMS_PER_PAGE_TABLET = 6;
 const ITEMS_PER_PAGE_MOBILE = 2;
@@ -73,7 +76,7 @@ function toLines(value: string) {
 
 function getModalViewportPadding() {
   if (window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches) {
-    return 32;
+    return MODAL_MOBILE_VIEWPORT_PADDING;
   }
 
   return 48;
@@ -98,9 +101,19 @@ function EventDetailModal({ event, onClose }: EventDetailModalProps) {
       const viewportPadding = getModalViewportPadding();
       const availableWidth = window.innerWidth - viewportPadding;
       const availableHeight = window.innerHeight - viewportPadding;
-      const widthScale = Math.min(1, availableWidth / MODAL_BASE_WIDTH);
-      const heightScale = Math.min(1, availableHeight / panel.scrollHeight);
-      const needsInnerScroll = panel.scrollHeight * widthScale > availableHeight;
+      const naturalWidth = panel.offsetWidth || MODAL_BASE_WIDTH;
+      const naturalHeight = panel.scrollHeight;
+      const widthScale = Math.min(1, availableWidth / naturalWidth);
+      const heightScale = Math.min(1, availableHeight / naturalHeight);
+      const isPcLayout = window.matchMedia(`(min-width: ${LAPTOP_BREAKPOINT}px)`).matches;
+
+      if (isPcLayout) {
+        setModalScale(Math.min(widthScale, heightScale));
+        setModalScrollable(false);
+        return;
+      }
+
+      const needsInnerScroll = naturalHeight * widthScale > availableHeight;
 
       if (needsInnerScroll) {
         setModalScale(widthScale);
@@ -305,9 +318,6 @@ function EventPage() {
 
   return (
     <main className="event-page">
-      <div className="event-page__header">
-        <Header />
-      </div>
 
       <section className="event-kv" aria-label="진행중 이벤트">
         <div className="event-kv__grid">
