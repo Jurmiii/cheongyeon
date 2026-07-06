@@ -2,6 +2,7 @@ import seasonClassBg from "../assets/images/09season-class/season-class-2-bg.web
 import seasonClassEllipse from "../assets/images/09season-class/Ellipse.webp";
 import seasonClassSubBg from "../assets/images/09season-class/season-class-2-subbg.webp";
 import seasonClassSubBgTablet from "../assets/images/09season-class/Subtract-ta.webp";
+import seasonClassSubBgMobile from "../assets/images/09season-class/Subtract-mo.webp";
 import seasonClass3Bg from "../assets/images/09season-class/season-class-3-bg.webp";
 import seasonClassAuScene from "../assets/images/09season-class/season-class-au.webp";
 import seasonClassAuTea from "../assets/images/09season-class/season-class-au-tea.webp";
@@ -41,6 +42,7 @@ export const seasonClassAssets = {
   ellipse: seasonClassEllipse,
   subBg: seasonClassSubBg,
   subBgTablet: seasonClassSubBgTablet,
+  subBgMobile: seasonClassSubBgMobile,
   kvBg: seasonClassKvBg,
   promoBg: seasonClass3Bg,
 } as const;
@@ -110,6 +112,22 @@ export const SEASON_SCROLL_DESKTOP_LAYOUT: SeasonScrollLayoutConfig = {
   orbitSlots: SEASON_ORBIT_SLOTS,
 };
 
+/** Figma 모바일 402×766 */
+export const SEASON_SCROLL_MOBILE_LAYOUT: SeasonScrollLayoutConfig = {
+  viewWidthPx: 402,
+  viewHeightPx: 766,
+  cupWidthPx: 109,
+  cupHeightPx: 112,
+  orbitRingCenter: { xPx: 208.759, yPx: 496.111 },
+  orbitRingRadiusPx: 256.244,
+  sceneCenter: { xPx: 201, yPx: 488 },
+  orbitSlots: {
+    top: { leftPx: 146, topPx: 184, frameWidthPx: 109, frameHeightPx: 112 },
+    middle: { leftPx: -45, topPx: 279, frameWidthPx: 109, frameHeightPx: 112 },
+    bottom: { leftPx: 345, topPx: 269, frameWidthPx: 109, frameHeightPx: 112 },
+  },
+};
+
 /** Figma 태블릿 768×750 */
 export const SEASON_SCROLL_TABLET_LAYOUT: SeasonScrollLayoutConfig = {
   viewWidthPx: 768,
@@ -128,6 +146,7 @@ export const SEASON_SCROLL_TABLET_LAYOUT: SeasonScrollLayoutConfig = {
 
 const SEASON_SCROLL_FLUID_MIN_PX = 768;
 const SEASON_SCROLL_FLUID_MAX_PX = 1920;
+const SEASON_SCROLL_MOBILE_MAX_PX = 402;
 
 function lerpNum(from: number, to: number, t: number): number {
   return from + (to - from) * t;
@@ -189,6 +208,10 @@ export function getSeasonScrollFluidT(viewportWidth: number): number {
 }
 
 export function getSeasonScrollLayout(viewportWidth: number): SeasonScrollLayoutConfig {
+  if (viewportWidth <= SEASON_SCROLL_MOBILE_MAX_PX) {
+    return SEASON_SCROLL_MOBILE_LAYOUT;
+  }
+
   if (viewportWidth <= SEASON_SCROLL_FLUID_MIN_PX) {
     return SEASON_SCROLL_TABLET_LAYOUT;
   }
