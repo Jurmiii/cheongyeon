@@ -10,6 +10,8 @@ import myIcon from "../../assets/images/13my-page/my-icon.svg";
 
 import { Badge, Button, CustomModal, Footer, Icon, Input, TeaClassContentBox } from "../../components/common";
 
+import { useAuth } from "../../contexts/AuthContext";
+
 import { useReservations } from "../../hooks/useReservations";
 
 import { useStampBalance } from "../../hooks/useStampBalance";
@@ -73,6 +75,8 @@ type ProfileErrors = Partial<Record<keyof ProfileFormValues | "form", string>>;
 function MyPage() {
 
   const navigate = useNavigate();
+
+  const { logout } = useAuth();
 
   const { profile, updateProfile } = useUserProfile();
 
@@ -271,6 +275,16 @@ function MyPage() {
 
 
 
+  const handleLogout = () => {
+
+    logout();
+
+    navigate("/");
+
+  };
+
+
+
   const handleConfirmCancel = () => {
     if (!cancelTargetReservation) {
       return;
@@ -305,13 +319,23 @@ function MyPage() {
 
           <div className="my-page__greeting">
 
-            <h1 className="my-page__greeting-name">
+            <div className="my-page__greeting-head">
 
-              <span className="my-page__greeting-name-primary ft-64r ink500">{profile?.name ?? ""}</span>
+              <h1 className="my-page__greeting-name">
 
-              <span className="my-page__greeting-name-suffix ft-48b ink500">님,</span>
+                <span className="my-page__greeting-name-primary ft-64r ink500">{profile?.name ?? ""}</span>
 
-            </h1>
+                <span className="my-page__greeting-name-suffix ft-48b ink500">님,</span>
+
+              </h1>
+
+              <button className="my-page__logout-button ft-14b plum500" type="button" onClick={handleLogout}>
+
+                로그아웃
+
+              </button>
+
+            </div>
 
             <p className="my-page__greeting-message ft-36r ink500">오늘도 차와 함께 평온한 하루 되세요.</p>
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../../contexts/AuthContext";
 
@@ -38,6 +38,8 @@ export default function Header() {
 
   const { pathname } = useLocation();
 
+  const navigate = useNavigate();
+
   const [activeDropdown, setActiveDropdown] = useState<ActiveDropdown>(null);
   const [isGnbOpen, setIsGnbOpen] = useState(false);
 
@@ -50,8 +52,6 @@ export default function Header() {
     getActiveMenuIndex(pathname, gnbMenus),
 
   );
-
-  const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
 
   const { isScrolled, isScrollHidden } = useSiteHeaderScroll();
 
@@ -74,8 +74,6 @@ export default function Header() {
 
     setIsMenuOpen(false);
 
-    setIsUserPopupOpen(false);
-
   }, [pathname]);
 
 
@@ -95,7 +93,13 @@ export default function Header() {
 
     setIsMenuOpen(false);
 
-    setIsUserPopupOpen(false);
+  };
+
+  const handleUserButtonClick = () => {
+
+    navigate(isLoggedIn ? "/mypage" : "/login");
+
+    closeMenu();
 
   };
 
@@ -124,8 +128,6 @@ export default function Header() {
       return next;
 
     });
-
-    setIsUserPopupOpen(false);
 
   };
 
@@ -548,75 +550,15 @@ export default function Header() {
 
                 type="button"
 
-                aria-label="사용자 메뉴"
+                aria-label={isLoggedIn ? "마이페이지" : "로그인"}
 
-                aria-expanded={isUserPopupOpen}
-
-                onClick={() => setIsUserPopupOpen((current) => !current)}
+                onClick={handleUserButtonClick}
 
               >
 
                 <Icon name="user" aria-hidden="true" />
 
               </button>
-
-              <div
-
-                className={[
-
-                  "site-header__tablet-user-popup",
-
-                  isUserPopupOpen && "site-header__tablet-popup--open",
-
-                ]
-
-                  .filter(Boolean)
-
-                  .join(" ")}
-
-                aria-hidden={!isUserPopupOpen}
-
-              >
-
-                {isLoggedIn ? (
-
-                  <button
-
-                    className="site-header__tablet-popup-link ft-16b ink500"
-
-                    type="button"
-
-                    onClick={() => {
-
-                      logout();
-
-                      closeMenu();
-
-                    }}
-
-                  >
-
-                    로그아웃
-
-                  </button>
-
-                ) : (
-
-                  <Link className="site-header__tablet-popup-link ft-16b ink500" to="/login" onClick={closeMenu}>
-
-                    로그인
-
-                  </Link>
-
-                )}
-
-                <Link className="site-header__tablet-popup-link ft-16b ink500" to="/mypage" onClick={closeMenu}>
-
-                  마이페이지
-
-                </Link>
-
-              </div>
 
             </div>
 
@@ -683,29 +625,35 @@ export default function Header() {
 
           <header className="site-header__mobile-panel-header" aria-label="모바일 메뉴 헤더">
 
-            <Link
+            <div className="site-header__mobile-utility-row">
 
-              className="site-header__mobile-panel-login"
+              <button
 
-              to={isLoggedIn ? "/mypage" : "/login"}
+                className="site-header__mobile-user-button"
 
-              onClick={closeMenu}
+                type="button"
 
-            >
+                aria-label={isLoggedIn ? "마이페이지" : "로그인"}
 
-              <span className="site-header__mobile-panel-user-frame" aria-hidden="true">
+                onClick={handleUserButtonClick}
 
-                <Icon name="user" />
+              >
 
-              </span>
+                <span className="site-header__mobile-panel-user-frame" aria-hidden="true">
 
-              <span className="site-header__mobile-panel-login-text ft-14b ink500">
+                  <Icon name="user" />
 
-                {isLoggedIn ? loginId : "로그인"}
+                </span>
 
-              </span>
+                <span className="site-header__mobile-panel-login-text ft-14b ink500">
 
-            </Link>
+                  {isLoggedIn ? loginId : "로그인"}
+
+                </span>
+
+              </button>
+
+            </div>
 
 
 

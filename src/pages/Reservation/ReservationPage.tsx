@@ -48,7 +48,7 @@ import {
   readReservationDraft,
   saveReservationDraft,
 } from "../../utils/reservationDraftStorage";
-import { isValidPhone, isValidReserverName, sanitizePhoneInput, sanitizeReserverNameInput } from "../../utils/validation";
+import { formatPhoneInput, isValidPhone, isValidReserverName, normalizeReserverName, sanitizeReserverNameInput } from "../../utils/validation";
 import {
   getActiveSeasonReservationClassId,
   isReservationClassSelectable,
@@ -467,6 +467,7 @@ function ReservationPage() {
   const [isCouponSheetOpen, setIsCouponSheetOpen] = useState(false);
   const [appliedStampBenefitId, setAppliedStampBenefitId] = useState<StampBenefitId | null>(null);
   const customerInfoRef = useRef<HTMLDivElement>(null);
+  const isNameComposingRef = useRef(false);
   const initializedEditReservationIdRef = useRef<string | null>(null);
   const initializedFromQueryRef = useRef(false);
   const restoredDraftRef = useRef(false);
@@ -493,8 +494,8 @@ function ReservationPage() {
   const unitPrice = useMemo(() => parsePriceKrw(selectedClass.price), [selectedClass.price]);
   const productAmount = useMemo(() => unitPrice * guestCount, [guestCount, unitPrice]);
   const pricing = useMemo(
-    () => calculateStampPricing(productAmount, unitPrice, appliedStampBenefitId),
-    [appliedStampBenefitId, productAmount, unitPrice],
+    () => calculateStampPricing(productAmount, appliedStampBenefitId),
+    [appliedStampBenefitId, productAmount],
   );
   const showStampCouponSection = !isEditMode;
   const isCouponDisabled = !loginId;
@@ -653,7 +654,7 @@ function ReservationPage() {
 
     setSelectedBranch(draft.selectedBranch);
     setReservationName(draft.reservationName);
-    setReservationPhone(draft.reservationPhone);
+    setReservationPhone(formatPhoneInput(draft.reservationPhone));
     setSelectedClassId(draft.selectedClassId);
     setClassPage(draft.classPage);
     setSelectedDate(parseReservationDate(draft.selectedDate, today));
@@ -675,7 +676,7 @@ function ReservationPage() {
     }
 
     setReservationName((current) => current || profile.name);
-    setReservationPhone((current) => current || profile.phone);
+    setReservationPhone((current) => current || formatPhoneInput(profile.phone));
   }, [isEditMode, profile]);
 
   useEffect(() => {
@@ -688,7 +689,7 @@ function ReservationPage() {
 
     setSelectedBranch(getReservationBranch(editReservation.branch));
     setReservationName(editReservation.reserverName ?? profile?.name ?? "");
-    setReservationPhone(editReservation.reserverPhone ?? profile?.phone ?? "");
+    setReservationPhone(formatPhoneInput(editReservation.reserverPhone ?? profile?.phone ?? ""));
     setSelectedClassId(nextClassId);
     setClassPage(Math.ceil(nextClassId / RESERVATION_CLASSES_PER_PAGE));
     setSelectedDate(parseReservationDate(editReservation.date, today));
@@ -805,12 +806,24 @@ function ReservationPage() {
   };
 
   const handleNameBlur = () => {
-    const customerErrors = validateCustomerFields();
+    const normalizedName = normalizeReserverName(reservationName);
+
+    if (normalizedName !== reservationName) {
+      setReservationName(normalizedName);
+    }
+
+    const customerErrors = validateCustomerFields(normalizedName, reservationPhone);
     setFieldErrors((prev) => ({ ...prev, name: customerErrors.name }));
   };
 
   const handlePhoneBlur = () => {
-    const customerErrors = validateCustomerFields();
+    const formattedPhone = formatPhoneInput(reservationPhone);
+
+    if (formattedPhone !== reservationPhone) {
+      setReservationPhone(formattedPhone);
+    }
+
+    const customerErrors = validateCustomerFields(reservationName, formattedPhone);
     setFieldErrors((prev) => ({ ...prev, phone: customerErrors.phone }));
   };
 
@@ -1059,8 +1072,20 @@ function ReservationPage() {
                 maxLength={20}
                 aria-invalid={Boolean(fieldErrors.name)}
                 aria-describedby={fieldErrors.name ? "reservation-name-error" : undefined}
+                onCompositionStart={() => {
+                  isNameComposingRef.current = true;
+                }}
+                onCompositionEnd={(event) => {
+                  isNameComposingRef.current = false;
+                  const nextName = sanitizeReserverNameInput(event.currentTarget.value);
+                  setReservationName(nextName);
+                  setValidationErrors([]);
+                  setFieldErrors((prev) => ({ ...prev, name: undefined }));
+                }}
                 onChange={(event) => {
-                  const nextName = sanitizeReserverNameInput(event.target.value);
+                  const nextName = isNameComposingRef.current
+                    ? event.target.value
+                    : sanitizeReserverNameInput(event.target.value);
                   setReservationName(nextName);
                   setValidationErrors([]);
                   setFieldErrors((prev) => ({ ...prev, name: undefined }));
@@ -1089,7 +1114,7 @@ function ReservationPage() {
                 aria-invalid={Boolean(fieldErrors.phone)}
                 aria-describedby={fieldErrors.phone ? "reservation-phone-error" : undefined}
                 onChange={(event) => {
-                  const nextPhone = sanitizePhoneInput(event.target.value);
+                  const nextPhone = formatPhoneInput(event.target.value);
                   setReservationPhone(nextPhone);
                   setValidationErrors([]);
                   setFieldErrors((prev) => ({ ...prev, phone: undefined }));

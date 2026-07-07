@@ -1170,6 +1170,14 @@ $reservation-payment-card-height: 216px;
     gap: 1.5rem;
   }
 
+  .reservation-payment__layout--card-match {
+    .reservation-payment__method-card {
+      height: auto;
+      min-height: auto;
+      max-height: none;
+    }
+  }
+
   .reservation-payment__stage {
     min-height: $reservation-payment-stage-min-stacked;
   }

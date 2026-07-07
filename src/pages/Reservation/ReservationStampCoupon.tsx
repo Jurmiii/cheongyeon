@@ -5,7 +5,6 @@ import { Icon } from "../../components/common";
 import { useLockBodyScroll } from "../../hooks/useLockBodyScroll";
 import {
   STAMP_BENEFITS,
-  calculateStampBenefitDiscount,
   calculateStampPricing,
   formatPriceKrw,
   getStampBenefitById,
@@ -83,8 +82,8 @@ export default function ReservationStampCoupon({
   }, [availableStamps, isPracticeAccount]);
 
   const pendingPricing = useMemo(
-    () => calculateStampPricing(productAmount, unitPrice, pendingBenefitId),
-    [pendingBenefitId, productAmount, unitPrice],
+    () => calculateStampPricing(productAmount, pendingBenefitId),
+    [pendingBenefitId, productAmount],
   );
 
   const visibleBenefits = activeTab === "available" ? benefitGroups.available : benefitGroups.unavailable;
@@ -260,7 +259,7 @@ export default function ReservationStampCoupon({
                   <ul className="reservation-coupon-sheet__list">
                     {visibleBenefits.map((benefit) => {
                       const isSelected = pendingBenefitId === benefit.id;
-                      const discountAmount = calculateStampBenefitDiscount(unitPrice, benefit.id);
+                      const discountAmount = benefit.discountAmount;
                       const isEligible = isPracticeAccount || availableStamps >= benefit.requiredStamps;
                       const reason = getIneligibilityReason(benefit, availableStamps);
 

@@ -103,7 +103,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding: 0;
+  padding: 0 0 calc(1rem + env(safe-area-inset-bottom, 0px));
   background: rgb(0 0 0 / 45%);
   animation: reservation-coupon-sheet-fade-in 0.2s ease;
 }
@@ -113,8 +113,9 @@
   flex-direction: column;
   width: min(100%, 30rem);
   max-height: min(88vh, 44rem);
-  border-radius: 1rem 1rem 0 0;
+  border-radius: 1rem;
   background: var(--white);
+  overflow: hidden;
   animation: reservation-coupon-sheet-slide-up 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -356,7 +357,6 @@
   .reservation-coupon-sheet__panel {
     width: min(100%, 28rem);
     max-height: min(80vh, 40rem);
-    border-radius: 1rem;
     animation: reservation-coupon-sheet-scale-in 0.24s cubic-bezier(0.22, 1, 0.36, 1);
   }
 }

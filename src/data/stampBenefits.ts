@@ -5,7 +5,7 @@ export interface StampBenefit {
   requiredStamps: number;
   title: string;
   description: string;
-  discountRate: number;
+  discountAmount: number;
 }
 
 export const STAMP_BENEFITS: StampBenefit[] = [
@@ -14,14 +14,14 @@ export const STAMP_BENEFITS: StampBenefit[] = [
     requiredStamps: 4,
     title: "스탬프 4개 혜택",
     description: "원데이 클래스 1인 50% 할인",
-    discountRate: 0.5,
+    discountAmount: 30000,
   },
   {
     id: "stamp-8-free",
     requiredStamps: 8,
     title: "스탬프 8개 혜택",
     description: "원데이 클래스 1인 무료체험",
-    discountRate: 1,
+    discountAmount: 50000,
   },
 ];
 
@@ -41,7 +41,7 @@ export function formatPriceKrw(amount: number) {
   return `${amount.toLocaleString("ko-KR")}원`;
 }
 
-export function calculateStampBenefitDiscount(unitPrice: number, benefitId: StampBenefitId | null) {
+export function calculateStampBenefitDiscount(productAmount: number, benefitId: StampBenefitId | null) {
   if (!benefitId) {
     return 0;
   }
@@ -52,15 +52,14 @@ export function calculateStampBenefitDiscount(unitPrice: number, benefitId: Stam
     return 0;
   }
 
-  return Math.round(unitPrice * benefit.discountRate);
+  return Math.min(benefit.discountAmount, productAmount);
 }
 
 export function calculateStampPricing(
   productAmount: number,
-  unitPrice: number,
   benefitId: StampBenefitId | null,
 ) {
-  const discountAmount = calculateStampBenefitDiscount(unitPrice, benefitId);
+  const discountAmount = calculateStampBenefitDiscount(productAmount, benefitId);
 
   return {
     productAmount,

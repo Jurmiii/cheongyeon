@@ -20,7 +20,7 @@
   max-width: 100%;
   min-height: 39.8125rem;
   padding: 2.3125rem 0 2.875rem;
-  border: 0.0625rem solid var(--moon500);
+  border: 0.0625rem solid var(--deep500);
   border-radius: var(--radius-lg);
   background: var(--white);
 }
@@ -377,6 +377,15 @@
   .signup-page {
     align-items: flex-start;
     padding: var(--space-2);
+  }
+
+  .signup-card {
+    width: 100%;
+    min-height: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
   }
 }
 
