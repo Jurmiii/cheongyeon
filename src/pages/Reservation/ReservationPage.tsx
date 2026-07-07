@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -43,6 +43,11 @@ import {
   canCancelReservation,
   isReservationTimeSlotPast,
 } from "../../utils/reservationFormat";
+import {
+  clearReservationDraft,
+  readReservationDraft,
+  saveReservationDraft,
+} from "../../utils/reservationDraftStorage";
 import { isValidPhone, isValidReserverName, sanitizePhoneInput, sanitizeReserverNameInput } from "../../utils/validation";
 import {
   getActiveSeasonReservationClassId,
@@ -421,6 +426,8 @@ function ReservationCompleteModal({ isOpen, onClose, title = "예약완료" }: R
 
 function ReservationPage() {
   const { loginId } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { profile } = useUserProfile();
   const { reservations, upcomingReservation, stats } = useReservations();
   const [searchParams] = useSearchParams();
@@ -462,6 +469,7 @@ function ReservationPage() {
   const customerInfoRef = useRef<HTMLDivElement>(null);
   const initializedEditReservationIdRef = useRef<string | null>(null);
   const initializedFromQueryRef = useRef(false);
+  const restoredDraftRef = useRef(false);
 
   const totalClassPages = Math.ceil(reservationClasses.length / RESERVATION_CLASSES_PER_PAGE);
 
@@ -488,7 +496,9 @@ function ReservationPage() {
     () => calculateStampPricing(productAmount, unitPrice, appliedStampBenefitId),
     [appliedStampBenefitId, productAmount, unitPrice],
   );
-  const showStampCouponSection = !isEditMode && Boolean(loginId);
+  const showStampCouponSection = !isEditMode;
+  const isCouponDisabled = !loginId;
+  const availableCouponCount = loginId ? availableStampBenefits.length : 0;
   const selectedDateKey = formatDateForStorage(selectedDate);
 
   const sessionAvailabilityByTime = useMemo(() => {
@@ -628,6 +638,38 @@ function ReservationPage() {
   }, [isEditMode, searchParams, today]);
 
   useEffect(() => {
+    if (!loginId || isEditMode || restoredDraftRef.current) {
+      return;
+    }
+
+    const draft = readReservationDraft();
+
+    if (!draft) {
+      return;
+    }
+
+    restoredDraftRef.current = true;
+    clearReservationDraft();
+
+    setSelectedBranch(draft.selectedBranch);
+    setReservationName(draft.reservationName);
+    setReservationPhone(draft.reservationPhone);
+    setSelectedClassId(draft.selectedClassId);
+    setClassPage(draft.classPage);
+    setSelectedDate(parseReservationDate(draft.selectedDate, today));
+    setSelectedTime(draft.selectedTime);
+    setGuestCount(draft.guestCount);
+    setRequestMessage(draft.requestMessage);
+    setPaymentMethod(draft.paymentMethod);
+    setSelectedCardCompany(draft.selectedCardCompany);
+    setSelectedInstallment(draft.selectedInstallment);
+    setSavePaymentMethod(draft.savePaymentMethod);
+    setAppliedStampBenefitId(draft.appliedStampBenefitId);
+    setValidationErrors([]);
+    setFieldErrors({});
+  }, [isEditMode, loginId, today]);
+
+  useEffect(() => {
     if (isEditMode || !profile) {
       return;
     }
@@ -687,6 +729,10 @@ function ReservationPage() {
   }, [appliedStampBenefitId]);
 
   const handleCouponOpen = () => {
+    if (isCouponDisabled) {
+      return;
+    }
+
     setIsCouponSheetOpen(true);
   };
 
@@ -771,10 +817,6 @@ function ReservationPage() {
   const validateReservation = () => {
     const errors: string[] = [];
 
-    if (!loginId) {
-      errors.push("로그인 후 예약해주세요.");
-    }
-
     if (isEditMode && !editReservation) {
       errors.push("변경할 예약 정보를 찾을 수 없습니다.");
     }
@@ -831,6 +873,30 @@ function ReservationPage() {
   };
 
   const handleReservationSubmit = () => {
+    if (!loginId) {
+      saveReservationDraft({
+        selectedBranch,
+        reservationName,
+        reservationPhone,
+        selectedClassId,
+        classPage,
+        selectedDate: formatDateForStorage(selectedDate),
+        selectedTime,
+        guestCount,
+        requestMessage,
+        paymentMethod,
+        selectedCardCompany,
+        selectedInstallment,
+        savePaymentMethod,
+        appliedStampBenefitId,
+      });
+
+      navigate("/login", {
+        state: { redirectTo: `${location.pathname}${location.search}` },
+      });
+      return;
+    }
+
     const errors = validateReservation();
     const nextFieldErrors = getReservationFieldErrors(reservationName, reservationPhone);
     setFieldErrors(nextFieldErrors);
@@ -882,6 +948,7 @@ function ReservationPage() {
       addReservation(nextReservation);
     }
 
+    clearReservationDraft();
     setIsCompleteModalOpen(true);
   };
 
@@ -1264,18 +1331,28 @@ function ReservationPage() {
         <div className="reservation-payment__grid">
           <div
             className={[
-              "reservation-payment__layout",
-              isEditMode && "reservation-payment__layout--single",
+              "reservation-payment__stage",
+              isEditMode && "reservation-payment__stage--single",
             ]
               .filter(Boolean)
               .join(" ")}
           >
+            <div
+              className={[
+                "reservation-payment__layout",
+                isEditMode && "reservation-payment__layout--single",
+                !isEditMode && paymentMethod === "card" && "reservation-payment__layout--card-match",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+            >
             {!isEditMode && showStampCouponSection ? (
               <div className="reservation-payment__checkout">
                 <ReservationStampCoupon
                   isOpen={isCouponSheetOpen}
+                  isDisabled={isCouponDisabled}
                   availableStamps={availableStamps}
-                  availableCouponCount={availableStampBenefits.length}
+                  availableCouponCount={availableCouponCount}
                   appliedBenefitId={appliedStampBenefitId}
                   isPracticeAccount={isPracticeAccount}
                   productAmount={productAmount}
@@ -1330,93 +1407,93 @@ function ReservationPage() {
                   </button>
                 </div>
                 {paymentMethod === "card" ? (
-                    <div className="reservation-payment__selects">
-                      <div
-                        className={[
-                          "reservation-payment__select-wrap",
-                          openPaymentDropdown === "cardCompany" && "reservation-payment__select-wrap--open",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
+                  <div className="reservation-payment__selects">
+                    <div
+                      className={[
+                        "reservation-payment__select-wrap",
+                        openPaymentDropdown === "cardCompany" && "reservation-payment__select-wrap--open",
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                    >
+                      <button
+                        className="reservation-payment__select ft-16b ink500"
+                        type="button"
+                        aria-haspopup="listbox"
+                        aria-expanded={openPaymentDropdown === "cardCompany"}
+                        disabled={paymentMethod !== "card"}
+                        onClick={() => handlePaymentDropdownToggle("cardCompany")}
                       >
-                        <button
-                          className="reservation-payment__select ft-16b ink500"
-                          type="button"
-                          aria-haspopup="listbox"
-                          aria-expanded={openPaymentDropdown === "cardCompany"}
-                          disabled={paymentMethod !== "card"}
-                          onClick={() => handlePaymentDropdownToggle("cardCompany")}
-                        >
-                          <span className="reservation-payment__select-label">{cardCompanyLabel}</span>
-                          <Icon className="reservation-payment__select-icon" name="angle-down" aria-hidden="true" />
-                        </button>
-                        <ul className="reservation-payment__select-menu" role="listbox" aria-label="카드사 선택">
-                          {cardCompanies.map((company) => (
-                            <li key={company}>
-                              <button
-                                className={[
-                                  "reservation-payment__select-option",
-                                  "ft-18r",
-                                  "ink500",
-                                  company === selectedCardCompany && "reservation-payment__select-option--active",
-                                ]
-                                  .filter(Boolean)
-                                  .join(" ")}
-                                type="button"
-                                role="option"
-                                aria-selected={company === selectedCardCompany}
-                                onClick={() => handleCardCompanySelect(company)}
-                              >
-                                {company}
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div
-                        className={[
-                          "reservation-payment__select-wrap",
-                          "reservation-payment__select-wrap--installment",
-                          openPaymentDropdown === "installment" && "reservation-payment__select-wrap--open",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                      >
-                        <button
-                          className="reservation-payment__select ft-16b ink500"
-                          type="button"
-                          aria-haspopup="listbox"
-                          aria-expanded={openPaymentDropdown === "installment"}
-                          disabled={paymentMethod !== "card"}
-                          onClick={() => handlePaymentDropdownToggle("installment")}
-                        >
-                          <span className="reservation-payment__select-label">{selectedInstallment}</span>
-                          <Icon className="reservation-payment__select-icon" name="angle-down" aria-hidden="true" />
-                        </button>
-                        <ul className="reservation-payment__select-menu" role="listbox" aria-label="할부 선택">
-                          {installmentPlans.map((plan) => (
-                            <li key={plan}>
-                              <button
-                                className={[
-                                  "reservation-payment__select-option",
-                                  "ft-18r",
-                                  "ink500",
-                                  plan === selectedInstallment && "reservation-payment__select-option--active",
-                                ]
-                                  .filter(Boolean)
-                                  .join(" ")}
-                                type="button"
-                                role="option"
-                                aria-selected={plan === selectedInstallment}
-                                onClick={() => handleInstallmentSelect(plan)}
-                              >
-                                {plan}
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                        <span className="reservation-payment__select-label">{cardCompanyLabel}</span>
+                        <Icon className="reservation-payment__select-icon" name="angle-down" aria-hidden="true" />
+                      </button>
+                      <ul className="reservation-payment__select-menu" role="listbox" aria-label="카드사 선택">
+                        {cardCompanies.map((company) => (
+                          <li key={company}>
+                            <button
+                              className={[
+                                "reservation-payment__select-option",
+                                "ft-18r",
+                                "ink500",
+                                company === selectedCardCompany && "reservation-payment__select-option--active",
+                              ]
+                                .filter(Boolean)
+                                .join(" ")}
+                              type="button"
+                              role="option"
+                              aria-selected={company === selectedCardCompany}
+                              onClick={() => handleCardCompanySelect(company)}
+                            >
+                              {company}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
+                    <div
+                      className={[
+                        "reservation-payment__select-wrap",
+                        "reservation-payment__select-wrap--installment",
+                        openPaymentDropdown === "installment" && "reservation-payment__select-wrap--open",
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                    >
+                      <button
+                        className="reservation-payment__select ft-16b ink500"
+                        type="button"
+                        aria-haspopup="listbox"
+                        aria-expanded={openPaymentDropdown === "installment"}
+                        disabled={paymentMethod !== "card"}
+                        onClick={() => handlePaymentDropdownToggle("installment")}
+                      >
+                        <span className="reservation-payment__select-label">{selectedInstallment}</span>
+                        <Icon className="reservation-payment__select-icon" name="angle-down" aria-hidden="true" />
+                      </button>
+                      <ul className="reservation-payment__select-menu" role="listbox" aria-label="할부 선택">
+                        {installmentPlans.map((plan) => (
+                          <li key={plan}>
+                            <button
+                              className={[
+                                "reservation-payment__select-option",
+                                "ft-18r",
+                                "ink500",
+                                plan === selectedInstallment && "reservation-payment__select-option--active",
+                              ]
+                                .filter(Boolean)
+                                .join(" ")}
+                              type="button"
+                              role="option"
+                              aria-selected={plan === selectedInstallment}
+                              onClick={() => handleInstallmentSelect(plan)}
+                            >
+                              {plan}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                 ) : (
                   <div className="reservation-payment__bank" role="group" aria-label="무통장입금 계좌 안내">
                     <div className="reservation-payment__bank-messages">
@@ -1479,6 +1556,7 @@ function ReservationPage() {
             >
               {isEditMode ? "변경 완료하기" : "예약하기"}
             </Button>
+          </div>
           </div>
         </div>
       </section>
