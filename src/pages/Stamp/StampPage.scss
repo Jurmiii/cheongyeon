@@ -1,8 +1,5 @@
 @use "sass:math";
 
-@use "../../styles/abstracts/breakpoints" as *;
-@use "../../styles/abstracts/grid" as grid;
-
 // PC 시안 970×550px — 카드 너비 기준(cqw)으로 배경·컵·부적·텍스트 비율 유지
 $stamp-design-width: 970;
 $stamp-design-height: 550;
