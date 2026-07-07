@@ -1923,7 +1923,8 @@ $season-schedule-card-lift-tablet-spec: 3rem; // 80px - 32px
 $season-schedule-card-slot-h-tablet-spec: calc(
   #{$season-schedule-card-lift-tablet-spec} + #{$season-schedule-card-h-active-tablet-spec}
 ); // 비활성 lift + 활성 카드 높이 — 트랙 높이 고정
-$season-schedule-carousel-mt-tablet-spec: 2rem; // 32px — 드롭다운 ↔ 카드
+$season-schedule-carousel-mt-tablet-spec: 2rem; // 32px — 모바일 스케일 기준
+$season-schedule-carousel-mt-tablet-gap: 1.25rem; // 20px — 드롭다운 ↔ 카드 (태블릿)
 $season-schedule-card-pad-tablet-spec: 1rem; // 16px
 $season-schedule-card-divider-w-tablet-spec: 3.75rem; // 60px
 $season-schedule-card-divider-h-tablet-spec: 0.77125rem; // 12.34px
@@ -1972,7 +1973,7 @@ $season-schedule-intro-gap-tablet: 1rem;
 $season-schedule-intro-width-pc: 49.3125rem;
 $season-schedule-intro-width-tablet: grid.$tablet-grid-inner;
 $season-schedule-carousel-margin-top-pc: 2.75rem;
-$season-schedule-carousel-margin-top-tablet: 2rem; // 32px
+$season-schedule-carousel-margin-top-tablet: 1.25rem; // 20px
 
 $season-schedule-title-size-pc: 3rem; // ft-48b
 $season-schedule-title-line-pc: 4rem;
@@ -2310,18 +2311,14 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
   width: 13.75rem;
   height: 24.9375rem;
   margin-top: 2.25rem;
-  opacity: 0.72;
   overflow: visible;
   align-self: flex-start;
-  transition:
-    margin-top 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.3s ease;
+  transition: margin-top 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* 선택된 카드만 위로 올라오고 강조 — 내부 요소 위치는 선택 전후 동일 */
 .season-schedule__card--active {
   margin-top: 0;
-  opacity: 1;
 }
 
 .season-schedule__card-surface {
@@ -2334,7 +2331,6 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
   padding: 1.125rem 0.875rem 1.25rem;
   border: 0.125rem solid transparent;
   border-radius: 1.5rem;
-  background: var(--han50);
   box-shadow: none;
   overflow: hidden;
   transition:
@@ -2429,10 +2425,18 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
   }
 }
 
+.season-schedule__card:not(.season-schedule__card--past) .season-schedule__card-surface {
+  background-color: var(--han50);
+}
+
 .season-schedule__card--past .season-schedule__card-surface {
   background: var(--han100);
   cursor: not-allowed;
   pointer-events: none;
+}
+
+.season-schedule__card--past {
+  opacity: 0.72;
 }
 .season-schedule__card--past .season-schedule__weekday,
 .season-schedule__card--past .season-schedule__time-label,
@@ -2668,7 +2672,6 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
 
   .season-schedule__card--active {
     margin-top: 0;
-    opacity: 1;
   }
 
   .season-schedule__reserve-btn {
@@ -2705,6 +2708,10 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
       season-schedule-fluid(1.25rem, 0.5625rem);
     border-radius: season-schedule-fluid(1.5rem, 0.6875rem);
     border-width: season-schedule-fluid(0.125rem, 0.0625rem);
+  }
+
+  .season-schedule__card:not(.season-schedule__card--past) .season-schedule__card-surface {
+    background-color: var(--han50);
   }
 
   .season-schedule__divider {
@@ -2764,7 +2771,7 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
     box-sizing: border-box;
     width: $season-schedule-track-w-tablet-spec;
     max-width: calc(100% - #{grid.$tablet-grid-padding * 2});
-    margin-top: $season-schedule-carousel-mt-tablet-spec;
+    margin-top: $season-schedule-carousel-mt-tablet-gap;
     margin-inline: auto;
     padding-bottom: 0;
   }
@@ -2773,6 +2780,13 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
     width: $season-schedule-track-w-tablet-spec;
     max-width: 100%;
     margin-inline: auto;
+  }
+
+  .season-schedule__filter-panel--date {
+    right: 0;
+    left: auto;
+    width: calc(200% + #{$season-schedule-filter-gap-tablet});
+    min-width: 0;
   }
 
   .season-schedule__track {
@@ -2792,12 +2806,6 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
     height: $season-schedule-card-slot-h-tablet-spec;
     margin-top: 0;
     aspect-ratio: auto;
-    opacity: 0.72;
-    transition: opacity 0.3s ease;
-  }
-
-  .season-schedule__card--active {
-    opacity: 1;
   }
 
   .season-schedule__card-surface {
@@ -2815,6 +2823,10 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
     border: 0.0625rem solid transparent;
     border-radius: 0.75rem;
     overflow: visible;
+  }
+
+  .season-schedule__card:not(.season-schedule__card--past) .season-schedule__card-surface {
+    background-color: var(--han50);
   }
 
   .season-schedule__card-surface--active {
@@ -2935,6 +2947,13 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
     width: 100%;
   }
 
+  .season-schedule__filter-panel--date {
+    right: 0;
+    left: auto;
+    width: calc(200% + #{$season-schedule-filter-gap-pc});
+    min-width: 0;
+  }
+
   .season-schedule__calendar-day.ft-18b {
     font-family: var(--font-body);
     font-size: 0.875rem;
@@ -2973,10 +2992,7 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
     height: $season-schedule-card-h-mobile-spec;
     margin-top: $season-schedule-card-lift-mobile-spec;
     aspect-ratio: auto;
-    opacity: 0.72;
-    transition:
-      margin-top 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 0.3s ease;
+    transition: margin-top 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .season-schedule__card-surface {
@@ -2996,6 +3012,10 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
     border: 0.0625rem solid transparent;
     border-radius: 0.75rem;
     overflow: hidden;
+  }
+
+  .season-schedule__card:not(.season-schedule__card--past) .season-schedule__card-surface {
+    background-color: var(--han50);
   }
 
   .season-schedule__card-surface--active {
@@ -3020,7 +3040,6 @@ $season-schedule-filter-border-radius-tablet: 0.1875rem;
 
   .season-schedule__card--active {
     margin-top: 0;
-    opacity: 1;
     z-index: 1;
   }
 
