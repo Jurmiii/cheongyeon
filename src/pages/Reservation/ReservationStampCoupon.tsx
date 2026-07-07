@@ -42,7 +42,6 @@ type ReservationStampCouponProps = {
   appliedBenefitId: StampBenefitId | null;
   isPracticeAccount: boolean;
   productAmount: number;
-  unitPrice: number;
   pricing: StampPricing;
   onOpen: () => void;
   onClose: () => void;
@@ -67,7 +66,6 @@ export default function ReservationStampCoupon({
   appliedBenefitId,
   isPracticeAccount,
   productAmount,
-  unitPrice,
   pricing,
   onOpen,
   onClose,

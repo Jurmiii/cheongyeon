@@ -1383,7 +1383,6 @@ function ReservationPage() {
                   appliedBenefitId={appliedStampBenefitId}
                   isPracticeAccount={isPracticeAccount}
                   productAmount={productAmount}
-                  unitPrice={unitPrice}
                   pricing={pricing}
                   onOpen={handleCouponOpen}
                   onClose={handleCouponClose}
