@@ -194,10 +194,7 @@ export default function Header() {
             }
           }}
         >
-          <div
-            className="site-header__bar-hit"
-            onMouseEnter={() => setIsGnbOpen(true)}
-          >
+          <div className="site-header__bar-hit">
             <div className="site-header__inner">
               <h1 className="site-header__logo">
                 <Link to="/" aria-label="청연 홈">
@@ -206,7 +203,11 @@ export default function Header() {
               </h1>
 
               <div className="site-header__interactive">
-                <nav className="site-header__gnb" aria-label="주요 메뉴">
+                <nav
+                  className="site-header__gnb"
+                  aria-label="주요 메뉴"
+                  onMouseEnter={() => setIsGnbOpen(true)}
+                >
                   {gnbMenus.map((menu) => (
                     <div className="site-header__menu-item" key={menu.label}>
                       <NavLink className="site-header__menu-link ft-18b ink500" to={menu.to}>

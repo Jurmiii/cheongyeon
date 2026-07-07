@@ -22,6 +22,7 @@ type StampPricing = {
 
 type ReservationStampCouponProps = {
   isOpen: boolean;
+  isDisabled?: boolean;
   availableStamps: number;
   availableCouponCount: number;
   appliedBenefitId: StampBenefitId | null;
@@ -46,6 +47,7 @@ function getIneligibilityReason(benefit: StampBenefit, availableStamps: number) 
 
 export default function ReservationStampCoupon({
   isOpen,
+  isDisabled = false,
   availableStamps,
   availableCouponCount,
   appliedBenefitId,
@@ -122,14 +124,27 @@ export default function ReservationStampCoupon({
 
   const couponRowValue = appliedBenefit
     ? appliedBenefit.title
-    : availableCouponCount > 0
-      ? `사용 가능 ${availableCouponCount}장`
-      : "사용 가능한 쿠폰 없음";
+    : isDisabled
+      ? "사용 가능 0장"
+      : availableCouponCount > 0
+        ? `사용 가능 ${availableCouponCount}장`
+        : "사용 가능한 쿠폰 없음";
 
   return (
     <>
       <div className="reservation-coupon-summary" aria-label="결제 금액 및 쿠폰">
-        <button className="reservation-coupon-summary__row" type="button" onClick={onOpen}>
+        <button
+          className={[
+            "reservation-coupon-summary__row",
+            isDisabled && "reservation-coupon-summary__row--disabled",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+          type="button"
+          onClick={onOpen}
+          disabled={isDisabled}
+          aria-disabled={isDisabled}
+        >
           <span className="reservation-coupon-summary__label ft-16r ink500">쿠폰</span>
           <span className="reservation-coupon-summary__value">
             {pricing.discountAmount > 0 ? (
