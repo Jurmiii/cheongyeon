@@ -18,7 +18,6 @@ type StampModalProps = {
 
 function StampModal({ count = STAMP_COUNT, onClose }: StampModalProps) {
   const { availableStamps } = useStampBalance();
-  const stampedCount = availableStamps;
   const modalRef = useRef<HTMLDivElement>(null);
 
   useLockBodyScroll(true, modalRef);
@@ -56,7 +55,7 @@ function StampModal({ count = STAMP_COUNT, onClose }: StampModalProps) {
             <div className="stamp-cup" key={number}>
               <img className="stamp-cup__image" src={cup} alt="" aria-hidden="true" />
               <span className="stamp-cup__number ft-48b">{number}</span>
-              {number <= stampedCount ? (
+              {number <= availableStamps ? (
                 <img className="stamp-cup__bujuk" src={bujuk} alt="" aria-hidden="true" />
               ) : null}
             </div>

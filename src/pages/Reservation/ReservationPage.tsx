@@ -486,8 +486,7 @@ function ReservationPage() {
     () => reservationClasses.find((classItem) => classItem.id === selectedClassId) ?? reservationClasses[0],
     [selectedClassId],
   );
-  const earnedStamps = stats.stampCount;
-  const availableStamps = loginId ? getAvailableStampBalance(loginId, earnedStamps) : 0;
+  const availableStamps = loginId ? getAvailableStampBalance(loginId, stats.stampCount) : 0;
   const isPracticeAccount = loginId === TEMP_LOGIN_ID;
   const availableStampBenefits = useMemo(
     () => (isPracticeAccount ? STAMP_BENEFITS : getAvailableStampBenefits(availableStamps)),
@@ -1374,7 +1373,7 @@ function ReservationPage() {
                 .filter(Boolean)
                 .join(" ")}
             >
-            {!isEditMode && showStampCouponSection ? (
+            {showStampCouponSection ? (
               <div className="reservation-payment__checkout">
                 <ReservationStampCoupon
                   isOpen={isCouponSheetOpen}
