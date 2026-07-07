@@ -11,6 +11,8 @@ export interface ClassIntroductionSlide {
   filterLabel: string;
   title: string;
   description: string;
+  /** 태블릿(768~1023px) — 최대 2줄, 의도된 줄바꿈 */
+  descriptionTablet?: string;
   image: string;
   imageAlt: string;
 }
@@ -22,6 +24,7 @@ export const classIntroductionSlides: ClassIntroductionSlide[] = [
     filterLabel: "기본",
     title: "기본 다도 클래스",
     description: "차 도구의 쓰임과\n기본 다도 흐름을 배우며\n일상 속 차 문화를 시작합니다.",
+    descriptionTablet: "차 도구의 쓰임과 기본 다도 흐름을 배우며\n일상 속 차 문화를 시작합니다.",
     image: classIntro31,
     imageAlt: "기본 다도 클래스 수업 장면",
   },
@@ -31,6 +34,7 @@ export const classIntroductionSlides: ClassIntroductionSlide[] = [
     filterLabel: "숙성",
     title: "숙성차 클래스",
     description: "오랜 시간 숙성된 차의 향과 맛을 느끼며 차가 지닌\n깊은 여운을 배웁니다.",
+    descriptionTablet: "오랜 시간 숙성된 차의 향과 맛을 느끼며\n차가 지닌 깊은 여운을 배웁니다.",
     image: classIntro32,
     imageAlt: "숙성차 클래스 수업 장면",
   },
@@ -40,6 +44,7 @@ export const classIntroductionSlides: ClassIntroductionSlide[] = [
     filterLabel: "블랜딩",
     title: "티 블랜더 클래스",
     description: "다양한 재료의 향과 맛을\n조합해 나만의 블렌딩 티를\n완성합니다.",
+    descriptionTablet: "다양한 재료의 향과 맛을\n조합해 나만의 블렌딩 티를 완성합니다.",
     image: classIntro33,
     imageAlt: "티 블랜더 클래스 수업 장면",
   },

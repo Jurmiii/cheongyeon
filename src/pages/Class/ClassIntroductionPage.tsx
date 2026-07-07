@@ -162,7 +162,16 @@ function ClassIntroductionScrollSection() {
               >
                 <div className="class-intro-scroll__copy">
                   <h3 className="class-intro-scroll__title ink500">{slide.title}</h3>
-                  <p className="class-intro-scroll__description ink500">{slide.description}</p>
+                  <p className="class-intro-scroll__description class-intro-scroll__description--desktop ink500">
+                    {slide.description}
+                  </p>
+                  <p className="class-intro-scroll__description class-intro-scroll__description--tablet ink500">
+                    {(slide.descriptionTablet ?? slide.description).split("\n").map((line, lineIndex) => (
+                      <span key={`${slide.key}-line-${lineIndex}`} className="class-intro-scroll__description-line">
+                        {line}
+                      </span>
+                    ))}
+                  </p>
                 </div>
 
                 <div className="class-intro-scroll__filters" role="tablist" aria-label="클래스 유형">

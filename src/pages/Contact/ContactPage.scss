@@ -44,6 +44,8 @@
   box-sizing: border-box;
   padding: var(--space-4);
   border-radius: var(--radius-lg);
+  background-color: var(--han200);
+  background-image: url("../../assets/images/13my-page/notice-img.webp");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -287,5 +289,138 @@
 @media (max-width: $tablet) {
   .contact__row {
     flex-direction: column;
+  }
+}
+
+// 768~1023px — 태블릿 타이포 (Figma)
+@media (min-width: $tablet) and (max-width: #{$laptop - 1px}) {
+  .contact__intro {
+    background-image: url("../../assets/images/14F&A/ta-1.png");
+  }
+
+  // 마루부리 32b — 타이틀
+  .contact-page .contact__title.ft-36b {
+    font-family: var(--font-headline);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 2.75rem;
+  }
+
+  // 나눔스퀘어 네오 16r — 서브타이틀
+  .contact-page .contact__description.ft-18r {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.625rem;
+  }
+
+  // 나눔스퀘어 네오 14r — 고객센터
+  .contact-page .contact__support.ft-14r {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.375rem;
+  }
+
+  // 나눔스퀘어 네오 16r — 폼 라벨
+  .contact-page .contact__label.ft-18b {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.625rem;
+  }
+
+  // 나눔스퀘어 네오 14r — input / select / textarea
+  .contact-page .contact__field .cy-input.ft-14r,
+  .contact-page .contact__select.ft-16r,
+  .contact-page .contact__select-option.ft-16r,
+  .contact-page .contact__textarea.ft-16r {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.375rem;
+  }
+
+  // 나눔스퀘어 네오 14r — 동의 / 운영 안내
+  .contact-page .contact__agree.ft-16r,
+  .contact-page .contact__hours.ft-16r {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.375rem;
+  }
+}
+
+// ≤767px — 모바일 타이포 · 이미지 (Figma)
+@media (max-width: #{$tablet - 1px}) {
+  .contact__intro {
+    background-image: url("../../assets/images/14F&A/mo-1.png");
+  }
+
+  // 마루부리 20b — 타이틀
+  .contact-page .contact__title.ft-36b {
+    font-family: var(--font-headline);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 2rem;
+  }
+
+  // 나눔스퀘어 네오 14r — 서브타이틀
+  .contact-page .contact__description.ft-18r {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.375rem;
+  }
+
+  // 나눔스퀘어 네오 12r — 고객센터
+  .contact-page .contact__support.ft-14r {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.125rem;
+  }
+
+  // 나눔스퀘어 네오 14b — 폼 라벨
+  .contact-page .contact__label.ft-18b {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.375rem;
+  }
+
+  // 나눔스퀘어 네오 12r — input / select / textarea
+  .contact-page .contact__field .cy-input.ft-14r,
+  .contact-page .contact__select.ft-16r,
+  .contact-page .contact__select-option.ft-16r,
+  .contact-page .contact__textarea.ft-16r {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.125rem;
+  }
+
+  // 나눔스퀘어 네오 12r — 동의
+  .contact-page .contact__agree.ft-16r {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.125rem;
+  }
+
+  // 나눔스퀘어 네오 14b — 버튼
+  .contact-page .contact__submit.cy-button.ft-16b {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.375rem;
+  }
+
+  // 나눔스퀘어 네오 12r — 운영 안내
+  .contact-page .contact__hours.ft-16r {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.125rem;
   }
 }

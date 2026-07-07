@@ -161,14 +161,15 @@ $class-intro-scroll-title-size-tablet: 1.5rem; // ft-24b
 $class-intro-scroll-title-line-tablet: 2.125rem;
 $class-intro-scroll-desc-size-tablet: 1.125rem; // ft-18r
 $class-intro-scroll-desc-line-tablet: 1.875rem;
-$class-intro-scroll-copy-gap-tablet: 0.5rem;
+$class-intro-scroll-copy-gap-tablet: 1rem; // 16px
+$class-intro-scroll-copy-filters-gap-tablet: 10.9375rem; // 175px
 $class-intro-scroll-actions-gap-tablet: 0.625rem;
 $class-intro-scroll-filter-gap-tablet: 0.5rem;
 $class-intro-scroll-filter-size-tablet: 1rem;
 $class-intro-scroll-filter-line-tablet: 1.625rem;
 $class-intro-scroll-filter-padding-block-tablet: 0.3125rem;
 $class-intro-scroll-filter-padding-inline-tablet: 1.1875rem;
-$class-intro-scroll-panel-padding-block-tablet: 0.5rem;
+$class-intro-scroll-panel-padding-block-tablet: 1.5rem; // 24px
 $class-intro-scroll-panel-padding-inline-tablet: 1.5rem;
 $class-intro-scroll-filter-row-height-tablet: calc(
   #{$class-intro-scroll-filter-padding-block-tablet} * 2 + #{$class-intro-scroll-filter-line-tablet}
@@ -979,6 +980,10 @@ $class-intro-review-mobile-text-cols: 5;
   white-space: pre-line;
 }
 
+.class-intro-scroll__description--tablet {
+  display: none;
+}
+
 .class-intro-scroll__filters {
   display: flex;
   flex-direction: column;
@@ -1223,44 +1228,60 @@ $class-intro-review-mobile-text-cols: 5;
     flex: none;
     width: 100%;
     height: auto;
-    min-height: class-intro-scroll-tablet-scaled($class-intro-scroll-panel-height-tablet);
+    min-height: auto;
     overflow: visible;
   }
 
   .class-intro-scroll__panel-slide {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
     box-sizing: border-box;
     width: 100%;
     height: auto;
-    min-height: class-intro-scroll-tablet-scaled($class-intro-scroll-panel-height-tablet);
-    gap: class-intro-scroll-tablet-scaled($class-intro-scroll-actions-gap-tablet);
+    min-height: auto;
+    gap: class-intro-scroll-tablet-scaled($class-intro-scroll-copy-filters-gap-tablet);
     padding: class-intro-scroll-tablet-scaled($class-intro-scroll-panel-padding-block-tablet)
       class-intro-scroll-tablet-scaled($class-intro-scroll-panel-padding-inline-tablet);
   }
 
   .class-intro-scroll__copy {
-    flex: 0 0 auto;
+    flex: 1 1 auto;
+    min-width: 0;
     gap: class-intro-scroll-tablet-scaled($class-intro-scroll-copy-gap-tablet);
   }
 
   .class-intro-scroll .class-intro-scroll__title {
     font-size: class-intro-scroll-tablet-scaled($class-intro-scroll-title-size-tablet);
     line-height: class-intro-scroll-tablet-scaled($class-intro-scroll-title-line-tablet);
-    white-space: nowrap;
+    white-space: normal;
   }
 
-  .class-intro-scroll .class-intro-scroll__description {
+  .class-intro-scroll .class-intro-scroll__description--desktop {
+    display: none;
+  }
+
+  .class-intro-scroll .class-intro-scroll__description--tablet {
+    display: flex;
+    flex-direction: column;
     font-size: class-intro-scroll-tablet-scaled($class-intro-scroll-desc-size-tablet);
     line-height: class-intro-scroll-tablet-scaled($class-intro-scroll-desc-line-tablet);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+  }
+
+  .class-intro-scroll__description-line {
+    display: block;
+    word-break: keep-all;
   }
 
   .class-intro-scroll__filters {
     flex: 0 0 auto;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: auto;
     gap: class-intro-scroll-tablet-scaled($class-intro-scroll-filter-gap-tablet);
   }
 
