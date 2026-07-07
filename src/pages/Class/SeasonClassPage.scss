@@ -137,12 +137,9 @@ $season-class-kv-height-desktop: 46.25rem; // PC 740px
 }
 
 @media (max-width: #{$laptop - 1px}) {
-  .season-class-kv__title.ft-64b {
-    color: var(--ink500);
-  }
-
+  .season-class-kv__title.ft-64b,
   .season-class-kv__description.ft-28r {
-    color: var(--white);
+    color: var(--ink500);
   }
 }
 
@@ -620,6 +617,10 @@ html[data-header-season-scroll-active="true"] .site-header-shell {
   object-fit: cover;
 }
 
+.season-scroll__cozy-mark {
+  display: none;
+}
+
 /* 왼쪽 텍스트 — Figma (240, 82) w493 */
 .season-scroll__left {
   position: absolute;
@@ -1059,6 +1060,12 @@ $season-scroll-hanja-push-tablet: 6.25rem; // 100px — intro 아래 한자 블�
 
 /* Figma 모바일 402×766 — 섹션 높이는 subbg 하단(353+402=755px)에 맞춤 */
 $season-scroll-h-mobile: 47.1875rem; // 755px (766px − 11px 하단 여백)
+$season-scroll-cozy-mark-pad: 1.5rem; // 24px
+$season-scroll-cozy-mark-close-size: 1.5rem; // 24px
+$season-scroll-cozy-mark-art-top: 12.9375rem; // 255px
+$season-scroll-cozy-mark-art-left: 2.0625rem; // 33px
+$season-scroll-cozy-mark-art-w: 11rem; // 176px
+$season-scroll-cozy-mark-art-h: 7.72rem; // 123.52px
 $season-scroll-padding-block-mobile: 4rem; // 64px
 $season-scroll-hanja-w-mobile: 5.6875rem; // 91px
 $season-scroll-hanja-h-mobile: 5rem; // 80px
@@ -1529,6 +1536,50 @@ $season-scroll-ellipse-top-tablet: 23.4375rem; // 750px / 2 — 타원 세로 �
     width: $season-scroll-scene-size-mobile;
     height: $season-scroll-scene-size-mobile;
     transform: translateX(-50%);
+  }
+
+  .season-scroll__cozy-mark {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    box-sizing: border-box;
+    padding: $season-scroll-cozy-mark-pad;
+    background: rgb(0 0 0 / 0.5);
+    pointer-events: auto;
+  }
+
+  .season-scroll__cozy-mark-close {
+    position: absolute;
+    top: $season-scroll-cozy-mark-pad;
+    right: $season-scroll-cozy-mark-pad;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: $season-scroll-cozy-mark-close-size;
+    height: $season-scroll-cozy-mark-close-size;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .season-scroll__cozy-mark-close img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+  }
+
+  .season-scroll__cozy-mark-art {
+    position: absolute;
+    top: $season-scroll-cozy-mark-art-top;
+    left: $season-scroll-cozy-mark-art-left;
+    width: $season-scroll-cozy-mark-art-w;
+    height: $season-scroll-cozy-mark-art-h;
+    object-fit: contain;
+    pointer-events: none;
   }
 }
 
@@ -3165,5 +3216,24 @@ $season-gallery-section-padding-bottom-mobile: 3rem;
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
+  }
+
+  .season-class-kv__title.ft-64b,
+  .season-class-kv__description.ft-28r {
+    color: var(--white);
+  }
+
+  .season-class-kv__symbol-line,
+  .season-class-kv__symbol-line--ink {
+    color: var(--white);
+  }
+
+  .season-class-kv__line-bar {
+    background-color: currentColor;
+    opacity: 1;
+  }
+
+  .season-class-kv__line-symbol {
+    filter: brightness(0) invert(1);
   }
 }

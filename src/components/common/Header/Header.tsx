@@ -22,7 +22,7 @@ import "./Header.scss";
 
 
 
-type ActiveDropdown = "gnb" | "user" | null;
+type ActiveDropdown = "user" | null;
 
 
 
@@ -39,6 +39,7 @@ export default function Header() {
   const { pathname } = useLocation();
 
   const [activeDropdown, setActiveDropdown] = useState<ActiveDropdown>(null);
+  const [isGnbOpen, setIsGnbOpen] = useState(false);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -56,8 +57,6 @@ export default function Header() {
 
 
 
-  const isGnbOpen = activeDropdown === "gnb";
-
   const activeMenu = gnbMenus[activeMenuIndex] ?? gnbMenus[0];
 
 
@@ -70,6 +69,7 @@ export default function Header() {
 
     setActiveAccordionIndex(index);
 
+    setIsGnbOpen(false);
     setActiveDropdown(null);
 
     setIsMenuOpen(false);
@@ -83,6 +83,7 @@ export default function Header() {
   useEffect(() => {
 
     if (isScrollHidden) {
+      setIsGnbOpen(false);
       setActiveDropdown(null);
     }
 
@@ -174,96 +175,99 @@ export default function Header() {
 
           .join(" ")}
 
-        onMouseLeave={() => setActiveDropdown(null)}
+        onMouseLeave={() => {
+          setIsGnbOpen(false);
+          setActiveDropdown(null);
+        }}
 
       >
 
         <div className="site-header__overlay" aria-hidden="true" />
 
-        <div className="site-header__inner">
+        <div
+          className="site-header__gnb-bridge"
+          onMouseLeave={(event) => {
+            const relatedTarget = event.relatedTarget as Node | null;
 
-          <h1 className="site-header__logo">
+            if (!relatedTarget || !event.currentTarget.contains(relatedTarget)) {
+              setIsGnbOpen(false);
+            }
+          }}
+        >
+          <div
+            className="site-header__bar-hit"
+            onMouseEnter={() => setIsGnbOpen(true)}
+          >
+            <div className="site-header__inner">
+              <h1 className="site-header__logo">
+                <Link to="/" aria-label="청연 홈">
+                  <img src={logo} alt="청연" />
+                </Link>
+              </h1>
 
-            <Link to="/" aria-label="청연 홈">
+              <div className="site-header__interactive">
+                <nav className="site-header__gnb" aria-label="주요 메뉴">
+                  {gnbMenus.map((menu) => (
+                    <div className="site-header__menu-item" key={menu.label}>
+                      <NavLink className="site-header__menu-link ft-18b ink500" to={menu.to}>
+                        {menu.label}
+                      </NavLink>
+                    </div>
+                  ))}
+                </nav>
 
-              <img src={logo} alt="청연" />
-
-            </Link>
-
-          </h1>
-
-
-
-          <div className="site-header__interactive">
-
-            <nav
-              className="site-header__gnb"
-              aria-label="주요 메뉴"
-              onMouseEnter={() => setActiveDropdown("gnb")}
-            >
-              {gnbMenus.map((menu) => (
-                  <div
-                    className={[
-                      "site-header__menu-item",
-                      activeDropdown === "gnb" && "site-header__menu-item--active",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                    key={menu.label}
-                  >
-
-                    <NavLink
-
-                      className="site-header__menu-link ft-18b ink500"
-
-                      to={menu.to}
-
+                <div
+                  className={[
+                    "site-header__submenu-panel",
+                    isGnbOpen && "site-header__submenu-panel--open",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  aria-hidden={!isGnbOpen}
+                >
+                  {gnbMenus.map((menu) => (
+                    <div
+                      className={[
+                        "site-header__menu-item",
+                        "site-header__menu-item--submenu",
+                        isGnbOpen && "site-header__menu-item--active",
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                      key={menu.label}
                     >
+                      <span
+                        className="site-header__menu-link site-header__menu-link--sizer ft-18b ink500"
+                        aria-hidden="true"
+                      >
+                        {menu.label}
+                      </span>
+                      <span className="site-header__dropdown-line" aria-hidden="true" />
+                      <ul className="site-header__submenu" aria-hidden={!isGnbOpen}>
+                        {menu.children.map((child) => {
+                          const isChildActive = isSubmenuItemActive(pathname, child.to, menu.children);
 
-                      {menu.label}
+                          return (
+                            <li key={child.label}>
+                              <NavLink
+                                className={getNavLinkClassName(
+                                  "site-header__submenu-link ft-18b ink500",
+                                  "site-header__submenu-link--active",
+                                  isChildActive,
+                                )}
+                                to={child.to}
+                              >
+                                {child.label}
+                              </NavLink>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
 
-                    </NavLink>
-
-                    <span className="site-header__dropdown-line" aria-hidden="true" />
-
-                    <ul className="site-header__submenu" aria-hidden={activeDropdown !== "gnb"}>
-
-                      {menu.children.map((child) => {
-                        const isChildActive = isSubmenuItemActive(pathname, child.to, menu.children);
-
-                        return (
-                        <li key={child.label}>
-
-                          <NavLink
-
-                            className={getNavLinkClassName(
-                              "site-header__submenu-link ft-18b ink500",
-                              "site-header__submenu-link--active",
-                              isChildActive,
-                            )}
-
-                            to={child.to}
-
-                          >
-
-                            {child.label}
-
-                          </NavLink>
-
-                        </li>
-                        );
-                      })}
-
-                    </ul>
-
-                  </div>
-              ))}
-
-            </nav>
-
-
-
-            <div className="site-header__actions">
+                <div className="site-header__actions">
 
               <div
 
@@ -389,10 +393,10 @@ export default function Header() {
 
               </div>
 
+                </div>
+              </div>
             </div>
-
           </div>
-
         </div>
 
       </header>
