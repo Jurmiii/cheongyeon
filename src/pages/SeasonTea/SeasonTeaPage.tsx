@@ -10,6 +10,8 @@ import winterTeaImage from "../../assets/images/07season-tea/sec5-tea.webp";
 import sec5WayB from "../../assets/images/07season-tea/sec5-way-b.webp";
 import sec5WayT from "../../assets/images/07season-tea/sec5-way-t.webp";
 import { Button, Footer, SubKvSymbolLine } from "../../components/common";
+import PageMeta from "../../components/seo/PageMeta";
+import { PAGE_SEO } from "../../data/pageSeoMeta";
 import SeasonTeaDetailModal from "./SeasonTeaDetailModal";
 import { autumnTeaDetail, springTeaDetail, summerTeaDetail, winterTeaDetail, type SeasonTeaDetail } from "./seasonTeaDetailData";
 import "./SeasonTeaPage.scss";
@@ -137,6 +139,7 @@ function SeasonTeaPage() {
 
   return (
     <main className="season-tea-page">
+      <PageMeta {...PAGE_SEO.seasonTea} />
 
       <section className="season-tea-kv" aria-label="계절의 차 키비주얼">
         <div className="season-tea-kv__grid">

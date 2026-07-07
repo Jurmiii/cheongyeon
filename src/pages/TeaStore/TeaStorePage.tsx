@@ -1,5 +1,7 @@
 import teaStoreLogo from "../../assets/images/06tea-store/logo.webp";
 import { Footer, SubKvSymbolLine } from "../../components/common";
+import PageMeta from "../../components/seo/PageMeta";
+import { PAGE_SEO } from "../../data/pageSeoMeta";
 import {
   teaStoryDadoItems,
   teaStorySeasons,
@@ -29,6 +31,7 @@ function TeaStoryPage() {
 
   return (
     <main className="tea-store-page">
+      <PageMeta {...PAGE_SEO.teaStory} />
 
       <section className="tea-store-kv" aria-label="차 이야기 키비주얼">
         <div className="tea-store-kv__grid">

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Button, Calendar, Footer, Input } from "../../components/common";
+import PageMeta from "../../components/seo/PageMeta";
+import { PAGE_SEO } from "../../data/pageSeoMeta";
 import { reservationTimeSlots, type ReservationTimeSlot } from "../../data/reservationClasses";
 import { useReservations } from "../../hooks/useReservations";
 import { useUserProfile } from "../../hooks/useUserProfile";
@@ -60,6 +62,7 @@ function ReservationEditPage() {
 
   return (
     <main className="reservation-edit-page">
+      <PageMeta {...PAGE_SEO.reservationEdit} />
 
       <section className="reservation-edit" aria-label="예약 변경">
         <div className="reservation-edit__grid">

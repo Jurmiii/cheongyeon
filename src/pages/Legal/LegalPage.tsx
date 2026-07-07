@@ -1,4 +1,6 @@
 import { Footer } from "../../components/common";
+import PageMeta from "../../components/seo/PageMeta";
+import { PAGE_SEO } from "../../data/pageSeoMeta";
 import { LegalDocument } from "../../components/legal";
 import { privacyPolicyDocument, termsOfServiceDocument } from "../../data/legal";
 import "./LegalPage.scss";
@@ -21,6 +23,7 @@ function LegalPageShell({ children }: LegalPageShellProps) {
 export function TermsPage() {
   return (
     <LegalPageShell>
+      <PageMeta {...PAGE_SEO.terms} />
       <LegalDocument document={termsOfServiceDocument} variant="page" />
     </LegalPageShell>
   );
@@ -29,6 +32,7 @@ export function TermsPage() {
 export function PrivacyPage() {
   return (
     <LegalPageShell>
+      <PageMeta {...PAGE_SEO.privacy} />
       <LegalDocument document={privacyPolicyDocument} variant="page" />
     </LegalPageShell>
   );

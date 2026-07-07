@@ -2,6 +2,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Footer, SubKvSymbolLine } from "../../components/common";
+import PageMeta from "../../components/seo/PageMeta";
+import { PAGE_SEO } from "../../data/pageSeoMeta";
 import aboutBg from "../../assets/images/03space/about-bg.webp";
 import spaceRoomLeft from "../../assets/images/03space/space-3_1.webp";
 import spaceRoomRight from "../../assets/images/03space/space-3_2.webp";
@@ -362,6 +364,7 @@ function SpacePage() {
 
   return (
     <main className="space">
+      <PageMeta {...PAGE_SEO.space} />
 
       <section
         className="space-kv"

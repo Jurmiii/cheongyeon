@@ -9,6 +9,8 @@ import myPageBg from "../../assets/images/13my-page/my-bg.webp";
 import myIcon from "../../assets/images/13my-page/my-icon.svg";
 
 import { Badge, Button, CustomModal, Footer, Icon, Input, TeaClassContentBox } from "../../components/common";
+import PageMeta from "../../components/seo/PageMeta";
+import { PAGE_SEO } from "../../data/pageSeoMeta";
 
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -312,6 +314,7 @@ function MyPage() {
   return (
 
     <main className="my-page" style={{ backgroundImage: `url(${myPageBg})` }}>
+      <PageMeta {...PAGE_SEO.myPage} />
 
       <section className="my-page__content" aria-label="마이페이지">
 

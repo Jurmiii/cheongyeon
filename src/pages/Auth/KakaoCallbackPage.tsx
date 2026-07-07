@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { useAuth } from "../../contexts/AuthContext";
+import PageMeta from "../../components/seo/PageMeta";
+import { PAGE_SEO } from "../../data/pageSeoMeta";
 import {
   completeKakaoLogin,
   readOAuthRedirectPath,
@@ -70,6 +72,7 @@ function KakaoCallbackPage() {
 
   return (
     <main className="login-page-wrapper" aria-live="polite">
+      <PageMeta {...PAGE_SEO.kakaoCallback} />
       <p className="ft-16r" style={{ padding: "4rem 1.5rem", textAlign: "center" }}>
         {message}
       </p>

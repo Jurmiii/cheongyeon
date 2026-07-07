@@ -4,6 +4,8 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { Badge, Button, Footer, Icon, Input } from "../../components/common";
+import PageMeta from "../../components/seo/PageMeta";
+import { PAGE_SEO } from "../../data/pageSeoMeta";
 import { useAuth } from "../../contexts/AuthContext";
 import {
   RESERVATION_CLASSES_PER_PAGE,
@@ -969,6 +971,7 @@ function ReservationPage() {
 
   return (
     <main className="reservation-page">
+      <PageMeta {...(isEditMode ? PAGE_SEO.reservationEdit : PAGE_SEO.reservation)} />
 
       <section className="reservation-hero" aria-label="예약하기 안내">
         <div className="reservation-hero__grid">

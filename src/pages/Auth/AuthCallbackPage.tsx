@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../contexts/AuthContext";
+import PageMeta from "../../components/seo/PageMeta";
+import { PAGE_SEO } from "../../data/pageSeoMeta";
 import { supabase } from "../../lib/supabase";
 import { readOAuthRedirectPath, resolveLoginIdFromSession } from "../../utils/kakaoAuth";
 
@@ -50,6 +52,7 @@ function AuthCallbackPage() {
 
   return (
     <main className="login-page-wrapper" aria-live="polite">
+      <PageMeta {...PAGE_SEO.authCallback} />
       <p className="ft-16r" style={{ padding: "4rem 1.5rem", textAlign: "center" }}>
         {message}
       </p>

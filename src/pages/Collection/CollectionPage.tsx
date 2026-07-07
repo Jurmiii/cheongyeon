@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import aromaGraph from "../../assets/images/05collection/graph.webp";
 import { Footer, Modal2, SubKvSymbolLine } from "../../components/common";
+import PageMeta from "../../components/seo/PageMeta";
+import { PAGE_SEO } from "../../data/pageSeoMeta";
 import type { TeaCollectionModalData } from "../../components/common/TeaCollectionModal/teaCollectionModal.types";
 import { collectionTabs, isCollectionTabId } from "./collectionTabs";
 import type { CollectionTabId } from "./collectionTabs";
@@ -35,6 +37,7 @@ function CollectionPage() {
 
   return (
     <main className="collection-page">
+      <PageMeta {...PAGE_SEO.collection} />
 
       <section className="collection-kv" aria-label="차 컬렉션 키비주얼">
         <div className="collection-kv__grid">

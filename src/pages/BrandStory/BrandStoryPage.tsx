@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Footer, SubKvSymbolLine } from "../../components/common";
+import PageMeta from "../../components/seo/PageMeta";
+import { PAGE_SEO } from "../../data/pageSeoMeta";
 import "./BrandStoryPage.scss";
 
 // About 섹션 배경 이미지 — 교체 시 아래 import 경로만 수정하세요.
@@ -547,6 +549,7 @@ function BrandStoryPage() {
 
   return (
     <main className="brand-story-page">
+      <PageMeta {...PAGE_SEO.brandStory} />
 
       <section
         className="brand-story-kv"

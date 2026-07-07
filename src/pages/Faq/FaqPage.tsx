@@ -1,6 +1,8 @@
 import { useState } from "react";
 
 import { Footer, Icon, SubKvSymbolLine } from "../../components/common";
+import PageMeta from "../../components/seo/PageMeta";
+import { PAGE_SEO } from "../../data/pageSeoMeta";
 import { faqs } from "../../data/faqs";
 import "./FaqPage.scss";
 
@@ -13,6 +15,7 @@ function FaqPage() {
 
   return (
     <main className="faq-page">
+      <PageMeta {...PAGE_SEO.faq} />
 
       <section className="faq-kv" aria-label="자주 묻는 질문 키비주얼">
         <div className="faq-kv__grid">

@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties } from "re
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { Footer, SubKvSymbolLine } from "../../components/common";
+import PageMeta from "../../components/seo/PageMeta";
+import { PAGE_SEO } from "../../data/pageSeoMeta";
 import classIntroImage from "../../assets/images/08class/class-introduction-2-1.webp";
 import classIntroCtaBg from "../../assets/images/08class/class-introduction-6-bg.webp";
 import reviewBg from "../../assets/images/08class/class-introduction-7-bg.webp";
@@ -785,6 +787,7 @@ function ClassIntroductionReviewSection() {
 function ClassIntroductionPage() {
   return (
     <main className="class-intro-page">
+      <PageMeta {...PAGE_SEO.classIntroduction} />
 
       <section className="class-intro-kv" aria-label="클래스 소개">
         <div className="class-intro-kv__grid">

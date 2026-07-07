@@ -2,6 +2,8 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperti
 import { useNavigate } from "react-router-dom";
 
 import { Badge, Footer, Icon, SubKvSymbolLine } from "../../components/common";
+import PageMeta from "../../components/seo/PageMeta";
+import { PAGE_SEO } from "../../data/pageSeoMeta";
 import type { IconName } from "../../components/common";
 import { events, type EventItem, type EventStatus } from "../../data/eventList";
 import { useModalOpen } from "../../hooks/useLockBodyScroll";
@@ -318,6 +320,7 @@ function EventPage() {
 
   return (
     <main className="event-page">
+      <PageMeta {...PAGE_SEO.event} />
 
       <section className="event-kv" aria-label="진행중 이벤트">
         <div className="event-kv__grid">

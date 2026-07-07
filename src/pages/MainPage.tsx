@@ -2,6 +2,8 @@ import { useEffect, useRef, useState, type CSSProperties, type MouseEvent, type 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Link } from "react-router-dom";
+import PageMeta from "../components/seo/PageMeta";
+import { PAGE_SEO } from "../data/pageSeoMeta";
 import aboutVideo from "../assets/images/01main/about.webm";
 import mainIntroVideo from "../assets/images/01main/main-intro.webm";
 import mainBg2 from "../assets/images/01main/main-bg2.webp";
@@ -1555,6 +1557,7 @@ export default function MainPage() {
 
   return (
     <main className={["main-page", isIntroPlaying && "main-page--intro-playing"].filter(Boolean).join(" ")}>
+      <PageMeta {...PAGE_SEO.main} />
       {showMainIntro && (
         <div
           className={["main-intro", isIntroEnded && "main-intro--hidden"].filter(Boolean).join(" ")}

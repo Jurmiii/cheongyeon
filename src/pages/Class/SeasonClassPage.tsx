@@ -4,6 +4,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { Footer, Icon, Button, SubKvSymbolLine } from "../../components/common";
+import PageMeta from "../../components/seo/PageMeta";
+import { PAGE_SEO } from "../../data/pageSeoMeta";
 import chaIcon from "../../assets/images/09season-class/cha-icon.svg";
 import tryIcon from "../../assets/images/09season-class/try-icon.svg";
 import cozyMarkArt from "../../assets/images/09season-class/cozymark.svg";
@@ -1805,6 +1807,7 @@ function SeasonClassGallerySection() {
 function SeasonClassPage() {
   return (
     <main className="season-class-page">
+      <PageMeta {...PAGE_SEO.seasonClass} />
 
       <section className="season-class-kv" aria-label="시즌 클래스">
         <div className="season-class-kv__grid">

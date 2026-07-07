@@ -1,6 +1,8 @@
 import { Navigate, useLocation } from "react-router-dom";
 
 import { Footer } from "../../components/common";
+import PageMeta from "../../components/seo/PageMeta";
+import { PAGE_SEO } from "../../data/pageSeoMeta";
 import { useAuth } from "../../contexts/AuthContext";
 import Login from "./Login";
 import "./LoginPage.scss";
@@ -19,6 +21,7 @@ function LoginPage() {
 
   return (
     <main className="login-page-wrapper">
+      <PageMeta {...PAGE_SEO.login} />
       <Login />
       <Footer />
     </main>

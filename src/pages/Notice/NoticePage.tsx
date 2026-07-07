@@ -1,6 +1,8 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { Badge, Button, Footer, Icon, SubKvSymbolLine } from "../../components/common";
+import PageMeta from "../../components/seo/PageMeta";
+import { PAGE_SEO } from "../../data/pageSeoMeta";
 
 import {
   NOTICE_ITEMS_PER_PAGE,
@@ -135,6 +137,7 @@ function NoticePage() {
 
   return (
     <main className="notice-page">
+      <PageMeta {...PAGE_SEO.notice} />
 
       <section className="notice-kv" aria-label="공지사항 키비주얼">
         <div className="notice-kv__grid">
