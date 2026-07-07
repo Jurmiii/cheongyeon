@@ -1407,15 +1407,49 @@ $my-page-upcoming-compact-max: $laptop;
 
   .my-page__stats {
     margin-top: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .my-page__stat-divider {
+    display: none;
   }
 
   .my-page__stat-item {
-    grid-template-rows: 3.25rem auto;
-    padding-block: var(--space-2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    padding-block: var(--space-3);
+    border-top: calc(var(--space-1) / 8) solid var(--deep500);
+
+    &:first-child {
+      border-top: 0;
+    }
   }
 
   .my-page__stat-heading {
-    height: 3.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+    width: 100%;
+    height: auto;
+  }
+
+  .my-page__stat-title {
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .my-page__stat-value {
+    align-self: center;
+    margin-top: var(--space-1);
   }
 
   // 예약이력 카드 — 이미지 상단 / 텍스트+뱃지 하단
