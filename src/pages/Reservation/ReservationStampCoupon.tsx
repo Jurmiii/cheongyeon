@@ -11,7 +11,22 @@ import {
   type StampBenefit,
   type StampBenefitId,
 } from "../../data/stampBenefits";
+import couponGreenBody from "../../assets/images/10reservation/coupon-g.webp";
+import couponWhiteBody from "../../assets/images/10reservation/coupon-w.webp";
+import couponGreenStub from "../../assets/images/10reservation/coupon-g-r.webp";
+import couponWhiteStub from "../../assets/images/10reservation/coupon-w-r.webp";
 import "./ReservationStampCoupon.scss";
+
+type CouponAsset = {
+  body: string;
+  stub: string;
+  tone: "light" | "dark";
+};
+
+const COUPON_ASSETS: Record<StampBenefitId, CouponAsset> = {
+  "stamp-4-half": { body: couponGreenBody, stub: couponWhiteStub, tone: "light" },
+  "stamp-8-free": { body: couponWhiteBody, stub: couponGreenStub, tone: "dark" },
+};
 
 type StampPricing = {
   productAmount: number;
@@ -232,36 +247,13 @@ export default function ReservationStampCoupon({
                 </div>
 
                 <div className="reservation-coupon-sheet__body">
-                  {activeTab === "available" ? (
-                    <button
-                      className={[
-                        "reservation-coupon-sheet__none",
-                        pendingBenefitId === null && "reservation-coupon-sheet__none--selected",
-                      ]
-                        .filter(Boolean)
-                        .join(" ")}
-                      type="button"
-                      onClick={() => setPendingBenefitId(null)}
-                    >
-                      <span className="ft-16r ink500">쿠폰 사용 안 함</span>
-                      <span
-                        className={[
-                          "reservation-coupon-sheet__radio",
-                          pendingBenefitId === null && "reservation-coupon-sheet__radio--checked",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                        aria-hidden="true"
-                      />
-                    </button>
-                  ) : null}
-
                   <ul className="reservation-coupon-sheet__list">
                     {visibleBenefits.map((benefit) => {
                       const isSelected = pendingBenefitId === benefit.id;
                       const discountAmount = benefit.discountAmount;
                       const isEligible = isPracticeAccount || availableStamps >= benefit.requiredStamps;
                       const reason = getIneligibilityReason(benefit, availableStamps);
+                      const asset = COUPON_ASSETS[benefit.id];
 
                       return (
                         <li className="reservation-coupon-sheet__item" key={benefit.id}>
@@ -277,30 +269,24 @@ export default function ReservationStampCoupon({
                             disabled={!isEligible}
                             onClick={() => setPendingBenefitId(benefit.id)}
                           >
-                            <span className="reservation-coupon-sheet__ticket">
-                              <span className="reservation-coupon-sheet__ticket-amount ft-18b">
-                                {formatPriceKrw(discountAmount)}
-                              </span>
-                              <span className="reservation-coupon-sheet__ticket-label ft-12r">할인</span>
-                            </span>
-                            <span className="reservation-coupon-sheet__card-copy">
-                              <span className="reservation-coupon-sheet__card-title ft-16b ink500">{benefit.title}</span>
-                              <span className="reservation-coupon-sheet__card-desc ft-14r ink400">{benefit.description}</span>
-                              {reason ? (
-                                <span className="reservation-coupon-sheet__card-reason ft-12r ink300">{reason}</span>
-                              ) : (
-                                <span className="reservation-coupon-sheet__card-reason ft-12r ink300">
-                                  스탬프 {benefit.requiredStamps}개 사용
-                                </span>
-                              )}
-                            </span>
                             <span
                               className={[
-                                "reservation-coupon-sheet__radio",
-                                isSelected && "reservation-coupon-sheet__radio--checked",
-                              ]
-                                .filter(Boolean)
-                                .join(" ")}
+                                "reservation-coupon-sheet__ticket-body",
+                                `reservation-coupon-sheet__ticket-body--${asset.tone}`,
+                              ].join(" ")}
+                              style={{ backgroundImage: `url(${asset.body})` }}
+                            >
+                              <span className="reservation-coupon-sheet__ticket-title ft-18b">{benefit.title}</span>
+                              <span className="reservation-coupon-sheet__ticket-discount ft-16r">
+                                원데이 클래스 {formatPriceKrw(discountAmount)} 할인
+                              </span>
+                              <span className="reservation-coupon-sheet__ticket-note ft-12r">
+                                {reason ?? "모든 클래스에서 사용 가능"}
+                              </span>
+                            </span>
+                            <span
+                              className="reservation-coupon-sheet__ticket-stub"
+                              style={{ backgroundImage: `url(${asset.stub})` }}
                               aria-hidden="true"
                             />
                           </button>
