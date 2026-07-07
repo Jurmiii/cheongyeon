@@ -1,6 +1,9 @@
-import { useState, type FormEvent } from "react";
+import { useState, type CSSProperties, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
+import contactIntroMobile from "../../assets/images/14F&A/mo-1.png";
+import contactIntroTablet from "../../assets/images/14F&A/ta-1.png";
+import contactIntroPc from "../../assets/images/13my-page/notice-img.webp";
 import { Button, CustomModal, Footer, Icon, Input } from "../../components/common";
 import { isValidEmail, isValidPhone, normalizePhone } from "../../utils/validation";
 import "./ContactPage.scss";
@@ -91,19 +94,26 @@ function ContactPage() {
     <main className="contact-page">
       <section className="contact" aria-label="문의하기">
         <div className="contact__inner">
-          <aside className="contact__intro">
+          <aside
+            className="contact__intro"
+            style={
+              {
+                "--contact-intro-pc": `url(${contactIntroPc})`,
+                "--contact-intro-tablet": `url(${contactIntroTablet})`,
+                "--contact-intro-mobile": `url(${contactIntroMobile})`,
+              } as CSSProperties
+            }
+          >
             <h1 className="contact__title ft-36b ink500">문의하기</h1>
             <p className="contact__description ft-18r ink500">
-              궁금하신 점이 있으시면 언제든지 문의해주세요
-              <br />
-              빠르고 정확하게 답변드리겠습니다.
+              <span className="contact__description-line">궁금하신 점이 있으시면</span>
+              <span className="contact__description-line">언제든지 문의해주세요</span>
+              <span className="contact__description-line">빠르고 정확하게 답변드리겠습니다.</span>
             </p>
             <p className="contact__support ft-14r ink500">
-              고객센터
-              <br />
-              010-1234-5678
-              <br />
-              (운영시간 09:00-18:00)
+              <span className="contact__support-line">고객센터</span>
+              <span className="contact__support-line">010-1234-5678</span>
+              <span className="contact__support-line">(운영시간 09:00-18:00)</span>
             </p>
           </aside>
 
